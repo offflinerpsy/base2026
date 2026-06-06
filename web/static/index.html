@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Base2026 Research Console</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">SEO / GEO / AEO intelligence</p>
+          <h1>Base2026 Research Console</h1>
+          <p class="lead">Search polished TikTok transcripts, source files, claims, authors, mentions, and time ranges from one local knowledge base.</p>
+        </div>
+        <button id="refreshBtn" class="ghost">Refresh TikTok</button>
+      </header>
+
+      <section class="status-grid" id="statusGrid"></section>
+
+      <section class="search-panel">
+        <div class="search-row">
+          <label>
+            <span>Keywords</span>
+            <input id="searchInput" type="search" placeholder="schema structured AI Overview" autocomplete="off" />
+          </label>
+          <label>
+            <span>Mention must include</span>
+            <input id="mentionInput" type="search" placeholder="ChatGPT, Bing, schema, GBP..." autocomplete="off" />
+          </label>
+        </div>
+        <div class="filter-row">
+          <label>
+            <span>Keyword logic</span>
+            <select id="searchMode">
+              <option value="any">Any keyword</option>
+              <option value="all">All keywords</option>
+            </select>
+          </label>
+          <label>
+            <span>Source</span>
+          <select id="sourceType">
+              <option value="">All sources</option>
+            <option value="tiktok_video">TikTok</option>
+              <option value="local_file">Local files</option>
+          </select>
+          </label>
+          <label>
+            <span>Author</span>
+          <select id="authorFilter">
+              <option value="">All authors</option>
+          </select>
+          </label>
+          <label>
+            <span>From</span>
+            <input id="dateFrom" type="date" />
+          </label>
+          <label>
+            <span>To</span>
+            <input id="dateTo" type="date" />
+          </label>
+          <label>
+            <span>Sort</span>
+            <select id="sortMode">
+              <option value="relevance">Relevance</option>
+              <option value="date_desc">Newest first</option>
+              <option value="date_asc">Oldest first</option>
+              <option value="source">Source type</option>
+            </select>
+          </label>
+          <button id="searchBtn">Search</button>
+          <button id="clearBtn" class="ghost">Clear</button>
+        </div>
+        <div class="active-filters" id="activeFilters"></div>
+        <div class="topics" id="topics"></div>
+      </section>
+
+      <section class="layout">
+        <aside class="authors" aria-label="Authors">
+          <h2>Authors</h2>
+          <div id="authors"></div>
+          <h2>Facet counts</h2>
+          <div id="facets" class="facet-list"></div>
+        </aside>
+
+        <section class="results">
+          <div class="results-head">
+            <h2 id="resultTitle">Results</h2>
+            <p id="resultMeta"></p>
+          </div>
+          <div id="results"></div>
+          <div class="refresh-state" id="refreshState"></div>
+          <div class="pager">
+            <button id="prevBtn" class="ghost">Previous</button>
+            <button id="nextBtn" class="ghost">Next</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="detailDialog">
+      <button class="dialog-close" id="closeDialog">Close</button>
+      <div id="detailContent"></div>
+    </dialog>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

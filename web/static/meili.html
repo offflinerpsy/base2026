@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Base2026 Video Knowledge Search</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@8/themes/reset-min.css" />
+    <link rel="stylesheet" href="/static/styles.css?v=20260606-drawer2" />
+    <script src="https://cdn.jsdelivr.net/npm/@meilisearch/instant-meilisearch/dist/instant-meilisearch.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Video transcript intelligence</p>
+          <h1>Search what SEO, GEO and AEO creators actually said.</h1>
+          <p class="lead">TikTok videos converted into searchable English transcript passages. Filter by creator, source and year, then jump back to the original post.</p>
+        </div>
+        <div class="hero-card" aria-label="Dataset summary">
+          <div>
+            <strong>912</strong>
+            <span>in-scope videos</span>
+          </div>
+          <div>
+            <strong>1,324</strong>
+            <span>searchable passages</span>
+          </div>
+          <div>
+            <strong>3</strong>
+            <span>creators indexed</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="search-command" aria-label="Knowledge search">
+        <div id="searchbox"></div>
+        <div class="query-presets" aria-label="Quick searches">
+          <button type="button" data-query="ChatGPT SEO">ChatGPT SEO</button>
+          <button type="button" data-query="schema structured data">Schema</button>
+          <button type="button" data-query="AI Overviews">AI Overviews</button>
+          <button type="button" data-query="keyword research">Keyword research</button>
+          <button type="button" data-query="Bing">Bing</button>
+        </div>
+        <div id="selected-terms" class="selected-terms" aria-live="polite"></div>
+        <div id="current-refinements"></div>
+      </section>
+
+      <section class="meili-grid">
+        <aside class="filter-panel meili-filters">
+          <div class="panel-title">
+            <h2>Filter results</h2>
+            <span>Facets</span>
+          </div>
+          <h3>Creator</h3>
+          <div id="author-refinement"></div>
+          <h3>Source</h3>
+          <div id="source-refinement"></div>
+          <h3>Year</h3>
+          <div id="year-refinement"></div>
+        </aside>
+
+        <section class="results-panel meili-results">
+          <div class="results-head">
+            <h2>Search results</h2>
+            <p id="stats"></p>
+          </div>
+          <div id="hits"></div>
+          <div id="pagination"></div>
+        </section>
+      </section>
+
+      <dialog id="transcript-dialog" class="transcript-dialog" aria-label="Full transcript">
+        <div class="transcript-dialog-head">
+          <div>
+            <p class="source-kicker">Full transcript</p>
+            <h2 id="transcript-title">Transcript</h2>
+            <p id="transcript-meta" class="meta"></p>
+          </div>
+          <button type="button" id="transcript-close" class="dialog-close">Close</button>
+        </div>
+        <div id="transcript-body" class="transcript-body"></div>
+      </dialog>
+    </main>
+
+    <script src="/static/meili.js?v=20260606-drawer2"></script>
+  </body>
+</html>

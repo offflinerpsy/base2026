@@ -1,0 +1,46 @@
+# Python / runtime
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local app state
+.planning/
+.playwright-mcp/
+output/
+meili_data/
+*.log
+
+# Local captures and QA artifacts
+audio_*.ogg
+base2026-*.png
+base2026-*.md
+
+# Knowledge base generated/private data
+00_sources/
+01_core-methodology/
+02_factor-maps/
+03_sops/
+04_checklists/
+05_templates/
+06_prompt-bank/
+07_client-workspaces/
+08_experiments/
+09_sales-packaging/
+11_dreamwood_offer/
+99_original_research/
+manifest.json
+public-data/
+12_knowledge-base/indexes/
+12_knowledge-base/sources/
+12_knowledge-base/canonical/
+12_knowledge-base/reports/
+
+# Secrets / local env
+.env
+.env.*
+!.env.example
+
+# OS/editor
+.DS_Store
+Thumbs.db

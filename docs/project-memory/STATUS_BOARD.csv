@@ -1,0 +1,10 @@
+phase_id,phase_name,status,current_owner,input_needed,source_files,output_files,blockers,next_action,last_updated
+0,Repo hygiene and publication boundary,done,Codex,None,".gitignore; docs/GIT_PUBLICATION_AUDIT.md","AGENTS.md; docs/project-memory/PUBLICATION_BOUNDARY.md",None,"Prepare first public-safe commit",2026-06-06
+1,Public TikTok dataset model,done,Codex,None,"public-data/tiktok; scripts/export-public-tiktok.py","public TikTok documents and chunks",Generated export not committed,"Keep export reproducible",2026-06-06
+2,Transcript polish pipeline,in_progress,Codex/Hermes,Hermes stable runner contract,"12_knowledge-base/sources/tiktok; transcript polish batches","polished transcript payloads",Need final Hermes automation runner,"Document Hermes update cycle",2026-06-06
+3,Meilisearch index and search API,done,Codex,None,"public-data/tiktok; scripts/meili-index-public.py","base2026_public_tiktok",None,"Reindex only when data changes",2026-06-06
+4,Public web UI,in_progress,Codex,UX review feedback,"web/static","/knowledge/ UI",Visual polish ongoing,"Improve filters and transcript readability",2026-06-06
+5,Deploy and VPS runbook,in_progress,Codex,Stable deploy command,"scripts/package-public-release.ps1","deployed release",Need formal rollback checklist,"Finalize deployment runbook",2026-06-06
+6,Hermes automation,pending,Hermes/Codex,Hermes task interface,"docs/project-memory/HERMES_RUNBOOK.md","scheduled refresh pipeline",Hermes integration not implemented,"Define safe dry-run first",2026-06-06
+7,Open-source packaging,in_progress,Codex,License and GitHub remote decision,"README.md; SECURITY.md; docs","First public-safe commit",License not selected,"Choose license and GitHub publication target",2026-06-06
+8,Security and compliance audit,pending,Reviewer,Final public artifact list,"docs/SECURITY_AUDIT.md; docs/GIT_PUBLICATION_AUDIT.md","audit signoff",Needs full staged diff review,"Run pre-push audit",2026-06-06
