@@ -5,6 +5,7 @@ param(
   [int]$AsrLimit = 20,
   [int]$PolishLimit = 30,
   [int]$BatchSize = 8,
+  [string]$BatchSet = "",
   [switch]$CheckOnly,
   [switch]$AfterPolish,
   [switch]$SkipAsr,
@@ -24,7 +25,9 @@ $Lock = Join-Path $Planning "hermes-tiktok-refresh.lock"
 $State = Join-Path $Planning "hermes-tiktok-refresh-state.json"
 $Stamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $Log = Join-Path $Results "hermes-tiktok-refresh-$Stamp.log"
-$BatchSet = "hermes-polish-$Stamp"
+if (-not $BatchSet) {
+  $BatchSet = "hermes-polish-$Stamp"
+}
 
 New-Item -ItemType Directory -Force -Path $Planning, $Results | Out-Null
 
@@ -130,7 +133,11 @@ try {
   }
 
   Run-Step "polish-status" {
-    python (Join-Path $Root "scripts\tiktok-polish-status.py") --json
+    $statusArgs = @("--json")
+    if ($AfterPolish -and $BatchSet) {
+      $statusArgs += @("--batch-dir", (Join-Path $Root "12_knowledge-base\sources\tiktok\transcript-polish-batches\$BatchSet"))
+    }
+    python (Join-Path $Root "scripts\tiktok-polish-status.py") @statusArgs
   }
   Run-Step "rebuild-sqlite" {
     python (Join-Path $Root "scripts\build-kb-sqlite.py")
@@ -157,4 +164,3 @@ try {
 finally {
   Remove-Item -LiteralPath $Lock -ErrorAction SilentlyContinue
 }
-

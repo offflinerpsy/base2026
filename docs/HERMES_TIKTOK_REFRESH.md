@@ -27,10 +27,43 @@ Use tools and scripts before model calls.
 Model use:
 
 - inventory, diff, CSV updates, SQLite rebuild, export, package: no LLM.
-- transcript cleanup: low/medium model first.
-- escalation to stronger model only when captions are damaged, ASR is uncertain, or QA status is `needs_review`.
+- mechanical agent notes/status reports: GPT-5.3 or equivalent cheap model.
+- normal transcript cleanup: GPT-5.4 low/medium or equivalent mid model.
+- escalation to GPT-5.5 only when captions are damaged, ASR is uncertain, or QA status is `needs_review`.
 
 Never send whole project context to Hermes for normal refresh. Send only current batch files.
+
+## Hermes Task Split
+
+Task A — inventory/dedupe/status:
+
+- model: GPT-5.3 or no LLM
+- allowed: inspect `videos.csv`, detect new video IDs, write status notes
+- forbidden: transcript rewrite, deploy, reindex
+
+Task B — captions/ASR routing:
+
+- model: GPT-5.3 or no LLM
+- allowed: run caption intake scripts, mark `queued`, `transcribed`, `needs_asr`, `needs_review`
+- forbidden: invent transcript text
+
+Task C — faithful transcript polish:
+
+- model: GPT-5.4 low/medium
+- allowed: punctuation, sentence boundaries, paragraph breaks, obvious caption artifact cleanup
+- forbidden: summary, rewrite, translation, new claims
+
+Task D — escalation QA:
+
+- model: GPT-5.5 only when needed
+- trigger: damaged captions, uncertain ASR, low preservation score, QA `needs_review`
+- output: either corrected faithful transcript or explicit `needs_audio_review`
+
+Task E — rebuild/export/package:
+
+- model: no LLM or GPT-5.3 status-only
+- allowed: rebuild SQLite, audit, export, package
+- forbidden: deploy without maintainer approval
 
 ## Pipeline
 
@@ -86,6 +119,8 @@ Forbidden:
 
 If unsure, preserve raw wording and mark QA `needs_review`.
 
+Normal QA JSON should record `"model_tier": "gpt-5.4-low-or-medium"`. Escalated QA JSON should record `"model_tier": "gpt-5.5-escalation"` and include the reason.
+
 ## QA JSON Shape
 
 ```json
@@ -114,4 +149,3 @@ Status values:
 - Do not deploy when audit fails.
 - Do not run two refresh jobs at the same time.
 - Do not trust TikTok inventory counts without checking `videos.csv`.
-

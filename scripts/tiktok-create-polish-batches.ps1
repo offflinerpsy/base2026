@@ -38,6 +38,7 @@ for ($i = 0; $i -lt $rows.Count; $i += $BatchSize) {
   $lines.Add("# TikTok Faithful Transcript Polish Batch $batchName")
   $lines.Add("")
   $lines.Add("Goal: produce a faithful readable English transcript from raw TikTok captions.")
+  $lines.Add("Model routing: use GPT-5.4 low/medium or equivalent mid model for this normal polish batch. Do not use GPT-5.5 unless a specific video is marked needs_review because captions are damaged or ASR is uncertain.")
   $lines.Add("Primary principle: verbatim-first. The polished text must stay a cleaned transcript of what the speaker said, not your interpretation of it.")
   $lines.Add("")
   $lines.Add("Hard rules:")
@@ -63,7 +64,7 @@ for ($i = 0; $i -lt $rows.Count; $i += $BatchSize) {
   $lines.Add("- Write one QA .json file per video to transcripts/polished-qa/<video_id>.json.")
   $lines.Add("- QA JSON status must be pass only if no new meaning was added and no uncertain wording remains.")
   $lines.Add("- Use status needs_review when raw captions contain unclear words, likely ASR errors, clipped sentences, or terms that need audio verification.")
-  $lines.Add("- QA JSON shape: { ""video_id"": ""..."", ""status"": ""pass|needs_review|failed"", ""notes"": [""...""], ""raw_word_count"": 0, ""polished_word_count"": 0, ""paragraph_count"": 0, ""model_tier"": ""low_or_medium"", ""meaning_added"": false }")
+  $lines.Add("- QA JSON shape: { ""video_id"": ""..."", ""status"": ""pass|needs_review|failed"", ""notes"": [""...""], ""raw_word_count"": 0, ""polished_word_count"": 0, ""paragraph_count"": 0, ""model_tier"": ""gpt-5.4-low-or-medium"", ""meaning_added"": false }")
   $lines.Add("")
 
   foreach ($row in $batch) {

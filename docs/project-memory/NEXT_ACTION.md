@@ -4,21 +4,21 @@ Last updated: 2026-06-06
 
 ## Current next action
 
-Choose the open-source license and GitHub publication target.
+Fix Hermes WebUI/scheduled-worker reliability and finish automation around the GPT-5.4 polish handoff.
 
-Active phase: Phase 7 — Open-source packaging.
+Active phase: Phase 6 — Hermes automation.
 
 ## Exact steps
 
-1. Choose repository license.
-2. Add `LICENSE` after user approval.
-3. Add `CONTRIBUTING.md` if publication is still intended.
-4. Create or connect GitHub remote after user approval.
-5. Push only after staged/public audit passes.
+1. Diagnose why the `Hermes WebUI` scheduled task returns `2147942402`.
+2. Keep using `Hermes-Tools\codex.exe exec -m gpt-5.4` as the safe worker path until WebUI is stable.
+3. Add a durable worker script for GPT-5.4 polish batches so future refreshes do not need manual command construction.
+4. Decide what to do with the two old `needs_asr` videos.
+5. Return to Phase 7 license/GitHub packaging after Hermes worker reliability is stable.
 
 ## Do not do yet
 
 - Do not add new TikTok creators.
-- Do not run Hermes automation.
-- Do not reindex Meilisearch unless data changed.
+- Do not use GPT-5.5 unless audio/source verification is impossible and the item is worth escalation.
+- Do not reindex Meilisearch unless QA passes and data changed.
 - Do not push to GitHub until license and remote target are approved.

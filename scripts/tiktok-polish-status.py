@@ -13,6 +13,7 @@ CLEAN_DIR = TIKTOK / "transcripts" / "clean"
 POLISHED_DIR = TIKTOK / "transcripts" / "polished"
 QA_DIR = TIKTOK / "transcripts" / "polished-qa"
 VIDEOS_CSV = TIKTOK / "videos.csv"
+VIDEO_ID_RE = re.compile(r"^## Video\s+(\d+)\s*$", re.MULTILINE)
 UNCERTAIN_NOTE_RE = re.compile(
     r"\b(unclear|clipped|asr|likely wrong|kept raw|kept unclear|needs audio|audio verification|mid-sentence)\b",
     re.IGNORECASE,
@@ -24,6 +25,18 @@ def read_csv(path: Path) -> list[dict[str, str]]:
         return []
     with path.open("r", encoding="utf-8-sig", newline="") as f:
         return list(csv.DictReader(f))
+
+
+def read_batch_video_ids(batch_dir: Path | None) -> set[str]:
+    if not batch_dir:
+        return set()
+    ids: set[str] = set()
+    if not batch_dir.exists():
+        return ids
+    for path in sorted(batch_dir.glob("batch-*.md")):
+        text = path.read_text(encoding="utf-8", errors="replace")
+        ids.update(VIDEO_ID_RE.findall(text))
+    return ids
 
 
 def words(text: str) -> list[str]:
@@ -59,10 +72,14 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=20)
     parser.add_argument("--min-preservation", type=float, default=0.72)
+    parser.add_argument("--batch-dir", type=Path, default=None)
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
 
+    batch_ids = read_batch_video_ids(args.batch_dir)
     rows = [r for r in read_csv(VIDEOS_CSV) if r.get("transcript_status") == "transcribed"]
+    if batch_ids:
+        rows = [r for r in rows if r.get("video_id") in batch_ids]
     clean = []
     polished = []
     needs_review = []
@@ -102,6 +119,8 @@ def main() -> int:
         "polished_files": len(polished),
         "missing_polished": len(missing),
         "needs_review": len(needs_review),
+        "batch_dir": str(args.batch_dir) if args.batch_dir else "",
+        "batch_video_ids": sorted(batch_ids),
         "sample_missing": missing[: args.limit],
         "sample_needs_review": needs_review[: args.limit],
     }

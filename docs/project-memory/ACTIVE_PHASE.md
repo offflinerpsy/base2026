@@ -4,15 +4,15 @@ Last updated: 2026-06-06
 
 ## Current active phase
 
-Phase 7 — Open-source packaging.
+Phase 6 — Hermes automation.
 
 ## Why this is active
 
-The public TikTok UI is already deployed, but the repository has no first commit yet. Before more product work, the project needs a clean public-safe initial commit boundary.
+The first public-safe commit exists. The latest TikTok refresh succeeded and was deployed. The current operational risk is making the Hermes worker path reliable so future refreshes do not need manual command construction.
 
 ## Current exact task
 
-Complete first public-safe git commit, then decide license and GitHub publication target.
+Fix Hermes WebUI/scheduled-worker reliability and add a durable GPT-5.4 polish worker script for future batches.
 
 ## Important note
 

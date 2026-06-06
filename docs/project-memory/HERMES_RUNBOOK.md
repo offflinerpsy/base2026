@@ -15,6 +15,14 @@ Hermes should become the maintainer automation agent for TikTok refresh.
 9. Package and deploy only after QA gate.
 10. Update `DATA_SOURCES.md`, `STATUS_BOARD.csv`, and `PROMPT_LOG.md`.
 
+## Model routing
+
+- Task A inventory/dedupe/status: no LLM or GPT-5.3.
+- Task B captions/ASR routing: no LLM or GPT-5.3.
+- Task C faithful transcript polish: GPT-5.4 low/medium.
+- Task D escalation QA: GPT-5.5 only for damaged captions, uncertain ASR, low preservation score, or QA `needs_review`.
+- Task E rebuild/export/package: no LLM or GPT-5.3 for status text only.
+
 ## Rules
 
 - Do not invent transcript content.
@@ -32,3 +40,12 @@ Build dry-run mode:
 - do not write database
 - do not deploy
 
+## Current safe execution policy
+
+Run local refresh without deploy first. If new caption transcripts are produced, create a small polish batch and hand only that batch to Hermes using GPT-5.4. Do not use GPT-5.5 unless QA fails.
+
+## AfterPolish rule
+
+`scripts/hermes-tiktok-refresh.ps1 -AfterPolish -BatchSet <batch-set>` must validate only the current batch via `scripts/tiktok-polish-status.py --batch-dir <batch-dir>`.
+
+Do not block a fresh successful batch because older historical transcripts still have `needs_review`.
