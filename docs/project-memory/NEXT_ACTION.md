@@ -4,21 +4,22 @@ Last updated: 2026-06-06
 
 ## Current next action
 
-Fix Hermes WebUI/scheduled-worker reliability and finish automation around the GPT-5.4 polish handoff.
+Run the public web UI visual-system pass.
 
-Active phase: Phase 6 — Hermes automation.
+Active phase: Phase 4 — Public web UI visual system.
 
 ## Exact steps
 
-1. Diagnose why the `Hermes WebUI` scheduled task returns `2147942402`.
-2. Keep using `Hermes-Tools\codex.exe exec -m gpt-5.4` as the safe worker path until WebUI is stable.
-3. Add a durable worker script for GPT-5.4 polish batches so future refreshes do not need manual command construction.
-4. Decide what to do with the two old `needs_asr` videos.
-5. Return to Phase 7 license/GitHub packaging after Hermes worker reliability is stable.
+1. Audit current desktop and mobile UI screenshots before coding.
+2. Normalize the information model before visual polish: `Platform` = TikTok/Instagram, `Topic/Category` = SEO/GEO/AEO/Schema/etc.
+3. Replace ad hoc visual treatment with a small consistent design system: spacing, buttons, inputs, checkboxes, tags, result cards, transcript expansion.
+4. Fix clipped/over-truncated transcript/result text with explicit expand/collapse behavior.
+5. Verify search highlighting, multi-keyword chips, platform/topic/author/year filters, and readable paragraph rhythm.
+6. Run strict reviewer pass with desktop/mobile screenshots and geometry/readability checks.
 
 ## Do not do yet
 
 - Do not add new TikTok creators.
-- Do not use GPT-5.5 unless audio/source verification is impossible and the item is worth escalation.
-- Do not reindex Meilisearch unless QA passes and data changed.
+- Do not use GPT-5.5 for UI work.
+- Do not reindex Meilisearch unless data changed.
 - Do not push to GitHub until license and remote target are approved.

@@ -4,15 +4,15 @@ Last updated: 2026-06-06
 
 ## Current active phase
 
-Phase 6 — Hermes automation.
+Phase 4 — Public web UI visual system.
 
 ## Why this is active
 
-The first public-safe commit exists. The latest TikTok refresh succeeded and was deployed. The current operational risk is making the Hermes worker path reliable so future refreshes do not need manual command construction.
+The Hermes WebUI scheduled task now starts with an absolute PowerShell path, the GPT-5.4 polish worker has a reproducible script, and the false ASR backlog is closed. The current product risk is the weak public UI: spacing, controls, transcript readability, and visual consistency need a real design-system pass before broader public/GitHub exposure.
 
 ## Current exact task
 
-Fix Hermes WebUI/scheduled-worker reliability and add a durable GPT-5.4 polish worker script for future batches.
+Run the public web UI visual-system pass with desktop/mobile QA and strict reviewer checks.
 
 ## Important note
 

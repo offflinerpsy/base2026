@@ -81,6 +81,7 @@ Task E — rebuild/export/package:
 3. Faithful polish
    - Create polish batches with `scripts/tiktok-create-polish-batches.ps1`.
    - Hermes reads only those batch files.
+   - Preferred worker command: `scripts/run-hermes-polish-worker.ps1 -BatchSet <batch-set>`.
    - Output:
      - `12_knowledge-base/sources/tiktok/transcripts/polished/<video_id>.txt`
      - `12_knowledge-base/sources/tiktok/transcripts/polished-qa/<video_id>.json`
@@ -149,3 +150,4 @@ Status values:
 - Do not deploy when audit fails.
 - Do not run two refresh jobs at the same time.
 - Do not trust TikTok inventory counts without checking `videos.csv`.
+- If ASR fallback media contains no audio stream, mark `needs_source_review`; do not leave it in an endless `needs_asr` loop.

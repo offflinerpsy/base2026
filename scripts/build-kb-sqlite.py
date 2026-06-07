@@ -437,6 +437,8 @@ def main() -> None:
     conn.execute("DELETE FROM generic_documents")
     conn.execute("DELETE FROM raw_artifacts")
     conn.execute("DELETE FROM item_title_enrichment")
+    conn.execute("DELETE FROM jobs WHERE task_type = 'asr_transcript'")
+    conn.execute("DELETE FROM events WHERE event_type = 'needs_asr'")
     conn.execute("DELETE FROM generic_items")
     conn.execute("DELETE FROM source_registry")
 
@@ -721,7 +723,7 @@ def main() -> None:
                     datetime.now().isoformat(timespec="seconds"),
                 ),
             )
-        elif (row.get("transcript_status") or "") != "out_of_scope_old":
+        elif (row.get("transcript_status") or "") not in {"out_of_scope_old", "needs_source_review"}:
             job_id = f"job-asr-{video_id}"
             now = datetime.now().isoformat(timespec="seconds")
             conn.execute(

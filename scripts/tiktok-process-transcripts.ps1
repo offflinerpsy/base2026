@@ -55,9 +55,12 @@ foreach ($row in $targets) {
 
   if ($AsrFallback) {
     & yt-dlp --quiet --no-warnings -x --audio-format mp3 --audio-quality 5 --output "$AudioDir\%(id)s.%(ext)s" $url 2>$null
-    $mp3 = Join-Path $AudioDir "$id.mp3"
-    if (Test-Path $mp3) {
-      & whisper $mp3 --model base --language English --output_format txt --output_dir $AsrDir 2>$null 1>$null
+    $media = Get-ChildItem $AudioDir -File -ErrorAction SilentlyContinue |
+      Where-Object { $_.BaseName -eq $id -and $_.Extension.ToLowerInvariant() -in @(".mp3", ".mp4", ".m4a", ".webm", ".wav") } |
+      Sort-Object LastWriteTime -Descending |
+      Select-Object -First 1
+    if ($media) {
+      & whisper $media.FullName --model base --language English --output_format txt --output_dir $AsrDir 2>$null 1>$null
       $txt = Join-Path $AsrDir "$id.txt"
       if (Test-Path $txt) {
         Copy-Item $txt (Join-Path $CleanDir "$id.txt") -Force

@@ -44,8 +44,16 @@ Build dry-run mode:
 
 Run local refresh without deploy first. If new caption transcripts are produced, create a small polish batch and hand only that batch to Hermes using GPT-5.4. Do not use GPT-5.5 unless QA fails.
 
+Use `scripts/run-hermes-polish-worker.ps1 -BatchSet <batch-set>` for the GPT-5.4 handoff. The script writes the worker prompt and result under ignored `.planning/` paths and uses `codex exec --ignore-user-config --ignore-rules` to avoid loading the full project context.
+
+Use `scripts/register-hermes-webui-task.ps1 -Start` to repair/start the local `Hermes WebUI` scheduled task. The task must execute PowerShell by absolute path and use the local Hermes WebUI launcher directory as working directory. Override defaults with `HERMES_PWSH_PATH`, `HERMES_WEBUI_LAUNCHER`, or `HERMES_WEBUI_WORKDIR` when needed.
+
 ## AfterPolish rule
 
 `scripts/hermes-tiktok-refresh.ps1 -AfterPolish -BatchSet <batch-set>` must validate only the current batch via `scripts/tiktok-polish-status.py --batch-dir <batch-dir>`.
 
 Do not block a fresh successful batch because older historical transcripts still have `needs_review`.
+
+## ASR/source review rule
+
+If captions fail and the downloaded fallback media has no audio stream, mark the video `needs_source_review`, not `needs_asr`. Do not retry Whisper forever when there is no audio track.

@@ -41,3 +41,17 @@ Outcome:
 - rebuilt SQLite, audit passed, exported 942 documents and 1371 chunks
 - reindexed local Meilisearch and deployed/reindexed VPS release `base2026-public-hermes-20260606-1705`
 - verified remote search finds both new TikTok videos
+
+## 2026-06-06 — Hermes reliability and UI backlog
+
+User asked to fix Hermes WebUI reliability, add lean worker path, close pipeline tails, keep the guide updated, and record the weak visual UI as the next serious workstream.
+
+Outcome:
+
+- repaired `Hermes WebUI` scheduled task by switching action to absolute `C:\Program Files\PowerShell\7\pwsh.exe` and setting working directory
+- added `scripts/register-hermes-webui-task.ps1` for reproducible WebUI task repair/start
+- added `scripts/run-hermes-polish-worker.ps1` for durable GPT-5.4 batch polish handoff with ignored `.planning/` logs
+- fixed ASR fallback media detection to accept mp3/mp4/m4a/webm/wav
+- marked two no-audio fallback videos as `needs_source_review` instead of endless `needs_asr`
+- verified `needs_asr=0`, `queued_asr_jobs=0`, and `kb-audit.py` PASS after rebuild
+- moved active phase to Public web UI visual-system pass and created `UI_VISUAL_BACKLOG.md`
