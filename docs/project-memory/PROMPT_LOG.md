@@ -1845,3 +1845,24 @@ Verification:
 - Mac launchd check-only run: 2419 total TikTok rows, 999 active, 57 queued transcripts, 0 `needs_asr`, 940 transcribed, 0 `needs_polish`;
 - no raw/private data was staged or pushed;
 - no GitHub push was run because no remote is configured.
+
+## 2026-06-10 — Public GitHub publication
+
+User requested final GitHub publication for Base2026 after launch QA and public/private boundary checks.
+
+Actions taken:
+
+- confirmed `geo` launch analytics were deployed and pushed separately;
+- ran Base2026 publication boundary audit, GitHub metadata validation, and preflight before publication;
+- created public repository `https://github.com/offflinerpsy/base2026`;
+- pushed audited Base2026 source to `main`;
+- set GitHub default branch to `main`;
+- also pushed `codex/github-publication-staging` as the original publication staging branch;
+- updated project memory so future agents do not treat GitHub remote selection as blocked.
+
+Verification:
+
+- `python3 scripts/audit-publication-boundary.py`: `forbidden=0`, `secret_findings=0`;
+- `python3 scripts/validate-github-metadata.py`: `github-metadata=ok`;
+- `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/preflight-github-launch.ps1 -SkipRemoteCheck -SkipExportPolicy -SkipLiveCheck`: `preflight=ok`;
+- GitHub reports `offflinerpsy/base2026` as `PUBLIC` with default branch `main`.

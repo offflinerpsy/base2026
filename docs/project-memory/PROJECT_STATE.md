@@ -16,13 +16,16 @@ Current public product:
 
 Current local repo state:
 
-- branch: `codex/github-publication-staging`
+- branch: `main`
+- GitHub public repository: `https://github.com/offflinerpsy/base2026`
+- GitHub default branch: `main`
+- working branch `codex/github-publication-staging` also exists on GitHub as the original publication staging branch
 - first public-safe commit exists
 - Hermes reliability pass completed: WebUI scheduled task repaired, GPT-5.4 worker script added, false ASR backlog closed
 - active phase: pipeline hardening and private insight-card backfill after MacBook migration
 - current UI/data-model decision: separate `Platform` filters (TikTok now, Instagram planned) from content `Topic/Category` filters
 - current UI direction: light Alex Yarosh WordPress-compatible style, not the previous dark AI app shell
-- GitHub publication is not ready until GitHub remote selection and final staged diff review are complete
+- GitHub publication is complete for the current public-safe source tree after final boundary audit and metadata validation
 - open-source readiness files now exist locally: README, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, `.github/workflows/ci.yml`
 - repeatable VPS deploy script exists: `scripts/deploy-public-vps.ps1`
 - public/private git boundary documented
@@ -55,6 +58,7 @@ Latest verification:
 - indexable aggregate topics: 46; singleton topic/compare pages are `noindex,follow`
 - public `/knowledge/static/documents.jsonl` verified with 957 records and `transcript_leaks=0`
 - MacBook migration validation passed: required skills/memory are visible, Meilisearch and PowerShell are installed, publication boundary audit passes, GitHub metadata validation passes, and publication staging dry-run passes without staging files.
+- GitHub repository `offflinerpsy/base2026` was created as public on 2026-06-10, `main` was pushed and set as the default branch, and `codex/github-publication-staging` was also pushed.
 - MacBook publication dry-run: `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/stage-public-files.ps1 -SkipPreflight -SkipLicenseCheck -SkipRemoteCheck` reports `stage_path_count=57`, `changed_files=3168`, `forbidden=0`, and `secret_findings=0`.
 - MacBook audit-only preflight: `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/preflight-github-launch.ps1 -SkipRemoteCheck -SkipExportPolicy -SkipLiveCheck` passes.
 - local worker `.venv` created with `faster-whisper`, `ctranslate2`, and `requests`; `scripts/base2026-worker.py doctor` passes under `.venv/bin/python`.
@@ -108,7 +112,7 @@ Latest verification:
 
 Primary risk:
 
-- remaining risk before GitHub/open-source publication: GitHub remote target, final staged diff classification/review, generated page inclusion decision, ASR fallback for 36 staged videos, source review for out-of-scope/short-caption records, and accidental publication of private research folders, raw source data, generated dumps, logs, credentials, or unreviewed data.
+- remaining product/pipeline risk after GitHub publication: ASR fallback for 36 staged videos, source review for out-of-scope/short-caption records, automated safe promotion/deploy gates, and continued prevention of private research/raw source/generated artifact leakage.
 
 Current pipeline risk:
 

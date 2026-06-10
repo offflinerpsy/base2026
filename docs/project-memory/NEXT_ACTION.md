@@ -14,8 +14,9 @@ Current next safe action:
 
 1. Process the newly inventoried check-only TikTok queue through the safe local pipeline: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate.
 2. Keep public promotion gated: only `approved` and evidence-verified insight-card candidates can enter the public export.
-3. Add a GitHub remote only after the owner gives the exact repo URL; the local launch commits exist, but push is blocked by missing `origin`.
+3. Recheck the Base2026 sitemap in Google Search Console after crawl lag; live XML is valid, but GSC initially showed `Couldn't fetch`.
 4. Keep full automated deploy behind explicit release checks; the Mac launchd job is check-only and does not publish.
+5. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`; keep generated/private artifacts out of commits.
 
 Task queue source of truth:
 
@@ -66,7 +67,9 @@ Task queue source of truth:
 - Deployed release: `base2026-ui-hotfix-ay29c-20260610`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
 - Canonical root domain: `https://aggressorbulkit.online/`.
-- Local launch commit: `d025d71 launch: stage Base2026 public release`.
+- GitHub public repository: `https://github.com/offflinerpsy/base2026`.
+- Default branch: `main`.
+- Launch commit: `d025d71 launch: stage Base2026 public release`.
 - Local public export ready for deploy: 957 source records, 1392 passages, 1690 insight cards, 1226 public insight cards, 1584 topics, 1159 public topics.
 - Backfill queue: 0 queued sources after GPT/Codex review; 45 sources marked in ignored `.planning/reviewed-no-card-sources.jsonl` as reviewed with no promotion-safe public card.
 - Live server manifest confirms 1690 insight cards and 1226 public insight cards.
@@ -178,7 +181,7 @@ Task queue source of truth:
 1. Run the next checked local queue step for the 57 queued transcripts discovered by Mac launchd check-only inventory.
 2. Keep the one `needs_human` insight-card candidate private until rewritten or rejected.
 3. Convert TikTok refresh from check-only to a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
-4. Add GitHub `origin` and push only after the exact remote URL is provided.
+4. Re-run publication boundary audit before every future GitHub push.
 
 ## Open-source readiness already added
 
@@ -218,6 +221,19 @@ MacBook publication audit after migration passes:
 `python3 scripts/validate-github-metadata.py` passes.
 
 `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/preflight-github-launch.ps1 -SkipRemoteCheck -SkipExportPolicy -SkipLiveCheck` passes on MacBook.
+
+## GitHub publication
+
+Published on 2026-06-10:
+
+- Repository: `https://github.com/offflinerpsy/base2026`
+- Visibility: public
+- Default branch: `main`
+- Staging branch also pushed: `codex/github-publication-staging`
+- Pre-push checks:
+  - `python3 scripts/audit-publication-boundary.py`
+  - `python3 scripts/validate-github-metadata.py`
+  - `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/preflight-github-launch.ps1 -SkipRemoteCheck -SkipExportPolicy -SkipLiveCheck`
 
 `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/stage-public-files.ps1 -SkipPreflight -SkipLicenseCheck -SkipRemoteCheck` dry-run passes with `stage_path_count=57` and covers all 3168 public-safe changed files without staging unless `-Apply` is passed.
 
