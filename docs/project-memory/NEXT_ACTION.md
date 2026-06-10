@@ -12,11 +12,12 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Process the newly inventoried check-only TikTok queue through the safe local pipeline: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate.
-2. Keep public promotion gated: only `approved` and evidence-verified insight-card candidates can enter the public export.
-3. Recheck the Base2026 sitemap in Google Search Console after crawl lag; live XML is valid, but GSC initially showed `Couldn't fetch`.
-4. Keep full automated deploy behind explicit release checks; the Mac launchd job is check-only and does not publish.
-5. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`; keep generated/private artifacts out of commits.
+1. Inspect priority URLs in Google Search Console and request indexing where available.
+2. Capture the first GSC/GA4 baseline after Google has processed the submitted WordPress and Base2026 sitemaps.
+3. Process the newly inventoried check-only TikTok queue through the safe local pipeline: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate.
+4. Keep public promotion gated: only `approved` and evidence-verified insight-card candidates can enter the public export.
+5. Keep full automated deploy behind explicit release checks; the Mac launchd job is check-only and does not publish.
+6. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`; keep generated/private artifacts out of commits.
 
 Task queue source of truth:
 
@@ -64,7 +65,7 @@ Task queue source of truth:
 
 ## Latest verification
 
-- Deployed release: `base2026-modal-meta-header-ay30-20260610`.
+- Deployed release: `base2026-sitemap-index-ay31-20260610`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
 - Canonical root domain: `https://aggressorbulkit.online/`.
 - GitHub public repository: `https://github.com/offflinerpsy/base2026`.
@@ -82,6 +83,9 @@ Task queue source of truth:
 - Live `geo` QA for CSS `1.5.15`: homepage Base2026 CTA green/white; audit CTA remains white; About desktop portrait height ratio about 0.95; desktop/mobile overflow false.
 - Base2026 CSS/JS cache-bust `20260610-ay29c` is live after the share/icon/project-identity hotfix pass.
 - Base2026 CSS/JS cache-bust `20260610-modalmeta1` is live after moving source-modal policy/platform/language metadata into the sticky dialog header.
+- Base2026 sitemap is now a sitemap index at `/knowledge/sitemap.xml` with child files `/knowledge/sitemaps/base2026-001.xml`, `/knowledge/sitemaps/base2026-002.xml`, and `/knowledge/sitemaps/base2026-003.xml`.
+- Google Search Console now shows `/knowledge/sitemap.xml` as `Success`, type `Sitemap`, last read `2026-06-10`, discovered pages `1,080`.
+- Live indexing/schema QA after sitemap-index deploy: 104 checks, 0 failures, WordPress sitemap URL count 10, Base2026 sitemap URL count 1080.
 - Live `/knowledge/`: old identity copy absent, `Alex Yarosh` links to `/about/`, project identity H2 is about 23px at 1159px viewport.
 - Live `/knowledge/?q=schema structured data AI Overviews keyword research`: TikTok platform badge is in the creator/date row and source modal opens successfully.
 - Live source modal: TikTok mark is in the creator/date row and the label is `Source excerpt`.
@@ -110,7 +114,7 @@ Task queue source of truth:
 - Live `/knowledge/?q=AI Overviews`: 20 rendered result cards on desktop, 20 real creator avatars loaded, 20 inline TikTok SVG marks rendered, fake TikTok mark count 0, CSS `20260609-ay20` loaded.
 - Live `/knowledge/support.html?qa=ay18`: active hero button is `Support`, no old `base-project-nav`, no horizontal overflow.
 - Live `/knowledge/roadmap.html?qa=ay20-final`: 6 phase tabs, 6 flow nodes, 3 proof cards, no repeated short phase labels in flow, no horizontal overflow.
-- Live `/knowledge/sitemap.xml`: 1066 URLs.
+- Live `/knowledge/sitemap.xml`: sitemap index accepted by Google Search Console; child sitemap total 1080 URLs.
 - Live `/robots.txt`: includes `https://aggressorbulkit.online/knowledge/sitemap.xml`.
 - Live `/knowledge/?q=AI Overviews&qa=ay21-final` source modal: header actions 3, body action rows 0, avatar images 1, TikTok SVGs 1, caption preview present, overflow false, console errors 0.
 - Live `/knowledge/?q=AI Overviews&qa=ay22` source modal desktop/mobile: title `Source record`, header actions 3, body action rows 0, loaded avatar 1, inline TikTok logo 1, attribution platform pills 0, info hints 5, policy cards 3, platform card TikTok logo 1, caption preview present, overflow false, console errors 0.
@@ -180,10 +184,12 @@ Task queue source of truth:
 
 ## Exact next steps
 
-1. Run the next checked local queue step for the 57 queued transcripts discovered by Mac launchd check-only inventory.
-2. Keep the one `needs_human` insight-card candidate private until rewritten or rejected.
-3. Convert TikTok refresh from check-only to a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
-4. Re-run publication boundary audit before every future GitHub push.
+1. Run priority URL inspection/index requests in Google Search Console for root, services, pricing, about, AI Visibility Audit, and `/knowledge/`.
+2. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
+3. Run the next checked local queue step for the 57 queued transcripts discovered by Mac launchd check-only inventory.
+4. Keep the one `needs_human` insight-card candidate private until rewritten or rejected.
+5. Convert TikTok refresh from check-only to a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
+6. Re-run publication boundary audit before every future GitHub push.
 
 ## Open-source readiness already added
 

@@ -592,3 +592,31 @@ console errors: 0
 evidence: output/evidence/modal-meta-header-live-desktop.png, output/evidence/modal-meta-header-live-mobile.png, output/evidence/modal-meta-header-live-report.json
 nginx -t: pass
 ```
+
+## 2026-06-10 — ay31 Sitemap Index
+
+Release:
+
+```text
+base2026-sitemap-index-ay31-20260610
+```
+
+Outcome:
+
+- changed `/knowledge/sitemap.xml` from one large URL set into a sitemap index;
+- generated three child sitemap files under `/knowledge/sitemaps/`;
+- kept public export excerpt-only and did not change search data, UI content, or Meilisearch documents;
+- deployed release to VPS through SSH alias `geo`;
+- skipped Meilisearch reindex because only sitemap XML changed.
+
+Verification:
+
+```text
+server current: /var/www/base2026-knowledge/releases/base2026-sitemap-index-ay31-20260610
+live /knowledge/sitemap.xml: sitemapindex
+child sitemap files: base2026-001.xml=400, base2026-002.xml=400, base2026-003.xml=280
+total URLs: 1080
+Google Search Console: Success, type Sitemap, last read 2026-06-10, discovered pages 1080
+live indexing/schema QA: 104 checks, 0 failures
+nginx -t: pass
+```

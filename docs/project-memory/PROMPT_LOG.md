@@ -1896,3 +1896,25 @@ Verification:
   - `output/evidence/modal-meta-header-live-desktop.png`;
   - `output/evidence/modal-meta-header-live-mobile.png`;
   - `output/evidence/modal-meta-header-live-report.json`.
+
+## 2026-06-10 — Base2026 sitemap accepted by GSC
+
+User wanted the launch/indexing work finished rather than leaving the Base2026 sitemap in Search Console as a `Couldn't fetch` open loop.
+
+Actions taken:
+
+- confirmed Search Console still showed `/knowledge/sitemap.xml` as `Couldn't fetch`;
+- changed `scripts/generate-base2026-sitemap.py` to generate a sitemap index plus child sitemaps;
+- packaged and deployed `base2026-sitemap-index-ay31-20260610`;
+- verified live XML as Googlebot: sitemap index with three child files and 1080 total URLs;
+- updated the `geo` live indexing/schema QA script to recursively read sitemap indexes;
+- resubmitted `/knowledge/sitemap.xml` in Search Console through the authenticated Chrome session.
+
+Verification:
+
+- GSC status: `Success`;
+- GSC type: `Sitemap`;
+- GSC last read: `2026-06-10`;
+- GSC discovered pages: `1,080`;
+- live indexing/schema QA: 104 checks, 0 failures;
+- publication boundary audit after code change: `forbidden=0`, `secret_findings=0`.
