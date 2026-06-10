@@ -562,3 +562,33 @@ overflow: false on checked pages
 evidence: output/evidence/ui-hotfix-ay29c-live-modal.png, output/evidence/ui-hotfix-ay29c-live-topic.png
 nginx -t: pass
 ```
+
+## 2026-06-10 — ay30 Modal Meta Header
+
+Release:
+
+```text
+base2026-modal-meta-header-ay30-20260610
+```
+
+Outcome:
+
+- moved the source modal `Policy / Platform / Lang` metadata from the scrollable body into the sticky dialog header;
+- kept source modal body focused on the policy note, topics, and `Source excerpt`;
+- kept TikTok platform rendering as the platform mark, not text;
+- bumped Base2026 cache-bust to `20260610-modalmeta1`;
+- deployed release to VPS through SSH alias `geo`;
+- reindexed Meilisearch with 1392 public passages.
+
+Verification:
+
+```text
+server current: /var/www/base2026-knowledge/releases/base2026-modal-meta-header-ay30-20260610
+Base2026 CSS/JS cache-bust: 20260610-modalmeta1
+live source modal: 3 header meta cards, 0 body policy grids
+sticky header: stable during modal body scroll
+desktop/mobile overflow: false
+console errors: 0
+evidence: output/evidence/modal-meta-header-live-desktop.png, output/evidence/modal-meta-header-live-mobile.png, output/evidence/modal-meta-header-live-report.json
+nginx -t: pass
+```

@@ -1688,6 +1688,39 @@ em {
   font-size: 17px;
 }
 
+.record-policy-grid--header {
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 2px 0 0;
+}
+
+.record-policy-grid--header div {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.record-policy-grid--header span {
+  gap: 5px;
+  margin-bottom: 2px;
+  font-size: 11px;
+  line-height: 1.1;
+  letter-spacing: 0.055em;
+}
+
+.record-policy-grid--header strong {
+  min-height: 20px;
+  font-size: 14px;
+  line-height: 1.1;
+}
+
+.record-policy-grid--header .info-hint {
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
+}
+
 .section-title-with-info {
   display: flex;
   flex-wrap: wrap;
@@ -1715,7 +1748,8 @@ em {
 
   .transcript-dialog-head {
     grid-template-columns: 1fr;
-    padding: 16px;
+    gap: 10px;
+    padding: 12px;
   }
 
   .transcript-dialog-controls,
@@ -1723,8 +1757,31 @@ em {
     width: 100%;
   }
 
+  .transcript-dialog-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+
   .transcript-actions--header {
+    flex-wrap: nowrap;
     justify-content: flex-start;
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+
+  .transcript-actions--header .button-link {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 7px 10px;
+    white-space: nowrap;
+  }
+
+  .dialog-close {
+    min-height: 34px;
+    padding: 7px 10px;
   }
 
   .transcript-attribution {
@@ -1732,8 +1789,35 @@ em {
     border-radius: var(--ay-radius);
   }
 
+  .transcript-attribution .avatar {
+    width: 32px;
+    height: 32px;
+  }
+
   .transcript-dialog h2 {
-    font-size: 27px;
+    font-size: 24px;
+  }
+
+  .record-policy-grid--header {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .record-policy-grid--header div {
+    padding: 7px 8px;
+  }
+
+  .record-policy-grid--header span {
+    font-size: 10px;
+  }
+
+  .record-policy-grid--header .info-hint {
+    display: none;
+  }
+
+  .record-policy-grid--header strong {
+    font-size: 13px;
   }
 
   .transcript-body {

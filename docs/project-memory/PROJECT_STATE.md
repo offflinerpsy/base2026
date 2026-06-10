@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-ui-hotfix-ay29c-20260610`
+- latest deployed release: `base2026-modal-meta-header-ay30-20260610`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -81,6 +81,8 @@ Latest verification:
 - Live source/topic IA evidence is under ignored `output/evidence/source-topic-ia-ay28-live-topic.png`, `output/evidence/source-topic-ia-ay28-live-source.png`, and `output/evidence/source-topic-ia-ay28-live-search.png`.
 - `base2026-ui-hotfix-ay29c-20260610` is live after removing the share-bar sparkle decoration, moving TikTok platform marks into the creator/date row on search cards and source modal attribution, rewriting the `/knowledge/` project identity block, linking Alex Yarosh to `/about/`, reducing the identity H2 to about 23px at 1159px viewport, and fixing source modal loading with streaming `documents.jsonl` lookup.
 - Live ay29c QA passed: CSS/JS cache-bust `20260610-ay29c`; old identity copy absent; topic share label has no SVG/sparkle path; search result TikTok badge and source-modal TikTok mark align with creator/date; source modal opens successfully and uses `Source excerpt`; no horizontal overflow.
+- `base2026-modal-meta-header-ay30-20260610` is live after moving source-modal policy/platform/language metadata from the modal body into the sticky dialog header.
+- Live modal meta header QA passed: CSS/JS cache-bust `20260610-modalmeta1`; header has 3 meta cards; modal body has 0 policy grids; sticky header remains stable during body scroll; desktop/mobile checks have no horizontal overflow or console errors.
 - Local launch commit exists: `d025d71 launch: stage Base2026 public release`.
 - MacBook check-only TikTok automation is loaded through launchd as `com.base2026.hermes-tiktok-check` and runs at 03:30 and 15:30 local time. The smoke run exits 0 and only inventories new videos; it does not import, promote, package, or deploy.
 - Pending insight-card candidates are closed: 150 approved, 1 rejected for missing evidence, 1 parked as `needs_human`, and 0 remain `pending`.

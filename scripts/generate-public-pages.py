@@ -8,7 +8,7 @@ from html import escape
 from pathlib import Path
 
 
-STYLE_VERSION = "20260610-ay29c"
+STYLE_VERSION = "20260610-modalmeta1"
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),

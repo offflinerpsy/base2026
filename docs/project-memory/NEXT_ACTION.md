@@ -64,7 +64,7 @@ Task queue source of truth:
 
 ## Latest verification
 
-- Deployed release: `base2026-ui-hotfix-ay29c-20260610`.
+- Deployed release: `base2026-modal-meta-header-ay30-20260610`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
 - Canonical root domain: `https://aggressorbulkit.online/`.
 - GitHub public repository: `https://github.com/offflinerpsy/base2026`.
@@ -81,9 +81,11 @@ Task queue source of truth:
 - WordPress child-theme CSS `1.5.15` is live after the homepage Base2026 CTA green highlight and About hero portrait/pullquote pass.
 - Live `geo` QA for CSS `1.5.15`: homepage Base2026 CTA green/white; audit CTA remains white; About desktop portrait height ratio about 0.95; desktop/mobile overflow false.
 - Base2026 CSS/JS cache-bust `20260610-ay29c` is live after the share/icon/project-identity hotfix pass.
+- Base2026 CSS/JS cache-bust `20260610-modalmeta1` is live after moving source-modal policy/platform/language metadata into the sticky dialog header.
 - Live `/knowledge/`: old identity copy absent, `Alex Yarosh` links to `/about/`, project identity H2 is about 23px at 1159px viewport.
 - Live `/knowledge/?q=schema structured data AI Overviews keyword research`: TikTok platform badge is in the creator/date row and source modal opens successfully.
 - Live source modal: TikTok mark is in the creator/date row and the label is `Source excerpt`.
+- Live source modal meta header QA: `Policy / Platform / Lang` cards render in the sticky dialog header; body policy grid count is 0; sticky header stays stable during modal body scroll; desktop/mobile checks have no horizontal overflow or console errors.
 - Live `/knowledge/topics/content-strategy.html`: share label has no decorative sparkle SVG/path, no horizontal overflow.
 - Live ay29c evidence:
   - `output/evidence/ui-hotfix-ay29c-live-modal.png`

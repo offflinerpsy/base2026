@@ -1866,3 +1866,33 @@ Verification:
 - `python3 scripts/validate-github-metadata.py`: `github-metadata=ok`;
 - `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/preflight-github-launch.ps1 -SkipRemoteCheck -SkipExportPolicy -SkipLiveCheck`: `preflight=ok`;
 - GitHub reports `offflinerpsy/base2026` as `PUBLIC` with default branch `main`.
+
+## 2026-06-10 — Source modal metadata moved to sticky header
+
+User selected the source modal `Public policy / Platform / Language` block and asked to move it into the non-scrolling top header near the controls.
+
+Actions taken:
+
+- added `#transcript-header-meta` to the source modal sticky header;
+- moved policy/platform/language rendering from `#transcript-body` into the sticky header;
+- shortened header labels to `Policy`, `Platform`, and `Lang`;
+- kept the body focused on the policy note, topics, and `Source excerpt`;
+- added compact header styles and mobile-specific behavior;
+- bumped release cache-bust to `20260610-modalmeta1`;
+- packaged and deployed `base2026-modal-meta-header-ay30-20260610`;
+- reindexed Meilisearch with 1392 passages.
+
+Verification:
+
+- local release QA: `0` failures;
+- live QA: `0` failures;
+- live CSS/JS cache-bust: `20260610-modalmeta1`;
+- source modal header meta cards: `3`;
+- body policy grids: `0`;
+- sticky header remains stable during modal body scroll;
+- desktop/mobile horizontal overflow: false;
+- console errors: `0`;
+- evidence:
+  - `output/evidence/modal-meta-header-live-desktop.png`;
+  - `output/evidence/modal-meta-header-live-mobile.png`;
+  - `output/evidence/modal-meta-header-live-report.json`.

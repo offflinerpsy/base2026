@@ -10,6 +10,7 @@ const selectedTerms = document.querySelector("#selected-terms");
 const transcriptDialog = document.querySelector("#transcript-dialog");
 const transcriptAttribution = document.querySelector("#transcript-attribution");
 const transcriptHeaderActions = document.querySelector("#transcript-header-actions");
+const transcriptHeaderMeta = document.querySelector("#transcript-header-meta");
 const transcriptTitle = document.querySelector("#transcript-title");
 const transcriptMeta = document.querySelector("#transcript-meta");
 const transcriptBody = document.querySelector("#transcript-body");
@@ -385,6 +386,7 @@ async function openTranscript(itemId) {
   transcriptMeta.textContent = "";
   if (transcriptAttribution) transcriptAttribution.innerHTML = "";
   if (transcriptHeaderActions) transcriptHeaderActions.innerHTML = "";
+  if (transcriptHeaderMeta) transcriptHeaderMeta.innerHTML = "";
   transcriptBody.innerHTML = `<p class="meta">Loading source record...</p>`;
   transcriptDialog.showModal();
   setDialogScrollLock(true);
@@ -423,14 +425,10 @@ async function openTranscript(itemId) {
         ${copyButton}
       `;
     }
-    const policyNote = transcript
-      ? `<p class="meta">Transcript is shown with attribution and a direct source link. Creator correction and opt-out are available from the project pages.</p>`
-      : `<p class="meta">Full third-party transcripts are private by default. This public record shows source-backed excerpt context, attribution, and a direct original link.</p>`;
-    const textLabel = transcript ? "Transcript text" : "Source excerpt";
-    transcriptBody.innerHTML = `
-      <div class="record-policy-grid">
+    if (transcriptHeaderMeta) {
+      transcriptHeaderMeta.innerHTML = `
         <div>
-          <span>Public policy ${infoHint("Public policy", "Base2026 publishes an attributed public excerpt, source link, and context by default. Full third-party transcripts stay private unless a reviewed policy changes that.")}</span>
+          <span>Policy ${infoHint("Public policy", "Base2026 publishes an attributed public excerpt, source link, and context by default. Full third-party transcripts stay private unless a reviewed policy changes that.")}</span>
           <strong>${escapeHtml(doc.public_policy || "excerpt_only")}</strong>
         </div>
         <div>
@@ -438,10 +436,16 @@ async function openTranscript(itemId) {
           <strong class="platform-value">${platformValue(doc.source_type, doc.platform)}</strong>
         </div>
         <div>
-          <span>Language ${infoHint("Language", "Detected or stored language for the public source text used in this record.")}</span>
+          <span>Lang ${infoHint("Language", "Detected or stored language for the public source text used in this record.")}</span>
           <strong>${escapeHtml(doc.language || "en")}</strong>
         </div>
-      </div>
+      `;
+    }
+    const policyNote = transcript
+      ? `<p class="meta">Transcript is shown with attribution and a direct source link. Creator correction and opt-out are available from the project pages.</p>`
+      : `<p class="meta">Full third-party transcripts are private by default. This public record shows source-backed excerpt context, attribution, and a direct original link.</p>`;
+    const textLabel = transcript ? "Transcript text" : "Source excerpt";
+    transcriptBody.innerHTML = `
       ${policyNote}
       ${renderRecordTopics(doc)}
       <h3 class="section-title-with-info">${textLabel} ${infoHint(textLabel, "This is the public evidence text shown for research and attribution. It is kept excerpt-first by default to avoid publishing full third-party transcripts as standalone public content.")}</h3>
@@ -461,6 +465,7 @@ async function openTranscript(itemId) {
     transcriptTitle.textContent = "Source record unavailable";
     if (transcriptAttribution) transcriptAttribution.innerHTML = "";
     if (transcriptHeaderActions) transcriptHeaderActions.innerHTML = "";
+    if (transcriptHeaderMeta) transcriptHeaderMeta.innerHTML = "";
     transcriptBody.innerHTML = `<p>${escapeHtml(error.message || "Unable to load source record.")}</p>`;
   }
 }
