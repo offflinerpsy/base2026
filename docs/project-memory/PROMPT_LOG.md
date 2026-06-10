@@ -1933,3 +1933,33 @@ Verification:
 - `/services/`: GSC confirmed `Indexing requested` and added the URL to a priority crawl queue;
 - `/pricing/`, `/about/`, and `/ai-visibility-audit/`: GSC showed `URL is not on Google`, but manual request submission hit `Quota Exceeded`;
 - next GSC manual action is to request those three URLs after the daily quota resets.
+
+## 2026-06-10 — Source modal metadata moved into control area
+
+User selected the source modal `Public policy / Platform / Language` block again and clarified that it should sit in the fixed top control area where the action buttons are, not as a wide row that still feels like body content.
+
+Actions taken:
+
+- moved `#transcript-header-meta` inside `.transcript-dialog-controls`;
+- added `.transcript-dialog-actions-row` so actions/close stay together and metadata sits directly below them;
+- kept metadata out of `#transcript-body`;
+- fixed mobile CSS specificity so the header metadata remains compact instead of becoming a tall single column;
+- bumped release cache-bust to `20260610-modalmeta2`;
+- packaged and deployed `base2026-modal-meta-controls-ay32-20260610` with `-SkipReindex`;
+- retried GSC indexing for `/pricing/`, but the daily quota is still exceeded.
+
+Verification:
+
+- local release QA: `ok=true`;
+- live QA: `ok=true`;
+- live CSS/JS cache-bust: `20260610-modalmeta2`;
+- source modal header meta parent: `.transcript-dialog-controls`;
+- header meta cards: `3`;
+- body policy grids: `0`;
+- desktop/mobile horizontal overflow: false;
+- console errors: `0`;
+- evidence:
+  - `output/evidence/modal-meta-controls-ay32-local/desktop.png`;
+  - `output/evidence/modal-meta-controls-ay32-local/mobile.png`;
+  - `output/evidence/modal-meta-controls-ay32-live/desktop.png`;
+  - `output/evidence/modal-meta-controls-ay32-live/mobile.png`.

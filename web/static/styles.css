@@ -1548,7 +1548,7 @@ em {
   z-index: 2;
   display: grid;
   flex: 0 0 auto;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 500px);
   gap: 18px 22px;
   padding: 22px;
   border-bottom: 1px solid var(--ay-line);
@@ -1584,10 +1584,19 @@ em {
 }
 
 .transcript-dialog-controls {
-  display: flex;
+  display: grid;
   flex: 0 0 auto;
+  gap: 8px;
+  align-content: start;
+  justify-items: end;
+  min-width: 0;
+}
+
+.transcript-dialog-actions-row {
+  display: flex;
+  justify-content: flex-end;
   gap: 10px;
-  align-items: flex-start;
+  width: 100%;
 }
 
 .transcript-actions--header {
@@ -1595,7 +1604,7 @@ em {
   flex-wrap: wrap;
   gap: 8px;
   justify-content: flex-end;
-  max-width: 420px;
+  max-width: 100%;
 }
 
 .transcript-actions--header .button-link {
@@ -1688,11 +1697,11 @@ em {
   font-size: 17px;
 }
 
-.record-policy-grid--header {
-  grid-column: 1 / -1;
+.record-policy-grid.record-policy-grid--header {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  margin: 2px 0 0;
+  width: 100%;
+  margin: 0;
 }
 
 .record-policy-grid--header div {
@@ -1753,14 +1762,20 @@ em {
   }
 
   .transcript-dialog-controls,
+  .transcript-dialog-actions-row,
   .transcript-actions--header {
     width: 100%;
   }
 
   .transcript-dialog-controls {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
     gap: 8px;
+    justify-items: stretch;
+  }
+
+  .transcript-dialog-actions-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .transcript-actions--header {
@@ -1798,7 +1813,7 @@ em {
     font-size: 24px;
   }
 
-  .record-policy-grid--header {
+  .record-policy-grid.record-policy-grid--header {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;

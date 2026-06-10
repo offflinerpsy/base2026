@@ -620,3 +620,32 @@ Google Search Console: Success, type Sitemap, last read 2026-06-10, discovered p
 live indexing/schema QA: 104 checks, 0 failures
 nginx -t: pass
 ```
+
+## 2026-06-10 — ay32 Modal Meta Controls
+
+Release:
+
+```text
+base2026-modal-meta-controls-ay32-20260610
+```
+
+Outcome:
+
+- moved the source modal `Policy / Platform / Lang` metadata into the right-side sticky control area, directly below the action buttons;
+- kept the scrollable modal body free of policy metadata cards;
+- tightened mobile behavior so the header metadata remains a compact three-column control strip;
+- bumped Base2026 cache-bust to `20260610-modalmeta2`;
+- deployed release to VPS through SSH alias `geo`;
+- skipped Meilisearch reindex because search documents did not change.
+
+Verification:
+
+```text
+server current: /var/www/base2026-knowledge/releases/base2026-modal-meta-controls-ay32-20260610
+Base2026 CSS/JS cache-bust: 20260610-modalmeta2
+live source modal: header meta parent .transcript-dialog-controls, 3 meta cards, 0 body policy grids
+desktop/mobile overflow: false
+console errors: 0
+evidence: output/evidence/modal-meta-controls-ay32-live/desktop.png, output/evidence/modal-meta-controls-ay32-live/mobile.png
+nginx -t: pass
+```
