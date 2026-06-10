@@ -1918,3 +1918,18 @@ Verification:
 - GSC discovered pages: `1,080`;
 - live indexing/schema QA: 104 checks, 0 failures;
 - publication boundary audit after code change: `forbidden=0`, `secret_findings=0`.
+
+## 2026-06-10 — Priority URL inspection after sitemap acceptance
+
+Actions taken:
+
+- inspected priority URLs in Google Search Console after the Base2026 sitemap started showing `Success`;
+- confirmed `https://aggressorbulkit.online/` is already on Google and indexed;
+- confirmed `https://aggressorbulkit.online/knowledge/` is already on Google and indexed;
+- requested indexing for `https://aggressorbulkit.online/services/`.
+
+Verification:
+
+- `/services/`: GSC confirmed `Indexing requested` and added the URL to a priority crawl queue;
+- `/pricing/`, `/about/`, and `/ai-visibility-audit/`: GSC showed `URL is not on Google`, but manual request submission hit `Quota Exceeded`;
+- next GSC manual action is to request those three URLs after the daily quota resets.

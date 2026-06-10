@@ -12,7 +12,7 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Inspect priority URLs in Google Search Console and request indexing where available.
+1. Request indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after Google Search Console daily quota resets. Home and `/knowledge/` are already indexed; `/services/` was added to the priority crawl queue on 2026-06-10.
 2. Capture the first GSC/GA4 baseline after Google has processed the submitted WordPress and Base2026 sitemaps.
 3. Process the newly inventoried check-only TikTok queue through the safe local pipeline: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate.
 4. Keep public promotion gated: only `approved` and evidence-verified insight-card candidates can enter the public export.
@@ -85,6 +85,7 @@ Task queue source of truth:
 - Base2026 CSS/JS cache-bust `20260610-modalmeta1` is live after moving source-modal policy/platform/language metadata into the sticky dialog header.
 - Base2026 sitemap is now a sitemap index at `/knowledge/sitemap.xml` with child files `/knowledge/sitemaps/base2026-001.xml`, `/knowledge/sitemaps/base2026-002.xml`, and `/knowledge/sitemaps/base2026-003.xml`.
 - Google Search Console now shows `/knowledge/sitemap.xml` as `Success`, type `Sitemap`, last read `2026-06-10`, discovered pages `1,080`.
+- GSC URL Inspection on 2026-06-10: home and `/knowledge/` are already indexed; `/services/` was added to the priority crawl queue; `/pricing/`, `/about/`, and `/ai-visibility-audit/` hit the manual indexing daily quota and should be requested after reset.
 - Live indexing/schema QA after sitemap-index deploy: 104 checks, 0 failures, WordPress sitemap URL count 10, Base2026 sitemap URL count 1080.
 - Live `/knowledge/`: old identity copy absent, `Alex Yarosh` links to `/about/`, project identity H2 is about 23px at 1159px viewport.
 - Live `/knowledge/?q=schema structured data AI Overviews keyword research`: TikTok platform badge is in the creator/date row and source modal opens successfully.
@@ -184,7 +185,7 @@ Task queue source of truth:
 
 ## Exact next steps
 
-1. Run priority URL inspection/index requests in Google Search Console for root, services, pricing, about, AI Visibility Audit, and `/knowledge/`.
+1. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.
 2. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
 3. Run the next checked local queue step for the 57 queued transcripts discovered by Mac launchd check-only inventory.
 4. Keep the one `needs_human` insight-card candidate private until rewritten or rejected.
