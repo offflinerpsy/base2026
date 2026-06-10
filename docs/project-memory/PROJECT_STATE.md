@@ -77,6 +77,9 @@ Latest verification:
 - Live source/topic IA evidence is under ignored `output/evidence/source-topic-ia-ay28-live-topic.png`, `output/evidence/source-topic-ia-ay28-live-source.png`, and `output/evidence/source-topic-ia-ay28-live-search.png`.
 - `base2026-ui-hotfix-ay29c-20260610` is live after removing the share-bar sparkle decoration, moving TikTok platform marks into the creator/date row on search cards and source modal attribution, rewriting the `/knowledge/` project identity block, linking Alex Yarosh to `/about/`, reducing the identity H2 to about 23px at 1159px viewport, and fixing source modal loading with streaming `documents.jsonl` lookup.
 - Live ay29c QA passed: CSS/JS cache-bust `20260610-ay29c`; old identity copy absent; topic share label has no SVG/sparkle path; search result TikTok badge and source-modal TikTok mark align with creator/date; source modal opens successfully and uses `Source excerpt`; no horizontal overflow.
+- Local launch commit exists: `d025d71 launch: stage Base2026 public release`.
+- MacBook check-only TikTok automation is loaded through launchd as `com.base2026.hermes-tiktok-check` and runs at 03:30 and 15:30 local time. The smoke run exits 0 and only inventories new videos; it does not import, promote, package, or deploy.
+- Pending insight-card candidates are closed: 150 approved, 1 rejected for missing evidence, 1 parked as `needs_human`, and 0 remain `pending`.
 - deploy script tested against `base2026-info-pages-clean-ay11b`; package zip uses POSIX archive paths, Meilisearch key handling strips CR/LF, and key info pages are verified before symlink switch
 - light Alex Yarosh-compatible UI is deployed and verified on `/knowledge/`
 - live screenshot evidence:

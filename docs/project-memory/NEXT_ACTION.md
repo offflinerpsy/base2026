@@ -4,7 +4,7 @@ Last updated: 2026-06-10
 
 ## Current next action
 
-Continue pipeline hardening and publication staging after the Base2026 ay29c UI hotfix deploy.
+Continue live pipeline operation after the Base2026 ay29c launch deploy and MacBook check-only automation enablement.
 
 Active phase: pipeline hardening and launch deployment after the MacBook insight-card backfill completion.
 
@@ -12,10 +12,10 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Re-run publication boundary audit and stage the new ay29c public UI changes through `scripts/stage-public-files.ps1 -Apply -SkipRemoteCheck`.
-2. Continue `PIPE-01.6`: wire source-backed card extraction for newly imported sources, gated by evidence verification and review reports.
-3. Execute `GIT-01`: classify the staged/dirty `base2026` and `geo` worktrees before any commit.
-4. Keep `PUB-01` behind `GIT-01`: no GitHub publication until final public/private boundary review, staged diff review, and owner-approved remote target.
+1. Process the newly inventoried check-only TikTok queue through the safe local pipeline: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate.
+2. Keep public promotion gated: only `approved` and evidence-verified insight-card candidates can enter the public export.
+3. Add a GitHub remote only after the owner gives the exact repo URL; the local launch commits exist, but push is blocked by missing `origin`.
+4. Keep full automated deploy behind explicit release checks; the Mac launchd job is check-only and does not publish.
 
 Task queue source of truth:
 
@@ -66,9 +66,14 @@ Task queue source of truth:
 - Deployed release: `base2026-ui-hotfix-ay29c-20260610`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
 - Canonical root domain: `https://aggressorbulkit.online/`.
+- Local launch commit: `d025d71 launch: stage Base2026 public release`.
 - Local public export ready for deploy: 957 source records, 1392 passages, 1690 insight cards, 1226 public insight cards, 1584 topics, 1159 public topics.
 - Backfill queue: 0 queued sources after GPT/Codex review; 45 sources marked in ignored `.planning/reviewed-no-card-sources.jsonl` as reviewed with no promotion-safe public card.
 - Live server manifest confirms 1690 insight cards and 1226 public insight cards.
+- Pending insight-card candidates are closed: 150 approved, 1 rejected for missing evidence, 1 parked as `needs_human`; 0 `pending` insight-card candidates remain.
+- Mac launchd check-only automation is installed and loaded as `com.base2026.hermes-tiktok-check` at 03:30 and 15:30 local time.
+- Mac launchd check-only smoke run succeeded with exit code 0; it inventories only and does not import, promote, package, or deploy.
+- Latest check-only inventory run found 2419 total TikTok rows, 999 active rows, 57 queued transcripts, 0 `needs_asr`, 940 transcribed, and 0 `needs_polish`.
 - Public-safe repository staging completed through `scripts/stage-public-files.ps1 -Apply -SkipRemoteCheck`: 3176 files staged, boundary audit green.
 - WordPress child-theme CSS `1.5.15` is live after the homepage Base2026 CTA green highlight and About hero portrait/pullquote pass.
 - Live `geo` QA for CSS `1.5.15`: homepage Base2026 CTA green/white; audit CTA remains white; About desktop portrait height ratio about 0.95; desktop/mobile overflow false.
@@ -170,12 +175,10 @@ Task queue source of truth:
 
 ## Exact next steps
 
-1. Inspect `.planning/pending-insight-candidate-review-20260610.md` and decide whether to build a promotion apply command for the 32 `promotion_candidate` rows or first resolve the 6 `needs_human` rows.
-2. If promotion is approved later, implement a separate explicit promotion command that accepts selected claim IDs from the report; do not auto-promote by status alone.
-3. Run the next controlled GPT/Codex source-only extraction batch only after the promotion path is explicit.
-4. Run an ASR smoke test with `.venv/bin/python scripts/base2026-worker.py transcribe` on one existing local audio sample or one approved `needs_asr` candidate.
-5. Convert TikTok refresh from check-only to a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
-6. Keep GitHub publication staging parked until pipeline hardening checkpoint, generated-page inclusion, and remote target are decided.
+1. Run the next checked local queue step for the 57 queued transcripts discovered by Mac launchd check-only inventory.
+2. Keep the one `needs_human` insight-card candidate private until rewritten or rejected.
+3. Convert TikTok refresh from check-only to a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
+4. Add GitHub `origin` and push only after the exact remote URL is provided.
 
 ## Open-source readiness already added
 

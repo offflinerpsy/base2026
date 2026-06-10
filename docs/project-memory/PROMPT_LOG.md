@@ -1821,3 +1821,27 @@ Verification:
 - checked pages have no horizontal overflow;
 - evidence written to ignored `output/evidence/ui-hotfix-ay29c-live-modal.png` and `output/evidence/ui-hotfix-ay29c-live-topic.png`;
 - no Git commit, Git push, GitHub publication, TikTok intake, or SQLite write was run.
+
+## 2026-06-10 — Launch commit and MacBook check-only automation
+
+User explicitly requested deployment/launch activation instead of further visual iteration.
+
+Actions taken:
+
+- committed the public-safe staged launch state as `d025d71 launch: stage Base2026 public release`;
+- confirmed no Git remote is configured, so GitHub push is blocked until the exact `origin` URL is provided;
+- ran controller `doctor`, `inventory-check`, `data-quality-report`, `daily-digest`, and public export policy checks;
+- confirmed the 32 `promotion_candidate` insight-card candidates from the earlier report are already `approved`;
+- reviewed the remaining 2 pending insight-card candidates, rejected the missing-evidence candidate, and parked the generic `needs_human` candidate outside public export;
+- fixed `scripts/hermes-tiktok-refresh.ps1` for macOS PowerShell by passing named parameters to `tiktok-backfill-inventory.ps1`;
+- installed and loaded the Mac launchd check-only job `com.base2026.hermes-tiktok-check` for 03:30 and 15:30 local time;
+- ran a launchd smoke test with exit code 0.
+
+Verification:
+
+- live site remains `base2026-ui-hotfix-ay29c-20260610`;
+- public export policy: 957 source records, 1392 passages, 1690 insight cards, 1226 public insight cards, 1159 public topics, `include_full_transcripts=false`;
+- pending insight-card candidates: 0;
+- Mac launchd check-only run: 2419 total TikTok rows, 999 active, 57 queued transcripts, 0 `needs_asr`, 940 transcribed, 0 `needs_polish`;
+- no raw/private data was staged or pushed;
+- no GitHub push was run because no remote is configured.

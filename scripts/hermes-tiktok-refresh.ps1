@@ -98,11 +98,12 @@ try {
   Write-State -Status "running" -Stage "start" -Message "Hermes TikTok refresh started."
 
   Run-Step "inventory" {
-    $inventoryArgs = @("-PlaylistEnd", $PlaylistEnd, "-CutoffDate", $CutoffDate)
     if ($CreatorsConfig) {
-      $inventoryArgs += @("-CreatorsConfig", $CreatorsConfig)
+      & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") -PlaylistEnd $PlaylistEnd -CutoffDate $CutoffDate -CreatorsConfig $CreatorsConfig
     }
-    & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") @inventoryArgs
+    else {
+      & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") -PlaylistEnd $PlaylistEnd -CutoffDate $CutoffDate
+    }
   }
 
   $summary = Get-PendingSummary
