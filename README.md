@@ -1,50 +1,96 @@
-# Base2026 Video Knowledge Search
+﻿# Base2026 Video Source Intelligence
 
-Base2026 is a public knowledge-search app for video transcripts.
+Base2026 is a local-first, public-facing knowledge system for short-form creator videos.
 
-Current focus: TikTok creators discussing SEO, GEO, AEO, AI search visibility, schema, keyword research, Google, Bing, and related topics.
+The current public demo focuses on TikTok creators talking about SEO, GEO, AEO, AI search visibility, schema, keyword research, Google, Bing, and related topics.
 
-The project converts public short-form videos into searchable English transcript passages, indexes them with Meilisearch, and serves a lightweight public web UI.
+Live demo path: `https://aggressorbulkit.online/knowledge/`
 
-## What is public
+## What It Does
 
-- static search UI in `web/static/`
-- public export and indexing scripts in `scripts/`
-- project docs in `docs/`
-- agent/runbook instructions in `AGENTS.md` and `docs/project-memory/`
-- public-safe TikTok knowledge guides under `12_knowledge-base/`
+- converts public creator videos into searchable English evidence passages;
+- keeps raw captions, ASR output, media, and full transcripts local/private by default;
+- exports public-safe source records, passages, insight cards, topics, and creator metadata;
+- indexes searchable passages with Meilisearch;
+- serves a static read-only web UI under `/knowledge/`;
+- generates creator, source, topic, and comparison pages from public JSONL.
 
-## What is private
+## Current Public Shape
 
-Raw local research assets, generated datasets, private SEO/GEO/AEO files, logs, release archives, local Meilisearch data, credentials, and raw intake files are not part of the public source tree.
+Public pages:
 
-Read before contributing:
+- `/knowledge/`
+- `/knowledge/creators/{handle}.html`
+- `/knowledge/sources/{item_id}.html`
+- `/knowledge/topics/{topic_id}.html`
+- `/knowledge/compare/{topic_id}.html`
+- `/knowledge/roadmap.html`
+- `/knowledge/story.html`
+- `/knowledge/methodology.html`
+- `/knowledge/privacy.html`
+- `/knowledge/source-policy.html`
+- `/knowledge/support.html`
+- `/knowledge/site-structure.html`
+- `/knowledge/opt-out.html`
 
-- `AGENTS.md`
-- `docs/project-memory/PUBLICATION_BOUNDARY.md`
-- `docs/GIT_PUBLICATION_AUDIT.md`
+Public data files generated locally:
 
-## Current architecture
+- `source_records.jsonl`
+- `passages.jsonl`
+- `insight_cards.jsonl`
+- `topics.jsonl`
+- `creators.jsonl`
+- `manifest.json`
+
+Compatibility files:
+
+- `documents.jsonl`
+- `chunks.jsonl`
+
+Generated public data and release archives are deploy artifacts, not GitHub source.
+
+## Public Boundary
+
+Do not commit or publish:
+
+- private research folders;
+- local SQLite databases;
+- raw captions;
+- ASR audio/video;
+- cookies, tokens, API keys, SSH keys;
+- generated release zips;
+- generated `public-data/`;
+- local Meilisearch data;
+- logs.
+
+The public app is excerpt-first. Full third-party transcripts are private/local by default. Public source pages and the source dialog show attribution, original links, short evidence context, methodology, and correction/opt-out paths.
+
+## Architecture
 
 ```text
-public TikTok source
-  -> local intake / transcript polish
-  -> public-data/tiktok export
-  -> Meilisearch public index
-  -> static web UI under /knowledge/
+creator registry
+  -> local intake / captions / ASR
+  -> transcript cleanup and QA
+  -> passage chunking
+  -> topic and insight extraction
+  -> public JSONL export
+  -> static page generation
+  -> Meilisearch passage index
+  -> read-only public UI under /knowledge/
 ```
 
-The deployed public app is read-only. Intake and refresh automation are maintainer workflows, not public endpoints.
+No live LLM call is required during public search.
 
-## Local workflow
+## Local Commands
 
-Build public TikTok export:
+Export public TikTok data:
 
 ```powershell
-python .\scripts\export-public-tiktok.py
+python .\scripts\export-public-tiktok.py --auto-promote-insights
+python .\scripts\check-public-export-policy.py .\public-data\tiktok
 ```
 
-Index public export into Meilisearch:
+Index passages into Meilisearch:
 
 ```powershell
 python .\scripts\meili-index-public.py --index base2026_public_tiktok
@@ -56,22 +102,44 @@ Package a public release:
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package-public-release.ps1 -ReleaseName <release-name>
 ```
 
-## Project control
+Public packages are excerpt-only by default. Use `-IncludeFullTranscripts` only for private or gated review exports.
 
-Agents must start from repo files, not chat memory.
+Deploy to the VPS:
 
-Primary control files:
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy-public-vps.ps1 -ReleaseName <release-name>
+```
+
+Audit before staging for GitHub:
+
+```powershell
+python .\scripts\audit-publication-boundary.py
+```
+
+## Project Control
+
+Agents and maintainers should start from repo files, not chat memory.
+
+Read first:
 
 - `AGENTS.md`
 - `docs/project-memory/ACTIVE_PHASE.md`
 - `docs/project-memory/NEXT_ACTION.md`
 - `docs/project-memory/STATUS_BOARD.csv`
 - `docs/project-memory/PUBLICATION_BOUNDARY.md`
-- `docs/project-memory/REVIEW_PROTOCOL.md`
+- `docs/GIT_PUBLICATION_AUDIT.md`
 
-## Current phase
+## Current Status
 
-Phase 7 — Open-source packaging.
+Latest deployed release: `base2026-public-info-pages-ay8`.
 
-Next step: prepare and review the first public-safe commit.
+Latest public data contract check: 957 source records, 1392 searchable passages, no raw `claims` field in public source records, and no full transcripts in public `documents.jsonl`.
 
+Latest public page pass: roadmap, project story, privacy, source/content policy, support, and recommended site-structure pages are generated from `docs/public-pages/` and deployed under `/knowledge/`.
+
+Current checkpoint: open-source readiness and publication audit.
+
+License: Apache-2.0.
+## License
+
+Repository code and documentation are licensed under Apache-2.0. Third-party creator videos, platform captions, and original source content are not relicensed by this repository.

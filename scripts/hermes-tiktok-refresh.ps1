@@ -6,6 +6,7 @@ param(
   [int]$PolishLimit = 30,
   [int]$BatchSize = 8,
   [string]$BatchSet = "",
+  [string]$CreatorsConfig = "",
   [switch]$CheckOnly,
   [switch]$AfterPolish,
   [switch]$SkipAsr,
@@ -51,6 +52,7 @@ function Write-State {
     log = $Log
     batch_set = $BatchSet
     cutoff_date = $CutoffDate
+    creators_config = $CreatorsConfig
   } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $State -Encoding UTF8
 }
 
@@ -96,7 +98,11 @@ try {
   Write-State -Status "running" -Stage "start" -Message "Hermes TikTok refresh started."
 
   Run-Step "inventory" {
-    & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") -PlaylistEnd $PlaylistEnd -CutoffDate $CutoffDate
+    $inventoryArgs = @("-PlaylistEnd", $PlaylistEnd, "-CutoffDate", $CutoffDate)
+    if ($CreatorsConfig) {
+      $inventoryArgs += @("-CreatorsConfig", $CreatorsConfig)
+    }
+    & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") @inventoryArgs
   }
 
   $summary = Get-PendingSummary

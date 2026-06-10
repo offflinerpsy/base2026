@@ -1,0 +1,38 @@
+name: Feature request
+description: Suggest a product, data model, UI, or workflow improvement.
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user or maintainer problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the smallest useful version.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Public search UI
+        - Creator/source/topic pages
+        - Intake/transcription pipeline
+        - Meilisearch/indexing
+        - Deployment/operations
+        - Documentation/open-source readiness
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Public/private boundary
+      description: Could this expose raw captions, private data, full transcripts, credentials, or generated local artifacts?

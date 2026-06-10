@@ -36,7 +36,7 @@ Do not replace WordPress.
 Target public path:
 
 ```text
-https://<domain>/knowledge/
+https://aggressorbulkit.online/knowledge/
 ```
 
 Recommended server directories:

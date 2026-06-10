@@ -15,6 +15,7 @@ meili_data/
 audio_*.ogg
 base2026-*.png
 base2026-*.md
+docs/*_roadmap_pack.zip
 
 # Knowledge base generated/private data
 00_sources/
@@ -40,6 +41,11 @@ public-data/
 .env
 .env.*
 !.env.example
+config/*.local.json
+config/release-target*.json
+config/tiktok-intake-queue*.json
+config/cookies/
+config/sessions/
 
 # OS/editor
 .DS_Store

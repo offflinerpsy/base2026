@@ -6,12 +6,15 @@ Date: 2026-06-06
 
 - `.env.example`
 - `.gitignore`
+- `requirements-local-worker.txt`
 - `README.md`
 - `SECURITY.md`
 - `docs/`
 - `scripts/`
 - `web/static/`
 - `10_agent-instructions/`
+- `config/creator-profiles.json`
+- `config/creators.example.json`
 - public-safe readmes under `12_knowledge-base/`
 
 ## Do Not Commit
@@ -38,6 +41,9 @@ Date: 2026-06-06
 - `12_knowledge-base/sources/`
 - generated canonical claims/methods/risks/topic maps
 - any `.env`, raw captions, ASR audio, screenshots, logs, release zips
+- imported roadmap/support source ZIPs such as `docs/*_roadmap_pack.zip`
+- `config/tiktok-intake-queue*.json`
+- `config/release-target*.json`
 
 ## First Commit Shape
 
@@ -54,4 +60,3 @@ Keep generated public export out of git. It is rebuilt by:
 ```powershell
 python .\scripts\export-public-tiktok.py
 ```
-

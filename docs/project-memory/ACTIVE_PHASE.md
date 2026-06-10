@@ -1,19 +1,19 @@
 # Active Phase
 
-Last updated: 2026-06-06
+Last updated: 2026-06-10
 
 ## Current active phase
 
-Phase 4 — Public web UI visual system.
+Pipeline hardening and private insight-card backfill after MacBook migration.
 
 ## Why this is active
 
-The Hermes WebUI scheduled task now starts with an absolute PowerShell path, the GPT-5.4 polish worker has a reproducible script, and the false ASR backlog is closed. The current product risk is the weak public UI: spacing, controls, transcript readability, and visual consistency need a real design-system pass before broader public/GitHub exposure.
+The public intelligence layer is deployed and the MacBook publication staging workflow now passes dry-run checks. The owner clarified that the immediate priority is not GitHub publication but finishing the local-first TikTok/source pipeline: ASR readiness, local model extraction, evidence verification, private pending claim import, and safe promotion gates.
 
 ## Current exact task
 
-Run the public web UI visual-system pass with desktop/mobile QA and strict reviewer checks.
+Turn the planned pipeline into a repeatable local system. Current slice: backfill sources with passages but no insight cards using either GPT/Codex source-only extraction packets or local models as optional candidate generators, verify evidence deterministically, use manual GPT/Codex review for small-batch semantic/copy quality checks, import only reviewed and evidence-verified candidates as private/pending claims, and keep public promotion disabled until reviewed.
 
 ## Important note
 
-`STATUS_BOARD.csv` may show several workstreams as `in_progress` because UI, transcript pipeline, and deployment work are partially active. `ACTIVE_PHASE.md` decides the next session focus.
+Do not deploy or push unless explicitly requested. Generated public pages should not be committed by default; prefer reproducible generation from scripts.

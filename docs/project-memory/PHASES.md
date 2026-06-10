@@ -35,4 +35,3 @@ Purpose: prepare GitHub publication. Allowed: license, contributing docs, sample
 ## Phase 8 — Security and compliance audit
 
 Purpose: catch leaks and operational risks before public push. Allowed: staged diff review, secret scan, docs review. Forbidden: pushing before audit. Done: reviewer signs off with no private data in staged files.
-

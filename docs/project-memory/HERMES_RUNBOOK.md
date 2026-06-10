@@ -10,10 +10,14 @@ Hermes should become the maintainer automation agent for TikTok refresh.
 4. Produce raw local intake record.
 5. Run faithful English transcript polish.
 6. Split transcript into readable paragraphs.
-7. Update local public export.
-8. Reindex Meilisearch only if data changed.
-9. Package and deploy only after QA gate.
-10. Update `DATA_SOURCES.md`, `STATUS_BOARD.csv`, and `PROMPT_LOG.md`.
+7. Build GPT/Codex source-only claim extraction packets when insight cards are missing.
+8. Apply strict JSON review output back into private candidates.
+9. Run deterministic evidence verification.
+10. Import only reviewed/evidence-verified candidates as private/pending.
+11. Update local public export only after review gates.
+12. Reindex Meilisearch only if data changed.
+13. Package and deploy only after QA gate.
+14. Update `DATA_SOURCES.md`, `STATUS_BOARD.csv`, and `PROMPT_LOG.md`.
 
 ## Model routing
 
@@ -21,13 +25,16 @@ Hermes should become the maintainer automation agent for TikTok refresh.
 - Task B captions/ASR routing: no LLM or GPT-5.3.
 - Task C faithful transcript polish: GPT-5.4 low/medium.
 - Task D escalation QA: GPT-5.5 only for damaged captions, uncertain ASR, low preservation score, or QA `needs_review`.
-- Task E rebuild/export/package: no LLM or GPT-5.3 for status text only.
+- Task E insight-card extraction/review for launch-quality small batches: GPT-5.4 high/Codex through generated packets, strict JSON, deterministic evidence verification after.
+- Task F rebuild/export/package: no LLM or GPT-5.3 for status text only.
 
 ## Rules
 
 - Do not invent transcript content.
 - Do not translate to Russian.
 - Do not publish raw unreviewed captions.
+- Do not publish generated insight-card candidates directly.
+- Do not use browser ChatGPT as a scheduled hidden worker.
 - Do not run uncontrolled infinite loops.
 - Keep logs local and out of git.
 

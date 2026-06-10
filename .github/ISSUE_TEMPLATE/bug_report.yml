@@ -1,0 +1,45 @@
+name: Bug report
+description: Report a reproducible product, UI, deployment, or workflow bug.
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Base2026. Do not paste secrets, cookies, private data, raw captions, or local database content.
+  - type: textarea
+    id: current_behavior
+    attributes:
+      label: Current behavior
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected behavior
+      description: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include commands, route, query, or filter state.
+      placeholder: |
+        1. Open /knowledge/
+        2. Search for ...
+        3. Click ...
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, OS, local/VPS, or relevant runtime.
+      placeholder: "Chrome 126, Windows, /knowledge/"
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Screenshots, logs, or links. Remove secrets before posting.

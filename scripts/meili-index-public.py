@@ -49,30 +49,31 @@ def main() -> int:
     parser.add_argument("--index", default="base2026_public_tiktok")
     parser.add_argument("--master-key", default="")
     args = parser.parse_args()
+    master_key = args.master_key.strip()
 
-    wait_for_meili(args.url, args.master_key)
+    wait_for_meili(args.url, master_key)
     docs = load_jsonl(args.data)
     try:
-        request(args.url, "DELETE", f"/indexes/{args.index}", master_key=args.master_key)
+        request(args.url, "DELETE", f"/indexes/{args.index}", master_key=master_key)
     except HTTPError as exc:
         if exc.code != 404:
             raise
-    request(args.url, "POST", "/indexes", {"uid": args.index, "primaryKey": "id"}, args.master_key)
+    request(args.url, "POST", "/indexes", {"uid": args.index, "primaryKey": "id"}, master_key)
     request(
         args.url,
         "PATCH",
         f"/indexes/{args.index}/settings",
         {
             "displayedAttributes": ["*"],
-            "searchableAttributes": ["body", "title", "handle", "creator_id", "platform"],
-            "filterableAttributes": ["platform", "source_type", "creator_id", "handle", "year", "published_date"],
+            "searchableAttributes": ["body", "title", "topic_labels", "handle", "creator_id", "platform"],
+            "filterableAttributes": ["platform", "source_type", "creator_id", "handle", "year", "published_date", "topics"],
             "sortableAttributes": ["published_date", "year"],
             "rankingRules": ["words", "typo", "proximity", "attribute", "sort", "exactness"],
             "pagination": {"maxTotalHits": 10000},
         },
-        args.master_key,
+        master_key,
     )
-    task = request(args.url, "POST", f"/indexes/{args.index}/documents", docs, args.master_key)
+    task = request(args.url, "POST", f"/indexes/{args.index}/documents", docs, master_key)
     print(f"indexed={len(docs)} index={args.index} task={task.get('taskUid')}")
     return 0
 

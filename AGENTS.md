@@ -20,6 +20,10 @@ For deployment or automation tasks, also read:
 - `docs/project-memory/DEPLOYMENT_RUNBOOK.md`
 - `docs/project-memory/HERMES_RUNBOOK.md`
 
+For public UI tasks, also read:
+
+- `docs/project-memory/VISUAL_SYSTEM_CONTRACT.md`
+
 ## Public/private boundary
 
 Never commit or publish private research, raw source vaults, credentials, logs, generated release archives, local database files, audio/video files, or unreviewed raw captions.

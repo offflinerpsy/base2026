@@ -1,0 +1,20 @@
+[
+  {
+    "platform": "tiktok",
+    "handle": "tjrobertson52",
+    "url": "https://www.tiktok.com/@tjrobertson52",
+    "enabled": true,
+    "max_new_per_run": 20,
+    "source_policy": "public_recent_posts",
+    "notes": "Example TikTok creator entry"
+  },
+  {
+    "platform": "instagram",
+    "handle": "example",
+    "url": "https://www.instagram.com/example/",
+    "enabled": false,
+    "max_new_per_run": 10,
+    "source_policy": "public_recent_posts",
+    "notes": "Example Instagram creator entry; use local cookies only when needed"
+  }
+]

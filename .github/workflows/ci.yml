@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "codex/**"
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Python syntax check
+        run: |
+          python -m py_compile \
+            scripts/export-public-tiktok.py \
+            scripts/check-public-export-policy.py \
+            scripts/generate-public-pages.py \
+            scripts/meili-index-public.py
+
+      - name: JavaScript syntax check
+        run: node --check web/static/meili.js
+
+      - name: Public export policy check when fixture data exists
+        shell: bash
+        run: |
+          if [ -f public-data/tiktok/manifest.json ]; then
+            python scripts/check-public-export-policy.py public-data/tiktok
+          else
+            echo "public-data/tiktok is not committed; skipping export policy check."
+          fi

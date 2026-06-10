@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sqlite3
+from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 
@@ -33,17 +35,194 @@ def write_jsonl(path: Path, rows: list[dict]) -> None:
             f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
 
 
+def read_optional_json(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def creator_profile(profiles: dict, creator_id: str, handle: str) -> dict:
+    candidates = [
+        creator_id,
+        handle,
+        handle.lstrip("@"),
+        f"@{handle.lstrip('@')}" if handle else "",
+    ]
+    for key in candidates:
+        if key and isinstance(profiles.get(key), dict):
+            return profiles[key]
+    return {}
+
+
+STOPWORDS = {
+    "a",
+    "an",
+    "and",
+    "are",
+    "as",
+    "at",
+    "be",
+    "but",
+    "by",
+    "for",
+    "from",
+    "in",
+    "is",
+    "it",
+    "of",
+    "on",
+    "or",
+    "that",
+    "the",
+    "this",
+    "to",
+    "with",
+    "you",
+    "your",
+}
+
+
+def compact_text(value: str, limit: int = 420) -> str:
+    text = re.sub(r"\s+", " ", value or "").strip()
+    if len(text) <= limit:
+        return text
+    return text[: limit - 3].rstrip() + "..."
+
+
+def tokenize(value: str) -> set[str]:
+    return {
+        token
+        for token in re.findall(r"[a-z0-9]+", (value or "").lower())
+        if len(token) > 2 and token not in STOPWORDS
+    }
+
+
+def slugify(value: str) -> str:
+    slug = "-".join(re.findall(r"[a-z0-9]+", (value or "").lower()))
+    return slug[:80] or "uncategorized"
+
+
+def best_evidence_excerpt(claim_text: str, chunk_rows: list[sqlite3.Row]) -> tuple[str, float]:
+    claim_tokens = tokenize(claim_text)
+    if not claim_tokens:
+        return "", 0.0
+    best_text = ""
+    best_score = 0.0
+    for chunk in chunk_rows:
+        text = chunk["text"] or ""
+        chunk_tokens = tokenize(text)
+        if not chunk_tokens:
+            continue
+        score = len(claim_tokens & chunk_tokens) / max(len(claim_tokens), 1)
+        if score > best_score:
+            best_score = score
+            best_text = text
+    return compact_text(best_text), round(best_score, 3)
+
+
+def build_topic_records(insight_cards: list[dict], chunks: list[dict]) -> list[dict]:
+    topic_labels: dict[str, str] = {}
+    insight_counts: Counter[str] = Counter()
+    public_insight_counts: Counter[str] = Counter()
+    passage_counts: Counter[str] = Counter()
+    source_ids: dict[str, set[str]] = defaultdict(set)
+    public_source_ids: dict[str, set[str]] = defaultdict(set)
+    creator_counts: dict[str, Counter[str]] = defaultdict(Counter)
+    public_creator_counts: dict[str, Counter[str]] = defaultdict(Counter)
+    latest_dates: dict[str, str] = {}
+
+    for insight in insight_cards:
+        topic_id = insight.get("topic_id") or slugify(insight.get("topic") or "")
+        if not topic_id:
+            continue
+        topic_labels.setdefault(topic_id, insight.get("topic") or topic_id.replace("-", " ").title())
+        insight_counts[topic_id] += 1
+        source_id = insight.get("source_id") or ""
+        creator = insight.get("creator_handle") or ""
+        if source_id:
+            source_ids[topic_id].add(source_id)
+        if creator:
+            creator_counts[topic_id][creator] += 1
+        published_at = insight.get("published_at") or ""
+        if published_at > latest_dates.get(topic_id, ""):
+            latest_dates[topic_id] = published_at
+        if insight.get("public"):
+            public_insight_counts[topic_id] += 1
+            if source_id:
+                public_source_ids[topic_id].add(source_id)
+            if creator:
+                public_creator_counts[topic_id][creator] += 1
+
+    for chunk in chunks:
+        for topic_id in chunk.get("topics") or []:
+            topic_labels.setdefault(topic_id, topic_id.replace("-", " ").title())
+            passage_counts[topic_id] += 1
+            source_id = chunk.get("source_id") or ""
+            creator = chunk.get("creator_handle") or chunk.get("handle") or ""
+            if source_id:
+                source_ids[topic_id].add(source_id)
+            if creator:
+                creator_counts[topic_id][creator] += 1
+
+    records: list[dict] = []
+    for topic_id in sorted(topic_labels):
+        public_count = public_insight_counts[topic_id]
+        creator_counter = public_creator_counts[topic_id] if public_count else creator_counts[topic_id]
+        records.append(
+            {
+                "id": f"topic:{topic_id}",
+                "topic_id": topic_id,
+                "topic": topic_labels[topic_id],
+                "definition": f"Source-backed creator statements and evidence excerpts related to {topic_labels[topic_id]}.",
+                "source_count": len(source_ids[topic_id]),
+                "public_source_count": len(public_source_ids[topic_id]),
+                "passage_count": passage_counts[topic_id],
+                "insight_count": insight_counts[topic_id],
+                "public_insight_count": public_count,
+                "creator_count": len(creator_counts[topic_id]),
+                "top_creators": [
+                    {"handle": handle, "count": count}
+                    for handle, count in creator_counter.most_common(8)
+                ],
+                "latest_published_at": latest_dates.get(topic_id, ""),
+                "public": public_count > 0,
+                "public_policy": "topic_index",
+            }
+        )
+    return records
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Export public TikTok-only Base2026 dataset.")
-    parser.add_argument("--include-full-transcripts", action="store_true", default=True)
+    parser.add_argument(
+        "--include-full-transcripts",
+        action="store_true",
+        default=False,
+        help="Include full transcripts. Off by default; use only for private/gated/noindex review exports.",
+    )
+    parser.add_argument(
+        "--auto-promote-insights",
+        action="store_true",
+        default=False,
+        help="Mark high-confidence pending insight cards public when evidence matching passes.",
+    )
+    parser.add_argument("--insight-threshold", type=float, default=0.45)
+    parser.add_argument(
+        "--creator-profiles",
+        type=Path,
+        default=ROOT / "config" / "creator-profiles.json",
+        help="Optional local metadata override keyed by creator_id or handle. Supports avatar_url and display_name.",
+    )
     parser.add_argument("--out", type=Path, default=OUT)
     args = parser.parse_args()
+    creator_profiles = read_optional_json(args.creator_profiles)
 
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
     try:
         documents: list[dict] = []
         chunks: list[dict] = []
+        insight_cards: list[dict] = []
         creators: dict[str, dict] = {}
 
         item_rows = con.execute(
@@ -76,6 +255,10 @@ def main() -> int:
         for item in item_rows:
             item_id = item["item_id"]
             video_id = item["video_id"]
+            creator_id = item["author"] or ""
+            handle = item["handle"] or creator_id
+            source_handle = handle.lstrip("@")
+            source_id = f"tiktok:{source_handle}:{video_id}" if video_id else item_id
             doc_row = con.execute(
                 """
                 SELECT document_id, document_type, clean_path, language
@@ -91,7 +274,7 @@ def main() -> int:
                 dict(row)
                 for row in con.execute(
                     """
-                    SELECT c.claim_id, c.topic, c.claim_text, c.suggested_action, c.review_status
+                    SELECT c.claim_id, c.topic, c.claim_text, c.claim_type, c.suggested_action, c.review_status
                     FROM claim_evidence e
                     JOIN claims c ON c.claim_id = e.claim_id
                     WHERE e.video_id = ?
@@ -100,17 +283,32 @@ def main() -> int:
                     (video_id,),
                 )
             ]
-            creator_id = item["author"] or ""
+            topic_pairs = sorted(
+                {
+                    (slugify(claim.get("topic") or ""), claim.get("topic") or "")
+                    for claim in claim_rows
+                    if claim.get("topic")
+                }
+            )
+            topic_ids = [topic_id for topic_id, _label in topic_pairs if topic_id]
+            topic_labels = [label for _topic_id, label in topic_pairs if label]
+            profile = creator_profile(creator_profiles, creator_id, handle)
+            avatar_url = profile.get("avatar_url") or profile.get("profile_image_url") or ""
+            display_name = profile.get("display_name") or profile.get("name") or ""
             creators[creator_id] = {
                 "creator_id": creator_id,
                 "handle": item["handle"],
                 "url": item["creator_url"],
                 "niche": item["niche"],
                 "language": item["language"],
+                "avatar_url": avatar_url,
+                "display_name": display_name,
             }
             base = {
                 "item_id": item_id,
+                "source_id": source_id,
                 "video_id": video_id,
+                "post_id": video_id,
                 "platform": "tiktok",
                 "source_type": item["source_type"],
                 "source_url": item["canonical_url"],
@@ -118,13 +316,19 @@ def main() -> int:
                 "title_source": item["title_source"],
                 "title_status": item["title_status"],
                 "creator_id": creator_id,
-                "handle": item["handle"] or creator_id,
+                "creator_handle": handle,
+                "handle": handle,
                 "creator_url": item["creator_url"],
+                "avatar_url": avatar_url,
+                "creator_display_name": display_name,
                 "published_at": item["published_at"],
                 "published_date": (item["published_at"] or "")[:10],
                 "year": (item["published_at"] or "")[:4],
                 "captured_at": item["captured_at"],
-                "claims": claim_rows,
+                "topics": topic_ids,
+                "topic_labels": topic_labels,
+                "public_policy": "full_transcript" if args.include_full_transcripts else "excerpt_only",
+                "full_transcript_public": bool(args.include_full_transcripts),
             }
             documents.append(
                 {
@@ -135,7 +339,7 @@ def main() -> int:
                     "excerpt": transcript[:900],
                 }
             )
-            for chunk in con.execute(
+            item_chunks = con.execute(
                 """
                 SELECT chunk_id, chunk_index, text
                 FROM chunks
@@ -143,7 +347,8 @@ def main() -> int:
                 ORDER BY chunk_index
                 """,
                 (item_id,),
-            ):
+            ).fetchall()
+            for chunk in item_chunks:
                 chunks.append(
                     {
                         **base,
@@ -151,13 +356,60 @@ def main() -> int:
                         "chunk_id": chunk["chunk_id"],
                         "chunk_index": chunk["chunk_index"],
                         "body": chunk["text"],
+                        "topics": topic_ids,
+                        "topic_labels": topic_labels,
+                        "public_policy": "search_passage",
+                    }
+                )
+            for claim in claim_rows:
+                evidence_excerpt, evidence_score = best_evidence_excerpt(claim["claim_text"], item_chunks)
+                review_status = claim["review_status"] or "pending"
+                claim_type = claim["claim_type"] or "claim"
+                is_reviewed_public = review_status in {"approved", "reviewed", "public"} and evidence_score >= 0.25
+                is_auto_public = (
+                    args.auto_promote_insights
+                    and claim_type != "insight_card_candidate"
+                    and evidence_score >= args.insight_threshold
+                    and bool(evidence_excerpt)
+                )
+                is_public = is_reviewed_public or is_auto_public
+                insight_cards.append(
+                    {
+                        "id": f"insight:{claim['claim_id']}",
+                        "claim_id": claim["claim_id"],
+                        "item_id": item_id,
+                        "topic_id": slugify(claim["topic"]),
+                        "topic": claim["topic"],
+                        "source_id": source_id,
+                        "post_id": video_id,
+                        "source_url": item["canonical_url"],
+                        "platform": "tiktok",
+                        "creator_handle": handle,
+                        "published_at": item["published_at"],
+                        "claim_text": claim["claim_text"],
+                        "suggested_action": claim["suggested_action"],
+                        "claim_type": claim_type,
+                        "evidence_excerpt": evidence_excerpt,
+                        "evidence_score": evidence_score,
+                        "stance": "asserts",
+                        "confidence": evidence_score,
+                        "review_status": review_status,
+                        "promotion_method": "auto_evidence_match" if is_auto_public and not is_reviewed_public else review_status,
+                        "public": is_public,
+                        "needs_review": not is_public,
+                        "public_policy": "reviewed_insight" if is_public else "needs_review",
                     }
                 )
 
         out = args.out
         out.mkdir(parents=True, exist_ok=True)
+        topics = build_topic_records(insight_cards, chunks)
         write_jsonl(out / "documents.jsonl", documents)
         write_jsonl(out / "chunks.jsonl", chunks)
+        write_jsonl(out / "source_records.jsonl", documents)
+        write_jsonl(out / "passages.jsonl", chunks)
+        write_jsonl(out / "insight_cards.jsonl", insight_cards)
+        write_jsonl(out / "topics.jsonl", topics)
         write_jsonl(out / "creators.jsonl", sorted(creators.values(), key=lambda x: x.get("handle") or ""))
         manifest = {
             "created_at": datetime.now().isoformat(timespec="seconds"),
@@ -166,11 +418,26 @@ def main() -> int:
             "documents": len(documents),
             "chunks": len(chunks),
             "creators": len(creators),
+            "topics": len(topics),
+            "insight_cards": len(insight_cards),
+            "public_insight_cards": sum(1 for row in insight_cards if row["public"]),
             "source_db": str(DB),
-            "files": ["documents.jsonl", "chunks.jsonl", "creators.jsonl"],
+            "include_full_transcripts": bool(args.include_full_transcripts),
+            "auto_promote_insights": bool(args.auto_promote_insights),
+            "insight_threshold": args.insight_threshold,
+            "public_policy": "full_transcript" if args.include_full_transcripts else "excerpt_only",
+            "files": [
+                "documents.jsonl",
+                "chunks.jsonl",
+                "source_records.jsonl",
+                "passages.jsonl",
+                "insight_cards.jsonl",
+                "topics.jsonl",
+                "creators.jsonl",
+            ],
         }
         (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
-        print(f"documents={len(documents)} chunks={len(chunks)} creators={len(creators)} out={out}")
+        print(f"documents={len(documents)} chunks={len(chunks)} creators={len(creators)} topics={len(topics)} out={out}")
         return 0
     finally:
         con.close()

@@ -1,6 +1,8 @@
 param(
   [int]$PlaylistEnd = 1000,
-  [string]$CutoffDate = "2025-05-24"
+  [string]$CutoffDate = "2025-05-24",
+  [string]$CreatorsConfig = "",
+  [switch]$ResolveCreatorsOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -9,11 +11,105 @@ $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 $TikTokRoot = Join-Path $Root "12_knowledge-base\sources\tiktok"
 $VideosCsv = Join-Path $TikTokRoot "videos.csv"
 
-$creators = @(
-  @{ Id = "tiktok-webhivedigital"; Url = "https://www.tiktok.com/@webhivedigital" },
-  @{ Id = "tiktok-tjrobertson52"; Url = "https://www.tiktok.com/@tjrobertson52" },
-  @{ Id = "tiktok-build-in-public"; Url = "https://www.tiktok.com/@build_in_public" }
-)
+function Get-PropertyValue {
+  param(
+    [object]$Object,
+    [string[]]$Names
+  )
+  foreach ($name in $Names) {
+    if ($Object.PSObject.Properties.Name -contains $name) {
+      return $Object.PSObject.Properties[$name].Value
+    }
+  }
+  return ""
+}
+
+function ConvertTo-CreatorId {
+  param([string]$Handle)
+  $safe = ($Handle.Trim().TrimStart("@") -replace "[^A-Za-z0-9_-]+", "-").Trim("-").ToLowerInvariant()
+  if (-not $safe) { throw "TikTok creator handle is required." }
+  return "tiktok-$safe"
+}
+
+function Resolve-CreatorsConfig {
+  param([string]$RequestedPath)
+
+  if ($RequestedPath) {
+    $path = if ([System.IO.Path]::IsPathRooted($RequestedPath)) { $RequestedPath } else { Join-Path $Root $RequestedPath }
+    if (-not (Test-Path -LiteralPath $path)) { throw "Creators config not found: $path" }
+    return (Resolve-Path -LiteralPath $path).Path
+  }
+
+  $candidates = @(
+    (Join-Path $Root "config\tiktok-intake-queue.local.json"),
+    (Join-Path $Root "config\tiktok-intake-queue.20260608.json"),
+    (Join-Path $Root "config\creators.example.json")
+  )
+  foreach ($candidate in $candidates) {
+    if (Test-Path -LiteralPath $candidate) {
+      return (Resolve-Path -LiteralPath $candidate).Path
+    }
+  }
+  throw "No creator config found. Create config/tiktok-intake-queue.local.json or pass -CreatorsConfig."
+}
+
+function Get-TikTokCreators {
+  param([string]$ConfigPath)
+
+  $config = Get-Content -LiteralPath $ConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
+  $entries = @()
+  if ($config -is [array]) {
+    $entries = @($config)
+  }
+  elseif ($config.PSObject.Properties.Name -contains "creators") {
+    $entries = @($config.creators)
+  }
+  else {
+    throw "Unsupported creators config shape: $ConfigPath"
+  }
+
+  $creators = New-Object System.Collections.Generic.List[object]
+  foreach ($entry in $entries) {
+    $platform = [string](Get-PropertyValue $entry @("platform"))
+    if ($platform -and $platform.ToLowerInvariant() -ne "tiktok") { continue }
+    if ($entry.PSObject.Properties.Name -contains "enabled" -and -not [bool]$entry.enabled) { continue }
+
+    $handle = [string](Get-PropertyValue $entry @("handle", "creator_handle"))
+    $url = [string](Get-PropertyValue $entry @("url", "profile_url", "creator_url"))
+    if (-not $handle -and $url -match "tiktok\.com/@([^/?#]+)") {
+      $handle = $Matches[1]
+    }
+    if (-not $url -and $handle) {
+      $url = "https://www.tiktok.com/@$($handle.Trim().TrimStart('@'))"
+    }
+    if (-not $url) { throw "TikTok creator URL is required in $ConfigPath." }
+
+    $id = [string](Get-PropertyValue $entry @("id", "creator_id"))
+    if (-not $id) {
+      $id = ConvertTo-CreatorId $handle
+    }
+
+    $creators.Add([pscustomobject]@{
+      Id = $id
+      Url = $url
+    })
+  }
+
+  if ($creators.Count -eq 0) { throw "No enabled TikTok creators found in $ConfigPath." }
+  return @($creators.ToArray())
+}
+
+$CreatorConfigPath = Resolve-CreatorsConfig $CreatorsConfig
+$creators = Get-TikTokCreators $CreatorConfigPath
+if ($ResolveCreatorsOnly) {
+  [pscustomobject]@{
+    config = $CreatorConfigPath
+    count = $creators.Count
+    creators = $creators
+  } | ConvertTo-Json -Depth 5
+  exit 0
+}
+Write-Host "Creator config: $CreatorConfigPath"
 
 $rows = New-Object System.Collections.Generic.List[object]
 if (Test-Path $VideosCsv) {

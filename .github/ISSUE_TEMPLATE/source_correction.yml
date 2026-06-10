@@ -1,0 +1,33 @@
+name: Source correction
+description: Report incorrect attribution, source metadata, topic grouping, or public excerpt context.
+title: "[Correction]: "
+labels: ["correction", "needs-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for public source-record corrections. Do not paste private data or credentials.
+  - type: input
+    id: source_url
+    attributes:
+      label: Base2026 source page
+      placeholder: "http://207.244.242.42/knowledge/sources/..."
+    validations:
+      required: true
+  - type: input
+    id: original_url
+    attributes:
+      label: Original creator post URL
+      placeholder: "https://www.tiktok.com/@creator/video/..."
+  - type: textarea
+    id: issue
+    attributes:
+      label: What should be corrected?
+      description: Attribution, date, title, excerpt, topic, or source link.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Link to the public original source or explain the correction.

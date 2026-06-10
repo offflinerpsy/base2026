@@ -1,32 +1,44 @@
 # Security Policy
 
-Base2026 is currently pre-release and not ready for untrusted public ingestion.
+Base2026 is pre-release. The public demo is read-only; ingestion and transcript processing are local maintainer workflows.
 
 ## Reporting
 
-Report security issues privately to the project maintainer before public disclosure.
+Report security issues privately to the maintainer before public disclosure.
 
-## Current Scope
+## Current Supported Surface
 
 Supported:
 
-- local research console
-- local Meilisearch proof of concept
-- private ingestion workflow
+- static public UI under `/knowledge/`;
+- generated creator, source, topic, and compare pages;
+- Meilisearch search proxy for public search requests;
+- local export, packaging, and deploy scripts.
 
-Not production-supported yet:
+Not supported:
 
-- public `/api/refresh`
-- public ingestion endpoints
-- unauthenticated Meilisearch admin API
-- hosted transcription/AI jobs
+- public ingestion endpoints;
+- public transcript refresh endpoints;
+- unauthenticated Meilisearch admin API;
+- hosted transcription jobs;
+- public upload of creator data.
 
-## Required Production Controls
+## Required Controls
 
-- no secrets in source code
-- Meilisearch master key enabled
-- browser uses search-only key
-- admin endpoints authenticated
-- public server is read-only by default
-- raw data and generated indexes excluded from GitHub
-- secret scanning before every public release
+- no secrets in source code;
+- Meilisearch master key stays server-side;
+- browser traffic uses a search-only proxy/key;
+- public release artifacts are excerpt-only by default;
+- full third-party transcripts stay private/local unless explicitly gated or reviewed;
+- generated exports, local databases, logs, media, cookies, and release zips are excluded from GitHub;
+- run a publication-boundary audit before staging files for GitHub.
+
+## Pre-Publication Checks
+
+```powershell
+git status --short --branch
+python -m py_compile scripts\export-public-tiktok.py scripts\check-public-export-policy.py scripts\generate-public-pages.py scripts\meili-index-public.py
+node --check web\static\meili.js
+python .\scripts\check-public-export-policy.py .\public-data\tiktok
+python .\scripts\audit-publication-boundary.py
+```

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Base2026 Roadmap Data Visualization Test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./roadmap-dataviz-test.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#roadmap-workspace">Skip to roadmap</a>
+    <main id="roadmap-workspace" class="viz-shell">
+      <section class="viz-hero" aria-labelledby="roadmap-title">
+        <div>
+          <p class="viz-kicker">Base2026 product roadmap</p>
+          <h1 id="roadmap-title">A public sequence for turning video knowledge into a trusted research layer.</h1>
+          <p class="viz-lede">This test page reframes the original roadmap markdown as a product maturity map: trust first, then ingestion, AI processing, creator controls, analytics, and monetization.</p>
+        </div>
+        <aside class="source-card" aria-label="Roadmap source">
+          <span>Source file</span>
+          <strong>docs/public-pages/01_ROADMAP.md</strong>
+          <p>Production roadmap is not changed by this prototype.</p>
+        </aside>
+      </section>
+
+      <section class="summary-strip" aria-label="Roadmap summary">
+        <article>
+          <span>Now</span>
+          <strong>Public Trust Foundation</strong>
+        </article>
+        <article>
+          <span>Next</span>
+          <strong>Content Ingestion Pipeline</strong>
+        </article>
+        <article>
+          <span>Later</span>
+          <strong>AI Knowledge Layer, Creator Controls, Analytics, Monetization</strong>
+        </article>
+      </section>
+
+      <section class="control-strip" aria-label="Roadmap controls">
+        <div id="phase-tabs" class="phase-tabs"></div>
+        <div class="view-note">Click a phase to inspect purpose, status, and milestone sequence.</div>
+      </section>
+
+      <section class="viz-grid">
+        <article class="panel panel-wide" aria-labelledby="map-title">
+          <div class="panel-head">
+            <p class="viz-kicker">Sequence</p>
+            <h2 id="map-title">Roadmap flow</h2>
+          </div>
+          <div id="roadmap-flow" class="flow-canvas"></div>
+        </article>
+
+        <article class="panel" aria-labelledby="phase-title">
+          <div class="panel-head">
+            <p class="viz-kicker">Selected phase</p>
+            <h2 id="phase-title">Phase detail</h2>
+          </div>
+          <div id="phase-detail"></div>
+        </article>
+
+        <article class="panel" aria-labelledby="load-title">
+          <div class="panel-head">
+            <p class="viz-kicker">Milestones</p>
+            <h2 id="load-title">Phase density</h2>
+          </div>
+          <div id="workload-chart" class="bar-stack"></div>
+        </article>
+
+        <article class="panel panel-wide" aria-labelledby="funding-title">
+          <div class="panel-head">
+            <p class="viz-kicker">Funding logic</p>
+            <h2 id="funding-title">What support unlocks</h2>
+          </div>
+          <div id="funding-grid" class="funding-grid"></div>
+        </article>
+
+        <article class="panel panel-wide" aria-labelledby="priority-title">
+          <div class="panel-head">
+            <p class="viz-kicker">Execution order</p>
+            <h2 id="priority-title">Now / Next / Later</h2>
+          </div>
+          <div id="priority-stack" class="priority-stack"></div>
+        </article>
+
+        <article class="panel panel-wide proof-panel" aria-labelledby="proof-title">
+          <div class="panel-head">
+            <p class="viz-kicker">Roadmap logic</p>
+            <h2 id="proof-title">What this roadmap proves</h2>
+          </div>
+          <p>This roadmap is not a list of promised features. It is a public development sequence: first transparency and governance, then ingestion, AI processing, creator controls, analytics, and monetization. Each layer makes the next one safer and more useful.</p>
+        </article>
+      </section>
+
+      <noscript>
+        <section class="panel panel-wide noscript-roadmap" aria-labelledby="noscript-title">
+          <h2 id="noscript-title">Roadmap phases</h2>
+          <ol>
+            <li>Public Trust Foundation</li>
+            <li>Content Ingestion Pipeline</li>
+            <li>AI Knowledge Layer</li>
+            <li>Creator and Rights Controls</li>
+            <li>Analytics and Public Signals</li>
+            <li>Monetization Layer</li>
+          </ol>
+        </section>
+      </noscript>
+    </main>
+    <script src="./roadmap-dataviz-test.js" defer></script>
+  </body>
+</html>
