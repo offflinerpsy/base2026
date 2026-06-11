@@ -102,6 +102,8 @@ Latest verification:
 - Pending insight-card candidates are closed: 150 approved, 1 rejected for missing evidence, 1 parked as `needs_human`, and 0 remain `pending`.
 - `base2026-identity-unification-ay42b-20260611` is live under `/knowledge/` after unifying source pages, creator pages, and the search modal around one canonical identity row: avatar, `@handle`, date where relevant, TikTok icon, compact meta chips, and icon-only share actions.
 - live ay42b QA passed: targeted DOM checks on source, creator, and search modal passed; publication boundary audit and GitHub metadata validation passed; full mixed visual QA passed with 66 checks, 0 failures, 0 warnings. Evidence is under ignored `output/evidence/identity-unification-ay42b-live-full/`.
+- `base2026-topic-ia-ay43-20260611` is live under `/knowledge/` after merging topic-page share controls and topic summary metrics into the `Topic evidence page` hero. The old standalone `Share topic page` bar and topic `metric-row` are removed from topic pages.
+- live ay43 topic QA passed on `/knowledge/topics/ai-search-query-decomposition.html`: desktop 1159px, narrow 919px, and mobile 390px all have equal hero/content widths, inline share controls, three compact stats, no standalone share section, no metric row, no horizontal overflow, and 0 console errors. Evidence is under ignored `output/evidence/topic-ia-ay43-live-*.png`.
 - deploy script tested against `base2026-info-pages-clean-ay11b`; package zip uses POSIX archive paths, Meilisearch key handling strips CR/LF, and key info pages are verified before symlink switch
 - light Alex Yarosh-compatible UI is deployed and verified on `/knowledge/`
 - live screenshot evidence:

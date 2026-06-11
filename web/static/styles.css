@@ -2198,6 +2198,67 @@ em {
   text-wrap: balance;
 }
 
+.topic-page-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
+  gap: clamp(16px, 3vw, 28px);
+  align-items: start;
+  max-width: none;
+}
+
+.topic-page-hero__main {
+  min-width: 0;
+}
+
+.topic-page-hero__tools {
+  display: grid;
+  gap: 12px;
+  justify-items: end;
+  min-width: 0;
+}
+
+.source-share-actions--inline {
+  padding: 2px;
+}
+
+.topic-stat-grid {
+  display: grid;
+  width: min(100%, 360px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid rgba(18, 26, 31, 0.11);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.topic-stat-grid div {
+  min-width: 0;
+  padding: 10px 11px;
+  border-right: 1px solid rgba(18, 26, 31, 0.1);
+}
+
+.topic-stat-grid div:last-child {
+  border-right: 0;
+}
+
+.topic-stat-grid strong {
+  display: block;
+  color: var(--ay-text);
+  font-size: 22px;
+  font-weight: 760;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.topic-stat-grid span {
+  display: block;
+  margin-top: 5px;
+  color: var(--ay-muted);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.18;
+}
+
 .content-section,
 .metric-row {
   margin-bottom: 18px;
@@ -3160,13 +3221,15 @@ html.dialog-open body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .source-page-hero {
+  .source-page-hero,
+  .topic-page-hero {
     grid-template-columns: 1fr;
   }
 
   .source-hero-tools,
   .source-share-actions,
   .source-hero-meta,
+  .topic-page-hero__tools,
   .source-meta-chip--topics .topic-chip-list {
     justify-items: start;
     justify-content: flex-start;
@@ -3373,6 +3436,10 @@ blockquote {
   max-width: 860px;
   margin-bottom: 20px;
   padding: 22px 26px;
+}
+
+.page-hero.topic-page-hero {
+  max-width: none;
 }
 
 .page-hero h1,
@@ -4082,6 +4149,31 @@ blockquote {
     gap: 8px;
     max-width: 100%;
     padding: 12px;
+  }
+
+  .page-hero.topic-page-hero {
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .topic-page-hero__tools {
+    gap: 9px;
+  }
+
+  .topic-stat-grid {
+    width: 100%;
+  }
+
+  .topic-stat-grid div {
+    padding: 8px;
+  }
+
+  .topic-stat-grid strong {
+    font-size: 18px;
+  }
+
+  .topic-stat-grid span {
+    font-size: 10.5px;
   }
 
   .creator-hero-line {

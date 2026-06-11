@@ -8,7 +8,7 @@ from html import escape
 from pathlib import Path
 
 
-STYLE_VERSION = "20260611-identity1"
+STYLE_VERSION = "20260611-topicia2"
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
@@ -138,6 +138,15 @@ def source_share_action_bar(label: str = "Share source record", kind: str = "sou
     return (
         f'<div class="source-share-actions" data-share-root aria-label="{escape(label)}">'
         f'<span class="source-share-actions__label">{escape(label)}</span>'
+        f'{share_action_buttons(kind)}'
+        '<span class="share-actions__status source-share-actions__status" data-share-status aria-live="polite"></span>'
+        '</div>'
+    )
+
+
+def inline_share_actions(label: str, kind: str = "page") -> str:
+    return (
+        f'<div class="source-share-actions source-share-actions--inline" data-share-root aria-label="{escape(label)}">'
         f'{share_action_buttons(kind)}'
         '<span class="share-actions__status source-share-actions__status" data-share-status aria-live="polite"></span>'
         '</div>'
@@ -710,21 +719,25 @@ def topic_page(topic: dict, sources: list[dict], passages: list[dict], insights:
     return page_shell(
         f"{label} creator evidence | Base2026",
         f"""
-      <section class="page-hero">
-        <p class="eyebrow">Topic evidence page</p>
-        <h1>{escape(label)}</h1>
-        <p class="lead">{escape(topic.get('definition') or f'Source-backed creator statements related to {label}.')}</p>
-        <div class="hero-actions">
-          <a class="ay-button" href="../index.html?q={escape(label)}">Search this topic</a>
-          <a class="ay-button-secondary" href="../compare/{escape(slug(topic_id))}.html">Compare creator viewpoints</a>
-          <a class="ay-button-secondary" href="../methodology.html">Methodology</a>
+      <section class="page-hero topic-page-hero">
+        <div class="topic-page-hero__main">
+          <p class="eyebrow">Topic evidence page</p>
+          <h1>{escape(label)}</h1>
+          <p class="lead">{escape(topic.get('definition') or f'Source-backed creator statements and evidence excerpts related to {label}.')}</p>
+          <div class="hero-actions">
+            <a class="ay-button" href="../index.html?q={escape(label)}">Search this topic</a>
+            <a class="ay-button-secondary" href="../compare/{escape(slug(topic_id))}.html">Compare creator viewpoints</a>
+            <a class="ay-button-secondary" href="../methodology.html">Methodology</a>
+          </div>
         </div>
-      </section>
-      {share_action_bar("Share topic page")}
-      <section class="metric-row">
-        <div><strong>{escape(str(topic.get('public_insight_count') or 0))}</strong><span>public insight cards</span></div>
-        <div><strong>{escape(str(topic.get('source_count') or len(related_sources)))}</strong><span>source records</span></div>
-        <div><strong>{escape(str(topic.get('creator_count') or len(creator_rows)))}</strong><span>creators</span></div>
+        <aside class="topic-page-hero__tools" aria-label="Topic page controls and summary">
+          {inline_share_actions("Share topic page", "topic page")}
+          <div class="topic-stat-grid" aria-label="Topic evidence summary">
+            <div><strong>{escape(str(topic.get('public_insight_count') or 0))}</strong><span>insight cards</span></div>
+            <div><strong>{escape(str(topic.get('source_count') or len(related_sources)))}</strong><span>source records</span></div>
+            <div><strong>{escape(str(topic.get('creator_count') or len(creator_rows)))}</strong><span>creators</span></div>
+          </div>
+        </aside>
       </section>
       <section class="content-section">
         <h2>Top Creators</h2>

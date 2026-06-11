@@ -325,10 +325,11 @@ Notes:
 - Visible source-page titles no longer repeat `source record`; schema names can still include the machine-readable source-record phrase where useful.
 - Modal policy text now reads `excerpt only`, and caption metadata uses the shorter `Caption metadata` label.
 - Verification passed: publication boundary audit, GitHub metadata validation, targeted live DOM checks, and full live mixed visual QA with 66 checks and 0 failures.
+- `base2026-topic-ia-ay43-20260611` is live after compacting topic pages: share icons and public insight/source/creator counts now live inside the `Topic evidence page` hero, and the hero width matches the lower content sections.
 
 ## Current next action
 
-- Stage only public-safe allowlisted files with `scripts/stage-public-files.ps1 -Apply -SkipRemoteCheck`, commit `ui: unify Base2026 source identity`, push `main`, then continue check-only TikTok intake hardening and GSC manual indexing after quota reset.
+- Stage only public-safe allowlisted files with `scripts/stage-public-files.ps1 -Apply -SkipRemoteCheck`, commit `ui: compact Base2026 topic pages`, push `main`, then continue check-only TikTok intake hardening and GSC manual indexing after quota reset.
 
 ## Parallel backlog
 

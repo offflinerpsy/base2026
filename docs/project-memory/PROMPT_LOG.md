@@ -2160,3 +2160,28 @@ Verification:
 Next step:
 
 - stage allowlisted public-safe files, commit, push `main`, then continue check-only TikTok intake and GSC indexing.
+
+## 2026-06-11 — Topic page IA compaction and ay43 deploy
+
+User marked the topic-page metrics block and asked to remove the separate `Share Topic Page` bar plus the standalone public insight/source/creator metric row. The requested product direction was to make `Topic Evidence Page` the single hero/control block and keep its width aligned with lower sections.
+
+Actions taken:
+
+- changed topic-page generation so share icons render inline inside the `Topic evidence page` hero without a visible `Share Topic Page` label;
+- moved public insight card, source record, and creator counts into compact hero stats;
+- removed the standalone topic `metric-row`;
+- made topic hero width match `content-section` width across desktop, narrow desktop, and mobile;
+- bumped Base2026 static cache-bust to `20260611-topicia2`;
+- deployed `base2026-topic-ia-ay43-20260611` with `-SkipReindex`.
+
+Verification:
+
+- Python compile and JS syntax checks passed;
+- publication boundary audit passed with `forbidden=0`, `secret_findings=0`, `needs_review=0`;
+- GitHub metadata validation passed;
+- package-layout Playwright QA passed on 1159px, 919px, and 390px viewports;
+- live Playwright QA passed on `/knowledge/topics/ai-search-query-decomposition.html`: equal hero/content widths, no old share bar, no metric row, inline share controls present, 3 stats present, no horizontal overflow, and 0 console errors.
+
+Next step:
+
+- stage allowlisted public-safe files, commit, push `main`, then continue check-only TikTok intake and GSC indexing.
