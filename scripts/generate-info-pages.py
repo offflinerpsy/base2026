@@ -68,7 +68,7 @@ PAGE_MAP = {
 
 
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
-STYLE_VERSION = "20260611-mobilemenu1"
+STYLE_VERSION = "20260611-mobilemenu2"
 
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),

@@ -2259,3 +2259,28 @@ Verification:
 Next step:
 
 - stage audited public-safe files, commit, push `main`, then continue GSC indexing and the reviewed intake pipeline.
+
+## 2026-06-11 — Base2026 mobile menu spacing hotfix and ay48 deploy
+
+User pointed out that the Base2026 mobile drawer still looked wrong: the `Base2026` item appeared pressed into the left edge of the panel and the translucent drawer allowed the page breadcrumb behind it to visually bleed through.
+
+Actions taken:
+
+- made the Base2026 mobile drawer background opaque `#fffaf0` instead of translucent;
+- increased mobile drawer internal padding;
+- added a stronger left offset for the Base2026 submenu links;
+- bumped Base2026 cache-bust to `20260611-mobilemenu2`;
+- deployed `base2026-mobile-menu-padding-ay48-20260611` with `-SkipReindex`.
+
+Verification:
+
+- live `/knowledge/` mobile QA confirmed CSS `20260611-mobilemenu2`;
+- drawer panel background is opaque `rgb(255, 250, 240)`;
+- Base2026 summary offset is 17px from panel left;
+- first submenu link offset is 39px from panel left;
+- horizontal overflow is 0 and console errors are 0;
+- evidence under ignored `output/evidence/base2026-mobile-menu-padding-ay48-live/`.
+
+Next step:
+
+- stage audited public-safe files, commit, push `main`, then continue GSC indexing and the reviewed intake pipeline.

@@ -335,7 +335,7 @@ Notes:
 
 ## Current next action
 
-- Stage only public-safe allowlisted Base2026 files with `scripts/stage-public-files.ps1 -Apply -SkipRemoteCheck`, commit `ui: unify mobile navigation`, push `main`, then continue check-only TikTok intake hardening and GSC manual indexing after quota reset.
+- Stage only public-safe allowlisted Base2026 files with `scripts/stage-public-files.ps1 -Apply -SkipRemoteCheck`, commit `ui: fix Base2026 mobile menu spacing`, push `main`, then continue check-only TikTok intake hardening and GSC manual indexing after quota reset.
 
 ## Parallel backlog
 

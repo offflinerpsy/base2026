@@ -4598,23 +4598,23 @@ blockquote {
     width: min(330px, calc(100vw - 24px));
     max-height: calc(100dvh - 96px);
     overflow: auto;
-    padding: 10px;
+    padding: 14px 16px 16px;
     border: 1px solid rgba(18, 26, 31, 0.12);
     border-radius: 14px;
-    background: rgba(255, 250, 240, 0.98);
-    box-shadow: 0 24px 60px rgba(42, 31, 19, 0.18);
+    background: #fffaf0;
+    box-shadow: 0 24px 60px rgba(42, 31, 19, 0.2);
   }
 
   .site-header__mobile-panel nav,
   .site-header__mobile-base div {
     display: grid;
-    gap: 4px;
+    gap: 3px;
   }
 
   .site-header__mobile-panel a,
   .site-header__mobile-base summary {
     min-height: 36px;
-    padding: 7px 10px;
+    padding: 7px 12px;
     border-radius: 8px;
     color: var(--ay-text);
     font-weight: 740;
@@ -4658,16 +4658,16 @@ blockquote {
   .site-header__mobile-base {
     border-top: 1px solid rgba(18, 26, 31, 0.09);
     border-bottom: 1px solid rgba(18, 26, 31, 0.09);
-    padding: 4px 0 6px;
+    padding: 5px 0 7px;
   }
 
   .site-header__mobile-base div {
-    padding: 2px 0 0 14px;
+    padding: 3px 0 0 22px;
   }
 
   .site-header__mobile-base div a {
     min-height: 27px;
-    padding: 4px 10px;
+    padding: 4px 12px;
     color: var(--ay-muted);
     font-size: 13.5px;
     font-weight: 600;
