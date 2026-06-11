@@ -4,7 +4,7 @@ Last updated: 2026-06-11
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay46 mobile filters/header/tag cleanup deploy.
+Continue launch operation after the Base2026 ay49 creator-index/dropdown polish deploy and WordPress theme CTA polish.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,7 +12,7 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Stage the ay46 public-safe Base2026 UI/export changes through the audited public allowlist, commit, and push `main`.
+1. Stage the ay49 public-safe Base2026 UI/export changes through the audited public allowlist, commit, and push `main`.
 2. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
 3. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
 4. Run the check-only TikTok intake pipeline against the current queue: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate. Do not auto-deploy intake output.
@@ -69,11 +69,17 @@ Task queue source of truth:
 41. `/knowledge/` mobile filters are now a visible top control that opens a fixed drawer with creator/source/year refinements instead of leaving filters hidden below results.
 42. Base2026 static pages now use the WordPress-aligned avatar header with a desktop Base2026 dropdown and mobile hamburger menu.
 43. Source-page topics render as orange hashtag text, and source policy/count metadata sits with the hero tools instead of framed topic/metadata pills.
+44. `/knowledge/creators/` now uses creator cards with avatars, source/insight counts, public attribution copy, and TikTok/profile actions instead of empty text-only cards.
+45. WordPress and Base2026 desktop Base2026 dropdowns have hover bridges so the submenu stays open while moving from the parent nav item into the submenu.
+46. WordPress homepage/services/footer now include the acid-green Base2026 CTA/card treatment.
 
 ## Latest verification
 
-- Deployed release: `base2026-mobile-filters-header-tags-ay46-20260611`.
+- Deployed release: `base2026-creator-index-dropdown-ay49-20260611`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
+- Live ay49 creator/dropdown QA: `/knowledge/creators/` CSS `20260611-creatorcta1`, 4 creator cards, 4 avatars, 4 TikTok profile links, no horizontal overflow.
+- Live ay49 navigation QA: Base2026 dropdown hover path stays open on both WordPress and `/knowledge/`; submenu hit target reaches `Search`; no horizontal overflow.
+- Live WordPress CTA QA: theme CSS `1.5.40`, homepage Base2026 block present, services Base2026 card present, footer Base2026 button uses acid green.
 - Canonical root domain: `https://aggressorbulkit.online/`.
 - GitHub public repository: `https://github.com/offflinerpsy/base2026`.
 - Default branch: `main`.

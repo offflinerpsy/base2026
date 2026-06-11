@@ -2236,6 +2236,30 @@ Next step:
 
 - stage audited public-safe files, commit, push `main`, then continue GSC indexing and the reviewed intake pipeline.
 
+## 2026-06-11 — Creator index, dropdown hover, and green Base2026 CTA ay49
+
+User reported that the `/knowledge/creators/` index looked empty and unfinished, the Base2026 desktop dropdown disappeared before the pointer could reach the submenu, and the main WordPress site had lost the acid-green Base2026 CTA treatment.
+
+Actions taken:
+
+- rebuilt `/knowledge/creators/` cards with creator avatars, source counts, public-insight counts, attribution copy, profile links, and TikTok profile links;
+- added a hover bridge to the Base2026 desktop header dropdown so the submenu remains reachable;
+- deployed `base2026-creator-index-dropdown-ay49-20260611` with `-SkipReindex`;
+- deployed WordPress child theme CSS `1.5.40`;
+- added hover-bridge/light-dropdown styling to the WordPress desktop Base2026 submenu;
+- added an acid-green Base2026 footer button and WordPress content blocks for the homepage and services page.
+
+Verification:
+
+- live `/knowledge/creators/` shows 4 creator cards, 4 avatars, 4 TikTok profile links, and no horizontal overflow;
+- live WordPress and Base2026 desktop dropdown hover paths stay open and reach the `Search` submenu link;
+- live homepage has the Base2026 block, live services page has the Base2026 service card, and live footer has the acid-green Base2026 button;
+- evidence under ignored `output/evidence/ay49-creator-cta-live/`.
+
+Next step:
+
+- run publication boundary and metadata audits, stage allowlisted public-safe files, commit, push, then continue launch monitoring and the reviewed intake pipeline.
+
 ## 2026-06-11 — Unified mobile navigation across WordPress and Base2026
 
 User reported that the WordPress hamburger menu and Base2026 hamburger menu had diverged: the WordPress drawer was dark and navigated directly from `Base2026`, while the Base2026 drawer was light but had an awkward pre-open submenu and inconsistent CTA hover behavior.

@@ -8,7 +8,7 @@ from html import escape
 from pathlib import Path
 
 
-STYLE_VERSION = "20260611-mobilemenu2"
+STYLE_VERSION = "20260611-creatorcta1"
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
@@ -411,6 +411,36 @@ def card(title: str, text: str, href: str | None = None, meta: str = "") -> str:
         {f'<p class="meta">{escape(meta)}</p>' if meta else ''}
         <p>{escape(compact(text, 360))}</p>
         {link}
+      </article>
+    """
+
+
+def creator_index_card(handle: str, creator: dict, source_count: int, public_insight_count: int) -> str:
+    visible_handle = display_handle(handle)
+    avatar_html = creator_avatar_markup(visible_handle, creator.get("avatar_url") or "", relative_root="..")
+    profile_href = f"{slug(handle)}.html"
+    creator_url = creator.get("url") or ""
+    external_link = (
+        f'<a class="creator-index-card__source" href="{escape(creator_url)}" target="_blank" rel="noreferrer">TikTok profile</a>'
+        if creator_url
+        else ""
+    )
+    insight_label = "public insight" if public_insight_count == 1 else "public insights"
+    source_label = "source record" if source_count == 1 else "source records"
+    return f"""
+      <article class="intelligence-card creator-index-card">
+        <div class="creator-index-card__head">
+          {avatar_html}
+          <div>
+            <h3>{escape(visible_handle)}</h3>
+            <p class="meta">{escape(str(source_count))} {source_label} · {escape(str(public_insight_count))} {insight_label}</p>
+          </div>
+        </div>
+        <p>Creator-level attribution profile with source records, public insight cards, topic distribution, and original-platform links.</p>
+        <div class="creator-index-card__actions">
+          <a class="button-link" href="{escape(profile_href)}">Open profile</a>
+          {external_link}
+        </div>
       </article>
     """
 
@@ -932,7 +962,10 @@ def main() -> int:
         html = creator_page(handle, creator, source_rows, insights)
         path = out / "creators" / f"{slug(handle)}.html"
         write_text(path, html)
-        creator_cards.append(card(display_handle(handle), f"{len(source_rows)} source records", f"{slug(handle)}.html"))
+        public_insight_count = sum(
+            1 for insight in insights if insight.get("creator_handle") == handle and insight.get("public")
+        )
+        creator_cards.append(creator_index_card(handle, creator, len(source_rows), public_insight_count))
 
     source_cards = []
     for source in sources:
