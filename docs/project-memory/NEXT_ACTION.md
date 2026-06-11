@@ -4,7 +4,7 @@ Last updated: 2026-06-11
 
 ## Current next action
 
-Continue launch operation after the WordPress mobile video UX deploy and Base2026 ay41 mobile video UX deploy.
+Continue launch operation after the Base2026 ay44 roadmap status compaction deploy.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,7 +12,7 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Decide GitHub staging policy for the current ay41 public UI pass: commit the audited generated public HTML together with source changes, or commit only source/generator changes and restore generated HTML before push.
+1. Stage the ay44 roadmap status compaction through the audited public allowlist, commit, and push `main`.
 2. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
 3. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
 4. Run the check-only TikTok intake pipeline against the current queue: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate. Do not auto-deploy intake output.
@@ -65,10 +65,11 @@ Task queue source of truth:
 37. Source modal loading uses a streaming `documents.jsonl` lookup so opening one record no longer waits on a full client-side index build.
 38. Source modal `Policy / Platform / Lang` metadata lives in the sticky `.transcript-dialog-controls` area below the action buttons, not in the scrollable body.
 39. Static source pages now mark source records without public evidence as `noindex,follow` and exclude them from the source index and creator latest-source cards.
+40. Roadmap execution-order status markers are compact system marks instead of large visual pills; long internal statuses render as short public labels while preserving the full status in tooltip/ARIA.
 
 ## Latest verification
 
-- Deployed release: `base2026-mobile-video-ux-ay41-20260611`.
+- Deployed release: `base2026-roadmap-status-ay44-20260611`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
 - Canonical root domain: `https://aggressorbulkit.online/`.
 - GitHub public repository: `https://github.com/offflinerpsy/base2026`.
@@ -80,6 +81,7 @@ Task queue source of truth:
 - Public export policy: `ok=true`, `include_full_transcripts=false`.
 - Publication boundary audit: `forbidden=0`, `secret_findings=0`, `needs_review=0`.
 - GitHub metadata validation: ok.
+- Live ay44 roadmap QA: desktop 1159px and mobile 390px, CSS `20260611-roadmapstatus1`, 17 compact status badges, no rendered `COMPLETED - BUILT IN-HOUSE` text, no horizontal overflow, and 0 console errors. Evidence under ignored `output/evidence/roadmap-status-ay44-live-*.png`.
 - Live ay41 mobile visual QA: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260611-mobilevideo-ay41/`.
 - Live ay41 targeted checks: Base2026 header CTA is `Check My AI Visibility`; roadmap mobile/desktop overflow offenders are 0; `/knowledge/` and the inspected source page load `20260611-mobilevideo1`.
 - WordPress launch readiness QA after lead-recipient fix: `siteReady=true`, `failedSteps=[]`, WordPress editability debt `0`, schema/indexing/analytics checks green.

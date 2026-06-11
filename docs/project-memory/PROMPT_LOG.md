@@ -2185,3 +2185,27 @@ Verification:
 Next step:
 
 - stage allowlisted public-safe files, commit, push `main`, then continue check-only TikTok intake and GSC indexing.
+
+## 2026-06-11 — Roadmap status marker compaction and ay44 deploy
+
+User marked the roadmap execution-order cards and called out that status values were visually heavier than the actual roadmap items, especially on mobile.
+
+Actions taken:
+
+- converted roadmap status rendering to compact public labels such as `Done`, `Live`, `In progress`, `Planned`, `Research`, and `Next`;
+- preserved full internal status strings in tooltip/ARIA so `Completed - Built In-House` remains available without dominating the layout;
+- split roadmap status styles from normal pill styles so statuses are 10px, 17px high, borderless, and non-wrapping;
+- kept mobile roadmap priority rows as text plus compact status, instead of stacking statuses as separate blocks;
+- regenerated public/info pages, bumped Base2026 cache-bust to `20260611-roadmapstatus1`, and deployed `base2026-roadmap-status-ay44-20260611` with `-SkipReindex`.
+
+Verification:
+
+- Python compile and JS syntax checks passed;
+- publication boundary audit passed with `forbidden=0`, `secret_findings=0`, `needs_review=0`;
+- GitHub metadata validation passed;
+- package-layout QA passed on desktop 1159px and mobile 390px;
+- live QA passed on `/knowledge/roadmap.html`: CSS `20260611-roadmapstatus1`, 17 compact status badges, no rendered `COMPLETED - BUILT IN-HOUSE` text, no horizontal overflow, and 0 console errors.
+
+Next step:
+
+- stage allowlisted public-safe files, commit, push `main`, then continue GSC indexing and check-only TikTok intake hardening.

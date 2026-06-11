@@ -262,8 +262,7 @@
   gap: 8px;
 }
 
-.roadmap-page .pill,
-.roadmap-page .status-badge {
+.roadmap-page .pill {
   display: inline-flex;
   min-height: 28px;
   align-items: center;
@@ -279,40 +278,54 @@
   text-transform: uppercase;
 }
 
+.roadmap-page .status-badge {
+  display: inline-flex;
+  min-height: 17px;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 1px 5px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ay-muted);
+  font-size: 10px;
+  font-weight: 760;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .roadmap-page .pill-accent,
 .roadmap-page .status-in-progress {
   border-color: rgba(200, 79, 7, 0.28);
-  background: var(--ay-orange-soft);
+  background: rgba(239, 107, 19, 0.08);
   color: var(--ay-orange);
 }
 
 .roadmap-page .status-live {
-  border-color: rgba(13, 91, 72, 0.24);
-  background: #e7f5ef;
+  background: rgba(13, 91, 72, 0.08);
   color: #0d5b48;
 }
 
 .roadmap-page .status-completed-built-in-house {
-  border-color: rgba(15, 111, 105, 0.24);
-  background: #e5f3f1;
+  background: rgba(15, 111, 105, 0.08);
   color: #0f6f69;
 }
 
 .roadmap-page .status-next {
-  border-color: rgba(27, 88, 116, 0.22);
-  background: #e7f3f6;
+  background: rgba(27, 88, 116, 0.08);
   color: #1b5874;
 }
 
 .roadmap-page .status-planned {
-  border-color: rgba(18, 26, 31, 0.12);
-  background: #f4efe5;
+  background: rgba(18, 26, 31, 0.06);
   color: #48545c;
 }
 
 .roadmap-page .status-research {
-  border-color: rgba(91, 72, 157, 0.22);
-  background: #f0edf8;
+  background: rgba(91, 72, 157, 0.08);
   color: #5b489d;
 }
 
@@ -540,7 +553,8 @@
   }
 
   .roadmap-page .priority-list li {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
   }
 }
 

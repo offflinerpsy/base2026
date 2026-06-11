@@ -181,8 +181,22 @@ function statusSlug(status) {
   return String(status || "planned").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
+function statusLabel(status) {
+  const raw = String(status || "Planned").trim();
+  const normalized = raw.toLowerCase();
+  if (normalized.includes("completed")) return "Done";
+  if (normalized === "in progress") return "In progress";
+  if (normalized === "research") return "Research";
+  if (normalized === "planned") return "Planned";
+  if (normalized === "live") return "Live";
+  if (normalized === "next") return "Next";
+  return raw;
+}
+
 function statusBadge(status) {
-  return `<span class="status-badge status-${statusSlug(status)}">${esc(status)}</span>`;
+  const fullStatus = String(status || "Planned").trim();
+  const label = statusLabel(fullStatus);
+  return `<span class="status-badge status-${statusSlug(fullStatus)}" title="${esc(fullStatus)}" aria-label="Status: ${esc(fullStatus)}">${esc(label)}</span>`;
 }
 
 function list(items, limit = items.length) {

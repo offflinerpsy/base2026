@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-mobile-video-ux-ay41-20260611`
+- latest deployed release: `base2026-roadmap-status-ay44-20260611`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -33,6 +33,8 @@ Current local repo state:
 
 Latest verification:
 
+- `base2026-roadmap-status-ay44-20260611` is live after compacting roadmap status markers: long values such as `Completed - Built In-House` render as tiny status marks such as `Done`, with the full status preserved in tooltip/ARIA.
+- Live ay44 roadmap QA passed on desktop 1159px and mobile 390px: CSS cache-bust `20260611-roadmapstatus1`, 17 priority status badges, no long completed-status text rendered, no horizontal overflow, and 0 console errors. Evidence is under ignored `output/evidence/roadmap-status-ay44-live-*.png`.
 - `base2026-mobile-video-ux-ay41-20260611` is live after the mobile video UX pass for `/knowledge/`: compact mobile search, source modal/source page density, roadmap fallback overflow cleanup, and header CTA alignment with the main site.
 - Live public export now has 957 source records, 1396 passages, 1692 insight cards, 1228 public insight cards, 1586 topics, and 1161 public topics.
 - Backfill queue is 0; the previously empty `tiktok-video-7648365806375488782` page now has source excerpt content, 4 related passage cards, 2 topic chips, and no empty-source text.
