@@ -3672,3 +3672,518 @@ blockquote {
     padding: 14px;
   }
 }
+
+/* Mobile video review correction: make Base2026 feel like a compact product surface. */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+    line-height: 1.38;
+  }
+
+  .site-header__bar {
+    gap: 8px;
+    padding: 10px 0;
+  }
+
+  .site-header__brand {
+    font-size: 16px;
+  }
+
+  .site-header__cta {
+    width: auto;
+    min-height: 34px;
+    margin-left: auto;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+
+  .app-shell,
+  .content-page {
+    width: min(100% - 18px, 1180px);
+    padding-top: 16px;
+    padding-bottom: 36px;
+  }
+
+  .breadcrumbs {
+    margin: 0 0 10px;
+    font-size: 12px;
+  }
+
+  .hero {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  h1,
+  .page-hero h1,
+  .creator-page .page-hero h1,
+  .doc-page .page-hero h1,
+  .support-page .page-hero h1,
+  .roadmap-page .page-hero h1 {
+    margin-bottom: 8px;
+    font-size: clamp(23px, 6.6vw, 28px);
+    line-height: 1.05;
+  }
+
+  .lead,
+  .page-hero .lead,
+  .doc-page .lead,
+  .support-page .lead,
+  .roadmap-page .lead {
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 1.34;
+  }
+
+  .eyebrow,
+  .source-kicker {
+    margin-bottom: 6px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .hero-actions {
+    gap: 7px;
+  }
+
+  .hero-actions .ay-button,
+  .hero-actions .ay-button-secondary,
+  .ay-button,
+  .ay-button-secondary,
+  .button-link {
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+
+  .hero-actions .ay-button-secondary:nth-of-type(n + 3) {
+    display: none;
+  }
+
+  .hero-card {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    box-shadow: none;
+  }
+
+  .hero-card div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 8px;
+    border-right: 1px solid var(--ay-line);
+    border-bottom: 0;
+  }
+
+  .hero-card div:last-child {
+    border-right: 0;
+  }
+
+  .hero-card strong {
+    font-size: 19px;
+    line-height: 1;
+  }
+
+  .hero-card span {
+    font-size: 11px;
+    line-height: 1.15;
+  }
+
+  .project-identity {
+    display: none;
+  }
+
+  .search-command {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+
+  .ais-SearchBox-form {
+    grid-template-columns: 1fr 38px;
+    gap: 6px;
+  }
+
+  .ais-SearchBox-input,
+  .ais-SearchBox-submit,
+  .ais-SearchBox-reset {
+    min-height: 38px;
+  }
+
+  .query-presets,
+  .selected-terms,
+  .ais-CurrentRefinements-list,
+  .result-topic-list {
+    gap: 6px;
+  }
+
+  .query-presets button,
+  .selected-term,
+  .ais-CurrentRefinements-label,
+  .ais-CurrentRefinements-category,
+  .badge,
+  .topic-chip {
+    min-height: 26px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .meili-grid {
+    gap: 10px;
+  }
+
+  .filter-panel,
+  .results-panel,
+  .content-section,
+  .page-hero {
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: none;
+  }
+
+  .results-head,
+  .panel-title {
+    gap: 8px;
+    padding-bottom: 8px;
+  }
+
+  .results-head h2,
+  .panel-title h2,
+  .content-section h2 {
+    font-size: 18px;
+    line-height: 1.12;
+  }
+
+  .snippet,
+  .content-section p,
+  .content-section li,
+  .source-excerpt-text p,
+  .passage-card__body p {
+    font-size: 14px;
+    line-height: 1.38;
+  }
+
+  .result-card,
+  .intelligence-card,
+  .passage-card {
+    padding: 11px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+
+  .transcript-dialog {
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+
+  .transcript-dialog-head {
+    gap: 7px;
+    padding: 9px;
+  }
+
+  .transcript-attribution {
+    padding: 4px 6px 4px 4px;
+  }
+
+  .transcript-attribution .avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .transcript-dialog h2 {
+    margin: 2px 0;
+    font-size: 20px;
+    line-height: 1.06;
+  }
+
+  .transcript-actions--header .button-link {
+    min-height: 31px;
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+
+  .dialog-close {
+    min-width: 34px;
+    min-height: 34px;
+    padding: 0;
+    color: transparent;
+    font-size: 0;
+  }
+
+  .dialog-close::before {
+    color: currentColor;
+    content: "×";
+    color: #fffaf0;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .record-policy-grid.record-policy-grid--header {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .record-policy-grid--header div {
+    padding: 5px 6px;
+  }
+
+  .record-policy-grid--header span {
+    margin-bottom: 1px;
+    font-size: 9px;
+  }
+
+  .record-policy-grid--header strong {
+    min-height: 16px;
+    font-size: 11.5px;
+  }
+
+  .transcript-body {
+    padding: 11px;
+    font-size: 15px;
+    line-height: 1.38;
+  }
+
+  .caption-preview {
+    min-width: 0;
+    margin-top: 10px;
+  }
+
+  .caption-preview summary {
+    min-height: 34px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .page-hero.source-page-hero {
+    display: grid;
+    gap: 8px;
+    max-width: 100%;
+    padding: 12px;
+  }
+
+  .creator-hero-line {
+    gap: 8px;
+  }
+
+  .creator-page-avatar,
+  .creator-hero-line .avatar {
+    width: 42px;
+    height: 42px;
+  }
+
+  .source-hero-main .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .source-hero-main .hero-actions .ay-button-secondary:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .source-hero-tools {
+    display: grid;
+    gap: 7px;
+  }
+
+  .source-share-actions {
+    gap: 5px;
+    justify-content: flex-start;
+  }
+
+  .source-share-actions__label {
+    display: none;
+  }
+
+  .source-share-action {
+    width: 30px;
+    height: 30px;
+  }
+
+  .source-hero-meta {
+    gap: 5px;
+    justify-content: flex-start;
+  }
+
+  .source-meta-chip {
+    min-height: 26px;
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+
+  .source-meta-chip--topics {
+    flex-basis: 100%;
+  }
+
+  .source-meta-chip--topics svg {
+    display: none;
+  }
+
+  .source-policy-note,
+  .empty-state {
+    margin-top: 10px;
+    padding: 10px;
+  }
+
+  .share-actions {
+    gap: 5px;
+    padding: 7px;
+  }
+
+  .share-actions__label {
+    flex-basis: 100%;
+    font-size: 10px;
+  }
+
+  .share-action {
+    flex: 0 0 auto;
+    min-height: 30px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .share-action svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .metric-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border: 1px solid var(--ay-line);
+    border-radius: 8px;
+  }
+
+  .metric-row div {
+    padding: 8px;
+    border-right: 1px solid var(--ay-line);
+    border-bottom: 0;
+  }
+
+  .metric-row div:last-child {
+    border-right: 0;
+  }
+
+  .metric-row strong {
+    font-size: 18px;
+  }
+
+  .metric-row span {
+    font-size: 10.5px;
+    line-height: 1.12;
+  }
+
+  .roadmap-page .summary-strip,
+  .roadmap-page .control-strip {
+    display: none;
+  }
+
+  .roadmap-page .roadmap-experience,
+  .roadmap-experience {
+    margin: 0 0 12px;
+    padding: 12px;
+    box-shadow: none;
+  }
+
+  .roadmap-page .roadmap-experience__intro,
+  .roadmap-experience__intro {
+    margin-bottom: 10px;
+  }
+
+  .roadmap-page .roadmap-experience__intro h2,
+  .roadmap-experience__intro h2 {
+    font-size: 22px;
+    line-height: 1.08;
+  }
+
+  .roadmap-page .roadmap-experience__intro p:not(.eyebrow),
+  .roadmap-experience__intro p:not(.eyebrow) {
+    font-size: 14px;
+    line-height: 1.34;
+  }
+
+  .roadmap-page .roadmap-panel {
+    padding: 10px;
+    box-shadow: none;
+  }
+
+  .roadmap-page .roadmap-panel-head {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+  }
+
+  .roadmap-page .roadmap-panel-head h2 {
+    font-size: 18px;
+  }
+
+  .roadmap-page .phase-sequence {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .roadmap-page .sequence-step {
+    grid-template-columns: 30px minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .roadmap-page .sequence-step__number {
+    font-size: 16px;
+  }
+
+  .roadmap-page .sequence-step__body strong {
+    font-size: 14px;
+  }
+
+  .roadmap-page .sequence-step__body em,
+  .roadmap-page .sequence-step__body small {
+    font-size: 11.5px;
+  }
+
+  .roadmap-page .viz-grid,
+  .roadmap-page .funding-grid,
+  .roadmap-page .priority-stack,
+  .roadmap-page .proof-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .roadmap-page .phase-detail-card {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .roadmap-page .phase-name {
+    font-size: 20px;
+  }
+
+  .roadmap-page .milestone-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .roadmap-page .milestone-card,
+  .roadmap-page .funding-card,
+  .roadmap-page .priority-column,
+  .roadmap-page .proof-card {
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+}
+
+.roadmap-page .roadmap-fallback,
+.roadmap-page .roadmap-fallback * {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.roadmap-enhanced .roadmap-page .roadmap-fallback,
+.roadmap-enhanced .roadmap-fallback {
+  display: none;
+}

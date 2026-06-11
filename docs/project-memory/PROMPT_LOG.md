@@ -2106,3 +2106,30 @@ Verification:
 Next step:
 
 - retry manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` only after the GSC daily quota resets; otherwise move to check-only TikTok intake automation.
+
+## 2026-06-11 — Mobile video UX pass and ay41 deploy
+
+User provided a mobile walkthrough video and asked to turn it into shipped fixes, not more discussion.
+
+Actions taken:
+
+- transcribed/reviewed the video evidence and converted it into a mobile UX backlog;
+- tightened WordPress homepage/services/pricing/about mobile density through source-controlled generator/CSS changes;
+- connected the Google Calendar booking link in the About contact block and Thank You CTA;
+- deployed WordPress child-theme CSS `1.5.32`, `functions.php`, and targeted page updates for `home`, `pricing`, `about`, and `thank-you-ai-visibility-audit`;
+- tightened Base2026 `/knowledge/` mobile search, source modal, source page controls, share/meta controls, and roadmap mobile/fallback behavior;
+- fixed `web/static/meili.html` so the live Base2026 search header CTA is `Check My AI Visibility`;
+- deployed `base2026-mobile-video-ux-ay41-20260611` with `-SkipReindex` after the data-preserving CSS/template pass.
+
+Verification:
+
+- WordPress native audit: 69 checks, 0 failures;
+- WordPress launch-readiness QA: `READY_FOR_GSC_GTM_BROWSER_ACTIONS`, 0 failed steps;
+- Base2026 publication boundary audit: `forbidden=0`, `secret_findings=0`, `needs_review=0`;
+- GitHub metadata validation: ok;
+- final live mixed visual QA: 66 checks, 0 failures; evidence under `output/evidence/mobile-visual-qa-live-20260611-mobilevideo-ay41/`;
+- targeted live checks: Base2026 header CTA is `Check My AI Visibility`, roadmap overflow offenders are 0, `/knowledge/sources/tiktok-video-7648365806375488782.html` has source excerpt content, 4 passage cards, 2 topic chips, and no empty-source text.
+
+Next step:
+
+- settle GitHub staging policy for the ay41 generated public HTML before pushing; then continue GSC manual indexing after quota reset and check-only TikTok intake hardening.

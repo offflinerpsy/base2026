@@ -8,7 +8,7 @@ from html import escape
 from pathlib import Path
 
 
-STYLE_VERSION = "20260610-ay37"
+STYLE_VERSION = "20260611-mobilevideo1"
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
@@ -277,7 +277,7 @@ def page_shell(
           {base2026_dropdown(relative_root, current)}
           <a class="site-header__link" href="/about/">About</a>
         </nav>
-        <a class="site-header__cta" href="/ai-visibility-audit/">Get My Free Roadmap</a>
+        <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
       </div>
     </header>
     <main id="content" class="app-shell content-page">

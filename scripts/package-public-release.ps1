@@ -10,7 +10,7 @@ param(
 $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
-$CacheBust = "20260610-ay37"
+$CacheBust = "20260611-mobilevideo1"
 
 if (-not $ReleaseName) {
   $ReleaseName = "base2026-public-" + (Get-Date -Format "yyyyMMdd-HHmmss")

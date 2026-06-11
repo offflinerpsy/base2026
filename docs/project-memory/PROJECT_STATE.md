@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-card-backfill-ay38-20260611`
+- latest deployed release: `base2026-mobile-video-ux-ay41-20260611`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -33,10 +33,10 @@ Current local repo state:
 
 Latest verification:
 
-- `base2026-card-backfill-ay38-20260611` is live after closing the remaining source-with-passages/no-card queue, regenerating the public export, and redeploying Base2026.
+- `base2026-mobile-video-ux-ay41-20260611` is live after the mobile video UX pass for `/knowledge/`: compact mobile search, source modal/source page density, roadmap fallback overflow cleanup, and header CTA alignment with the main site.
 - Live public export now has 957 source records, 1396 passages, 1692 insight cards, 1228 public insight cards, 1586 topics, and 1161 public topics.
-- Backfill queue is 0; the previously empty `tiktok-video-7648365806375488782` page now has 2 public insight cards and no empty-source text.
-- Live ay38 mobile visual QA passed: 66 route/viewport checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260611-ay38/`.
+- Backfill queue is 0; the previously empty `tiktok-video-7648365806375488782` page now has source excerpt content, 4 related passage cards, 2 topic chips, and no empty-source text.
+- Live ay41 mobile visual QA passed: 66 WordPress/Base2026 route/viewport checks, 0 failures; roadmap overflow offenders are 0 on mobile/desktop; evidence under ignored `output/evidence/mobile-visual-qa-live-20260611-mobilevideo-ay41/`.
 - WordPress launch readiness QA after the lead-recipient fix passed with `siteReady=true`, `failedSteps=[]`, editability debt `0`, indexing/schema green, and analytics consent/events green.
 - Live full mixed WordPress/Base2026 visual QA passed after ay37: 66 route/viewport checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-ay37-20260610/`.
 - Base2026 static SEO metadata audit passed locally: 3294 HTML files with title, description, canonical URL, one H1, and JSON-LD schema present.

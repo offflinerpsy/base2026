@@ -68,7 +68,7 @@ PAGE_MAP = {
 
 
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
-STYLE_VERSION = "20260610-ay37"
+STYLE_VERSION = "20260611-mobilevideo1"
 
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
@@ -488,7 +488,7 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
           {base2026_dropdown(".", current_nav)}
           <a class="site-header__link" href="/about/">About</a>
         </nav>
-        <a class="site-header__cta" href="/ai-visibility-audit/">Get My Free Roadmap</a>
+        <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
       </div>
     </header>
     <main id="content" class="app-shell content-page {page_class}">
