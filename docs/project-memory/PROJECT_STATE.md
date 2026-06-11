@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-sitemap-index-ay31-20260610`
+- latest deployed release: `base2026-mobile-overflow-fix-ay37-20260610`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -33,6 +33,11 @@ Current local repo state:
 
 Latest verification:
 
+- `base2026-mobile-overflow-fix-ay37-20260610` is live after GitHub/open-source readiness cleanup, generated Methodology/Creator Correction pages, source-page mobile overflow fix, and static asset cache-bust `20260610-ay37`.
+- Live full mixed WordPress/Base2026 visual QA passed after ay37: 66 route/viewport checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-ay37-20260610/`.
+- Base2026 static SEO metadata audit passed locally: 3294 HTML files with title, description, canonical URL, one H1, and JSON-LD schema present.
+- Live `/knowledge/static/styles.css?v=20260610-ay37` and `/knowledge/static/meili.js?v=20260610-ay37` return `Content-Encoding: gzip`, `Vary: Accept-Encoding`, and long-lived immutable cache headers.
+- GitHub repository metadata now has homepage `https://aggressorbulkit.online/knowledge/` and topics `ai-search`, `seo`, `geo`, `aeo`, `meilisearch`, `tiktok`, `source-intelligence`, and `public-knowledge-base`.
 - public proxy search for `AI Overviews`: 922 hits
 - public export policy validation passed: 957 source records, 1392 passages, 1548 insight cards, 1097 public insight cards, 1449 topics, 1040 public topics
 - live release verified: `base2026-site-funnel-clean-ay16`
@@ -83,6 +88,8 @@ Latest verification:
 - Live ay29c QA passed: CSS/JS cache-bust `20260610-ay29c`; old identity copy absent; topic share label has no SVG/sparkle path; search result TikTok badge and source-modal TikTok mark align with creator/date; source modal opens successfully and uses `Source excerpt`; no horizontal overflow.
 - `base2026-modal-meta-cache-ay33-20260610` is live after refreshing the source-modal metadata control-area release with cache-bust `20260610-modalmeta3`.
 - Live ay33 modal meta QA passed: CSS/JS cache-bust `20260610-modalmeta3`; header meta parent is `.transcript-dialog-controls`; header has 3 meta cards; modal body has 0 policy grids; sticky header remains stable during modal body scroll; desktop/mobile checks have no horizontal overflow or console errors.
+- `base2026-source-hero-ay35-20260610` is live after hydrating `tiktok-video-7648365806375488782`, moving source-page share/meta controls into the hero, and reindexing Meilisearch with 1396 passages. `/knowledge/` now loads Base2026 static assets with cache-bust `20260610-sourcehero1`.
+- Live ay35 source-page QA passed for `/knowledge/sources/tiktok-video-7648365806375488782.html?qa=sourcehero1`: old empty-source state absent, excerpt present, `.source-meta-strip` absent, compact hero share/meta controls present, desktop/mobile overflow false, console errors 0.
 - `base2026-sitemap-index-ay31-20260610` remains the sitemap/indexing release after changing `/knowledge/sitemap.xml` from a single large URL set into a sitemap index with three child sitemaps under `/knowledge/sitemaps/`.
 - Google Search Console accepted the updated Base2026 sitemap on 2026-06-10: type `Sitemap`, status `Success`, last read `2026-06-10`, discovered pages `1,080`.
 - Live sitemap-index QA passed: root tag `sitemapindex`, child sitemap counts `400`, `400`, and `280`, total `1,080` URLs; consolidated WordPress/Base2026 indexing/schema QA passed with 104 checks and 0 failures.

@@ -4,7 +4,7 @@ Last updated: 2026-06-10
 
 ## Current next action
 
-Continue live pipeline operation after the Base2026 ay29c launch deploy and MacBook check-only automation enablement.
+Continue live pipeline operation after the Base2026 ay37 GitHub/open-source readiness deploy, static asset gzip/cache optimization, and mobile source-card overflow fix.
 
 Active phase: pipeline hardening and launch deployment after the MacBook insight-card backfill completion.
 
@@ -12,12 +12,13 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Request indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after Google Search Console daily quota resets. Home and `/knowledge/` are already indexed; `/services/` was added to the priority crawl queue on 2026-06-10.
-2. Capture the first GSC/GA4 baseline after Google has processed the submitted WordPress and Base2026 sitemaps.
-3. Process the newly inventoried check-only TikTok queue through the safe local pipeline: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate.
-4. Keep public promotion gated: only `approved` and evidence-verified insight-card candidates can enter the public export.
-5. Keep full automated deploy behind explicit release checks; the Mac launchd job is check-only and does not publish.
-6. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`; keep generated/private artifacts out of commits.
+1. Commit and push the ay37 public-safe GitHub readiness bundle after the final boundary audit and staged-file review.
+2. Request indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after Google Search Console daily quota resets. Home and `/knowledge/` are already indexed; `/services/` was added to the priority crawl queue on 2026-06-10.
+3. Capture the first GSC/GA4 baseline after Google has processed the submitted WordPress and Base2026 sitemaps.
+4. Process the newly inventoried check-only TikTok queue through the safe local pipeline: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate.
+5. Keep public promotion gated: only `approved` and evidence-verified insight-card candidates can enter the public export.
+6. Keep full automated deploy behind explicit release checks; the Mac launchd job is check-only and does not publish.
+7. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`; keep generated/private artifacts out of commits.
 
 Task queue source of truth:
 
@@ -63,16 +64,27 @@ Task queue source of truth:
 36. Search cards and source modal attribution show the TikTok platform mark in the same creator/date row.
 37. Source modal loading uses a streaming `documents.jsonl` lookup so opening one record no longer waits on a full client-side index build.
 38. Source modal `Policy / Platform / Lang` metadata lives in the sticky `.transcript-dialog-controls` area below the action buttons, not in the scrollable body.
+39. Static source pages now mark source records without public evidence as `noindex,follow` and exclude them from the source index and creator latest-source cards.
 
 ## Latest verification
 
-- Deployed release: `base2026-modal-meta-cache-ay33-20260610`.
+- Deployed release: `base2026-mobile-overflow-fix-ay37-20260610`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
 - Canonical root domain: `https://aggressorbulkit.online/`.
 - GitHub public repository: `https://github.com/offflinerpsy/base2026`.
 - Default branch: `main`.
 - Launch commit: `d025d71 launch: stage Base2026 public release`.
-- Local public export ready for deploy: 957 source records, 1392 passages, 1690 insight cards, 1226 public insight cards, 1584 topics, 1159 public topics.
+- Live public export: 957 source records, 1396 passages, 1690 insight cards, 1226 public insight cards, 1584 topics, 1159 public topics.
+- Live repair for `/knowledge/sources/tiktok-video-7648365806375488782.html`: platform caption was downloaded from TikTok subtitles, imported as public excerpt/passages, and deployed in `base2026-source-hero-ay35-20260610`.
+- Source-page hero/share release: `base2026-mobile-overflow-fix-ay37-20260610`; CSS/JS cache-bust `20260610-ay37`; package sitemap has 1078 public URLs and includes the repaired source page.
+- Live ay37 mobile visual QA: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-ay37-20260610/`.
+- Live ay37 static asset headers: CSS and JS return gzip plus immutable cache headers under `/knowledge/static/`.
+- Empty source-page gate: two older `@tjrobertson52` records with no usable audio/text remain private-review/noindex candidates and are excluded from public source listings and child sitemaps.
+- Live `/knowledge/sources/tiktok-video-7648365806375488782.html?qa=sourcehero1`: `.source-page-hero`, `.source-share-actions`, and `.source-hero-meta` present; `.source-meta-strip` absent; `OpenAI just announced ChatGPT sites` excerpt present; old empty-source text absent.
+- Live ay35 browser QA: desktop/mobile overflow false, console errors 0, source hero desktop height 283px at 1159px viewport, source hero metadata row height 30px.
+- Live ay35 evidence:
+  - `output/evidence/source-hero-ay35-live/desktop.png`
+  - `output/evidence/source-hero-ay35-live/mobile.png`
 - Backfill queue: 0 queued sources after GPT/Codex review; 45 sources marked in ignored `.planning/reviewed-no-card-sources.jsonl` as reviewed with no promotion-safe public card.
 - Live server manifest confirms 1690 insight cards and 1226 public insight cards.
 - Pending insight-card candidates are closed: 150 approved, 1 rejected for missing evidence, 1 parked as `needs_human`; 0 `pending` insight-card candidates remain.
@@ -189,7 +201,7 @@ Task queue source of truth:
 
 1. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.
 2. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
-3. Run the next checked local queue step for the 57 queued transcripts discovered by Mac launchd check-only inventory.
+3. Run the next checked local queue step for the queued transcripts discovered by Mac launchd check-only inventory.
 4. Keep the one `needs_human` insight-card candidate private until rewritten or rejected.
 5. Convert TikTok refresh from check-only to a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
 6. Re-run publication boundary audit before every future GitHub push.

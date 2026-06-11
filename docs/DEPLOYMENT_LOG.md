@@ -679,3 +679,35 @@ desktop/mobile overflow: false
 console errors: 0
 nginx -t: pass
 ```
+
+## 2026-06-10 — ay37 GitHub SEO Readiness and Mobile Overflow Fix
+
+Release:
+
+```text
+base2026-mobile-overflow-fix-ay37-20260610
+```
+
+Outcome:
+
+- generated Methodology and Creator Correction / Removal pages from `docs/public-pages/`;
+- synchronized `web/static/index.html` with the current public search UI;
+- fixed mobile source-page insight-card overflow by allowing card grids to shrink below 340px;
+- bumped Base2026 cache-bust to `20260610-ay37`;
+- added `/knowledge/static/` nginx asset optimization with gzip, `Vary: Accept-Encoding`, and immutable cache headers;
+- updated GitHub repository metadata with homepage and topics;
+- deployed release to VPS through SSH alias `geo`;
+- reindexed Meilisearch with 1396 passages.
+
+Verification:
+
+```text
+server current: /var/www/base2026-knowledge/releases/base2026-mobile-overflow-fix-ay37-20260610
+Base2026 CSS/JS cache-bust: 20260610-ay37
+public export policy: ok, include_full_transcripts=false
+local static SEO metadata audit: 3294 HTML files, 0 missing title/description/canonical/H1/schema
+live CSS/JS headers: Content-Encoding gzip, Vary Accept-Encoding, immutable cache
+live visual QA: 66 checks, 0 failures
+evidence: output/evidence/mobile-visual-qa-live-ay37-20260610/
+nginx -t: pass
+```

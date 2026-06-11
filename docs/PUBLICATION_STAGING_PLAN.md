@@ -42,6 +42,7 @@ Scripts:
 - `scripts/meili-index-public.py`
 - `scripts/package-public-release.ps1`
 - `scripts/deploy-public-vps.ps1`
+- `scripts/server-patch-nginx-base2026.py`
 - `scripts/apply-license.ps1`
 - `scripts/preflight-github-launch.ps1`
 - `scripts/stage-public-files.ps1`

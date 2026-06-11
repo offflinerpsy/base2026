@@ -8,6 +8,13 @@ from pathlib import Path
 
 
 PAGE_MAP = {
+    "00_METHODOLOGY.md": {
+        "slug": "methodology.html",
+        "eyebrow": "Methodology",
+        "title": "Base2026 Methodology",
+        "lead": "How Base2026 turns public short-form expert videos into attributed, searchable source records without replacing creator channels.",
+        "body_class": "doc-page",
+    },
     "01_ROADMAP.md": {
         "slug": "roadmap.html",
         "eyebrow": "Project roadmap",
@@ -50,11 +57,18 @@ PAGE_MAP = {
         "lead": "A working map for the public Base2026 website and future agent handoffs.",
         "body_class": "doc-page",
     },
+    "07_CREATOR_CORRECTION_REMOVAL.md": {
+        "slug": "opt-out.html",
+        "eyebrow": "Creator correction / removal",
+        "title": "Creator Correction / Removal",
+        "lead": "How creators can request attribution fixes, excerpt corrections, record removal, or future source suppression.",
+        "body_class": "doc-page",
+    },
 }
 
 
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
-STYLE_VERSION = "20260610-modalmeta3"
+STYLE_VERSION = "20260610-ay37"
 
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),

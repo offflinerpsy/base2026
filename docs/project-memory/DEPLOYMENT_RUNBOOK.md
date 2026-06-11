@@ -7,12 +7,14 @@ Current public path:
 - WordPress root: `/var/www/alex-yarosh`
 - server current symlink: `/var/www/base2026-knowledge/current`
 - server releases: `/var/www/base2026-knowledge/releases/`
-- latest deployed release: `base2026-modal-meta-cache-ay33-20260610`
+- latest deployed release: `base2026-source-hero-ay35-20260610`
 - SSL certificate: Let's Encrypt `aggressorbulkit.online`, domains `aggressorbulkit.online` and `www.aggressorbulkit.online`, auto-renewed by `certbot.timer`
 
 ## Domain and SSL
 
 The nginx site `alex-yarosh` serves WordPress at the root and aliases Base2026 under `/knowledge/`.
+
+The `/knowledge/static/` location should be declared before the broader `/knowledge/` alias and should set long-lived immutable cache headers plus gzip for CSS, JS, JSON, and SVG assets. The broader `/knowledge/` location serves HTML and fallback routing.
 
 Canonical domain:
 
@@ -66,14 +68,23 @@ The script packages the release, uploads the zip, unpacks to a new release folde
 2. Unzip to `/var/www/base2026-knowledge/releases/<release-name>`.
 3. Keep the browser pointed at `/knowledge-search`.
 4. Ensure nginx proxies `/knowledge-search/multi-search` to Meilisearch and injects the public search-key Authorization header server-side.
-5. Verify `web/static/documents.jsonl` exists.
-6. Verify `web/methodology.html`, `web/opt-out.html`, `web/roadmap.html`, `web/privacy.html`, `web/source-policy.html`, and `web/support.html` exist.
-7. Switch `/var/www/base2026-knowledge/current` symlink with `ln -sfnT` so the symlink target is replaced, not nested.
-8. Run `nginx -t`.
-9. Reload nginx.
-10. Verify `/knowledge/`, `/knowledge/roadmap.html`, `/knowledge/privacy.html`, `/knowledge/source-policy.html`, `/knowledge/support.html`, `/knowledge/methodology.html`, `/knowledge/opt-out.html`, `/knowledge/static/documents.jsonl`, and `/knowledge-search/multi-search`.
+5. Ensure nginx serves `/knowledge/static/` with immutable cache headers and gzip for CSS/JS/JSON/SVG assets.
+6. Verify `web/static/documents.jsonl` exists.
+7. Verify `web/methodology.html`, `web/opt-out.html`, `web/roadmap.html`, `web/privacy.html`, `web/source-policy.html`, and `web/support.html` exist.
+8. Switch `/var/www/base2026-knowledge/current` symlink with `ln -sfnT` so the symlink target is replaced, not nested.
+9. Run `nginx -t`.
+10. Reload nginx.
+11. Verify `/knowledge/`, `/knowledge/roadmap.html`, `/knowledge/privacy.html`, `/knowledge/source-policy.html`, `/knowledge/support.html`, `/knowledge/methodology.html`, `/knowledge/opt-out.html`, `/knowledge/static/documents.jsonl`, and `/knowledge-search/multi-search`.
+12. Verify live compression/cache headers:
 
-11. Reindex Meilisearch from the deployed release data when `passages.jsonl`, index settings, or topic fields changed.
+```bash
+curl -I -H 'Accept-Encoding: gzip, br' https://aggressorbulkit.online/knowledge/static/styles.css
+curl -I -H 'Accept-Encoding: gzip, br' https://aggressorbulkit.online/knowledge/static/meili.js
+```
+
+Both static asset checks should show `Content-Encoding: gzip`, `Vary: Accept-Encoding`, and a long-lived `Cache-Control`.
+
+13. Reindex Meilisearch from the deployed release data when `passages.jsonl`, index settings, or topic fields changed.
 
 Current server reindex command shape:
 

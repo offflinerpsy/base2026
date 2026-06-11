@@ -8,7 +8,7 @@ from html import escape
 from pathlib import Path
 
 
-STYLE_VERSION = "20260610-modalmeta3"
+STYLE_VERSION = "20260610-ay37"
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
@@ -89,6 +89,9 @@ def icon_svg(name: str) -> str:
         "link": '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.2 14.8a1 1 0 0 1 0-1.4l4.2-4.2a1 1 0 0 1 1.4 1.4l-4.2 4.2a1 1 0 0 1-1.4 0z"/><path d="M8.4 18.4a4.2 4.2 0 0 1-3-7.2l2.1-2.1a1 1 0 0 1 1.4 1.4l-2.1 2.1a2.2 2.2 0 1 0 3.1 3.1l2.1-2.1a1 1 0 0 1 1.4 1.4l-2.1 2.1a4.2 4.2 0 0 1-2.9 1.3z"/><path d="M15.8 13.2a1 1 0 0 1-.7-1.7l2.1-2.1a2.2 2.2 0 0 0-3.1-3.1L12 8.4A1 1 0 0 1 10.6 7l2.1-2.1a4.2 4.2 0 0 1 5.9 5.9l-2.1 2.1a1 1 0 0 1-.7.3z"/></svg>',
         "copy": '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 7a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V7zm3-1a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-6z"/><path d="M4 11a3 3 0 0 1 3-3 1 1 0 1 1 0 2 1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1 1 1 0 1 1 2 0 3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6z"/></svg>',
         "print": '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h10a2 2 0 0 1 2 2v3h1a3 3 0 0 1 3 3v5a2 2 0 0 1-2 2h-2v1a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-1H3a2 2 0 0 1-2-2v-5a3 3 0 0 1 3-3h1V5a2 2 0 0 1 2-2zm0 5h10V5H7v3zm0 8v3h10v-3H7zm12 0h2v-5a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v5h2v-1a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v1z"/></svg>',
+        "calendar": '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h1V3a1 1 0 0 1 1-1zm13 8H4v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8zM5 6a1 1 0 0 0-1 1v1h16V7a1 1 0 0 0-1-1H5z"/></svg>',
+        "card": '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V5zm3-1a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H7zm2 4h6a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2zm0 4h6a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2zm0 4h3a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2z"/></svg>',
+        "topic": '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5a3 3 0 0 1 3-3h3.6a3 3 0 0 1 2.1.9l8.4 8.4a3 3 0 0 1 0 4.2l-5.6 5.6a3 3 0 0 1-4.2 0l-8.4-8.4A3 3 0 0 1 2 10.6V7a3 3 0 0 1 2-2zm3-.9A1 1 0 0 0 6 5v5.6a1 1 0 0 0 .3.7l8.4 8.4a1 1 0 0 0 1.4 0l5.6-5.6a1 1 0 0 0 0-1.4L13.3 4.3a1 1 0 0 0-.7-.3H7z"/><path d="M8.5 8.8a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6z"/></svg>',
     }
     return icons.get(name, "")
 
@@ -118,6 +121,27 @@ def share_action_bar(label: str = "Share this page") -> str:
         <span class="share-actions__status" data-share-status aria-live="polite"></span>
       </section>
     """
+
+
+def source_share_action_bar(label: str = "Share source record") -> str:
+    actions = [
+        ("share", "share", "Share", "Share source record"),
+        ("copy-link", "link", "Copy link", "Copy source link"),
+        ("copy-citation", "copy", "Copy citation", "Copy citation"),
+        ("print", "print", "Save PDF", "Save as PDF"),
+    ]
+    buttons = "".join(
+        f'<button type="button" class="source-share-action" data-share-action="{escape(action)}" '
+        f'aria-label="{escape(aria)}" title="{escape(title)}">{icon_svg(icon)}</button>'
+        for action, icon, title, aria in actions
+    )
+    return (
+        f'<div class="source-share-actions" data-share-root aria-label="{escape(label)}">'
+        f'<span class="source-share-actions__label">{escape(label)}</span>'
+        f'{buttons}'
+        '<span class="share-actions__status source-share-actions__status" data-share-status aria-live="polite"></span>'
+        '</div>'
+    )
 
 
 def info_hint(label: str, text: str) -> str:
@@ -367,6 +391,14 @@ def source_href(source: dict, prefix: str = "../sources") -> str:
     return f"{prefix}/{slug(source.get('item_id') or source.get('source_id'))}.html"
 
 
+def source_has_public_evidence(source: dict, passages: list[dict] | None = None, insights: list[dict] | None = None) -> bool:
+    if (source.get("excerpt") or "").strip():
+        return True
+    if passages:
+        return True
+    return any(row.get("public") for row in (insights or []))
+
+
 def creator_href(handle: str, prefix: str = "../creators") -> str:
     return f"{prefix}/{slug(handle)}.html"
 
@@ -408,7 +440,11 @@ def creator_page(handle: str, creator: dict, sources: list[dict], insights: list
     visible_handle = display_handle(handle)
     safe_handle = escape(visible_handle)
     avatar_html = creator_avatar_markup(visible_handle, creator.get("avatar_url") or "")
-    latest = sorted(sources, key=lambda row: row.get("published_at") or "", reverse=True)[:12]
+    latest = [
+        row
+        for row in sorted(sources, key=lambda row: row.get("published_at") or "", reverse=True)
+        if source_has_public_evidence(row)
+    ][:12]
     public_insights = [row for row in insights if row.get("creator_handle") == handle and row.get("public")]
     topic_counts: dict[str, int] = defaultdict(int)
     topic_labels: dict[str, str] = {}
@@ -477,11 +513,13 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
     handle = display_handle(source.get("creator_handle") or source.get("handle") or "Unknown creator")
     avatar_html = creator_avatar_markup(handle, source.get("avatar_url") or "")
     public_insights = [row for row in insights if row.get("source_id") == source_id and row.get("public")]
+    has_public_evidence = source_has_public_evidence(source, passages, public_insights)
     source_topic_rows = [
         (topic_id, label, 0)
         for topic_id, label in zip(source.get("topics") or [], source.get("topic_labels") or [])
     ]
     topic_html = topic_chips(source_topic_rows)
+    compact_topic_html = topic_html or '<span class="source-meta-empty">No public topics</span>'
     passage_html = "".join(
         f"""
         <article class="passage-card">
@@ -520,24 +558,25 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
     return page_shell(
         f"{handle} source record | Base2026",
         f"""
-      <section class="page-hero">
-        <p class="eyebrow">Source record</p>
-        <div class="creator-hero-line">{avatar_html}<h1>{escape(source_record_heading(source))}</h1></div>
-        <p class="lead">{escape(source_display_lead(source))}</p>
-        <div class="hero-actions">
-          <a class="ay-button" href="{escape(source.get('source_url') or '#')}" target="_blank" rel="noreferrer">Open original</a>
-          <a class="ay-button-secondary" href="{escape(creator_href(handle))}">Creator page</a>
-          <a class="ay-button-secondary" href="../opt-out.html">Correction or opt-out</a>
+      <section class="page-hero source-page-hero">
+        <div class="source-hero-main">
+          <p class="eyebrow">Source record</p>
+          <div class="creator-hero-line">{avatar_html}<h1>{escape(source_record_heading(source))}</h1></div>
+          <p class="lead">{escape(source_display_lead(source))}</p>
+          <div class="hero-actions">
+            <a class="ay-button" href="{escape(source.get('source_url') or '#')}" target="_blank" rel="noreferrer">Open original</a>
+            <a class="ay-button-secondary" href="{escape(creator_href(handle))}">Creator page</a>
+            <a class="ay-button-secondary" href="../opt-out.html">Correction or opt-out</a>
+          </div>
         </div>
-      </section>
-      {share_action_bar("Share source record")}
-      <section class="source-meta-strip" aria-label="Source metadata">
-        <div><span>Published</span><strong>{escape(source.get('published_date') or 'No date')}</strong></div>
-        <div><span>Platform</span><strong>{platform_icon_only(source.get('platform') or source.get('source_type'))}</strong></div>
-        <div><span>Insights</span><strong>{len(public_insights)}</strong></div>
-        <div class="source-meta-strip__topics">
-          <span>Topics</span>
-          <div class="topic-chip-list">{topic_html or '<p class="meta">No public topics detected yet.</p>'}</div>
+        <div class="source-hero-tools">
+          {source_share_action_bar("Share source record")}
+          <div class="source-hero-meta" aria-label="Source metadata">
+            <span class="source-meta-chip" title="Published date" aria-label="Published {escape(source.get('published_date') or 'No date')}">{icon_svg("calendar")}<span>{escape(source.get('published_date') or 'No date')}</span></span>
+            <span class="source-meta-chip source-meta-chip--platform" title="Platform" aria-label="TikTok source">{platform_icon_only(source.get('platform') or source.get('source_type'))}</span>
+            <span class="source-meta-chip" title="Public insight cards" aria-label="{len(public_insights)} public insight cards">{icon_svg("card")}<span>{len(public_insights)}</span></span>
+            <span class="source-meta-chip source-meta-chip--topics" title="Topics" aria-label="Topics">{icon_svg("topic")}<span class="topic-chip-list">{compact_topic_html}</span></span>
+          </div>
         </div>
       </section>
       <section class="content-section">
@@ -559,6 +598,7 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
       </section>
       <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
         """,
+        robots="index,follow" if has_public_evidence else "noindex,follow",
         current="sources",
         description=f"Attributed Base2026 source record for {handle}. Includes original source link, publication date, topic context, and public evidence excerpt.",
         canonical_path=f"sources/{slug(source.get('item_id') or source_id)}.html",
@@ -805,17 +845,20 @@ def main() -> int:
     source_cards = []
     for source in sources:
         source_key = source.get("source_id") or ""
+        source_passages = passages_by_source.get(source_key, [])
+        source_insights = insights_by_source.get(source_key, [])
         page_name = f"{slug(source.get('item_id') or source_key)}.html"
-        html = source_page(source, passages_by_source.get(source_key, []), insights_by_source.get(source_key, []))
+        html = source_page(source, source_passages, source_insights)
         write_text(out / "sources" / page_name, html)
-        source_cards.append(
-            card(
-                source_display_title(source),
-                source.get("excerpt") or "",
-                page_name,
-                display_handle(source.get("creator_handle") or source.get("handle")),
+        if source_has_public_evidence(source, source_passages, source_insights):
+            source_cards.append(
+                card(
+                    source_display_title(source),
+                    source.get("excerpt") or "",
+                    page_name,
+                    display_handle(source.get("creator_handle") or source.get("handle")),
+                )
             )
-        )
 
     topic_cards = []
     public_topics = [topic for topic in topics if topic.get("public")]

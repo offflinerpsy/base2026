@@ -1986,3 +1986,92 @@ Verification:
 - desktop/mobile horizontal overflow: false;
 - console errors: `0`;
 - nginx verification: pass.
+
+## 2026-06-10 — Empty source page diagnosis and targeted hydration repair
+
+User reported that `/knowledge/sources/tiktok-video-7648365806375488782.html` was empty on live.
+
+Actions taken:
+
+- confirmed live page still showed the empty-source state;
+- traced the cause to a `generic_items` row with no `generic_documents`/`chunks`, while the TikTok video had available `eng-US` platform subtitles;
+- downloaded the platform subtitle locally, created a cleaned caption transcript, and hydrated the local SQLite KB with one document and four chunks;
+- regenerated the public export with `--auto-promote-insights` so public insight cards did not collapse;
+- added a source-page evidence gate in `scripts/generate-public-pages.py`: source records with no excerpt, no public passages, and no public insight cards are now `noindex,follow` and excluded from source index / creator latest-source cards;
+- regenerated static pages and sitemap index/children locally.
+- packaged ignored release artifact `base2026-source-hydration-ay34-20260610.zip` without deploying.
+
+Verification:
+
+- public export policy: `ok=true`, `include_full_transcripts=false`;
+- local export: 957 source records, 1396 passages, 1690 insight cards, 1226 public insight cards, 1584 topics, 1159 public topics;
+- local repaired page contains `OpenAI just announced ChatGPT sites`;
+- local repaired page no longer contains `No public excerpt is available`;
+- child sitemap includes `tiktok-video-7648365806375488782.html`;
+- packaged release sitemap has 1078 URLs; the one-count difference from the local web root is expected because the deploy package serves `meili.html` as `/knowledge/index.html`;
+- two older no-audio `@tjrobertson52` source-review pages are excluded from child sitemaps;
+- publication boundary audit: `forbidden=0`, `secret_findings=0`;
+- GitHub metadata validation: `ok`.
+
+Next step:
+
+- package and deploy the repaired Base2026 public export, then verify the live page has the excerpt and no empty-state text.
+
+## 2026-06-10 — Source page hero metadata/share consolidation
+
+User selected the source-page metadata strip on `/knowledge/sources/tiktok-video-7648365806375488782.html` and asked to move the wide `Published / Platform / Insights / Topics` strip upward into the source-record hero, with share controls also raised and reduced to neutral icon controls.
+
+Actions taken:
+
+- added source-page-specific compact share controls in `scripts/generate-public-pages.py`;
+- moved source metadata into `.source-hero-meta` inside `.source-page-hero`;
+- removed the separate `.source-meta-strip` from generated source pages;
+- kept source share actions as icon-only controls with accessible labels and orange hover/focus color;
+- bumped Base2026 static cache-bust to `20260610-sourcehero1`;
+- packaged and deployed `base2026-source-hero-ay35-20260610`;
+- reindexed Meilisearch with 1396 passages.
+
+Verification:
+
+- deploy script reported `deployed=base2026-source-hero-ay35-20260610`;
+- deploy script reported `indexed=1396 index=base2026_public_tiktok`;
+- live source page contains `.source-page-hero`, `.source-share-actions`, and `.source-hero-meta`;
+- live source page has no `.source-meta-strip`;
+- live source page contains `OpenAI just announced ChatGPT sites`;
+- live source page does not contain `No public excerpt is available`;
+- live desktop/mobile browser QA: overflow false, console errors 0;
+- evidence:
+  - `output/evidence/source-hero-ay35-live/desktop.png`;
+  - `output/evidence/source-hero-ay35-live/mobile.png`.
+
+## 2026-06-10 — GitHub SEO readiness, static compression, and ay37 deploy
+
+User asked to finish Base2026 GitHub/open-source readiness, clean up SEO/performance, deploy, and push the public-safe project state.
+
+Actions taken:
+
+- updated `README.md` for the public GitHub repo with live demo, current data counts, maintainer/contact, public boundary, and contribution areas;
+- added generated-source Markdown pages for Base2026 Methodology and Creator Correction / Removal under `docs/public-pages/`;
+- updated `scripts/generate-info-pages.py` so Methodology and opt-out/correction pages are generated consistently with the other public info pages;
+- synchronized `web/static/index.html` with the current public search UI;
+- added metadata/canonical/schema/noindex to the roadmap data-viz test page;
+- fixed mobile source-page `Public Insight Cards` overflow by letting card grids shrink below 340px;
+- bumped Base2026 static cache-bust to `20260610-ay37`;
+- updated server nginx `/knowledge/static/` handling for gzip, `Vary: Accept-Encoding`, and immutable cache headers;
+- updated GitHub repo metadata: homepage `https://aggressorbulkit.online/knowledge/`, description, and topics;
+- deployed `base2026-mobile-overflow-fix-ay37-20260610` through the repeatable VPS deploy script;
+- reindexed Meilisearch with 1396 passages.
+
+Verification:
+
+- public export policy: ok, `include_full_transcripts=false`;
+- publication boundary audit: `forbidden=0`, `secret_findings=0`, `needs_review=0`;
+- GitHub metadata validation: ok;
+- local static SEO metadata audit: 3294 HTML files, 0 missing title/description/canonical/H1/schema;
+- live root/methodology/opt-out/source smoke: title, description, canonical, schema, and one H1 present; old empty-source text absent;
+- live CSS/JS headers: gzip plus immutable cache headers;
+- full live mobile visual QA: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-ay37-20260610/`.
+
+Next step:
+
+- stage the public-safe allowlisted paths, commit, push `main` to GitHub, then resume GSC priority indexing and check-only TikTok pipeline work.

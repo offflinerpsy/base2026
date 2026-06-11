@@ -79,6 +79,7 @@ $StagePaths = @(
   "scripts/package-public-release.ps1",
   "scripts/preflight-github-launch.ps1",
   "scripts/register-hermes-tiktok-check-task.ps1",
+  "scripts/server-patch-nginx-base2026.py",
   "scripts/stage-public-files.ps1",
   "scripts/tiktok-backfill-inventory.ps1",
   "scripts/tiktok-caption-browser-extract.mjs",

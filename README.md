@@ -1,10 +1,10 @@
-﻿# Base2026 Video Source Intelligence
+# Base2026 Video Source Intelligence
 
-Base2026 is a local-first, public-facing knowledge system for short-form creator videos.
+Base2026 is a local-first, public-facing source intelligence system for short-form expert videos.
 
 The current public demo focuses on TikTok creators talking about SEO, GEO, AEO, AI search visibility, schema, keyword research, Google, Bing, and related topics.
 
-Live demo path: `https://aggressorbulkit.online/knowledge/`
+Live demo: <https://aggressorbulkit.online/knowledge/>
 
 ## What It Does
 
@@ -14,6 +14,29 @@ Live demo path: `https://aggressorbulkit.online/knowledge/`
 - indexes searchable passages with Meilisearch;
 - serves a static read-only web UI under `/knowledge/`;
 - generates creator, source, topic, and comparison pages from public JSONL.
+
+The public site is excerpt-first. It is designed for source discovery, attribution, comparison, and citation. It is not a video re-hosting platform and not a mass transcript dump.
+
+## Current Status
+
+Latest deployed release: `base2026-source-hero-ay35-20260610`.
+
+Current public export:
+
+- 957 source records;
+- 1,396 searchable passages;
+- 1,690 insight cards;
+- 1,226 public insight cards;
+- 1,584 topics;
+- 1,159 public topics;
+- 1,079 indexable sitemap URLs in the local GitHub-prep build.
+
+Recent readiness checks:
+
+- public export policy: passing, excerpt-only, no full transcripts in public payload;
+- publication boundary audit: passing for current changed public-safe files;
+- GitHub metadata validation: passing;
+- static SEO metadata audit: passing for 3,294 HTML files with title, description, canonical URL, H1, and JSON-LD schema present.
 
 ## Current Public Shape
 
@@ -65,6 +88,18 @@ Do not commit or publish:
 
 The public app is excerpt-first. Full third-party transcripts are private/local by default. Public source pages and the source dialog show attribution, original links, short evidence context, methodology, and correction/opt-out paths.
 
+## What This Repository Is For
+
+This repository is intended to show the public-safe system layer:
+
+- data contracts for public source records, passages, insight cards, topics, and creator metadata;
+- static page generation for search, creator, source, topic, comparison, roadmap, methodology, policy, support, and correction/removal pages;
+- local worker scripts for export, validation, indexing, packaging, and deployment;
+- project memory and runbooks for repeatable operation;
+- open-source issue templates and contribution paths.
+
+Private research data, raw platform material, local databases, and deploy archives are intentionally excluded.
+
 ## Architecture
 
 ```text
@@ -85,35 +120,36 @@ No live LLM call is required during public search.
 
 Export public TikTok data:
 
-```powershell
-python .\scripts\export-public-tiktok.py --auto-promote-insights
-python .\scripts\check-public-export-policy.py .\public-data\tiktok
+```bash
+python3 scripts/export-public-tiktok.py --auto-promote-insights
+python3 scripts/check-public-export-policy.py public-data/tiktok
 ```
 
 Index passages into Meilisearch:
 
-```powershell
-python .\scripts\meili-index-public.py --index base2026_public_tiktok
+```bash
+python3 scripts/meili-index-public.py --index base2026_public_tiktok
 ```
 
 Package a public release:
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package-public-release.ps1 -ReleaseName <release-name>
+```bash
+pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/package-public-release.ps1 -ReleaseName <release-name>
 ```
 
 Public packages are excerpt-only by default. Use `-IncludeFullTranscripts` only for private or gated review exports.
 
 Deploy to the VPS:
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy-public-vps.ps1 -ReleaseName <release-name>
+```bash
+pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/deploy-public-vps.ps1 -ReleaseName <release-name>
 ```
 
 Audit before staging for GitHub:
 
-```powershell
-python .\scripts\audit-publication-boundary.py
+```bash
+python3 scripts/audit-publication-boundary.py
+python3 scripts/validate-github-metadata.py
 ```
 
 ## Project Control
@@ -129,17 +165,30 @@ Read first:
 - `docs/project-memory/PUBLICATION_BOUNDARY.md`
 - `docs/GIT_PUBLICATION_AUDIT.md`
 
-## Current Status
+## About the Maintainer
 
-Latest deployed release: `base2026-public-info-pages-ay8`.
+Base2026 is created and maintained by [Alex Yarosh](https://aggressorbulkit.online/about/), an independent AI Search Visibility consultant working across SEO, GEO, AEO, local search, entity/trust signals, and public source intelligence.
 
-Latest public data contract check: 957 source records, 1392 searchable passages, no raw `claims` field in public source records, and no full transcripts in public `documents.jsonl`.
+Alex is building Base2026 as an independent pilot project for studying how public expert knowledge can become searchable, attributable, and useful to both humans and AI systems.
 
-Latest public page pass: roadmap, project story, privacy, source/content policy, support, and recommended site-structure pages are generated from `docs/public-pages/` and deployed under `/knowledge/`.
+- Website: <https://aggressorbulkit.online/>
+- Live Base2026 demo: <https://aggressorbulkit.online/knowledge/>
+- Contact: <offflinerpsy@gmail.com>
 
-Current checkpoint: open-source readiness and publication audit.
+## Contribution Areas
 
-License: Apache-2.0.
+Useful contributions include:
+
+- extractor adapters for additional public short-form platforms;
+- caption and ASR quality benchmarks;
+- safer public export validators;
+- Meilisearch ranking and faceting improvements;
+- static page, schema, sitemap, and accessibility improvements;
+- creator correction/removal workflow improvements;
+- documentation that makes local operation easier.
+
+Please do not submit raw third-party captions, full transcripts, media files, cookies, credentials, or private research exports.
+
 ## License
 
 Repository code and documentation are licensed under Apache-2.0. Third-party creator videos, platform captions, and original source content are not relicensed by this repository.

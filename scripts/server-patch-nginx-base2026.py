@@ -7,6 +7,18 @@ MARKER = "# Base2026 knowledge start"
 BLOCK = r'''
 
     # Base2026 knowledge start
+    # Base2026 static asset optimization
+    location ^~ /knowledge/static/ {
+        alias /var/www/base2026-knowledge/current/web/static/;
+        expires 30d;
+        add_header Cache-Control "public, max-age=2592000, immutable";
+        gzip on;
+        gzip_vary on;
+        gzip_min_length 1024;
+        gzip_types text/css application/javascript application/json image/svg+xml;
+        try_files $uri =404;
+    }
+
     location ^~ /knowledge/ {
         alias /var/www/base2026-knowledge/current/web/;
         index index.html;
