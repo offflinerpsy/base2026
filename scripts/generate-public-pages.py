@@ -8,7 +8,7 @@ from html import escape
 from pathlib import Path
 
 
-STYLE_VERSION = "20260611-mobilevideo1"
+STYLE_VERSION = "20260611-identity1"
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
@@ -110,35 +110,35 @@ def platform_icon_only(platform: str | None = "tiktok") -> str:
     return f'<span class="platform-text">{escape(platform or "source")}</span>'
 
 
-def share_action_bar(label: str = "Share this page") -> str:
-    return f"""
-      <section class="share-actions" data-share-root aria-label="{escape(label)}">
-        <div class="share-actions__label"><span>{escape(label)}</span></div>
-        <button type="button" class="share-action share-action--primary" data-share-action="share">{icon_svg("share")}<span>Share</span></button>
-        <button type="button" class="share-action" data-share-action="copy-link">{icon_svg("link")}<span>Copy link</span></button>
-        <button type="button" class="share-action" data-share-action="copy-citation">{icon_svg("copy")}<span>Copy citation</span></button>
-        <button type="button" class="share-action" data-share-action="print">{icon_svg("print")}<span>Save PDF</span></button>
-        <span class="share-actions__status" data-share-status aria-live="polite"></span>
-      </section>
-    """
-
-
-def source_share_action_bar(label: str = "Share source record") -> str:
+def share_action_buttons(kind: str = "source") -> str:
     actions = [
-        ("share", "share", "Share", "Share source record"),
-        ("copy-link", "link", "Copy link", "Copy source link"),
+        ("share", "share", "Share", f"Share {kind}"),
+        ("copy-link", "link", "Copy link", f"Copy {kind} link"),
         ("copy-citation", "copy", "Copy citation", "Copy citation"),
         ("print", "print", "Save PDF", "Save as PDF"),
     ]
-    buttons = "".join(
+    return "".join(
         f'<button type="button" class="source-share-action" data-share-action="{escape(action)}" '
         f'aria-label="{escape(aria)}" title="{escape(title)}">{icon_svg(icon)}</button>'
         for action, icon, title, aria in actions
     )
+
+
+def share_action_bar(label: str = "Share this page", kind: str = "page") -> str:
+    return (
+        f'<section class="share-actions share-actions--compact" data-share-root aria-label="{escape(label)}">'
+        f'<span class="source-share-actions__label">{escape(label)}</span>'
+        f'{share_action_buttons(kind)}'
+        '<span class="share-actions__status source-share-actions__status" data-share-status aria-live="polite"></span>'
+        '</section>'
+    )
+
+
+def source_share_action_bar(label: str = "Share source record", kind: str = "source record") -> str:
     return (
         f'<div class="source-share-actions" data-share-root aria-label="{escape(label)}">'
         f'<span class="source-share-actions__label">{escape(label)}</span>'
-        f'{buttons}'
+        f'{share_action_buttons(kind)}'
         '<span class="share-actions__status source-share-actions__status" data-share-status aria-live="polite"></span>'
         '</div>'
     )
@@ -370,14 +370,21 @@ def is_truncated_metadata(value: str | None, status: str | None = "") -> bool:
 def source_display_title(source: dict) -> str:
     handle = display_handle(source.get("creator_handle") or source.get("handle") or "Creator")
     title = source.get("title") or ""
-    if is_truncated_metadata(title, source.get("title_status")):
-        return f"{handle} source record"
-    return compact(title or source.get("source_id") or "Source record", 96)
+    if title and not is_truncated_metadata(title, source.get("title_status")):
+        return compact(title, 96)
+    excerpt = compact(source.get("excerpt") or "", 96)
+    if excerpt:
+        return excerpt
+    date = source.get("published_date") or source.get("published_at") or ""
+    return f"{handle}{f' · {date}' if date else ''}"
 
 
 def source_record_heading(source: dict) -> str:
-    handle = display_handle(source.get("creator_handle") or source.get("handle") or "Creator")
-    return f"{handle} source record"
+    return display_handle(source.get("creator_handle") or source.get("handle") or "Creator")
+
+
+def source_schema_name(source: dict) -> str:
+    return f"{source_record_heading(source)} source record"
 
 
 def source_display_lead(source: dict, limit: int = 260) -> str:
@@ -432,6 +439,32 @@ def creator_avatar_markup(handle: str, avatar_url: str = "", relative_root: str 
     return f'<span class="avatar creator-page-avatar" aria-hidden="true">{escape(initial)}</span>'
 
 
+def source_identity_markup(
+    handle: str,
+    avatar_html: str,
+    date: str = "",
+    platform: str = "tiktok",
+    variant: str = "page",
+) -> str:
+    meta_items = []
+    if date:
+        meta_items.append(f'<span class="source-identity__date">{escape(date)}</span>')
+    if platform:
+        meta_items.append(platform_icon_only(platform))
+    meta_html = "".join(meta_items)
+    return (
+        f'<div class="source-identity source-identity--{escape(variant)}">'
+        f'{avatar_html}'
+        '<div class="source-identity__body">'
+        '<div class="source-identity__line">'
+        f'<h1 class="source-identity__handle">{escape(handle)}</h1>'
+        f'{meta_html}'
+        '</div>'
+        '</div>'
+        '</div>'
+    )
+
+
 def is_indexable_topic(topic: dict) -> bool:
     return bool(topic.get("public")) and int(topic.get("public_insight_count") or 0) >= 2
 
@@ -476,21 +509,25 @@ def creator_page(handle: str, creator: dict, sources: list[dict], insights: list
     return page_shell(
         f"{handle} source profile | Base2026",
         f"""
-      <section class="page-hero">
-        <p class="eyebrow">Creator source profile</p>
-        <div class="creator-hero-line">{avatar_html}<h1>{safe_handle}</h1></div>
-        <p class="lead">Attributed public source records from short-form expert videos. This page does not imply creator endorsement.</p>
-        <div class="hero-actions">
-          <a class="ay-button" href="{escape(creator.get('url') or '#')}" target="_blank" rel="noreferrer">Open creator profile</a>
-          <a class="ay-button-secondary" href="../opt-out.html">Correction or opt-out</a>
-          <a class="ay-button-secondary" href="../index.html?q={escape(visible_handle)}">Search this creator</a>
+      <section class="page-hero source-page-hero creator-page-hero">
+        <div class="source-hero-main">
+          <p class="eyebrow">Creator profile</p>
+          {source_identity_markup(safe_handle, avatar_html, variant="creator")}
+          <p class="lead">Attributed public source records from short-form expert videos. This page does not imply creator endorsement.</p>
+          <div class="hero-actions">
+            <a class="ay-button" href="{escape(creator.get('url') or '#')}" target="_blank" rel="noreferrer">Open creator profile</a>
+            <a class="ay-button-secondary" href="../opt-out.html">Correction or opt-out</a>
+            <a class="ay-button-secondary" href="../index.html?q={escape(visible_handle)}">Search this creator</a>
+          </div>
         </div>
-      </section>
-      {share_action_bar("Share creator profile")}
-      <section class="metric-row">
-        <div><strong>{len(sources)}</strong><span>source records</span></div>
-        <div><strong>{len(public_insights)}</strong><span>public insight cards</span></div>
-        <div><strong>{len(topics)}</strong><span>topics detected</span></div>
+        <div class="source-hero-tools">
+          {source_share_action_bar("Share creator profile", "creator profile")}
+          <div class="source-hero-meta" aria-label="Creator profile metadata">
+            <span class="source-meta-chip"><strong>{len(sources)}</strong><span>records</span></span>
+            <span class="source-meta-chip"><strong>{len(public_insights)}</strong><span>insights</span></span>
+            <span class="source-meta-chip"><strong>{len(topics)}</strong><span>topics</span></span>
+          </div>
+        </div>
       </section>
       <section class="content-section">
         <h2>Top Topics</h2>
@@ -544,7 +581,7 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
     schema = {
         "@context": "https://schema.org",
         "@type": "CreativeWork",
-        "name": source_record_heading(source),
+        "name": source_schema_name(source),
         "description": compact(source.get("excerpt") or "", 260),
         "url": source.get("source_url") or "",
         "datePublished": source.get("published_date") or source.get("published_at") or "",
@@ -556,12 +593,12 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
         "isBasedOn": source.get("source_url") or "",
     }
     return page_shell(
-        f"{handle} source record | Base2026",
+        f"{handle} | Base2026 source record",
         f"""
       <section class="page-hero source-page-hero">
         <div class="source-hero-main">
           <p class="eyebrow">Source record</p>
-          <div class="creator-hero-line">{avatar_html}<h1>{escape(source_record_heading(source))}</h1></div>
+          {source_identity_markup(handle, avatar_html, source.get('published_date') or source.get('published_at') or 'No date', source.get('platform') or source.get('source_type') or 'tiktok', variant="source")}
           <p class="lead">{escape(source_display_lead(source))}</p>
           <div class="hero-actions">
             <a class="ay-button" href="{escape(source.get('source_url') or '#')}" target="_blank" rel="noreferrer">Open original</a>
@@ -572,8 +609,7 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
         <div class="source-hero-tools">
           {source_share_action_bar("Share source record")}
           <div class="source-hero-meta" aria-label="Source metadata">
-            <span class="source-meta-chip" title="Published date" aria-label="Published {escape(source.get('published_date') or 'No date')}">{icon_svg("calendar")}<span>{escape(source.get('published_date') or 'No date')}</span></span>
-            <span class="source-meta-chip source-meta-chip--platform" title="Platform" aria-label="TikTok source">{platform_icon_only(source.get('platform') or source.get('source_type'))}</span>
+            <span class="source-meta-chip" title="Public policy" aria-label="Public policy excerpt only"><span>excerpt only</span></span>
             <span class="source-meta-chip" title="Public insight cards" aria-label="{len(public_insights)} public insight cards">{icon_svg("card")}<span>{len(public_insights)}</span></span>
             <span class="source-meta-chip source-meta-chip--topics" title="Topics" aria-label="Topics">{icon_svg("topic")}<span class="topic-chip-list">{compact_topic_html}</span></span>
           </div>

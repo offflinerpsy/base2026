@@ -2133,3 +2133,30 @@ Verification:
 Next step:
 
 - settle GitHub staging policy for the ay41 generated public HTML before pushing; then continue GSC manual indexing after quota reset and check-only TikTok intake hardening.
+
+## 2026-06-11 — Canonical Base2026 source identity and ay42b deploy
+
+User pointed out that source pages, creator pages, and source modals rendered the same creator/source data with different hierarchy, repeated `source record` text, inconsistent share controls, and inconsistent TikTok/date placement.
+
+Actions taken:
+
+- introduced a single source/creator identity pattern in the public page generator and modal JS;
+- changed source-page H1s to show the handle/title cleanly without repeating `source record`;
+- moved creator/date/TikTok into the same identity row across source pages, creator pages, and modals;
+- unified share actions as compact icon-only controls;
+- replaced source-page metric strips with compact hero meta chips;
+- changed modal policy copy from `excerpt_only` to `excerpt only` and shortened caption metadata labels;
+- regenerated public source, creator, topic, compare, and info pages;
+- deployed `base2026-identity-unification-ay42b-20260611` with `-SkipReindex`.
+
+Verification:
+
+- Python compile and JS syntax checks passed;
+- publication boundary audit passed with `forbidden=0`, `secret_findings=0`, `needs_review=0`;
+- GitHub metadata validation passed;
+- live targeted DOM checks passed on a source page, creator page, and search modal;
+- full live mixed visual QA passed: 66 checks, 0 failures, 0 warnings.
+
+Next step:
+
+- stage allowlisted public-safe files, commit, push `main`, then continue check-only TikTok intake and GSC indexing.

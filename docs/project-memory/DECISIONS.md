@@ -125,3 +125,9 @@ Reason: evidence verification and private import prove that claims are source-ba
 Decision: use `scripts/mobile-visual-qa.mjs` as the repeatable visual QA gate for the mixed WordPress root site and Base2026 `/knowledge/` app before public UI deploys.
 
 Reason: the public site spans WordPress theme CSS and static Base2026 pages. Mobile bugs can appear in either layer, so the gate must check both surfaces across phone, tablet, and desktop viewports for horizontal overflow, clipped controls/headings, console errors, search readiness, forms, and the Base2026 source dialog.
+
+## 2026-06-11 — Use one canonical source identity system
+
+Decision: Base2026 source pages, creator pages, search cards, and source modals must render creator/source identity through one shared pattern: avatar, `@handle`, date when relevant, platform icon, compact meta chips, and compact share actions. Do not introduce separate page-specific layouts for the same source metadata.
+
+Reason: inconsistent repeated labels made the product look improvised and hard to scale. A canonical identity system keeps static generation, modal rendering, SEO/schema naming, and future multi-index UI work aligned without rebuilding every page surface separately.

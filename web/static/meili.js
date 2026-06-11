@@ -76,6 +76,27 @@ function platformValue(type, platform) {
   return escapeHtml(platform || sourceLabel(type));
 }
 
+function publicPolicyLabel(value) {
+  return compactText(value || "excerpt_only").replace(/_/g, " ");
+}
+
+function sourceIdentityMarkup(doc) {
+  const handle = doc.handle || doc.author || "Unknown creator";
+  const date = doc.published_date || "No date";
+  return `
+    <div class="source-identity source-identity--modal">
+      ${creatorAvatar(handle, doc.avatar_url || doc.creator_avatar_url)}
+      <div class="source-identity__body">
+        <div class="source-identity__line">
+          <a class="source-identity__handle" href="${escapeHtml(doc.creator_url || "#")}" target="_blank" rel="noreferrer">${escapeHtml(handle)}</a>
+          <span class="source-identity__date">${escapeHtml(date)}</span>
+          ${platformInline(doc.source_type)}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function infoHint(label, text) {
   return `<span class="info-hint" tabindex="0" aria-label="${escapeHtml(`${label}: ${text}`)}" data-tooltip="${escapeHtml(text)}">i</span>`;
 }
@@ -194,7 +215,7 @@ function renderPlatformCaption(value, className = "") {
   if (!caption) return "";
   const truncated = isTruncatedCaption(caption);
   const safeCaption = escapeHtml(caption);
-  const label = truncated ? "Platform caption preview · truncated metadata" : "Platform caption metadata";
+  const label = truncated ? "Caption metadata · truncated" : "Caption metadata";
   const note = truncated
     ? `<p class="caption-note">This caption comes from platform metadata and is already truncated before Base2026 receives it. It is not used as the main public evidence text.</p>`
     : "";
@@ -406,16 +427,7 @@ async function openTranscript(itemId) {
       ? `<button type="button" class="button-link" id="copy-transcript">Copy transcript</button>`
       : "";
     if (transcriptAttribution) {
-      transcriptAttribution.innerHTML = `
-        ${creatorAvatar(doc.handle || doc.author, doc.avatar_url || doc.creator_avatar_url)}
-        <div class="transcript-attribution-text">
-          <div class="creator-line">
-            <a class="creator-name" href="${escapeHtml(doc.creator_url || "#")}" target="_blank" rel="noreferrer">${escapeHtml(doc.handle || "Unknown creator")}</a>
-            <span class="meta">${escapeHtml(doc.published_date || "No date")}</span>
-            ${platformInline(doc.source_type)}
-          </div>
-        </div>
-      `;
+      transcriptAttribution.innerHTML = sourceIdentityMarkup(doc);
     }
     if (transcriptHeaderActions) {
       transcriptHeaderActions.innerHTML = `
@@ -427,17 +439,10 @@ async function openTranscript(itemId) {
     }
     if (transcriptHeaderMeta) {
       transcriptHeaderMeta.innerHTML = `
-        <div>
-          <span>Policy ${infoHint("Public policy", "Base2026 publishes an attributed public excerpt, source link, and context by default. Full third-party transcripts stay private unless a reviewed policy changes that.")}</span>
-          <strong>${escapeHtml(doc.public_policy || "excerpt_only")}</strong>
-        </div>
-        <div>
-          <span>Platform ${infoHint("Platform", "The original public platform where this source record was found. Base2026 links back to the original source and does not claim ownership of the creator content.")}</span>
-          <strong class="platform-value">${platformValue(doc.source_type, doc.platform)}</strong>
-        </div>
-        <div>
-          <span>Lang ${infoHint("Language", "Detected or stored language for the public source text used in this record.")}</span>
-          <strong>${escapeHtml(doc.language || "en")}</strong>
+        <div class="source-hero-meta transcript-meta-row" aria-label="Source metadata">
+          <span class="source-meta-chip" title="Public policy" aria-label="Public policy ${escapeHtml(publicPolicyLabel(doc.public_policy))}"><span>${escapeHtml(publicPolicyLabel(doc.public_policy))}</span>${infoHint("Public policy", "Base2026 publishes an attributed public excerpt, source link, and context by default. Full third-party transcripts stay private unless a reviewed policy changes that.")}</span>
+          <span class="source-meta-chip source-meta-chip--platform" title="Platform" aria-label="Platform">${platformValue(doc.source_type, doc.platform)}${infoHint("Platform", "The original public platform where this source record was found. Base2026 links back to the original source and does not claim ownership of the creator content.")}</span>
+          <span class="source-meta-chip" title="Language" aria-label="Language ${escapeHtml(doc.language || "en")}"><span>${escapeHtml(doc.language || "en")}</span>${infoHint("Language", "Detected or stored language for the public source text used in this record.")}</span>
         </div>
       `;
     }

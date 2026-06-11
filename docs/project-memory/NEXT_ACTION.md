@@ -318,13 +318,25 @@ Notes:
   - `12_knowledge-base/indexes/kb.sqlite.bak-claim-import-20260610-013639`
 - Local public export now has 1548 insight cards, 1097 public insight cards, 10 private/pending backfill cards, and 0 public backfill cards.
 
+## Latest shipped UI architecture pass
+
+- `base2026-identity-unification-ay42b-20260611` is live under `/knowledge/`.
+- Source pages, creator pages, and the search modal now use the same source identity pattern: avatar, `@handle`, date where relevant, TikTok icon, compact meta chips, and icon-only share actions.
+- Visible source-page titles no longer repeat `source record`; schema names can still include the machine-readable source-record phrase where useful.
+- Modal policy text now reads `excerpt only`, and caption metadata uses the shorter `Caption metadata` label.
+- Verification passed: publication boundary audit, GitHub metadata validation, targeted live DOM checks, and full live mixed visual QA with 66 checks and 0 failures.
+
+## Current next action
+
+- Stage only public-safe allowlisted files with `scripts/stage-public-files.ps1 -Apply -SkipRemoteCheck`, commit `ui: unify Base2026 source identity`, push `main`, then continue check-only TikTok intake hardening and GSC manual indexing after quota reset.
+
 ## Parallel backlog
 
 - ASR fallback for 36 staged TikTok records.
 - Source review for out-of-scope and short-caption records.
 - Separate Meilisearch indexes for sources, passages, insights, creators, and topics.
 - Richer search UI tabs for Passages / Sources / Insights / Creators.
-- Result card polish: keep creator avatar, handle/date, and TikTok SVG in one clean attribution line; remove the oval platform badge around TikTok; make result cards feel more polished/presentable while preserving compact scannability.
+- Continue polishing result cards using the canonical identity row, without creating another page-specific source/creator pattern.
 - Reviewed insight queue before stronger comparison claims.
 
 ## Do not do yet
@@ -334,4 +346,4 @@ Notes:
 - Do not present Hermes as a production dependency.
 - Do not publish private Base2026 research folders.
 - Do not commit generated `public-data`, release zips, raw captions, audio/video, cookies, local DB files, or logs.
-- Do not push to GitHub until remote and final staged diff review are approved.
+- Do not push private/generated artifacts. Public-safe generated `web/static` output can be pushed only after boundary audit, metadata validation, and allowlist staging pass.
