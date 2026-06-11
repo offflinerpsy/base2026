@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-06-10
+Last updated: 2026-06-11
 
 Base2026 is being split into a public open-source TikTok transcript search product and private local research assets.
 
@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-mobile-overflow-fix-ay37-20260610`
+- latest deployed release: `base2026-card-backfill-ay38-20260611`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -22,7 +22,7 @@ Current local repo state:
 - working branch `codex/github-publication-staging` also exists on GitHub as the original publication staging branch
 - first public-safe commit exists
 - Hermes reliability pass completed: WebUI scheduled task repaired, GPT-5.4 worker script added, false ASR backlog closed
-- active phase: pipeline hardening and private insight-card backfill after MacBook migration
+- active phase: launch monitoring plus check-only TikTok intake pipeline hardening
 - current UI/data-model decision: separate `Platform` filters (TikTok now, Instagram planned) from content `Topic/Category` filters
 - current UI direction: light Alex Yarosh WordPress-compatible style, not the previous dark AI app shell
 - GitHub publication is complete for the current public-safe source tree after final boundary audit and metadata validation
@@ -33,7 +33,11 @@ Current local repo state:
 
 Latest verification:
 
-- `base2026-mobile-overflow-fix-ay37-20260610` is live after GitHub/open-source readiness cleanup, generated Methodology/Creator Correction pages, source-page mobile overflow fix, and static asset cache-bust `20260610-ay37`.
+- `base2026-card-backfill-ay38-20260611` is live after closing the remaining source-with-passages/no-card queue, regenerating the public export, and redeploying Base2026.
+- Live public export now has 957 source records, 1396 passages, 1692 insight cards, 1228 public insight cards, 1586 topics, and 1161 public topics.
+- Backfill queue is 0; the previously empty `tiktok-video-7648365806375488782` page now has 2 public insight cards and no empty-source text.
+- Live ay38 mobile visual QA passed: 66 route/viewport checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260611-ay38/`.
+- WordPress launch readiness QA after the lead-recipient fix passed with `siteReady=true`, `failedSteps=[]`, editability debt `0`, indexing/schema green, and analytics consent/events green.
 - Live full mixed WordPress/Base2026 visual QA passed after ay37: 66 route/viewport checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-ay37-20260610/`.
 - Base2026 static SEO metadata audit passed locally: 3294 HTML files with title, description, canonical URL, one H1, and JSON-LD schema present.
 - Live `/knowledge/static/styles.css?v=20260610-ay37` and `/knowledge/static/meili.js?v=20260610-ay37` return `Content-Encoding: gzip`, `Vary: Accept-Encoding`, and long-lived immutable cache headers.

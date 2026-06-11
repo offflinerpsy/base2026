@@ -1,24 +1,23 @@
 # Next Action
 
-Last updated: 2026-06-10
+Last updated: 2026-06-11
 
 ## Current next action
 
-Continue live pipeline operation after the Base2026 ay37 GitHub/open-source readiness deploy, static asset gzip/cache optimization, and mobile source-card overflow fix.
+Continue launch operation after the Base2026 ay38 card-backfill deploy, WordPress lead-recipient fix, and live launch QA pass.
 
-Active phase: pipeline hardening and launch deployment after the MacBook insight-card backfill completion.
+Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
 VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
 
 Current next safe action:
 
-1. Commit and push the ay37 public-safe GitHub readiness bundle after the final boundary audit and staged-file review.
-2. Request indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after Google Search Console daily quota resets. Home and `/knowledge/` are already indexed; `/services/` was added to the priority crawl queue on 2026-06-10.
-3. Capture the first GSC/GA4 baseline after Google has processed the submitted WordPress and Base2026 sitemaps.
-4. Process the newly inventoried check-only TikTok queue through the safe local pipeline: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate.
-5. Keep public promotion gated: only `approved` and evidence-verified insight-card candidates can enter the public export.
-6. Keep full automated deploy behind explicit release checks; the Mac launchd job is check-only and does not publish.
-7. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`; keep generated/private artifacts out of commits.
+1. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
+2. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
+3. Run the check-only TikTok intake pipeline against the current queue: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate. Do not auto-deploy intake output.
+4. Keep public promotion gated: only `approved` and evidence-verified insight-card candidates can enter the public export.
+5. Keep generated `public-data`, release zips, local DB backups, `.planning`, and raw media out of GitHub commits.
+6. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`.
 
 Task queue source of truth:
 
@@ -68,16 +67,20 @@ Task queue source of truth:
 
 ## Latest verification
 
-- Deployed release: `base2026-mobile-overflow-fix-ay37-20260610`.
+- Deployed release: `base2026-card-backfill-ay38-20260611`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
 - Canonical root domain: `https://aggressorbulkit.online/`.
 - GitHub public repository: `https://github.com/offflinerpsy/base2026`.
 - Default branch: `main`.
-- Launch commit: `d025d71 launch: stage Base2026 public release`.
-- Live public export: 957 source records, 1396 passages, 1690 insight cards, 1226 public insight cards, 1584 topics, 1159 public topics.
-- Live repair for `/knowledge/sources/tiktok-video-7648365806375488782.html`: platform caption was downloaded from TikTok subtitles, imported as public excerpt/passages, and deployed in `base2026-source-hero-ay35-20260610`.
-- Source-page hero/share release: `base2026-mobile-overflow-fix-ay37-20260610`; CSS/JS cache-bust `20260610-ay37`; package sitemap has 1078 public URLs and includes the repaired source page.
-- Live ay37 mobile visual QA: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-ay37-20260610/`.
+- Launch commit: `c1869d8c launch: finalize Base2026 GitHub readiness`.
+- Live public export: 957 source records, 1396 passages, 1692 insight cards, 1228 public insight cards, 1586 topics, 1161 public topics.
+- Backfill queue: 0 queued sources after promoting 2 evidence-verified approved cards for `/knowledge/sources/tiktok-video-7648365806375488782.html`.
+- Live source repair verified: `/knowledge/sources/tiktok-video-7648365806375488782.html` contains `Source Excerpt`, `Public Insight Cards`, `AI knowledge base architecture`, and `AI workflow documentation`; old empty text is absent.
+- Public export policy: `ok=true`, `include_full_transcripts=false`.
+- Publication boundary audit: `forbidden=0`, `secret_findings=0`, `needs_review=0`.
+- GitHub metadata validation: ok.
+- Live ay38 mobile visual QA: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260611-ay38/`.
+- WordPress launch readiness QA after lead-recipient fix: `siteReady=true`, `failedSteps=[]`, WordPress editability debt `0`, schema/indexing/analytics checks green.
 - Live ay37 static asset headers: CSS and JS return gzip plus immutable cache headers under `/knowledge/static/`.
 - Empty source-page gate: two older `@tjrobertson52` records with no usable audio/text remain private-review/noindex candidates and are excluded from public source listings and child sitemaps.
 - Live `/knowledge/sources/tiktok-video-7648365806375488782.html?qa=sourcehero1`: `.source-page-hero`, `.source-share-actions`, and `.source-hero-meta` present; `.source-meta-strip` absent; `OpenAI just announced ChatGPT sites` excerpt present; old empty-source text absent.

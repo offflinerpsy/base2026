@@ -1,19 +1,19 @@
 # Active Phase
 
-Last updated: 2026-06-10
+Last updated: 2026-06-11
 
 ## Current active phase
 
-Pipeline hardening and private insight-card backfill after MacBook migration.
+Launch monitoring plus check-only TikTok intake pipeline hardening.
 
 ## Why this is active
 
-The public intelligence layer is deployed and the MacBook publication staging workflow now passes dry-run checks. The owner clarified that the immediate priority is not GitHub publication but finishing the local-first TikTok/source pipeline: ASR readiness, local model extraction, evidence verification, private pending claim import, and safe promotion gates.
+The public intelligence layer is deployed, GitHub publication is complete, WordPress lead-flow is live, and the current source-with-passages/no-card backfill queue is closed. The immediate priority is to monitor launch/indexing/analytics and continue the local-first TikTok/source pipeline in check-only mode before any new public promotion.
 
 ## Current exact task
 
-Turn the planned pipeline into a repeatable local system. Current slice: backfill sources with passages but no insight cards using either GPT/Codex source-only extraction packets or local models as optional candidate generators, verify evidence deterministically, use manual GPT/Codex review for small-batch semantic/copy quality checks, import only reviewed and evidence-verified candidates as private/pending claims, and keep public promotion disabled until reviewed.
+Run the launch monitor and next safe intake slice: retry GSC manual indexing only after quota reset, collect the first GSC/GA4 baseline, then process the TikTok queue through check-only inventory, captions/ASR decision, import dry-run, evidence verification, and reviewed promotion gates.
 
 ## Important note
 
-Do not deploy or push unless explicitly requested. Generated public pages should not be committed by default; prefer reproducible generation from scripts.
+Generated public pages should not be committed by default; prefer reproducible generation from scripts. Public deploys are allowed only after export policy, publication boundary, and live QA pass.

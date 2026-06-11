@@ -2075,3 +2075,34 @@ Verification:
 Next step:
 
 - stage the public-safe allowlisted paths, commit, push `main` to GitHub, then resume GSC priority indexing and check-only TikTok pipeline work.
+
+## 2026-06-11 — Launch contour, lead-flow recipient, and ay38 card backfill
+
+User asked to stop reporting and close the launch contour: GSC indexing, analytics events, lead flow, card pipeline, and Base2026 launch readiness.
+
+Actions taken:
+
+- used the authenticated Chrome/GSC tab to inspect `/pricing/`; GSC reported `URL is not on Google` with `Discovered - currently not indexed`, then `Quota Exceeded` after requesting indexing;
+- confirmed both submitted sitemaps are accepted in GSC: WordPress sitemap and Base2026 sitemap index;
+- verified live consent-gated analytics: GTM `GTM-M73PZ47H`, GA4 `G-D7EF02H9D2`, and real GA4 collect hits for `page_view`, `cta_clicked`, and `form_submitted`;
+- fixed WordPress lead delivery so all lead forms send to `AY_CONTACT_EMAIL` (`offflinerpsy@gmail.com`) instead of the local WordPress admin email placeholder;
+- processed the final Base2026 source-with-passages/no-card queue item, created 2 source-backed candidates, promoted them to `approved`, regenerated the public export, and closed the queue to 0;
+- regenerated public pages and sitemap;
+- deployed `base2026-card-backfill-ay38-20260611`;
+- reindexed Meilisearch with 1396 passages.
+
+Verification:
+
+- WordPress server PHP lint passed before replacing `functions.php`;
+- nginx config test and reload passed;
+- live `ay_lead_recipient_email()` returns `offflinerpsy@gmail.com`;
+- public export policy: `ok=true`, `include_full_transcripts=false`;
+- publication boundary audit: `forbidden=0`, `secret_findings=0`, `needs_review=0`;
+- GitHub metadata validation: ok;
+- live source page `/knowledge/sources/tiktok-video-7648365806375488782.html` contains `Source Excerpt`, `Public Insight Cards`, `AI knowledge base architecture`, and `AI workflow documentation`; old empty-state text is absent;
+- live launch readiness QA: `siteReady=true`, `failedSteps=[]`;
+- live mobile visual QA: 66 checks, 0 failures.
+
+Next step:
+
+- retry manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` only after the GSC daily quota resets; otherwise move to check-only TikTok intake automation.
