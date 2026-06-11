@@ -4596,6 +4596,8 @@ blockquote {
     right: 0;
     z-index: 40;
     width: min(330px, calc(100vw - 24px));
+    max-height: calc(100dvh - 96px);
+    overflow: auto;
     padding: 10px;
     border: 1px solid rgba(18, 26, 31, 0.12);
     border-radius: 14px;
@@ -4611,37 +4613,79 @@ blockquote {
 
   .site-header__mobile-panel a,
   .site-header__mobile-base summary {
-    min-height: 38px;
-    padding: 8px 10px;
+    min-height: 36px;
+    padding: 7px 10px;
     border-radius: 8px;
     color: var(--ay-text);
-    font-weight: 720;
+    font-weight: 740;
   }
 
   .site-header__mobile-panel a:hover,
   .site-header__mobile-panel a:focus-visible,
-  .site-header__mobile-panel a[aria-current="page"],
-  .site-header__mobile-base summary {
+  .site-header__mobile-panel a[aria-current="page"] {
     background: var(--ay-orange-soft);
     color: var(--ay-orange);
     outline: 0;
   }
 
+  .site-header__mobile-base summary {
+    position: relative;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .site-header__mobile-base summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .site-header__mobile-base summary::after {
+    content: "+";
+    position: absolute;
+    right: 10px;
+    color: var(--ay-muted);
+    font-weight: 700;
+  }
+
+  .site-header__mobile-base[open] summary {
+    background: transparent;
+    color: var(--ay-orange);
+  }
+
+  .site-header__mobile-base[open] summary::after {
+    content: "-";
+  }
+
   .site-header__mobile-base {
     border-top: 1px solid rgba(18, 26, 31, 0.09);
     border-bottom: 1px solid rgba(18, 26, 31, 0.09);
-    padding: 5px 0;
+    padding: 4px 0 6px;
   }
 
   .site-header__mobile-base div {
-    padding: 4px 0 0 10px;
+    padding: 2px 0 0 14px;
+  }
+
+  .site-header__mobile-base div a {
+    min-height: 27px;
+    padding: 4px 10px;
+    color: var(--ay-muted);
+    font-size: 13.5px;
+    font-weight: 600;
   }
 
   .site-header__mobile-cta {
     margin-top: 4px;
+    border: 1px solid var(--ay-orange);
     background: var(--ay-orange);
     color: #fffaf0 !important;
     text-align: center;
+  }
+
+  .site-header__mobile-cta:hover,
+  .site-header__mobile-cta:focus-visible {
+    border-color: #111820;
+    background: #111820 !important;
+    color: #fffaf0 !important;
   }
 
   .mobile-filter-bar {

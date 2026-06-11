@@ -335,7 +335,7 @@ Notes:
 
 ## Current next action
 
-- Stage only public-safe allowlisted files with `scripts/stage-public-files.ps1 -Apply -SkipRemoteCheck`, commit `ui: compact Base2026 topic pages`, push `main`, then continue check-only TikTok intake hardening and GSC manual indexing after quota reset.
+- Stage only public-safe allowlisted Base2026 files with `scripts/stage-public-files.ps1 -Apply -SkipRemoteCheck`, commit `ui: unify mobile navigation`, push `main`, then continue check-only TikTok intake hardening and GSC manual indexing after quota reset.
 
 ## Parallel backlog
 
@@ -345,6 +345,7 @@ Notes:
 - Richer search UI tabs for Passages / Sources / Insights / Creators.
 - Continue polishing result cards using the canonical identity row, without creating another page-specific source/creator pattern.
 - Reviewed insight queue before stronger comparison claims.
+- Keep WordPress and Base2026 mobile navigation in one shared visual contract: avatar header, compact light drawer, thin Base2026 submenu links, and no direct navigation from the Base2026 parent item on mobile.
 
 ## Do not do yet
 

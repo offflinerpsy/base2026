@@ -2235,3 +2235,27 @@ Verification:
 Next step:
 
 - stage audited public-safe files, commit, push `main`, then continue GSC indexing and the reviewed intake pipeline.
+
+## 2026-06-11 — Unified mobile navigation across WordPress and Base2026
+
+User reported that the WordPress hamburger menu and Base2026 hamburger menu had diverged: the WordPress drawer was dark and navigated directly from `Base2026`, while the Base2026 drawer was light but had an awkward pre-open submenu and inconsistent CTA hover behavior.
+
+Actions taken:
+
+- injected the same Base2026 submenu into the WordPress Kadence menu from `functions.php`;
+- changed the WordPress mobile `Base2026` parent click so it opens the submenu instead of navigating away;
+- restyled the WordPress mobile drawer as the same compact light floating panel used by Base2026;
+- changed Base2026 generated headers so the mobile Base2026 submenu is closed by default and opens in-place;
+- bumped Base2026 cache-bust to `20260611-mobilemenu1`;
+- deployed Base2026 release `base2026-mobile-menu-unified-ay47b-20260611`;
+- deployed WordPress child theme CSS `1.5.38`.
+
+Verification:
+
+- live WordPress mobile menu: `Base2026` click stays on the current page, submenu changes from hidden to grid, submenu links are 13.5px, horizontal overflow is 0, console errors are 0;
+- live Base2026 mobile menu: submenu is closed by default, opens in place, panel is the same light floating style, horizontal overflow is 0, console errors are 0;
+- evidence under ignored `output/evidence/mobile-menu-unified-final-v2/`.
+
+Next step:
+
+- stage audited public-safe files, commit, push `main`, then continue GSC indexing and the reviewed intake pipeline.

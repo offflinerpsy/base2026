@@ -8,7 +8,7 @@ from html import escape
 from pathlib import Path
 
 
-STYLE_VERSION = "20260611-launchux1"
+STYLE_VERSION = "20260611-mobilemenu1"
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
@@ -228,7 +228,7 @@ def site_header(relative_root: str, current: str = "") -> str:
             <nav aria-label="Mobile navigation">
               <a href="/services/">Services</a>
               <a href="/pricing/">Pricing</a>
-              <details class="site-header__mobile-base" open>
+              <details class="site-header__mobile-base">
                 <summary>Base2026</summary>
                 <div>{mobile_base2026_links(relative_root, current)}</div>
               </details>

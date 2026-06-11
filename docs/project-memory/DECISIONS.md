@@ -137,3 +137,9 @@ Reason: inconsistent repeated labels made the product look improvised and hard t
 Decision: Base2026 mobile search filters should be implemented as a native static-app drawer in the `/knowledge/` UI, not through a WordPress or Contact Form plugin.
 
 Reason: the filter state belongs to the Meilisearch/InstantSearch app under `/knowledge/`, not to WordPress form handling. A native drawer avoids plugin coupling, keeps the public app fast, works with the existing static export, and is easier to test in repeatable live QA.
+
+## 2026-06-11 — Keep mobile navigation visually unified across WordPress and Base2026
+
+Decision: WordPress and Base2026 mobile headers should use one shared visual contract: avatar header, compact light floating drawer, a non-navigating `Base2026` parent item that expands submenu links, and a high-contrast CTA hover/focus state.
+
+Reason: the public site spans WordPress and a static Base2026 app. If the two mobile menus behave differently, users experience the product as stitched together rather than intentional. Keeping one navigation contract reduces launch QA risk and makes future page additions easier to verify.
