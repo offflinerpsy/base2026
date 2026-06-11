@@ -143,3 +143,15 @@ Reason: the filter state belongs to the Meilisearch/InstantSearch app under `/kn
 Decision: WordPress and Base2026 mobile headers should use one shared visual contract: avatar header, compact light floating drawer, a non-navigating `Base2026` parent item that expands submenu links, and a high-contrast CTA hover/focus state.
 
 Reason: the public site spans WordPress and a static Base2026 app. If the two mobile menus behave differently, users experience the product as stitched together rather than intentional. Keeping one navigation contract reduces launch QA risk and makes future page additions easier to verify.
+
+## 2026-06-11 — Use h264-first media fallback and local worker ASR on macOS
+
+Decision: TikTok ASR fallback on Mac must use POSIX-safe yt-dlp output templates, prefer known h264/downloadable media formats before generic `best`, and invoke the project `base2026-worker.py transcribe` faster-whisper path instead of relying on a global `whisper` CLI.
+
+Reason: macOS PowerShell path separators created bad backslash-named media paths, TikTok H265/bytevc1 downloads failed ffmpeg audio extraction in the local environment, and the old global `whisper` command was not installed. The local worker path is reproducible, checked by `doctor`, and keeps ASR inside the project runtime.
+
+## 2026-06-11 — Derive Base2026 static cache-bust from release name
+
+Decision: release packages should use the release name as the static CSS/JS cache-bust value instead of a manually edited hardcoded marker.
+
+Reason: manual cache-bust constants go stale and can make a successful deploy appear broken in the browser. Release-derived cache busting makes every package self-identifying and reduces launch QA ambiguity.

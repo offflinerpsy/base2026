@@ -4,7 +4,7 @@ Last updated: 2026-06-11
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay50 TikTok refresh deploy and Mac pipeline hardening pass.
+Continue launch operation after the Base2026 ay51 ASR/pipeline deploy and Mac TikTok processor hardening pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,9 +12,9 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Stage the ay50 public-safe pipeline-script changes through the audited public allowlist, commit, and push `main`.
-2. Continue TikTok intake from the current queue: prioritize ASR/source review for the 266 queued ASR jobs, then import only reviewed/evidence-verified outputs.
-3. Run source-only GPT/Codex review packets for sources with passages but no public cards; promote only evidence-verified approved candidates.
+1. Stage the ay51 public-safe pipeline-script and memory changes through the audited public allowlist, commit, and push `main`.
+2. Continue TikTok intake in check-only mode until new `queued` or `needs_asr` rows appear. Current ay51 inventory has 0 queued transcripts, 0 `needs_asr`, and 0 queued ASR jobs.
+3. Work the remaining quality queues separately: 265 faithful transcript polish/QA files, 3 source-review rows, and source-only GPT/Codex review packets for sources with passages but no public cards. Promote only evidence-verified approved candidates.
 4. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
 5. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
 6. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
@@ -75,11 +75,12 @@ Task queue source of truth:
 
 ## Latest verification
 
-- Deployed release: `base2026-tiktok-refresh-ay50-20260611`.
+- Deployed release: `base2026-asr-pipeline-ay51-20260611`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
-- Live ay50 public export: 1209 source records, 1373 passages, 1538 insight cards, 1097 public insight cards, 1442 topics, 1040 public topics.
-- Live ay50 Meilisearch reindex: 1373 passages indexed into `base2026_public_tiktok`.
-- Live ay50 mobile QA: 44 checks, 0 failures, evidence under ignored `output/evidence/ay50-live-mobile-qa/`.
+- Live ay51 public export: 1209 source records, 1696 passages, 1538 insight cards, 1097 public insight cards, 1442 topics, 1040 public topics.
+- Live ay51 Meilisearch reindex: 1696 passages indexed into `base2026_public_tiktok`.
+- Live ay51 mobile QA: 44 checks, 0 failures, evidence under ignored `output/evidence/ay51-live-mobile-qa/`.
+- Live ay51 source smoke: `/knowledge/sources/tiktok-video-7649635621287316743.html`, `/knowledge/sources/tiktok-video-7649262955514580232.html`, and `/knowledge/sources/tiktok-video-7647809342548266258.html` return 200, contain `Source Excerpt`, and do not show the old empty-source message.
 - Live ay49 creator/dropdown QA: `/knowledge/creators/` CSS `20260611-creatorcta1`, 4 creator cards, 4 avatars, 4 TikTok profile links, no horizontal overflow.
 - Live ay49 navigation QA: Base2026 dropdown hover path stays open on both WordPress and `/knowledge/`; submenu hit target reaches `Search`; no horizontal overflow.
 - Live WordPress CTA QA: theme CSS `1.5.40`, homepage Base2026 block present, services Base2026 card present, footer Base2026 button uses acid green.

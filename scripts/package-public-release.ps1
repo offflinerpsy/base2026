@@ -10,11 +10,10 @@ param(
 $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
-$CacheBust = "20260611-creatorcta1"
-
 if (-not $ReleaseName) {
   $ReleaseName = "base2026-public-" + (Get-Date -Format "yyyyMMdd-HHmmss")
 }
+$CacheBust = ($ReleaseName -replace '[^A-Za-z0-9._-]', '-')
 
 $ExportArgs = @("./scripts/export-public-tiktok.py", "--auto-promote-insights")
 if ($IncludeFullTranscripts -and -not $ExcerptOnly) {

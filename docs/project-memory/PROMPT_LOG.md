@@ -2236,6 +2236,43 @@ Next step:
 
 - stage audited public-safe files, commit, push `main`, then continue GSC indexing and the reviewed intake pipeline.
 
+## 2026-06-11 — ay51 ASR pipeline refresh and deploy
+
+User asked to run the whole pipeline because new videos may have appeared, process them, and deploy after the work.
+
+Actions taken:
+
+- ran `hermes-tiktok-refresh.ps1 -CheckOnly -PlaylistEnd 1000`; no new TikTok inventory rows were added after ay50;
+- confirmed current active TikTok state: 3008 total inventory rows, 1209 active rows, 1206 transcribed, 0 queued transcripts, 0 `needs_asr`, and 3 `needs_source_review`;
+- rebuilt SQLite from current local sources;
+- ran `kb-audit.py` and public export policy validation;
+- exported public TikTok data as excerpt-only with 1209 source records and 1696 passages;
+- fixed `scripts/tiktok-process-transcripts.ps1` for macOS ASR: POSIX-safe yt-dlp output templates, h264-first audio fallback selection, and local `base2026-worker.py transcribe` instead of missing `whisper` CLI;
+- fixed `scripts/package-public-release.ps1` so CSS/JS cache-bust uses the release name instead of a stale hardcoded value;
+- added `scripts/tiktok-process-transcripts.ps1` to the public-safe audit/staging allowlists;
+- deployed `base2026-asr-pipeline-ay51-20260611` to VPS and reindexed Meilisearch with 1696 passages.
+
+Verification:
+
+- `build-kb-sqlite.py`: creators=4, transcripts=1206, source_cards=1206, chunks=1922, queued_asr_jobs=0;
+- `kb-audit.py`: `audit=PASS`;
+- `check-public-export-policy.py`: `ok=true`, `include_full_transcripts=false`;
+- `audit-publication-boundary.py`: 0 forbidden, 0 secret findings, 0 needs review;
+- `validate-github-metadata.py`: ok;
+- live `/knowledge/static/documents.jsonl`: 1209 rows, no public full transcript/claims fields;
+- live source pages `7649635621287316743`, `7649262955514580232`, and `7647809342548266258`: 200, `Source Excerpt` present, old empty-source text absent;
+- live mobile visual QA: 44 checks, 0 failures, evidence under ignored `output/evidence/ay51-live-mobile-qa/`.
+
+Not completed automatically:
+
+- 265 clean transcripts still need faithful polish/QA before being considered final-quality polished transcript text;
+- 3 source records remain in `needs_source_review`;
+- no unreviewed insight-card candidates were promoted.
+
+Next step:
+
+- stage, commit, and push the public-safe ay51 pipeline/memory changes, then continue faithful transcript polish and evidence-gated insight-card backfill as separate quality queues.
+
 ## 2026-06-11 — Creator index, dropdown hover, and green Base2026 CTA ay49
 
 User reported that the `/knowledge/creators/` index looked empty and unfinished, the Base2026 desktop dropdown disappeared before the pointer could reach the submenu, and the main WordPress site had lost the acid-green Base2026 CTA treatment.

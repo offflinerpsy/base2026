@@ -1,5 +1,70 @@
 # Deployment Log
 
+## 2026-06-11 — ay51 ASR Pipeline Deploy
+
+Release:
+
+```text
+base2026-asr-pipeline-ay51-20260611
+```
+
+What changed:
+
+```text
+Mac TikTok transcript processor now uses POSIX-safe yt-dlp output templates, h264-first audio fallback downloads, and the local faster-whisper worker instead of a missing whisper CLI.
+No new TikTok inventory rows were found at playlist depth 1000 after ay50.
+The remaining ASR queue was closed before deploy: queued transcripts=0, needs_asr=0, queued ASR jobs=0.
+```
+
+Dataset:
+
+```text
+source_records=1209
+passages=1696
+insight_cards=1538
+public_insight_cards=1097
+topics=1442
+public_topics=1040
+creators=4
+include_full_transcripts=false
+```
+
+Meilisearch:
+
+```text
+index=base2026_public_tiktok
+indexed=1696
+task=183
+```
+
+Verification:
+
+```text
+build-kb-sqlite.py: pass
+kb-audit.py: PASS
+check-public-export-policy.py: ok=true
+audit-publication-boundary.py: ok_to_stage_public_safe_candidates=true
+validate-github-metadata.py: ok
+mobile-visual-qa.mjs --viewports mobile: 44 checks, 0 failures
+```
+
+Live smoke:
+
+```text
+/knowledge/static/documents.jsonl: 1209 rows, transcripts_field_nonempty=0, claims_field_nonempty=0
+/knowledge/sources/tiktok-video-7649635621287316743.html: 200, Source Excerpt present, empty-source text absent
+/knowledge/sources/tiktok-video-7649262955514580232.html: 200, Source Excerpt present, empty-source text absent
+/knowledge/sources/tiktok-video-7647809342548266258.html: 200, Source Excerpt present, empty-source text absent
+```
+
+Remaining non-deploy debt:
+
+```text
+265 clean transcripts still need faithful polish/QA.
+3 source records remain in needs_source_review.
+Insight-card backfill still needs source-only review and evidence-gated promotion; no unreviewed cards were promoted in this deploy.
+```
+
 ## 2026-06-02 — First Public TikTok Deploy
 
 Release:
