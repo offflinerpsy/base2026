@@ -649,3 +649,33 @@ console errors: 0
 evidence: output/evidence/modal-meta-controls-ay32-live/desktop.png, output/evidence/modal-meta-controls-ay32-live/mobile.png
 nginx -t: pass
 ```
+
+## 2026-06-10 — ay33 Modal Meta Cache Refresh
+
+Release:
+
+```text
+base2026-modal-meta-cache-ay33-20260610
+```
+
+Outcome:
+
+- refreshed the source-modal metadata control-area release with Base2026 cache-bust `20260610-modalmeta3`;
+- synchronized `web/static/meili.html` with the package cache-bust so local source and deployed HTML stay aligned;
+- kept the source modal `Policy / Platform / Lang` metadata inside `.transcript-dialog-controls`, directly below the action buttons;
+- kept the scrollable modal body free of policy metadata cards;
+- changed the default deploy SSH host to the working MacBook alias `geo`;
+- deployed release to VPS through SSH alias `geo`;
+- skipped Meilisearch reindex because search documents did not change.
+
+Verification:
+
+```text
+server current: /var/www/base2026-knowledge/releases/base2026-modal-meta-cache-ay33-20260610
+Base2026 CSS/JS cache-bust: 20260610-modalmeta3
+live source modal: header meta parent .transcript-dialog-controls, 3 meta cards, 0 body policy grids
+sticky header: stable during modal body scroll
+desktop/mobile overflow: false
+console errors: 0
+nginx -t: pass
+```

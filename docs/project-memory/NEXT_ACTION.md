@@ -62,10 +62,11 @@ Task queue source of truth:
 35. Generated share bars no longer include the decorative sparkle/AI-style mark.
 36. Search cards and source modal attribution show the TikTok platform mark in the same creator/date row.
 37. Source modal loading uses a streaming `documents.jsonl` lookup so opening one record no longer waits on a full client-side index build.
+38. Source modal `Policy / Platform / Lang` metadata lives in the sticky `.transcript-dialog-controls` area below the action buttons, not in the scrollable body.
 
 ## Latest verification
 
-- Deployed release: `base2026-modal-meta-controls-ay32-20260610`.
+- Deployed release: `base2026-modal-meta-cache-ay33-20260610`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
 - Canonical root domain: `https://aggressorbulkit.online/`.
 - GitHub public repository: `https://github.com/offflinerpsy/base2026`.
@@ -82,7 +83,7 @@ Task queue source of truth:
 - WordPress child-theme CSS `1.5.15` is live after the homepage Base2026 CTA green highlight and About hero portrait/pullquote pass.
 - Live `geo` QA for CSS `1.5.15`: homepage Base2026 CTA green/white; audit CTA remains white; About desktop portrait height ratio about 0.95; desktop/mobile overflow false.
 - Base2026 CSS/JS cache-bust `20260610-ay29c` is live after the share/icon/project-identity hotfix pass.
-- Base2026 CSS/JS cache-bust `20260610-modalmeta2` is live after moving source-modal policy/platform/language metadata into the sticky right-side control area below the modal action buttons.
+- Base2026 CSS/JS cache-bust `20260610-modalmeta3` is live after refreshing the source-modal metadata control-area release.
 - Base2026 sitemap is now a sitemap index at `/knowledge/sitemap.xml` with child files `/knowledge/sitemaps/base2026-001.xml`, `/knowledge/sitemaps/base2026-002.xml`, and `/knowledge/sitemaps/base2026-003.xml`.
 - Google Search Console now shows `/knowledge/sitemap.xml` as `Success`, type `Sitemap`, last read `2026-06-10`, discovered pages `1,080`.
 - GSC URL Inspection on 2026-06-10: home and `/knowledge/` are already indexed; `/services/` was added to the priority crawl queue; `/pricing/`, `/about/`, and `/ai-visibility-audit/` hit the manual indexing daily quota and should be requested after reset.
@@ -91,9 +92,7 @@ Task queue source of truth:
 - Live `/knowledge/?q=schema structured data AI Overviews keyword research`: TikTok platform badge is in the creator/date row and source modal opens successfully.
 - Live source modal: TikTok mark is in the creator/date row and the label is `Source excerpt`.
 - Live source modal meta controls QA: `Policy / Platform / Lang` cards render inside `.transcript-dialog-controls`; body policy grid count is 0; sticky header stays stable during modal body scroll; desktop/mobile checks have no horizontal overflow or console errors.
-- Live ay32 evidence:
-  - `output/evidence/modal-meta-controls-ay32-live/desktop.png`
-  - `output/evidence/modal-meta-controls-ay32-live/mobile.png`
+- Live ay33 modal meta QA: desktop/mobile cache-bust `20260610-modalmeta3`; header meta parent `.transcript-dialog-controls`; header meta cards `3`; body policy grids `0`; sticky header stable during modal body scroll; horizontal overflow false; console errors `0`.
 - Live `/knowledge/topics/content-strategy.html`: share label has no decorative sparkle SVG/path, no horizontal overflow.
 - Live ay29c evidence:
   - `output/evidence/ui-hotfix-ay29c-live-modal.png`

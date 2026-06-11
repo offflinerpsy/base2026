@@ -1,7 +1,7 @@
 param(
   [Parameter(Mandatory = $true)]
   [string]$ReleaseName,
-  [string]$SshHost = "root@207.244.242.42",
+  [string]$SshHost = "geo",
   [string]$RemoteBase = "/var/www/base2026-knowledge",
   [string]$MeiliIndex = "base2026_public_tiktok",
   [string]$MeiliUrl = "http://127.0.0.1:7700",

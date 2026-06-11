@@ -1963,3 +1963,26 @@ Verification:
   - `output/evidence/modal-meta-controls-ay32-local/mobile.png`;
   - `output/evidence/modal-meta-controls-ay32-live/desktop.png`;
   - `output/evidence/modal-meta-controls-ay32-live/mobile.png`.
+
+## 2026-06-10 — Source modal metadata cache refresh
+
+User selected the live source modal metadata block again and asked to move it into the fixed top control area. Local and clean live QA already showed the ay32 structure was correct, but the user's open browser tab could still show the older asset state.
+
+Actions taken:
+
+- confirmed live clean-load DOM already had `#transcript-header-meta` inside `.transcript-dialog-controls`;
+- synchronized `web/static/meili.html` cache-bust with the package cache-bust;
+- bumped Base2026 cache-bust to `20260610-modalmeta3`;
+- changed `scripts/deploy-public-vps.ps1` default SSH host to the working `geo` alias after the first upload attempt failed with the raw `root@207.244.242.42` host;
+- packaged and deployed `base2026-modal-meta-cache-ay33-20260610` with `-SkipReindex`.
+
+Verification:
+
+- live CSS/JS cache-bust: `20260610-modalmeta3`;
+- source modal header meta parent: `.transcript-dialog-controls`;
+- header meta cards: `3`;
+- body policy grids: `0`;
+- sticky header remains stable during modal body scroll;
+- desktop/mobile horizontal overflow: false;
+- console errors: `0`;
+- nginx verification: pass.

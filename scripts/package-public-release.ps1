@@ -10,7 +10,7 @@ param(
 $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
-$CacheBust = "20260610-modalmeta2"
+$CacheBust = "20260610-modalmeta3"
 
 if (-not $ReleaseName) {
   $ReleaseName = "base2026-public-" + (Get-Date -Format "yyyyMMdd-HHmmss")
