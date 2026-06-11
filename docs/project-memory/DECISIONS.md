@@ -131,3 +131,9 @@ Reason: the public site spans WordPress theme CSS and static Base2026 pages. Mob
 Decision: Base2026 source pages, creator pages, search cards, and source modals must render creator/source identity through one shared pattern: avatar, `@handle`, date when relevant, platform icon, compact meta chips, and compact share actions. Do not introduce separate page-specific layouts for the same source metadata.
 
 Reason: inconsistent repeated labels made the product look improvised and hard to scale. A canonical identity system keeps static generation, modal rendering, SEO/schema naming, and future multi-index UI work aligned without rebuilding every page surface separately.
+
+## 2026-06-11 — Keep Base2026 filters native to the static app
+
+Decision: Base2026 mobile search filters should be implemented as a native static-app drawer in the `/knowledge/` UI, not through a WordPress or Contact Form plugin.
+
+Reason: the filter state belongs to the Meilisearch/InstantSearch app under `/knowledge/`, not to WordPress form handling. A native drawer avoids plugin coupling, keeps the public app fast, works with the existing static export, and is easier to test in repeatable live QA.

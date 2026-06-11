@@ -15,6 +15,10 @@ const transcriptTitle = document.querySelector("#transcript-title");
 const transcriptMeta = document.querySelector("#transcript-meta");
 const transcriptBody = document.querySelector("#transcript-body");
 const transcriptClose = document.querySelector("#transcript-close");
+const mobileFilterToggle = document.querySelector("#mobile-filter-toggle");
+const mobileFilterClose = document.querySelector("#mobile-filter-close");
+const mobileFilterBackdrop = document.querySelector("#mobile-filter-backdrop");
+const mobileFilterCount = document.querySelector("#mobile-filter-count");
 const documentCache = new Map();
 
 function setDialogScrollLock(locked) {
@@ -261,7 +265,7 @@ function renderTopicLinks(hit) {
   if (!pairs.length) return "";
   return `
     <div class="result-topic-list" aria-label="Detected topics">
-      ${pairs.map((row) => `<a class="topic-chip" href="${topicPageHref(row.topicId)}">${escapeHtml(row.label)}</a>`).join("")}
+      ${pairs.map((row) => `<a class="topic-chip topic-tag" href="${topicPageHref(row.topicId)}">${escapeHtml(row.label)}</a>`).join("")}
     </div>
   `;
 }
@@ -279,9 +283,22 @@ function renderRecordTopics(doc) {
   if (!pairs.length) return "";
   return `
     <div class="record-topics" aria-label="Detected topics">
-      ${pairs.map((row) => `<a class="topic-chip" href="${topicPageHref(row.topicId)}">${escapeHtml(row.label)}</a>`).join("")}
+      ${pairs.map((row) => `<a class="topic-chip topic-tag" href="${topicPageHref(row.topicId)}">${escapeHtml(row.label)}</a>`).join("")}
     </div>
   `;
+}
+
+function setMobileFiltersOpen(open) {
+  document.documentElement.classList.toggle("filters-open", open);
+  document.body.classList.toggle("filters-open", open);
+  if (mobileFilterToggle) mobileFilterToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  if (mobileFilterBackdrop) mobileFilterBackdrop.hidden = !open;
+}
+
+function updateMobileFilterCount() {
+  if (!mobileFilterCount) return;
+  const count = document.querySelectorAll(".ais-CurrentRefinements-category").length;
+  mobileFilterCount.textContent = count ? `${count} active` : "Choose filters";
 }
 
 function transcriptDisplayTitle(doc) {
@@ -565,6 +582,7 @@ search.on("render", () => {
   const query = search.helper.state.query || "";
   syncPresetButtons(query);
   renderSelectedTerms(query);
+  updateMobileFilterCount();
 });
 
 selectedTerms?.addEventListener("click", (event) => {
@@ -590,4 +608,13 @@ transcriptDialog?.addEventListener("close", () => {
 
 transcriptDialog?.addEventListener("cancel", () => {
   setDialogScrollLock(false);
+});
+
+mobileFilterToggle?.addEventListener("click", () => setMobileFiltersOpen(true));
+mobileFilterClose?.addEventListener("click", () => setMobileFiltersOpen(false));
+mobileFilterBackdrop?.addEventListener("click", () => setMobileFiltersOpen(false));
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && document.body.classList.contains("filters-open")) {
+    setMobileFiltersOpen(false);
+  }
 });

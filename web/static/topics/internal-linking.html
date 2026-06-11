@@ -15,17 +15,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../static/styles.css?v=20260611-roadmapstatus1" />
+    <link rel="stylesheet" href="../static/styles.css?v=20260611-launchux1" />
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
+
     <header class="site-header">
       <div class="site-header__bar">
-        <a class="site-header__brand" href="/">Alex Yarosh</a>
+        <a class="site-header__brand" href="/"><span class="site-header__avatar" aria-hidden="true"></span><span>Alex Yarosh</span></a>
         <nav class="site-header__nav" aria-label="Main navigation">
-          <a class="site-header__link" href="/services/">Services</a>
-          <a class="site-header__link" href="/pricing/">Pricing</a>
-
+          <a class="site-header__link" href="/services/">Services</a><a class="site-header__link" href="/pricing/">Pricing</a>
           <div class="site-header__base">
             <a class="site-header__link site-header__link--base2026" href="../index.html" aria-haspopup="true">Base2026</a>
             <div class="site-header__base-menu" aria-label="Base2026 navigation">
@@ -33,12 +32,27 @@
               <a href="../index.html">Search</a><a href="../topics/" aria-current="page">Topics</a><a href="../creators/">Creators</a><a href="../sources/">Sources</a><a href="../roadmap.html">Roadmap</a><a href="../methodology.html">Methodology</a><a href="../support.html">Support</a>
             </div>
           </div>
-
-          <a class="site-header__link" href="/about/">About</a>
+<a class="site-header__link" href="/about/">About</a>
         </nav>
         <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
+        <details class="site-header__mobile-menu">
+          <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
+          <div class="site-header__mobile-panel">
+            <nav aria-label="Mobile navigation">
+              <a href="/services/">Services</a>
+              <a href="/pricing/">Pricing</a>
+              <details class="site-header__mobile-base" open>
+                <summary>Base2026</summary>
+                <div><a href="../index.html">Search</a><a href="../topics/" aria-current="page">Topics</a><a href="../creators/">Creators</a><a href="../sources/">Sources</a><a href="../roadmap.html">Roadmap</a><a href="../methodology.html">Methodology</a><a href="../support.html">Support</a></div>
+              </details>
+              <a href="/about/">About</a>
+              <a class="site-header__mobile-cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
+            </nav>
+          </div>
+        </details>
       </div>
     </header>
+
     <main id="content" class="app-shell content-page">
 
       <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -242,7 +256,7 @@
         <span>&copy; 2026 Alex Yarosh. Available remotely for US-based local businesses.</span>
       </div>
     </footer>
-    <script src="../static/share-actions.js?v=20260611-roadmapstatus1" defer></script>
+    <script src="../static/share-actions.js?v=20260611-launchux1" defer></script>
 
     <section class="cookie-banner" data-cookie-banner hidden aria-label="Cookie preferences">
       <div>
@@ -273,7 +287,7 @@
         </div>
       </form>
     </dialog>
-    <script src="../static/cookie-consent.js?v=20260611-roadmapstatus1" defer></script>
+    <script src="../static/cookie-consent.js?v=20260611-launchux1" defer></script>
 
   </body>
 </html>

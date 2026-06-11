@@ -4,7 +4,7 @@ Last updated: 2026-06-11
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay44 roadmap status compaction deploy.
+Continue launch operation after the Base2026 ay46 mobile filters/header/tag cleanup deploy.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,7 +12,7 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Stage the ay44 roadmap status compaction through the audited public allowlist, commit, and push `main`.
+1. Stage the ay46 public-safe Base2026 UI/export changes through the audited public allowlist, commit, and push `main`.
 2. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
 3. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
 4. Run the check-only TikTok intake pipeline against the current queue: captions/ASR decision -> import staging dry-run -> evidence verification -> reviewed promotion gate. Do not auto-deploy intake output.
@@ -66,10 +66,13 @@ Task queue source of truth:
 38. Source modal `Policy / Platform / Lang` metadata lives in the sticky `.transcript-dialog-controls` area below the action buttons, not in the scrollable body.
 39. Static source pages now mark source records without public evidence as `noindex,follow` and exclude them from the source index and creator latest-source cards.
 40. Roadmap execution-order status markers are compact system marks instead of large visual pills; long internal statuses render as short public labels while preserving the full status in tooltip/ARIA.
+41. `/knowledge/` mobile filters are now a visible top control that opens a fixed drawer with creator/source/year refinements instead of leaving filters hidden below results.
+42. Base2026 static pages now use the WordPress-aligned avatar header with a desktop Base2026 dropdown and mobile hamburger menu.
+43. Source-page topics render as orange hashtag text, and source policy/count metadata sits with the hero tools instead of framed topic/metadata pills.
 
 ## Latest verification
 
-- Deployed release: `base2026-roadmap-status-ay44-20260611`.
+- Deployed release: `base2026-mobile-filters-header-tags-ay46-20260611`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
 - Canonical root domain: `https://aggressorbulkit.online/`.
 - GitHub public repository: `https://github.com/offflinerpsy/base2026`.
@@ -81,6 +84,7 @@ Task queue source of truth:
 - Public export policy: `ok=true`, `include_full_transcripts=false`.
 - Publication boundary audit: `forbidden=0`, `secret_findings=0`, `needs_review=0`.
 - GitHub metadata validation: ok.
+- Live ay46 launch UX QA: `/knowledge/` mobile filter button visible and opens drawer with creator facets; source page mobile/desktop loads CSS `20260611-launchux1`; source tags have no border/background/radius; Base2026 mobile menu opens; all checked pages have no horizontal overflow and 0 console errors. Evidence under ignored `output/evidence/launchux-live-ay46/`.
 - Live ay44 roadmap QA: desktop 1159px and mobile 390px, CSS `20260611-roadmapstatus1`, 17 compact status badges, no rendered `COMPLETED - BUILT IN-HOUSE` text, no horizontal overflow, and 0 console errors. Evidence under ignored `output/evidence/roadmap-status-ay44-live-*.png`.
 - Live ay41 mobile visual QA: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260611-mobilevideo-ay41/`.
 - Live ay41 targeted checks: Base2026 header CTA is `Check My AI Visibility`; roadmap mobile/desktop overflow offenders are 0; `/knowledge/` and the inspected source page load `20260611-mobilevideo1`.

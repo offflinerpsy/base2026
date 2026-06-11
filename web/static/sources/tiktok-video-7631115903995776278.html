@@ -15,17 +15,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../static/styles.css?v=20260611-roadmapstatus1" />
+    <link rel="stylesheet" href="../static/styles.css?v=20260611-launchux1" />
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
+
     <header class="site-header">
       <div class="site-header__bar">
-        <a class="site-header__brand" href="/">Alex Yarosh</a>
+        <a class="site-header__brand" href="/"><span class="site-header__avatar" aria-hidden="true"></span><span>Alex Yarosh</span></a>
         <nav class="site-header__nav" aria-label="Main navigation">
-          <a class="site-header__link" href="/services/">Services</a>
-          <a class="site-header__link" href="/pricing/">Pricing</a>
-
+          <a class="site-header__link" href="/services/">Services</a><a class="site-header__link" href="/pricing/">Pricing</a>
           <div class="site-header__base">
             <a class="site-header__link site-header__link--base2026" href="../index.html" aria-haspopup="true">Base2026</a>
             <div class="site-header__base-menu" aria-label="Base2026 navigation">
@@ -33,12 +32,27 @@
               <a href="../index.html">Search</a><a href="../topics/">Topics</a><a href="../creators/">Creators</a><a href="../sources/" aria-current="page">Sources</a><a href="../roadmap.html">Roadmap</a><a href="../methodology.html">Methodology</a><a href="../support.html">Support</a>
             </div>
           </div>
-
-          <a class="site-header__link" href="/about/">About</a>
+<a class="site-header__link" href="/about/">About</a>
         </nav>
         <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
+        <details class="site-header__mobile-menu">
+          <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
+          <div class="site-header__mobile-panel">
+            <nav aria-label="Mobile navigation">
+              <a href="/services/">Services</a>
+              <a href="/pricing/">Pricing</a>
+              <details class="site-header__mobile-base" open>
+                <summary>Base2026</summary>
+                <div><a href="../index.html">Search</a><a href="../topics/">Topics</a><a href="../creators/">Creators</a><a href="../sources/" aria-current="page">Sources</a><a href="../roadmap.html">Roadmap</a><a href="../methodology.html">Methodology</a><a href="../support.html">Support</a></div>
+              </details>
+              <a href="/about/">About</a>
+              <a class="site-header__mobile-cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
+            </nav>
+          </div>
+        </details>
       </div>
     </header>
+
     <main id="content" class="app-shell content-page">
 
       <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -60,12 +74,11 @@
           </div>
         </div>
         <div class="source-hero-tools">
-          <div class="source-share-actions" data-share-root aria-label="Share source record"><span class="source-share-actions__label">Share source record</span><button type="button" class="source-share-action" data-share-action="share" aria-label="Share source record" title="Share"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 15.6a3.3 3.3 0 0 0-2.6 1.3l-6.1-3.5c.1-.4.1-.8 0-1.2l6-3.4A3.4 3.4 0 1 0 14.4 7l-6 3.4a3.4 3.4 0 1 0 0 4.8l6.1 3.5a3.4 3.4 0 1 0 3.5-3.1z"/></svg></button><button type="button" class="source-share-action" data-share-action="copy-link" aria-label="Copy source record link" title="Copy link"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.2 14.8a1 1 0 0 1 0-1.4l4.2-4.2a1 1 0 0 1 1.4 1.4l-4.2 4.2a1 1 0 0 1-1.4 0z"/><path d="M8.4 18.4a4.2 4.2 0 0 1-3-7.2l2.1-2.1a1 1 0 0 1 1.4 1.4l-2.1 2.1a2.2 2.2 0 1 0 3.1 3.1l2.1-2.1a1 1 0 0 1 1.4 1.4l-2.1 2.1a4.2 4.2 0 0 1-2.9 1.3z"/><path d="M15.8 13.2a1 1 0 0 1-.7-1.7l2.1-2.1a2.2 2.2 0 0 0-3.1-3.1L12 8.4A1 1 0 0 1 10.6 7l2.1-2.1a4.2 4.2 0 0 1 5.9 5.9l-2.1 2.1a1 1 0 0 1-.7.3z"/></svg></button><button type="button" class="source-share-action" data-share-action="copy-citation" aria-label="Copy citation" title="Copy citation"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 7a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V7zm3-1a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-6z"/><path d="M4 11a3 3 0 0 1 3-3 1 1 0 1 1 0 2 1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1 1 1 0 1 1 2 0 3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6z"/></svg></button><button type="button" class="source-share-action" data-share-action="print" aria-label="Save as PDF" title="Save PDF"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h10a2 2 0 0 1 2 2v3h1a3 3 0 0 1 3 3v5a2 2 0 0 1-2 2h-2v1a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-1H3a2 2 0 0 1-2-2v-5a3 3 0 0 1 3-3h1V5a2 2 0 0 1 2-2zm0 5h10V5H7v3zm0 8v3h10v-3H7zm12 0h2v-5a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v5h2v-1a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v1z"/></svg></button><span class="share-actions__status source-share-actions__status" data-share-status aria-live="polite"></span></div>
-          <div class="source-hero-meta" aria-label="Source metadata">
-            <span class="source-meta-chip" title="Public policy" aria-label="Public policy excerpt only"><span>excerpt only</span></span>
-            <span class="source-meta-chip" title="Public insight cards" aria-label="2 public insight cards"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V5zm3-1a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H7zm2 4h6a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2zm0 4h6a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2zm0 4h3a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2z"/></svg><span>2</span></span>
-            <span class="source-meta-chip source-meta-chip--topics" title="Topics" aria-label="Topics"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5a3 3 0 0 1 3-3h3.6a3 3 0 0 1 2.1.9l8.4 8.4a3 3 0 0 1 0 4.2l-5.6 5.6a3 3 0 0 1-4.2 0l-8.4-8.4A3 3 0 0 1 2 10.6V7a3 3 0 0 1 2-2zm3-.9A1 1 0 0 0 6 5v5.6a1 1 0 0 0 .3.7l8.4 8.4a1 1 0 0 0 1.4 0l5.6-5.6a1 1 0 0 0 0-1.4L13.3 4.3a1 1 0 0 0-.7-.3H7z"/><path d="M8.5 8.8a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6z"/></svg><span class="topic-chip-list"><a class="topic-chip" href="../topics/keyword-cannibalization-page-mapping.html">Keyword cannibalization / page mapping</a><a class="topic-chip" href="../topics/service-page-strategy.html">Service page strategy</a></span></span>
+          <div class="source-hero-toolbar">
+            <div class="source-share-actions" data-share-root aria-label="Share source record"><span class="source-share-actions__label">Share source record</span><button type="button" class="source-share-action" data-share-action="share" aria-label="Share source record" title="Share"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 15.6a3.3 3.3 0 0 0-2.6 1.3l-6.1-3.5c.1-.4.1-.8 0-1.2l6-3.4A3.4 3.4 0 1 0 14.4 7l-6 3.4a3.4 3.4 0 1 0 0 4.8l6.1 3.5a3.4 3.4 0 1 0 3.5-3.1z"/></svg></button><button type="button" class="source-share-action" data-share-action="copy-link" aria-label="Copy source record link" title="Copy link"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.2 14.8a1 1 0 0 1 0-1.4l4.2-4.2a1 1 0 0 1 1.4 1.4l-4.2 4.2a1 1 0 0 1-1.4 0z"/><path d="M8.4 18.4a4.2 4.2 0 0 1-3-7.2l2.1-2.1a1 1 0 0 1 1.4 1.4l-2.1 2.1a2.2 2.2 0 1 0 3.1 3.1l2.1-2.1a1 1 0 0 1 1.4 1.4l-2.1 2.1a4.2 4.2 0 0 1-2.9 1.3z"/><path d="M15.8 13.2a1 1 0 0 1-.7-1.7l2.1-2.1a2.2 2.2 0 0 0-3.1-3.1L12 8.4A1 1 0 0 1 10.6 7l2.1-2.1a4.2 4.2 0 0 1 5.9 5.9l-2.1 2.1a1 1 0 0 1-.7.3z"/></svg></button><button type="button" class="source-share-action" data-share-action="copy-citation" aria-label="Copy citation" title="Copy citation"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 7a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V7zm3-1a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-6z"/><path d="M4 11a3 3 0 0 1 3-3 1 1 0 1 1 0 2 1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1 1 1 0 1 1 2 0 3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6z"/></svg></button><button type="button" class="source-share-action" data-share-action="print" aria-label="Save as PDF" title="Save PDF"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h10a2 2 0 0 1 2 2v3h1a3 3 0 0 1 3 3v5a2 2 0 0 1-2 2h-2v1a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-1H3a2 2 0 0 1-2-2v-5a3 3 0 0 1 3-3h1V5a2 2 0 0 1 2-2zm0 5h10V5H7v3zm0 8v3h10v-3H7zm12 0h2v-5a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v5h2v-1a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v1z"/></svg></button><span class="share-actions__status source-share-actions__status" data-share-status aria-live="polite"></span></div>
+            <div class="source-hero-quick-meta" aria-label="Source metadata"><span class="source-meta-inline" title="Public policy">excerpt only</span><span class="source-meta-inline" title="Public insight cards"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V5zm3-1a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H7zm2 4h6a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2zm0 4h6a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2zm0 4h3a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2z"/></svg><strong>2</strong></span></div>
           </div>
+          <div class="source-hero-topic-tags" aria-label="Source topics"><a class="topic-chip topic-tag" href="../topics/keyword-cannibalization-page-mapping.html">Keyword cannibalization / page mapping</a><a class="topic-chip topic-tag" href="../topics/service-page-strategy.html">Service page strategy</a></div>
         </div>
       </section>
       <section class="content-section">
@@ -169,7 +182,7 @@
         <span>&copy; 2026 Alex Yarosh. Available remotely for US-based local businesses.</span>
       </div>
     </footer>
-    <script src="../static/share-actions.js?v=20260611-roadmapstatus1" defer></script>
+    <script src="../static/share-actions.js?v=20260611-launchux1" defer></script>
 
     <section class="cookie-banner" data-cookie-banner hidden aria-label="Cookie preferences">
       <div>
@@ -200,7 +213,7 @@
         </div>
       </form>
     </dialog>
-    <script src="../static/cookie-consent.js?v=20260611-roadmapstatus1" defer></script>
+    <script src="../static/cookie-consent.js?v=20260611-launchux1" defer></script>
 
   </body>
 </html>

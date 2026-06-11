@@ -68,7 +68,7 @@ PAGE_MAP = {
 
 
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
-STYLE_VERSION = "20260611-roadmapstatus1"
+STYLE_VERSION = "20260611-launchux1"
 
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
@@ -141,6 +141,52 @@ def base2026_dropdown(relative_root: str = ".", current: str = "") -> str:
               {''.join(links)}
             </div>
           </div>
+"""
+
+
+def header_nav_links(relative_root: str = ".", current: str = "") -> str:
+    return (
+        '<a class="site-header__link" href="/services/">Services</a>'
+        '<a class="site-header__link" href="/pricing/">Pricing</a>'
+        f'{base2026_dropdown(relative_root, current)}'
+        '<a class="site-header__link" href="/about/">About</a>'
+    )
+
+
+def mobile_base2026_links(relative_root: str = ".", current: str = "") -> str:
+    links = []
+    for key, label, target in PROJECT_NAV_LINKS:
+        active = ' aria-current="page"' if key == current else ""
+        links.append(f'<a href="{html.escape(root_href(relative_root, target))}"{active}>{html.escape(label)}</a>')
+    return "".join(links)
+
+
+def site_header(relative_root: str = ".", current: str = "") -> str:
+    return f"""
+    <header class="site-header">
+      <div class="site-header__bar">
+        <a class="site-header__brand" href="/"><span class="site-header__avatar" aria-hidden="true"></span><span>Alex Yarosh</span></a>
+        <nav class="site-header__nav" aria-label="Main navigation">
+          {header_nav_links(relative_root, current)}
+        </nav>
+        <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
+        <details class="site-header__mobile-menu">
+          <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
+          <div class="site-header__mobile-panel">
+            <nav aria-label="Mobile navigation">
+              <a href="/services/">Services</a>
+              <a href="/pricing/">Pricing</a>
+              <details class="site-header__mobile-base" open>
+                <summary>Base2026</summary>
+                <div>{mobile_base2026_links(relative_root, current)}</div>
+              </details>
+              <a href="/about/">About</a>
+              <a class="site-header__mobile-cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
+            </nav>
+          </div>
+        </details>
+      </div>
+    </header>
 """
 
 
@@ -479,18 +525,7 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
-    <header class="site-header">
-      <div class="site-header__bar">
-        <a class="site-header__brand" href="/">Alex Yarosh</a>
-        <nav class="site-header__nav" aria-label="Main navigation">
-          <a class="site-header__link" href="/services/">Services</a>
-          <a class="site-header__link" href="/pricing/">Pricing</a>
-          {base2026_dropdown(".", current_nav)}
-          <a class="site-header__link" href="/about/">About</a>
-        </nav>
-        <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
-      </div>
-    </header>
+    {site_header(".", current_nav)}
     <main id="content" class="app-shell content-page {page_class}">
       {base2026_breadcrumbs(title)}
       <section class="page-hero">

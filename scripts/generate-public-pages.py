@@ -8,7 +8,7 @@ from html import escape
 from pathlib import Path
 
 
-STYLE_VERSION = "20260611-roadmapstatus1"
+STYLE_VERSION = "20260611-launchux1"
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
@@ -144,6 +144,15 @@ def source_share_action_bar(label: str = "Share source record", kind: str = "sou
     )
 
 
+def source_quick_meta(public_policy: str, insight_count: int) -> str:
+    return (
+        '<div class="source-hero-quick-meta" aria-label="Source metadata">'
+        f'<span class="source-meta-inline" title="Public policy">{escape(public_policy)}</span>'
+        f'<span class="source-meta-inline" title="Public insight cards">{icon_svg("card")}<strong>{escape(str(insight_count))}</strong></span>'
+        '</div>'
+    )
+
+
 def inline_share_actions(label: str, kind: str = "page") -> str:
     return (
         f'<div class="source-share-actions source-share-actions--inline" data-share-root aria-label="{escape(label)}">'
@@ -184,6 +193,52 @@ def base2026_dropdown(relative_root: str, current: str = "") -> str:
               {''.join(links)}
             </div>
           </div>
+"""
+
+
+def header_nav_links(relative_root: str, current: str = "") -> str:
+    return (
+        '<a class="site-header__link" href="/services/">Services</a>'
+        '<a class="site-header__link" href="/pricing/">Pricing</a>'
+        f'{base2026_dropdown(relative_root, current)}'
+        '<a class="site-header__link" href="/about/">About</a>'
+    )
+
+
+def mobile_base2026_links(relative_root: str, current: str = "") -> str:
+    links = []
+    for key, label, target in PROJECT_NAV_LINKS:
+        active = ' aria-current="page"' if key == current else ""
+        links.append(f'<a href="{escape(root_href(relative_root, target))}"{active}>{escape(label)}</a>')
+    return "".join(links)
+
+
+def site_header(relative_root: str, current: str = "") -> str:
+    return f"""
+    <header class="site-header">
+      <div class="site-header__bar">
+        <a class="site-header__brand" href="/"><span class="site-header__avatar" aria-hidden="true"></span><span>Alex Yarosh</span></a>
+        <nav class="site-header__nav" aria-label="Main navigation">
+          {header_nav_links(relative_root, current)}
+        </nav>
+        <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
+        <details class="site-header__mobile-menu">
+          <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
+          <div class="site-header__mobile-panel">
+            <nav aria-label="Mobile navigation">
+              <a href="/services/">Services</a>
+              <a href="/pricing/">Pricing</a>
+              <details class="site-header__mobile-base" open>
+                <summary>Base2026</summary>
+                <div>{mobile_base2026_links(relative_root, current)}</div>
+              </details>
+              <a href="/about/">About</a>
+              <a class="site-header__mobile-cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
+            </nav>
+          </div>
+        </details>
+      </div>
+    </header>
 """
 
 
@@ -277,18 +332,7 @@ def page_shell(
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
-    <header class="site-header">
-      <div class="site-header__bar">
-        <a class="site-header__brand" href="/">Alex Yarosh</a>
-        <nav class="site-header__nav" aria-label="Main navigation">
-          <a class="site-header__link" href="/services/">Services</a>
-          <a class="site-header__link" href="/pricing/">Pricing</a>
-          {base2026_dropdown(relative_root, current)}
-          <a class="site-header__link" href="/about/">About</a>
-        </nav>
-        <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
-      </div>
-    </header>
+    {site_header(relative_root, current)}
     <main id="content" class="app-shell content-page">
       {base2026_breadcrumbs(relative_root, title)}
       {body}
@@ -428,7 +472,7 @@ def topic_chips(topic_rows: list[tuple[str, str, int]], prefix: str = "../topics
     for topic_id, label, count in topic_rows:
         suffix = f" · {count}" if count else ""
         chips.append(
-            f'<a class="topic-chip" href="{escape(topic_href(topic_id, prefix))}">{escape(label)}{escape(suffix)}</a>'
+            f'<a class="topic-chip topic-tag" href="{escape(topic_href(topic_id, prefix))}">{escape(label)}{escape(suffix)}</a>'
         )
     return "".join(chips)
 
@@ -616,12 +660,11 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
           </div>
         </div>
         <div class="source-hero-tools">
-          {source_share_action_bar("Share source record")}
-          <div class="source-hero-meta" aria-label="Source metadata">
-            <span class="source-meta-chip" title="Public policy" aria-label="Public policy excerpt only"><span>excerpt only</span></span>
-            <span class="source-meta-chip" title="Public insight cards" aria-label="{len(public_insights)} public insight cards">{icon_svg("card")}<span>{len(public_insights)}</span></span>
-            <span class="source-meta-chip source-meta-chip--topics" title="Topics" aria-label="Topics">{icon_svg("topic")}<span class="topic-chip-list">{compact_topic_html}</span></span>
+          <div class="source-hero-toolbar">
+            {source_share_action_bar("Share source record")}
+            {source_quick_meta("excerpt only", len(public_insights))}
           </div>
+          <div class="source-hero-topic-tags" aria-label="Source topics">{compact_topic_html}</div>
         </div>
       </section>
       <section class="content-section">

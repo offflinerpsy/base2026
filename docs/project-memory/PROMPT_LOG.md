@@ -2209,3 +2209,29 @@ Verification:
 Next step:
 
 - stage allowlisted public-safe files, commit, push `main`, then continue GSC indexing and check-only TikTok intake hardening.
+
+## 2026-06-11 — Mobile search filters, header parity, hashtag topics, and ay46 deploy
+
+User pointed out that `/knowledge/` mobile filters were effectively hidden below results and asked for a visible, ergonomic filter control near the search flow. The same pass also continued the Base2026 launch UX cleanup for header parity and source metadata/tag consistency.
+
+Actions taken:
+
+- added a visible mobile `Filters` control under the search command on `/knowledge/`;
+- implemented a native fixed filter drawer with creator, source, and year refinements plus backdrop/close/Escape handling;
+- aligned Base2026 static headers with the WordPress avatar header and added desktop/mobile Base2026 navigation menus;
+- moved source-page `excerpt only` and insight count metadata into the hero tool row;
+- changed source/topic keywords to orange hashtag-style links instead of framed pills;
+- fixed the deploy package template `web/static/meili.html` and cache-bust so live `/knowledge/` receives the mobile filter/header changes;
+- deployed `base2026-mobile-filters-header-tags-ay46-20260611` with Meilisearch reindex.
+
+Verification:
+
+- Python compile, JS syntax, and `git diff --check` passed;
+- public export policy check passed: 957 source records, 1396 passages, 1692 insight cards, 1228 public insight cards;
+- publication boundary audit passed with `forbidden=0`, `secret_findings=0`, `needs_review=0`;
+- GitHub metadata validation passed;
+- live Playwright QA passed for mobile `/knowledge/`, mobile/desktop source page, and homepage mobile step-card state with no horizontal overflow and 0 console errors.
+
+Next step:
+
+- stage audited public-safe files, commit, push `main`, then continue GSC indexing and the reviewed intake pipeline.

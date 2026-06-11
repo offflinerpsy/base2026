@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@8/themes/reset-min.css" />
-    <link rel="stylesheet" href="./static/styles.css?v=20260611-roadmapstatus1" />
+    <link rel="stylesheet" href="./static/styles.css?v=20260611-launchux1" />
     <script src="https://cdn.jsdelivr.net/npm/@meilisearch/instant-meilisearch/dist/instant-meilisearch.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
     <script type="application/ld+json">
@@ -48,7 +48,7 @@
     <a class="skip-link" href="#searchbox">Skip to search</a>
     <header class="site-header">
       <div class="site-header__bar">
-        <a class="site-header__brand" href="/">Alex Yarosh</a>
+        <a class="site-header__brand" href="/"><span class="site-header__avatar" aria-hidden="true"></span><span>Alex Yarosh</span></a>
         <nav class="site-header__nav" aria-label="Main navigation">
           <a class="site-header__link" href="/services/">Services</a>
           <a class="site-header__link" href="/pricing/">Pricing</a>
@@ -68,6 +68,29 @@
           <a class="site-header__link" href="/about/">About</a>
         </nav>
         <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
+        <details class="site-header__mobile-menu">
+          <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
+          <div class="site-header__mobile-panel">
+            <nav aria-label="Mobile navigation">
+              <a href="/services/">Services</a>
+              <a href="/pricing/">Pricing</a>
+              <details class="site-header__mobile-base" open>
+                <summary>Base2026</summary>
+                <div>
+                  <a href="./index.html" aria-current="page">Search</a>
+                  <a href="./topics/">Topics</a>
+                  <a href="./creators/">Creators</a>
+                  <a href="./sources/">Sources</a>
+                  <a href="./roadmap.html">Roadmap</a>
+                  <a href="./methodology.html">Methodology</a>
+                  <a href="./support.html">Support</a>
+                </div>
+              </details>
+              <a href="/about/">About</a>
+              <a class="site-header__mobile-cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
+            </nav>
+          </div>
+        </details>
       </div>
     </header>
     <main class="app-shell">
@@ -134,11 +157,20 @@
         <div id="current-refinements"></div>
       </section>
 
+      <div class="mobile-filter-bar" aria-label="Mobile search filters">
+        <button type="button" id="mobile-filter-toggle" class="mobile-filter-toggle" aria-expanded="false" aria-controls="mobile-filter-panel">
+          <span>Filters</span>
+          <strong id="mobile-filter-count">Choose filters</strong>
+        </button>
+      </div>
+
       <section class="meili-grid">
-        <aside class="filter-panel meili-filters">
+        <div id="mobile-filter-backdrop" class="mobile-filter-backdrop" hidden></div>
+        <aside id="mobile-filter-panel" class="filter-panel meili-filters">
           <div class="panel-title">
             <h2>Filter results</h2>
             <span>Facets</span>
+            <button type="button" id="mobile-filter-close" class="mobile-filter-close" aria-label="Close filters">Close</button>
           </div>
           <h3>Creator</h3>
           <div id="author-refinement"></div>
@@ -273,7 +305,7 @@
       window.BASE2026_MEILI_URL = "/knowledge-search";
       window.BASE2026_MEILI_INDEX = "base2026_public_tiktok";
     </script>
-    <script src="./static/cookie-consent.js?v=20260611-roadmapstatus1" defer></script>
-    <script src="./static/meili.js?v=20260611-roadmapstatus1"></script>
+    <script src="./static/cookie-consent.js?v=20260611-launchux1" defer></script>
+    <script src="./static/meili.js?v=20260611-launchux1"></script>
   </body>
 </html>
