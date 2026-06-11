@@ -2260,6 +2260,40 @@ Next step:
 
 - run publication boundary and metadata audits, stage allowlisted public-safe files, commit, push, then continue launch monitoring and the reviewed intake pipeline.
 
+## 2026-06-11 — TikTok refresh ay50, Mac pipeline fixes, and deploy
+
+User asked to run the pipeline for newly available TikToks, finish work to Git, and deploy after verification.
+
+Actions taken:
+
+- ran `hermes-tiktok-refresh.ps1 -CheckOnly -PlaylistEnd 50`: no new rows at that depth;
+- ran full refresh with `PlaylistEnd 100`, which discovered 49 new `@joshuamaraney` rows;
+- ran `-AfterPolish` with default `PlaylistEnd 1000`, which expanded the full `@joshuamaraney` archive to 638 rows and left older rows out of active scope where applicable;
+- polished the one caption-ready transcript in batch `hermes-polish-20260611-144528`: `tiktok-video-7648365806375488782`;
+- fixed Mac runner portability in `hermes-tiktok-refresh.ps1` and `tiktok-polish-runner.ps1` by resolving `python3`/`python` and `pwsh`/`powershell` dynamically;
+- fixed `build-kb-sqlite.py` so SQLite rebuilds are deterministic: stale rows are cleared, and missing TikTok creators/source registry rows are auto-registered from `videos.csv`;
+- extended the publication-boundary allowlist for the newly public-safe pipeline scripts;
+- rebuilt SQLite, exported public TikTok data, packaged, deployed, and reindexed Meilisearch as `base2026-tiktok-refresh-ay50-20260611`.
+
+Verification:
+
+- `kb-audit.py` passes with `integrity=ok`, `foreign_key_errors=0`, 941 transcripts/source cards, and 266 queued ASR jobs;
+- public export policy passes with `include_full_transcripts=false`;
+- ay50 public export has 1209 source records, 1373 passages, 1538 insight cards, 1097 public insight cards, 1442 topics, and 1040 public topics;
+- live `/knowledge/static/documents.jsonl` has 1209 rows;
+- live Meilisearch proxy returns hits after reindex;
+- live source page `/knowledge/sources/tiktok-video-7648365806375488782.html` now contains the polished OpenAI/ChatGPT Sites source excerpt;
+- mobile visual QA passed: 44 checks, 0 failures, evidence under ignored `output/evidence/ay50-live-mobile-qa/`.
+
+Not complete:
+
+- 266 ASR jobs remain queued; many newly discovered source records are published only as attribution/source shells until transcript extraction succeeds;
+- no unreviewed new insight cards were auto-promoted.
+
+Next step:
+
+- commit/push the public-safe pipeline script and memory updates, then run a focused ASR/source-review slice before the next card-promotion pass.
+
 ## 2026-06-11 — Unified mobile navigation across WordPress and Base2026
 
 User reported that the WordPress hamburger menu and Base2026 hamburger menu had diverged: the WordPress drawer was dark and navigated directly from `Base2026`, while the Base2026 drawer was light but had an awkward pre-open submenu and inconsistent CTA hover behavior.

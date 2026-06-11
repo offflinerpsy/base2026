@@ -711,3 +711,12 @@ live visual QA: 66 checks, 0 failures
 evidence: output/evidence/mobile-visual-qa-live-ay37-20260610/
 nginx -t: pass
 ```
+## 2026-06-11 — base2026-tiktok-refresh-ay50-20260611
+
+- release: `base2026-tiktok-refresh-ay50-20260611`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-tiktok-refresh-ay50-20260611`
+- public export: 1209 source records, 1373 passages, 1538 insight cards, 1097 public insight cards, 1442 topics, 1040 public topics
+- Meilisearch reindex: 1373 passages indexed into `base2026_public_tiktok`
+- policy: `include_full_transcripts=false`
+- QA: mobile visual runner passed 44 checks with 0 failures
+- note: TikTok refresh expanded the local inventory and left 266 ASR jobs queued; no unreviewed cards were auto-promoted.

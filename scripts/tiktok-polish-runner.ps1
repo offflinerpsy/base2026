@@ -19,6 +19,11 @@ $Stamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $Log = Join-Path $Results "tiktok-polish-$Stamp.log"
 $BatchSet = "polish-$Stamp"
 
+$Python = (Get-Command python3 -ErrorAction SilentlyContinue)
+if (-not $Python) { $Python = (Get-Command python -ErrorAction SilentlyContinue) }
+if (-not $Python) { throw "Python runtime not found. Install python3 or add python to PATH." }
+$PythonExe = $Python.Source
+
 New-Item -ItemType Directory -Force -Path $Planning, $Results | Out-Null
 
 function Write-State {
@@ -59,9 +64,9 @@ try {
     if (-not $?) { throw "OpenClaw polish runner failed." }
   }
 
-  & python ".\scripts\tiktok-polish-status.py" --json 2>&1 | Tee-Object -FilePath $Log -Append
-  & python ".\scripts\build-kb-sqlite.py" 2>&1 | Tee-Object -FilePath $Log -Append
-  & python ".\scripts\kb-audit.py" 2>&1 | Tee-Object -FilePath $Log -Append
+  & $PythonExe ".\scripts\tiktok-polish-status.py" --json 2>&1 | Tee-Object -FilePath $Log -Append
+  & $PythonExe ".\scripts\build-kb-sqlite.py" 2>&1 | Tee-Object -FilePath $Log -Append
+  & $PythonExe ".\scripts\kb-audit.py" 2>&1 | Tee-Object -FilePath $Log -Append
 
   Write-State -Status "completed" -Message "Transcript polish completed." -Ok $true
 }

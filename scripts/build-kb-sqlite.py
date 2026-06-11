@@ -60,6 +60,14 @@ def stable_id(prefix: str, text: str) -> str:
     return f"{prefix}-{hashlib.sha1(text.encode('utf-8')).hexdigest()[:12]}"
 
 
+def tiktok_handle_from_creator_id(creator_id: str) -> str:
+    safe = (creator_id or "").strip()
+    if safe.startswith("tiktok-"):
+        safe = safe[len("tiktok-") :]
+    safe = safe.replace("-", "_")
+    return f"@{safe}" if safe else ""
+
+
 def title_is_truncated(title: str | None) -> bool:
     text = (title or "").strip()
     return text.endswith("...") or text.endswith("…")
@@ -437,12 +445,57 @@ def main() -> None:
     conn.execute("DELETE FROM generic_documents")
     conn.execute("DELETE FROM raw_artifacts")
     conn.execute("DELETE FROM item_title_enrichment")
-    conn.execute("DELETE FROM jobs WHERE task_type = 'asr_transcript'")
-    conn.execute("DELETE FROM events WHERE event_type = 'needs_asr'")
+    conn.execute("DELETE FROM jobs")
+    conn.execute("DELETE FROM events")
     conn.execute("DELETE FROM generic_items")
+    conn.execute("DELETE FROM source_cards")
+    conn.execute("DELETE FROM transcripts")
+    conn.execute("DELETE FROM claim_reviews")
+    conn.execute("DELETE FROM claim_topics")
+    conn.execute("DELETE FROM claim_evidence")
+    conn.execute("DELETE FROM method_evidence")
+    conn.execute("DELETE FROM strategy_block_evidence")
+    conn.execute("DELETE FROM contradictions")
+    conn.execute("DELETE FROM methods")
+    conn.execute("DELETE FROM strategy_blocks")
+    conn.execute("DELETE FROM sop_blocks")
+    conn.execute("DELETE FROM claims")
+    conn.execute("DELETE FROM topics")
+    conn.execute("DELETE FROM videos")
+    conn.execute("DELETE FROM creators")
     conn.execute("DELETE FROM source_registry")
 
     creators = read_csv(TIKTOK / "creators.csv")
+    videos = read_csv(TIKTOK / "videos.csv")
+    known_creator_ids = {
+        (row.get("creator_id") or "").strip()
+        for row in creators
+        if (row.get("creator_id") or "").strip()
+    }
+    missing_creator_ids = sorted(
+        {
+            (row.get("creator_id") or "").strip()
+            for row in videos
+            if (row.get("creator_id") or "").strip()
+        }
+        - known_creator_ids
+    )
+    for creator_id in missing_creator_ids:
+        handle = tiktok_handle_from_creator_id(creator_id)
+        creators.append(
+            {
+                "creator_id": creator_id,
+                "platform": "tiktok",
+                "handle": handle,
+                "url": f"https://www.tiktok.com/{handle}" if handle else "",
+                "niche": "",
+                "language": "en",
+                "priority": "normal",
+                "status": "active",
+                "added_at": datetime.now().date().isoformat(),
+                "notes": "Auto-registered from TikTok videos.csv intake row.",
+            }
+        )
     for row in creators:
         now = datetime.now().isoformat(timespec="seconds")
         conn.execute(
@@ -484,7 +537,39 @@ def main() -> None:
             ),
         )
 
-    videos = read_csv(TIKTOK / "videos.csv")
+    registered_tiktok_sources = {
+        f"source-tiktok-{(row.get('creator_id') or '').strip()}"
+        for row in creators
+        if (row.get("creator_id") or "").strip()
+    }
+    for creator_id in sorted({(row.get("creator_id") or "").strip() for row in videos if (row.get("creator_id") or "").strip()}):
+        source_id = f"source-tiktok-{creator_id}"
+        if source_id in registered_tiktok_sources:
+            continue
+        now = datetime.now().isoformat(timespec="seconds")
+        handle = tiktok_handle_from_creator_id(creator_id)
+        profile_url = f"https://www.tiktok.com/{handle}" if handle else ""
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO source_registry
+            (source_id, source_type, source_name, url, input_value, scope, status, added_at, last_checked_at, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                source_id,
+                "tiktok_creator",
+                handle or creator_id,
+                profile_url,
+                profile_url,
+                "last_year",
+                "active",
+                datetime.now().date().isoformat(),
+                now,
+                "Auto-registered from TikTok videos.csv intake row.",
+            ),
+        )
+        registered_tiktok_sources.add(source_id)
+
     title_enrichment = load_title_enrichment()
     transcribed = 0
     for row in videos:

@@ -30,6 +30,16 @@ if (-not $BatchSet) {
   $BatchSet = "hermes-polish-$Stamp"
 }
 
+$Python = (Get-Command python3 -ErrorAction SilentlyContinue)
+if (-not $Python) { $Python = (Get-Command python -ErrorAction SilentlyContinue) }
+if (-not $Python) { throw "Python runtime not found. Install python3 or add python to PATH." }
+$PythonExe = $Python.Source
+
+$PowerShell = (Get-Command pwsh -ErrorAction SilentlyContinue)
+if (-not $PowerShell) { $PowerShell = (Get-Command powershell -ErrorAction SilentlyContinue) }
+if (-not $PowerShell) { throw "PowerShell runtime not found. Install pwsh or add powershell to PATH." }
+$PowerShellExe = $PowerShell.Source
+
 New-Item -ItemType Directory -Force -Path $Planning, $Results | Out-Null
 
 if (-not $CutoffDate) {
@@ -144,21 +154,21 @@ try {
     if ($AfterPolish -and $BatchSet) {
       $statusArgs += @("--batch-dir", (Join-Path $Root "12_knowledge-base\sources\tiktok\transcript-polish-batches\$BatchSet"))
     }
-    python (Join-Path $Root "scripts\tiktok-polish-status.py") @statusArgs
+    & $PythonExe (Join-Path $Root "scripts\tiktok-polish-status.py") @statusArgs
   }
   Run-Step "rebuild-sqlite" {
-    python (Join-Path $Root "scripts\build-kb-sqlite.py")
+    & $PythonExe (Join-Path $Root "scripts\build-kb-sqlite.py")
   }
   Run-Step "audit" {
-    python (Join-Path $Root "scripts\kb-audit.py")
+    & $PythonExe (Join-Path $Root "scripts\kb-audit.py")
   }
   Run-Step "export-public-tiktok" {
-    python (Join-Path $Root "scripts\export-public-tiktok.py")
+    & $PythonExe (Join-Path $Root "scripts\export-public-tiktok.py")
   }
 
   if ($Package -or $Deploy) {
     Run-Step "package-public-release" {
-      powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Root "scripts\package-public-release.ps1") -ReleaseName "base2026-public-hermes-$Stamp"
+      & $PowerShellExe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Root "scripts\package-public-release.ps1") -ReleaseName "base2026-public-hermes-$Stamp"
     }
   }
 
