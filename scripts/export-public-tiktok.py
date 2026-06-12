@@ -362,9 +362,11 @@ def main() -> int:
                     }
                 )
             for claim in claim_rows:
-                evidence_excerpt, evidence_score = best_evidence_excerpt(claim["claim_text"], item_chunks)
                 review_status = claim["review_status"] or "pending"
                 claim_type = claim["claim_type"] or "claim"
+                if claim_type == "insight_card_candidate" and review_status not in {"approved", "reviewed", "public"}:
+                    continue
+                evidence_excerpt, evidence_score = best_evidence_excerpt(claim["claim_text"], item_chunks)
                 is_reviewed_public = review_status in {"approved", "reviewed", "public"} and evidence_score >= 0.25
                 is_auto_public = (
                     args.auto_promote_insights

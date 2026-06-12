@@ -1,6 +1,6 @@
 # Base2026 / Geo Command Center Queue
 
-Last updated: 2026-06-10
+Last updated: 2026-06-11
 
 This file is the working queue. Chat is not the source of truth for tasks.
 
@@ -23,23 +23,23 @@ No task is considered done because a worker reports done. Codex must review, int
 | GEO-01 | Homepage Base2026 CTA acid-green highlight | Codex after worker review | done/live | None | Live homepage loads CSS `1.5.15`; Base2026 CTA is `#b7ff00`; text is white; audit CTA remains white; desktop/mobile overflow false. |
 | GEO-02 | About hero portrait scale and quote treatment | Codex after worker review | done/live | None | Live `/about/` loads CSS `1.5.15`; desktop portrait is about full card height; copy has pullquote styling; mobile stacks cleanly; desktop/mobile overflow false. |
 | UI-QA-01 | Mixed WordPress/Base2026 mobile visual QA automation | Codex | done/live | Use `node scripts/mobile-visual-qa.mjs --base-url https://aggressorbulkit.online --viewports full` before public UI deploys. | Runner and runbook exist; Base2026 `base2026-mobile-visual-qa-ay25-20260610` and WordPress CSS `1.5.16` are live; final matrix has 66 checks, 0 failures, 0 warnings. |
-| PIPE-01 | New TikTok intake/transcription/card automation | worker: Pasteur + Codex | in_progress | Start PIPE-01.6: wire source-backed card extraction for newly imported sources, gated by evidence verification and manual review. | A repeatable local pipeline exists for check -> caption/ASR -> polish -> claim extraction -> evidence verify -> review -> import -> export/package gate, with no scheduled deploy. |
+| PIPE-01 | New TikTok intake/transcription/card automation | Codex | in_progress | Work source-review slice and historical transcript QA queue; keep future imports behind review/promotion/export gates. | A repeatable local pipeline exists for check -> caption/ASR -> polish -> claim extraction -> evidence verify -> review -> import -> export/package/deploy gate, with private candidates durable locally and excluded from public export. |
 | GIT-01 | Repo/git hygiene for `base2026` and `geo` | worker: Franklin + Codex | in_progress | Classify dirty trees into coherent buckets and produce a commit/staging sequence without staging anything yet. | Dirty state is split into public-safe source changes, generated/private artifacts, site patch commits, and owner-decision leftovers. |
 | PUB-01 | GitHub/open-source publication staging | worker: Darwin + Codex | blocked_by_GIT-01 | Follow the publication gates below after repo hygiene: boundary, generated-page decision, license/docs/CI, remote decision, dry-run stage, final staged diff review. | No push/publish until public/private boundary is green and user approves remote/public artifact list. |
 
 ## Current Deployed State
 
-- Base2026 release live: `base2026-mobile-visual-qa-ay25-20260610`.
-- Base2026 public export live: 957 source records, 1392 passages, 1690 insight cards, 1226 public insight cards.
+- Base2026 release live: `base2026-private-candidate-gate-ay54-20260611`.
+- Base2026 public export live: 1214 source records, 1703 passages, 1544 insight cards, 1103 public insight cards.
 - WordPress child-theme CSS live: `1.5.16`.
 - VPS SSH works through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
 
 ## Immediate Execution Order
 
-1. Finish worker result intake for `PIPE-01`, `GIT-01`, and `PUB-01`.
-2. Start `PIPE-01` implementation, because product launch quality depends on repeatable intake and card generation.
-3. Run `GIT-01` classification before any commit/staging.
-4. Keep `PUB-01` blocked behind `GIT-01` and final boundary audit.
+1. Keep `PIPE-01` running through reviewed slices only.
+2. Commit/push ay54 public-safe pipeline and memory changes after audited staging.
+3. Work source-review rows and transcript QA debt separately from public deploy.
+4. Re-run publication boundary audit before every future push/deploy.
 
 ## PUB-01 Gates
 

@@ -97,46 +97,60 @@ def read_archive(path: Path) -> dict[str, dict]:
     return rows
 
 
+def archive_record_from_rows(db_row: dict, report_row: dict, review_status: str) -> dict:
+    source_id = report_row.get("source_id") or db_row.get("source_id") or ""
+    if not source_id:
+        source_id = f"tiktok:{report_row.get('creator_handle', '').lstrip('@')}:{db_row.get('video_id', '')}"
+    return {
+        "claim_id": db_row.get("claim_id") or report_row.get("claim_id") or "",
+        "claim_text": db_row.get("claim_text") or report_row.get("claim_text") or "",
+        "topic": db_row.get("topic") or report_row.get("topic") or report_row.get("topic_label") or "Uncategorized",
+        "claim_type": "insight_card_candidate",
+        "suggested_action": db_row.get("suggested_action") or report_row.get("suggested_action") or "",
+        "confidence": db_row.get("confidence") if db_row.get("confidence") is not None else report_row.get("evidence_score"),
+        "review_status": review_status,
+        "video_id": str(db_row.get("video_id") or report_row.get("video_id") or ""),
+        "item_id": db_row.get("item_id") or report_row.get("item_id") or "",
+        "source_id": source_id,
+        "source_url": db_row.get("source_url") or report_row.get("source_url") or "",
+        "creator_handle": report_row.get("creator_handle") or "",
+        "evidence_path": db_row.get("evidence_path") or f"public-data/tiktok/passages.jsonl#source_id={source_id}",
+        "evidence_excerpt": db_row.get("evidence_excerpt") or report_row.get("evidence_excerpt") or "",
+        "evidence_score": report_row.get("evidence_score") if report_row.get("evidence_score") is not None else db_row.get("confidence"),
+        "archived_at": now_iso(),
+        "archive_version": 1,
+    }
+
+
 def write_archive(path: Path, rows: list[dict], report_map: dict[str, dict], review_status: str) -> int:
     if not rows:
         return 0
     path.parent.mkdir(parents=True, exist_ok=True)
     archived = read_archive(path)
     written = 0
-    stamped = now_iso()
     for db_row in rows:
         claim_id = db_row.get("claim_id") or ""
         if not claim_id:
             continue
         report_row = report_map.get(claim_id, {})
-        source_id = report_row.get("source_id") or db_row.get("source_id") or ""
-        if not source_id:
-            source_id = f"tiktok:{report_row.get('creator_handle', '').lstrip('@')}:{db_row.get('video_id', '')}"
-        record = {
-            "claim_id": claim_id,
-            "claim_text": db_row.get("claim_text") or report_row.get("claim_text") or "",
-            "topic": db_row.get("topic") or report_row.get("topic") or report_row.get("topic_label") or "Uncategorized",
-            "claim_type": "insight_card_candidate",
-            "suggested_action": db_row.get("suggested_action") or report_row.get("suggested_action") or "",
-            "confidence": db_row.get("confidence") if db_row.get("confidence") is not None else report_row.get("evidence_score"),
-            "review_status": review_status,
-            "video_id": str(db_row.get("video_id") or report_row.get("video_id") or ""),
-            "item_id": db_row.get("item_id") or report_row.get("item_id") or "",
-            "source_id": source_id,
-            "source_url": db_row.get("source_url") or report_row.get("source_url") or "",
-            "creator_handle": report_row.get("creator_handle") or "",
-            "evidence_path": db_row.get("evidence_path") or f"public-data/tiktok/passages.jsonl#source_id={source_id}",
-            "evidence_excerpt": db_row.get("evidence_excerpt") or report_row.get("evidence_excerpt") or "",
-            "evidence_score": report_row.get("evidence_score") if report_row.get("evidence_score") is not None else db_row.get("confidence"),
-            "archived_at": stamped,
-            "archive_version": 1,
-        }
+        record = archive_record_from_rows(db_row, report_row, review_status)
         archived[claim_id] = record
         written += 1
     with path.open("w", encoding="utf-8") as handle:
         for claim_id in sorted(archived):
             handle.write(json.dumps(archived[claim_id], ensure_ascii=False, sort_keys=True) + "\n")
     return written
+
+
+def write_report_archive(path: Path, report_rows: list[dict], review_status: str) -> int:
+    rows = []
+    for row in report_rows:
+        claim_id = row.get("claim_id") or ""
+        if not claim_id:
+            continue
+        rows.append(archive_record_from_rows({"claim_id": claim_id}, row, review_status))
+    report_map = {row["claim_id"]: row for row in rows}
+    return write_archive(path, rows, report_map, review_status)
 
 
 def promote(args: argparse.Namespace) -> dict:
@@ -168,6 +182,15 @@ def promote(args: argparse.Namespace) -> dict:
         "archived": 0,
         "selected_claim_ids": [row["claim_id"] for row in eligible],
     }
+    if args.archive_report_only:
+        selected_report_rows = [report_map[claim_id] for claim_id in ids if claim_id in report_map]
+        stats["eligible"] = len(selected_report_rows)
+        stats["found"] = len(selected_report_rows)
+        stats["missing"] = []
+        stats["selected_claim_ids"] = [row.get("claim_id") or "" for row in selected_report_rows]
+        if args.apply:
+            stats["archived"] = write_report_archive(args.archive, selected_report_rows, args.to_status)
+        return stats
     if not args.apply:
         return stats
     if not eligible:
@@ -206,6 +229,7 @@ def main() -> int:
     parser.add_argument("--from-status", default="pending")
     parser.add_argument("--to-status", default="approved")
     parser.add_argument("--archive", type=Path, default=DEFAULT_ARCHIVE)
+    parser.add_argument("--archive-report-only", action="store_true", help="Archive selected report candidates without updating SQLite.")
     parser.add_argument("--apply", action="store_true")
     args = parser.parse_args()
     stats = promote(args)

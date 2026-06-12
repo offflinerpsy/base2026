@@ -199,11 +199,11 @@ def read_jsonl(path: Path) -> list[dict]:
 
 
 def load_reviewed_candidate_claims(path: Path) -> list[dict[str, str]]:
-    public_statuses = {"approved", "reviewed", "public"}
+    replay_statuses = {"approved", "reviewed", "public", "needs_human", "rejected", "reject_candidate"}
     rows: list[dict[str, str]] = []
     for row in read_jsonl(path):
         review_status = (row.get("review_status") or "").strip()
-        if review_status not in public_statuses:
+        if review_status not in replay_statuses:
             continue
         claim_id = (row.get("claim_id") or "").strip()
         claim_text = (row.get("claim_text") or "").strip()

@@ -161,3 +161,15 @@ Reason: manual cache-bust constants go stale and can make a successful deploy ap
 Decision: approved/reviewed/public `insight_card_candidate` rows are persisted in an ignored private JSONL archive under `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` and replayed by `build-kb-sqlite.py` during clean SQLite rebuilds. These replayed candidates do not create markdown claim cards under `12_knowledge-base/canonical/claims`; `kb-audit.py` now treats the difference between SQLite claims and markdown claim-card files as valid only when it equals the `insight_card_candidate` count.
 
 Reason: reviewed candidate promotion must be durable without committing private review artifacts or generated claim-card files. Clean rebuilds should preserve approved public cards, while private `needs_human` candidates remain local and unpublished until separately reviewed.
+
+## 2026-06-11 — Replay private candidate queues locally but exclude them from public export
+
+Decision: ignored `insight-card` review archives may replay private queue statuses such as `needs_human` during clean local SQLite rebuilds, but `export-public-tiktok.py` must exclude every non-public `insight_card_candidate` row from public JSONL artifacts.
+
+Reason: the operator needs durable private review state after clean rebuilds, but public deployment must not expose unapproved candidate claims even with `public=false` flags.
+
+## 2026-06-11 — Keep the local TikTok refresh queue at all current public creators
+
+Decision: the MacBook local refresh default is `config/tiktok-intake-queue.local.json`, ignored by Git, with all four current public TikTok creator sources. The committed `config/creators.example.json` also lists the same four public sources as a safe example.
+
+Reason: a partial default creator config caused a full refresh command to check only two creator accounts. The local queue must match the public source set so scheduled and manual runs do not silently miss active creators.

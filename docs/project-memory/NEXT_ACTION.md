@@ -4,7 +4,7 @@ Last updated: 2026-06-11
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay53 full-creator TikTok refresh check, durable reviewed-candidate replay fix, deploy, and live QA pass.
+Continue launch operation after the Base2026 ay54 full-creator TikTok refresh check, private-candidate replay/export gate, deploy, and live QA pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,9 +12,9 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Stage the ay53 public-safe pipeline-script and memory changes through the audited public allowlist, commit, and push `main`.
-2. Continue TikTok intake through the reviewed gate. The ay53 all-creator inventory found 0 new videos, 0 queued transcripts, 0 `needs_asr`, and 0 queued ASR jobs.
-3. Work the remaining quality queues separately: 794 faithful transcript QA review flags, 3 source-review rows, and 15 private `needs_human` candidates from the ay52 card slice. Promote only evidence-verified approved candidates.
+1. Stage the ay54 public-safe pipeline-script/config-example/memory changes through the audited public allowlist, commit, and push `main`.
+2. Continue TikTok intake through the reviewed gate. The ay54 all-creator inventory found 0 new videos, 0 queued transcripts, 0 `needs_asr`, and 0 queued ASR jobs.
+3. Work the remaining quality queues separately: 794 faithful transcript QA review flags, 3 source-review rows, and 15 private `needs_human` candidates from the ay52 card slice. Promote only evidence-verified approved candidates; non-public candidates now replay locally but are excluded from public export.
 4. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
 5. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
 6. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
@@ -75,13 +75,14 @@ Task queue source of truth:
 
 ## Latest verification
 
-- Deployed release: `base2026-pipeline-refresh-ay53-20260611`.
+- Deployed release: `base2026-private-candidate-gate-ay54-20260611`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
-- Live ay53 public export: 1214 source records, 1703 passages, 1544 insight cards, 1103 public insight cards, 1446 topics, 1044 public topics.
-- Live ay53 Meilisearch reindex: 1703 passages indexed into `base2026_public_tiktok`.
-- Live ay53 all-creator inventory: 0 new rows across `@build_in_public`, `@tjrobertson52`, `@joshuamaraney`, and `@webhivedigital`; 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
-- Durable reviewed-candidate replay is now implemented: 6 approved `insight_card_candidate` rows replay from ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` during a clean SQLite rebuild.
-- Live ay53 visual QA: 66 WordPress/Base2026 checks, 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-ay53/`.
+- Live ay54 public export: 1214 source records, 1703 passages, 1544 insight cards, 1103 public insight cards, 1452 topics, 1044 public topics.
+- Live ay54 Meilisearch reindex: 1703 passages indexed into `base2026_public_tiktok`.
+- Live ay54 all-creator inventory: 0 new rows across `@build_in_public`, `@tjrobertson52`, `@joshuamaraney`, and `@webhivedigital`; 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
+- Durable reviewed/private candidate replay is now implemented: 21 `insight_card_candidate` rows replay locally from ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` during a clean SQLite rebuild.
+- Public export gate verified: live `insight_cards.jsonl` contains 6 approved candidate cards and 0 private `needs_human` candidates; live `documents.jsonl` has 1214 rows with 0 transcript/claim leaks.
+- Live ay54 deploy QA: `/knowledge/`, source/topic/creator sample pages, sitemap, static gzip/cache headers, publication boundary audit, and GitHub metadata validation passed.
 
 - Deployed release: `base2026-asr-pipeline-ay51-20260611`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.

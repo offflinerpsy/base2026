@@ -2450,3 +2450,34 @@ Verification:
 Next step:
 
 - stage audited public-safe script/docs changes, commit, push `main`, then continue the source-review/transcript-QA queue and GSC/GA4 launch monitoring.
+
+## 2026-06-11 — ay54 private-candidate export gate and full default refresh
+
+User asked to run the whole pipeline again because new videos may have appeared, process them, and deploy after all work.
+
+Actions taken:
+
+- ran a full default TikTok refresh and found a configuration problem: the ignored dated queue checked only `@joshuamaraney` and `@webhivedigital`;
+- reran the full refresh with the existing all-creator runtime config and verified all four public creators: `@build_in_public`, `@tjrobertson52`, `@joshuamaraney`, and `@webhivedigital`;
+- found 0 new videos across all four creators, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files;
+- added ignored `config/tiktok-intake-queue.local.json` locally with all four public creator sources so future default runs cover the whole current source set;
+- updated committed `config/creators.example.json` to list the same four public TikTok creator sources with stable IDs;
+- made private `needs_human` insight-card candidates durable by archiving report rows and replaying private queue statuses during clean local SQLite rebuilds;
+- changed `export-public-tiktok.py` so non-public `insight_card_candidate` rows are excluded from public JSONL, not merely marked private;
+- rebuilt SQLite, ran `kb-audit.py`, exported public TikTok data, packaged, deployed, and reindexed Meilisearch as `base2026-private-candidate-gate-ay54-20260611`.
+
+Verification:
+
+- clean SQLite rebuild imported `reviewed_candidate_claims=21`;
+- `kb-audit.py` passed;
+- `check-public-export-policy.py public-data/tiktok` passed with `include_full_transcripts=false`, 1214 source records, 1703 passages, 1544 insight cards, 1103 public insight cards, 1452 topics, and 1044 public topics;
+- live deploy current symlink points to `/var/www/base2026-knowledge/releases/base2026-private-candidate-gate-ay54-20260611`;
+- live `insight_cards.jsonl` has 1544 rows, 6 approved candidate cards, and 0 private candidates exported;
+- live `documents.jsonl` has 1214 rows and 0 transcript/claim leaks;
+- live `/knowledge/`, sitemap, creators index, sample source page, and sample topic page return 200;
+- live static CSS/JS return gzip and immutable cache headers;
+- publication boundary audit, GitHub metadata validation, and `git diff --check` passed.
+
+Next step:
+
+- stage audited public-safe changes, commit, push `main`, then continue with source-review/transcript-QA cleanup and GSC/GA4 launch monitoring.

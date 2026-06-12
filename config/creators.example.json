@@ -1,12 +1,43 @@
 [
   {
+    "id": "tiktok-build-in-public",
+    "platform": "tiktok",
+    "handle": "build_in_public",
+    "url": "https://www.tiktok.com/@build_in_public",
+    "enabled": true,
+    "max_new_per_run": 20,
+    "source_policy": "public_recent_posts",
+    "notes": "Public Base2026 creator source."
+  },
+  {
+    "id": "tiktok-tjrobertson52",
     "platform": "tiktok",
     "handle": "tjrobertson52",
     "url": "https://www.tiktok.com/@tjrobertson52",
     "enabled": true,
     "max_new_per_run": 20,
     "source_policy": "public_recent_posts",
-    "notes": "Example TikTok creator entry"
+    "notes": "Public Base2026 creator source."
+  },
+  {
+    "id": "tiktok-joshuamaraney",
+    "platform": "tiktok",
+    "handle": "joshuamaraney",
+    "url": "https://www.tiktok.com/@joshuamaraney",
+    "enabled": true,
+    "max_new_per_run": 20,
+    "source_policy": "public_recent_posts",
+    "notes": "Public Base2026 creator source."
+  },
+  {
+    "id": "tiktok-webhivedigital",
+    "platform": "tiktok",
+    "handle": "webhivedigital",
+    "url": "https://www.tiktok.com/@webhivedigital",
+    "enabled": true,
+    "max_new_per_run": 20,
+    "source_policy": "public_recent_posts",
+    "notes": "Public Base2026 creator source."
   },
   {
     "platform": "instagram",
@@ -15,6 +46,6 @@
     "enabled": false,
     "max_new_per_run": 10,
     "source_policy": "public_recent_posts",
-    "notes": "Example Instagram creator entry; use local cookies only when needed"
+    "notes": "Example Instagram creator entry; use local cookies only when needed."
   }
 ]
