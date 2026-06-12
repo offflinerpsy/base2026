@@ -302,6 +302,46 @@ def cmd_public_boundary_audit(args: argparse.Namespace) -> int:
     return code
 
 
+def cmd_tiktok_polish_audit(args: argparse.Namespace) -> int:
+    path = start_run("tiktok-polish-audit", args)
+    command = [
+        sys.executable,
+        "scripts/tiktok-polish-audit.py",
+        "--limit",
+        str(args.limit),
+    ]
+    if args.risk:
+        command += ["--risk", args.risk]
+    if args.qa_status:
+        command += ["--qa-status", args.qa_status]
+    if args.out_json:
+        command += ["--out-json", args.out_json]
+    if args.out_md:
+        command += ["--out-md", args.out_md]
+    command.append("--json")
+    code, stdout, stderr = run_child(path, command)
+    summary = parse_last_json(stdout)
+    finish_run(path, "passed" if code == 0 else "failed", summary or {"stderr": stderr.strip()[:500]})
+    print(stdout.strip())
+    return code
+
+
+def cmd_tiktok_source_review_audit(args: argparse.Namespace) -> int:
+    path = start_run("tiktok-source-review-audit", args)
+    command = [sys.executable, "scripts/tiktok-source-review-audit.py"]
+    if args.probe_network:
+        command.append("--probe-network")
+    if args.out:
+        command += ["--out", args.out]
+    if args.apply:
+        command.append("--apply")
+    code, stdout, stderr = run_child(path, command)
+    summary = parse_last_json(stdout)
+    finish_run(path, "passed" if code == 0 else "failed", summary or {"stderr": stderr.strip()[:500]})
+    print(stdout.strip())
+    return code
+
+
 def cmd_tiktok_metadata_extract(args: argparse.Namespace) -> int:
     path = start_run("tiktok-metadata-extract", args)
     command = [sys.executable, "scripts/tiktok-ytdlp-metadata-extract.py"]
@@ -373,6 +413,8 @@ def cmd_doctor(args: argparse.Namespace) -> int:
         "tiktok_metadata_extractor_exists": (ROOT / "scripts" / "tiktok-ytdlp-metadata-extract.py").exists(),
         "tiktok_caption_browser_extractor_exists": (ROOT / "scripts" / "tiktok-caption-browser-extract.mjs").exists(),
         "tiktok_staging_importer_exists": (ROOT / "scripts" / "import-tiktok-staging-to-kb.py").exists(),
+        "tiktok_polish_audit_exists": (ROOT / "scripts" / "tiktok-polish-audit.py").exists(),
+        "tiktok_source_review_audit_exists": (ROOT / "scripts" / "tiktok-source-review-audit.py").exists(),
         "worker_exists": (ROOT / "scripts" / "base2026-worker.py").exists(),
         "local_worker_requirements_exists": (ROOT / "requirements-local-worker.txt").exists(),
     }
@@ -450,6 +492,20 @@ def main() -> int:
     promote_insights.set_defaults(func=cmd_promote_insight_candidates)
 
     sub.add_parser("public-boundary-audit").set_defaults(func=cmd_public_boundary_audit)
+
+    polish_audit = sub.add_parser("tiktok-polish-audit")
+    polish_audit.add_argument("--limit", type=int, default=20)
+    polish_audit.add_argument("--risk", default="")
+    polish_audit.add_argument("--qa-status", default="")
+    polish_audit.add_argument("--out-json", default="")
+    polish_audit.add_argument("--out-md", default="")
+    polish_audit.set_defaults(func=cmd_tiktok_polish_audit)
+
+    source_review = sub.add_parser("tiktok-source-review-audit")
+    source_review.add_argument("--probe-network", action="store_true")
+    source_review.add_argument("--out", default="")
+    source_review.add_argument("--apply", action="store_true")
+    source_review.set_defaults(func=cmd_tiktok_source_review_audit)
 
     tiktok_metadata = sub.add_parser("tiktok-metadata-extract")
     tiktok_metadata.add_argument("--queue", default="")

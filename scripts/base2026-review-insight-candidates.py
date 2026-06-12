@@ -95,6 +95,35 @@ def pending_candidates(db: Path, status: str) -> list[dict]:
     return [dict(row) for row in rows]
 
 
+def existing_public_candidate_counts(db: Path, sources_by_video: dict[str, dict]) -> Counter:
+    con = sqlite3.connect(db)
+    con.row_factory = sqlite3.Row
+    try:
+        rows = con.execute(
+            """
+            SELECT
+              c.claim_id,
+              ce.video_id,
+              ce.evidence_path
+            FROM claims c
+            JOIN claim_evidence ce ON ce.claim_id = c.claim_id
+            WHERE c.claim_type = 'insight_card_candidate'
+              AND c.review_status IN ('approved', 'reviewed', 'public')
+            """
+        ).fetchall()
+    finally:
+        con.close()
+    counts: Counter = Counter()
+    for row in rows:
+        source_id = source_id_from_path(row["evidence_path"] or "")
+        if not source_id:
+            source = sources_by_video.get(str(row["video_id"] or ""), {})
+            source_id = source.get("source_id") or ""
+        if source_id:
+            counts[source_id] += 1
+    return counts
+
+
 def evidence_match(row: dict, source_id: str, passages_by_source: dict[str, list[dict]]) -> tuple[str, float]:
     evidence = row.get("quote_or_span") or ""
     texts = [passage.get("body") or "" for passage in passages_by_source.get(source_id, [])]
@@ -137,8 +166,12 @@ def text_quality_warnings(row: dict, args: argparse.Namespace) -> list[str]:
         warnings.append("evidence_too_long")
     if normalize(claim) == normalize(action):
         warnings.append("action_duplicates_claim")
-    if re.search(r"\b(leverage|utilize|unlock|game[- ]changer|boost your seo)\b", action, re.I):
+    if re.search(r"\b(could potentially|suggesting that|suggesting google|may no longer)\b", claim, re.I):
+        warnings.append("speculative_claim_language")
+    if re.search(r"\b(leverage|utilize|unlock|game[- ]changer|boost your seo|explore the implications|assess how|optimi[sz]e content)\b", action, re.I):
         warnings.append("generic_action_language")
+    if re.search(r"\b(repost all|all positive|all feedback|everything positive)\b", action, re.I):
+        warnings.append("overbroad_action_language")
     return warnings
 
 
@@ -154,6 +187,7 @@ def review_candidates(args: argparse.Namespace) -> dict:
     rows = pending_candidates(args.db, args.status)
     sources_by_source, sources_by_video = load_source_maps(args.data_root)
     passages_by_source = load_passages(args.data_root)
+    public_candidate_counts = existing_public_candidate_counts(args.db, sources_by_video)
     source_counts = Counter()
     reviewed: list[dict] = []
 
@@ -191,6 +225,7 @@ def review_candidates(args: argparse.Namespace) -> dict:
                 "created_at": row.get("created_at") or "",
                 "evidence_match_method": method,
                 "evidence_score": evidence_score,
+                "existing_public_candidate_count": public_candidate_counts.get(source_id, 0),
                 "hard_failures": hard,
                 "soft_warnings": soft,
                 "recommended_status": classify(row, soft, hard),
@@ -203,7 +238,11 @@ def review_candidates(args: argparse.Namespace) -> dict:
             continue
         per_source_rank[row["source_id"]] += 1
         row["source_candidate_rank"] = per_source_rank[row["source_id"]]
-        if row["source_candidate_rank"] > args.max_promotion_candidates_per_source:
+        remaining_slots = max(
+            0,
+            args.max_promotion_candidates_per_source - row["existing_public_candidate_count"],
+        )
+        if row["source_candidate_rank"] > remaining_slots:
             row["soft_warnings"].append("over_source_promotion_limit")
             row["recommended_status"] = "needs_human"
     for row in reviewed:

@@ -2508,3 +2508,28 @@ Verification:
 Next step:
 
 - rerun publication boundary audit, stage only public-safe script/docs changes, commit, push `main`, then continue the 794 transcript-QA batch review and 15 private card-candidate rewrite/review queue.
+
+## 2026-06-11 — Controller-backed transcript QA and stricter candidate review
+
+User asked to keep working toward production level without sloppy automation or AI slop.
+
+Actions taken:
+
+- upgraded `scripts/tiktok-polish-audit.py` so it can emit filtered transcript-QA batches by risk and QA status, write JSON/Markdown reports under ignored `.planning/`, and report full risk/QA status counts;
+- added controller commands for `tiktok-polish-audit` and `tiktok-source-review-audit` so QA work is traceable in `.planning/runs`;
+- synced `scripts/stage-public-files.ps1` with the source-review audit script so publication staging and publication audit allowlists do not drift;
+- hardened `scripts/base2026-review-insight-candidates.py`:
+  - flags speculative claim language;
+  - flags generic and overbroad suggested actions;
+  - counts existing approved/reviewed/public candidate cards per source before recommending more promotions.
+
+Verification:
+
+- `python3 scripts/base2026-controller.py tiktok-polish-audit --limit 25 --risk review --qa-status needs_review ...` passed and produced a 25-row private QA batch from 794 review rows;
+- `python3 scripts/base2026-controller.py tiktok-source-review-audit --probe-network ...` passed and confirmed the 3 source-review blocker reasons;
+- `python3 scripts/base2026-controller.py review-insight-candidates --status needs_human ...` now keeps all 15 private candidates as `needs_human`;
+- `python3 scripts/base2026-controller.py doctor` passed with the new audit tools detected.
+
+Next step:
+
+- run publication/preflight gates, commit/push the public-safe tooling/memory changes, then continue the transcript-QA batches and private card rewrite queue.

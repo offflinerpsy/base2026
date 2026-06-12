@@ -173,3 +173,9 @@ Reason: the operator needs durable private review state after clean rebuilds, bu
 Decision: the MacBook local refresh default is `config/tiktok-intake-queue.local.json`, ignored by Git, with all four current public TikTok creator sources. The committed `config/creators.example.json` also lists the same four public sources as a safe example.
 
 Reason: a partial default creator config caused a full refresh command to check only two creator accounts. The local queue must match the public source set so scheduled and manual runs do not silently miss active creators.
+
+## 2026-06-11 — Count existing approved cards before candidate promotion
+
+Decision: insight-card promotion review must count already approved/reviewed/public candidate cards for the same source before recommending more candidates from that source. The reviewer must also flag speculative claims, generic actions, and overbroad actions as `needs_human`.
+
+Reason: evidence-exact text can still be bad public product copy, and source pages should not be overfilled by repeatedly promoting mechanically verified candidates from the same video.

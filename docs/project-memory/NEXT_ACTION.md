@@ -14,7 +14,8 @@ Current next safe action:
 
 1. Continue TikTok intake through the reviewed gate. The ay54 all-creator inventory found 0 new videos, 0 queued transcripts, 0 `needs_asr`, and 0 queued ASR jobs.
 2. Work the remaining quality queues separately: 794 faithful transcript QA review flags, 3 source-review rows, and 15 private `needs_human` candidates from the ay52 card slice. Promote only evidence-verified approved candidates; non-public candidates now replay locally but are excluded from public export.
-3. Use `python3 scripts/tiktok-source-review-audit.py --probe-network --out .planning/source-review-audit-YYYYMMDD.json` before retrying the 3 source-review rows. Current known reasons: 2 fallback media files have no audio stream; 1 source is blocked by TikTok IP access.
+3. Use `python3 scripts/base2026-controller.py tiktok-source-review-audit --probe-network --out .planning/source-review-audit-YYYYMMDD.json` before retrying the 3 source-review rows. Current known reasons: 2 fallback media files have no audio stream; 1 source is blocked by TikTok IP access.
+4. Use `python3 scripts/base2026-controller.py tiktok-polish-audit --risk review --qa-status needs_review --limit 25 --out-json .planning/transcript-qa-batch-YYYYMMDD.json --out-md .planning/transcript-qa-batch-YYYYMMDD.md` for controlled transcript-QA slices. Current full summary: 1211 audited, 0 high-risk, 794 review, 417 low/pass.
 4. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
 5. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
 6. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
@@ -231,8 +232,8 @@ Task queue source of truth:
 
 1. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.
 2. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
-3. Work the 794 historical transcript QA flags in controlled batches; current audit has 0 high-risk flags, so this is review debt, not a public-leak blocker.
-4. Keep the 15 private `needs_human` insight-card candidates private until rewritten/promoted or rejected through an explicit review report.
+3. Work the 794 historical transcript QA flags in controlled batches through the controller-backed audit; current audit has 0 high-risk flags, so this is review debt, not a public-leak blocker.
+4. Keep the 15 private `needs_human` insight-card candidates private until rewritten/promoted or rejected through an explicit review report. Current strict review keeps all 15 private because of action rewrite needs, speculative/generic/overbroad copy, or existing approved-card source limits.
 5. Continue TikTok refresh as a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
 6. Re-run publication boundary audit before every future GitHub push.
 
