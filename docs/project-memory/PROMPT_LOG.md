@@ -2723,3 +2723,26 @@ Verification:
 Next step:
 
 - commit and push public-safe memory updates, then continue controlled transcript QA slices and retry the IP-blocked TikTok source when network access allows.
+
+## 2026-06-12 — ay62 follow-up false-positive transcript QA cleanup
+
+Continuation of the overnight launch-quality task after ay62 deploy.
+
+Actions taken:
+
+- reran transcript QA triage, private `needs_human` candidate review, and source-review audit;
+- confirmed the remaining `needs_human` insight candidate should stay private because its evidence text is damaged (`click UPS`), action is empty, and the source already has public cards;
+- selected only entity/spelling QA rows whose notes were boilerplate local faithful-polish notes and whose clean/polished token streams matched after allowed acronym/entity normalization;
+- applied an explicit private QA manifest that moved 131 false-positive entity rows from `needs_review` to `pass`;
+- rebuilt SQLite, exported public data, and reran the public export policy gate.
+
+Verification:
+
+- transcript QA triage moved from 777 to 646 rows: 575 audio-verification rows, 62 real entity/spelling rows, and 9 human text-review rows;
+- public export counts remained unchanged: 1214 source records, 1707 passages, 1553 insight cards, 1112 public insight cards, 1460 topics, and 1053 public topics;
+- public export policy passed with `include_full_transcripts=false`;
+- `git diff` showed no public-data changes after rebuild/export, so no duplicate VPS deploy was needed beyond live `base2026-intake-refresh-ay62-20260612`.
+
+Next step:
+
+- continue only evidence-backed transcript QA slices; do not bulk-pass the remaining audio/source-sensitive rows without stronger evidence.
