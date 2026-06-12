@@ -1,0 +1,44 @@
+{
+  "contract_version": 1,
+  "release_lane": "public",
+  "public_release": {
+    "include_full_transcripts": false,
+    "allow_package_include_full_transcripts_switch": false,
+    "allow_deploy_include_full_transcripts_switch": false,
+    "allow_implicit_auto_promote_insights": false,
+    "allowed_public_insight_review_statuses": [
+      "approved",
+      "reviewed",
+      "public"
+    ],
+    "allowed_public_insight_promotion_methods": [
+      "approved",
+      "reviewed",
+      "public"
+    ],
+    "minimum_public_insight_retention_ratio": 0.8
+  },
+  "public_invocation_scripts": [
+    "scripts/package-public-release.ps1",
+    "scripts/deploy-public-vps.ps1",
+    "scripts/hermes-tiktok-refresh.ps1"
+  ],
+  "generated_artifacts_not_committed": [
+    "public-data/",
+    "output/",
+    ".planning/",
+    "meili_data/"
+  ],
+  "required_public_gates": [
+    "public_export_policy",
+    "publication_boundary",
+    "github_metadata",
+    "mobile_visual_qa",
+    "public_release_contract"
+  ],
+  "notes": [
+    "Public releases publish attributed excerpts, source records, topic pages, and explicitly reviewed public insight cards.",
+    "Full third-party transcripts remain private/local by default.",
+    "Implicit auto-promotion is disabled in the public release lane; promotion must be an explicit reviewed artifact."
+  ]
+}

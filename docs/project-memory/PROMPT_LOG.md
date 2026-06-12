@@ -3080,3 +3080,35 @@ Verification:
 Next step:
 
 - implement the audit's first recommended hardening step: a public release/promotion contract that makes full transcripts and implicit public auto-promotion impossible in the public release lane, then add shadow Meilisearch deploy and fixture-backed CI gates.
+
+## 2026-06-12 — Public release contract and CI gate
+
+User asked to stop patching symptoms, explain the unclear audit points, and complete the next safe step with a full automated audit/gate so future leaks are caught by code instead of manual browsing.
+
+Actions taken:
+
+- added `contracts/base2026.public-release-contract.json` as the machine-readable public release contract;
+- added `scripts/validate-public-release-contract.py` to verify public release script wiring, generated-artifact git boundaries, export manifests, full-transcript leakage, and implicit public auto-promotion;
+- removed `-IncludeFullTranscripts` from `scripts/package-public-release.ps1` and `scripts/deploy-public-vps.ps1`;
+- removed public-path `--auto-promote-insights` from package/deploy/Hermes export flows;
+- changed `scripts/package-public-release.ps1` to build through an ignored staged export directory before packaging, validate the staged export, and enforce a public-card retention floor before any package can replace live data;
+- changed `scripts/hermes-tiktok-refresh.ps1` to stage and validate export output before copying it into `public-data/tiktok`;
+- added positive and negative public-export fixtures under `tests/fixtures/`;
+- expanded `.github/workflows/ci.yml` with public release contract checks, leaky-export rejection, auto-promote rejection, and broader JS syntax checks.
+
+Verification:
+
+- `python3 scripts/validate-public-release-contract.py` passed;
+- `python3 scripts/check-public-export-policy.py tests/fixtures/public-export-valid` passed;
+- `python3 scripts/validate-public-release-contract.py --export-dir tests/fixtures/public-export-valid` passed;
+- leaky fixture failed as expected with `include_full_transcripts` and source transcript violations;
+- auto-promote fixture failed as expected with `auto_promote_insights`, `review_status=pending`, and `promotion_method=auto_evidence_match` violations;
+- package guard smoke correctly failed before release packaging when no-auto export reduced public insight cards from 1165 to 67;
+- live mixed visual/interaction QA passed with 66 checks and 0 failures under ignored `output/evidence/mobile-visual-qa-live-20260612-contract-gate/`;
+- publication boundary audit passed after adding only `contracts/`, public export fixtures, and the contract validator to the public-safe allowlist;
+- fixed `scripts/audit-publication-boundary.py` so it audits staged files as well as unstaged/untracked files before public commits;
+- current ignored `public-data/tiktok` intentionally fails the new promotion contract with 2197 violations because 1098 legacy public cards are still `auto_evidence_match`; it remains excerpt-only under the older export-policy gate and must not be used for a new no-auto data-changing deploy until reviewed migration is complete.
+
+Next step:
+
+- run full publication/metadata/live QA gates, then commit/push this contract hardening; the next data task is reviewed migration or deliberate reduction of the legacy auto-promoted public card set before any further Base2026 data deploy.

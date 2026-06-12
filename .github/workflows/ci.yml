@@ -29,17 +29,48 @@ jobs:
           python -m py_compile \
             scripts/export-public-tiktok.py \
             scripts/check-public-export-policy.py \
+            scripts/validate-public-release-contract.py \
             scripts/generate-public-pages.py \
             scripts/meili-index-public.py
 
       - name: JavaScript syntax check
-        run: node --check web/static/meili.js
+        run: |
+          node --check web/static/meili.js
+          node --check web/static/share-actions.js
+          node --check web/static/cookie-consent.js
+          node --check scripts/mobile-visual-qa.mjs
 
-      - name: Public export policy check when fixture data exists
+      - name: Public release contract
+        run: python scripts/validate-public-release-contract.py
+
+      - name: Fixture public export policy
+        run: python scripts/check-public-export-policy.py tests/fixtures/public-export-valid
+
+      - name: Fixture public release contract
+        run: python scripts/validate-public-release-contract.py --export-dir tests/fixtures/public-export-valid
+
+      - name: Reject leaky fixture export
+        shell: bash
+        run: |
+          if python scripts/validate-public-release-contract.py --export-dir tests/fixtures/public-export-leaky; then
+            echo "leaky public export unexpectedly passed"
+            exit 1
+          fi
+
+      - name: Reject auto-promoted fixture export
+        shell: bash
+        run: |
+          if python scripts/validate-public-release-contract.py --export-dir tests/fixtures/public-export-auto-promote; then
+            echo "auto-promoted public export unexpectedly passed"
+            exit 1
+          fi
+
+      - name: Public export policy check when local data exists
         shell: bash
         run: |
           if [ -f public-data/tiktok/manifest.json ]; then
             python scripts/check-public-export-policy.py public-data/tiktok
+            python scripts/validate-public-release-contract.py --export-dir public-data/tiktok
           else
             echo "public-data/tiktok is not committed; skipping export policy check."
           fi

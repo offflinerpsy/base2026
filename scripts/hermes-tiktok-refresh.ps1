@@ -70,8 +70,9 @@ function Run-Step {
   param([string]$Stage, [scriptblock]$Command)
   Write-State -Status "running" -Stage $Stage
   "[$((Get-Date).ToString('s'))] $Stage" | Tee-Object -FilePath $Log -Append | Out-Null
+  $global:LASTEXITCODE = 0
   & $Command 2>&1 | Tee-Object -FilePath $Log -Append
-  if (-not $?) { throw "Stage failed: $Stage" }
+  if ((-not $?) -or ($LASTEXITCODE -ne 0)) { throw "Stage failed: $Stage" }
 }
 
 function Get-PendingSummary {
@@ -163,7 +164,20 @@ try {
     & $PythonExe (Join-Path $Root "scripts\kb-audit.py")
   }
   Run-Step "export-public-tiktok" {
-    & $PythonExe (Join-Path $Root "scripts\export-public-tiktok.py") --auto-promote-insights
+    $ExportRoot = Join-Path $Root "output\hermes-public-export\$Stamp\tiktok"
+    $PublicDataRoot = Join-Path $Root "public-data\tiktok"
+    if (Test-Path $ExportRoot) {
+      Remove-Item $ExportRoot -Recurse -Force
+    }
+    New-Item -ItemType Directory -Force -Path $ExportRoot | Out-Null
+    & $PythonExe (Join-Path $Root "scripts\export-public-tiktok.py") --out $ExportRoot
+    & $PythonExe (Join-Path $Root "scripts\check-public-export-policy.py") $ExportRoot
+    & $PythonExe (Join-Path $Root "scripts\validate-public-release-contract.py") --export-dir $ExportRoot --baseline-export-dir $PublicDataRoot --enforce-count-floor
+    if (Test-Path $PublicDataRoot) {
+      Remove-Item $PublicDataRoot -Recurse -Force
+    }
+    New-Item -ItemType Directory -Force -Path $PublicDataRoot | Out-Null
+    Copy-Item (Join-Path $ExportRoot "*") $PublicDataRoot -Recurse -Force
   }
 
   if ($Package -or $Deploy) {

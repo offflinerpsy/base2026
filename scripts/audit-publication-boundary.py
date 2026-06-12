@@ -49,7 +49,11 @@ PUBLIC_SAFE_PREFIXES = {
     ".github/ISSUE_TEMPLATE/",
     ".github/workflows/",
     "10_agent-instructions/",
+    "contracts/",
     "docs/",
+    "tests/fixtures/public-export-auto-promote/",
+    "tests/fixtures/public-export-leaky/",
+    "tests/fixtures/public-export-valid/",
     "web/static/",
 }
 
@@ -112,6 +116,7 @@ PUBLIC_SAFE_EXACT = {
     "scripts/tiktok-process-transcripts.ps1",
     "scripts/tiktok-source-review-audit.py",
     "scripts/tiktok-ytdlp-metadata-extract.py",
+    "scripts/validate-public-release-contract.py",
     "scripts/validate-github-metadata.py",
     "web/ARCHITECTURE.md",
     "web/KNOWLEDGE_UI_GUIDE.md",
@@ -155,9 +160,10 @@ def normalize(path: str) -> str:
 
 
 def changed_files() -> list[str]:
+    staged = run_git(["diff", "--cached", "--name-only"])
     modified = run_git(["diff", "--name-only"])
     untracked = run_git(["ls-files", "--others", "--exclude-standard"])
-    return sorted({normalize(path) for path in [*modified, *untracked]})
+    return sorted({normalize(path) for path in [*staged, *modified, *untracked]})
 
 
 def is_forbidden(path: str) -> str | None:

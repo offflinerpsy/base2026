@@ -2,26 +2,41 @@ param(
   [string]$ReleaseName = "",
   [string]$MeiliUrl = "/knowledge-search",
   [string]$MeiliIndex = "base2026_public_tiktok",
-  [string]$MeiliKey = "",
-  [switch]$IncludeFullTranscripts,
-  [switch]$ExcerptOnly
+  [string]$MeiliKey = ""
 )
 
 $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
+
+function Assert-NativeSuccess {
+  param([string]$Label)
+  if ($LASTEXITCODE -ne 0) {
+    throw "$Label failed with exit code $LASTEXITCODE."
+  }
+}
+
 if (-not $ReleaseName) {
   $ReleaseName = "base2026-public-" + (Get-Date -Format "yyyyMMdd-HHmmss")
 }
 $CacheBust = ($ReleaseName -replace '[^A-Za-z0-9._-]', '-')
 
-$ExportArgs = @("./scripts/export-public-tiktok.py", "--auto-promote-insights")
-if ($IncludeFullTranscripts -and -not $ExcerptOnly) {
-  $ExportArgs += "--include-full-transcripts"
+$BuildRoot = Join-Path $Root "output\release-build\$ReleaseName"
+$ExportRoot = Join-Path $BuildRoot "public-data\tiktok"
+if (Test-Path $BuildRoot) {
+  Remove-Item $BuildRoot -Recurse -Force
 }
+New-Item -ItemType Directory -Force -Path $ExportRoot | Out-Null
+
+$ExportArgs = @("./scripts/export-public-tiktok.py", "--out", $ExportRoot)
 python3 @ExportArgs | Write-Output
-python3 ./scripts/check-public-export-policy.py ./public-data/tiktok | Write-Output
+Assert-NativeSuccess "export-public-tiktok"
+python3 ./scripts/check-public-export-policy.py $ExportRoot | Write-Output
+Assert-NativeSuccess "check-public-export-policy"
+python3 ./scripts/validate-public-release-contract.py --export-dir $ExportRoot --baseline-export-dir ./public-data/tiktok --enforce-count-floor | Write-Output
+Assert-NativeSuccess "validate-public-release-contract"
 python3 ./scripts/generate-info-pages.py --source ./docs/public-pages --out ./web/static | Write-Output
+Assert-NativeSuccess "generate-info-pages"
 
 $ReleaseRoot = Join-Path $Root "output\releases\$ReleaseName"
 $WebRoot = Join-Path $ReleaseRoot "web"
@@ -83,11 +98,13 @@ foreach ($DocPage in $DocPages) {
   $DocHtml = $DocHtml -replace 'src="(?:\./|/)static/cookie-consent\.js\?v=[^"]+"', "src=`"./static/cookie-consent.js?v=$CacheBust`""
   $DocHtml | Set-Content -Path (Join-Path $WebRoot $DocPage) -Encoding UTF8
 }
-Copy-Item "./public-data/tiktok/documents.jsonl" (Join-Path $StaticRoot "documents.jsonl") -Force
+Copy-Item (Join-Path $ExportRoot "documents.jsonl") (Join-Path $StaticRoot "documents.jsonl") -Force
 Copy-Item "./scripts/meili-index-public.py" (Join-Path $ScriptsRoot "meili-index-public.py") -Force
-Copy-Item "./public-data/tiktok/*" $DataRoot -Recurse -Force
-python3 ./scripts/generate-public-pages.py --data ./public-data/tiktok --out $WebRoot | Write-Output
+Copy-Item (Join-Path $ExportRoot "*") $DataRoot -Recurse -Force
+python3 ./scripts/generate-public-pages.py --data $ExportRoot --out $WebRoot | Write-Output
+Assert-NativeSuccess "generate-public-pages"
 python3 ./scripts/generate-base2026-sitemap.py --web-root $WebRoot | Write-Output
+Assert-NativeSuccess "generate-base2026-sitemap"
 
 # Normalize generated asset cache-busts after every generator has written HTML.
 # Source/topic pages use ../static/... paths, while root pages use ./static/...
@@ -112,7 +129,7 @@ Get-ChildItem -Path $WebRoot -Recurse -Filter "*.html" | ForEach-Object {
   $PageHtml | Set-Content -Path $_.FullName -Encoding UTF8
 }
 
-$Manifest = Get-Content "./public-data/tiktok/manifest.json" -Raw
+$Manifest = Get-Content (Join-Path $ExportRoot "manifest.json") -Raw
 $ReleaseInfo = @"
 Base2026 Public TikTok Release
 Release: $ReleaseName
@@ -148,6 +165,7 @@ with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive
             archive.write(path, path.relative_to(release_root).as_posix())
 '@
 $ZipScript | python3 - $ReleaseRoot $ZipPath
+Assert-NativeSuccess "zip-public-release"
 
 Write-Output "release=$ReleaseName"
 Write-Output "path=$ReleaseRoot"

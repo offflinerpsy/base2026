@@ -50,7 +50,7 @@ nginx -t
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package-public-release.ps1 -ReleaseName <release-name>
 ```
 
-Public packages are excerpt-only by default. Use `-IncludeFullTranscripts` only for private/gated review exports.
+Public packages are excerpt-only by default. Public package/deploy scripts must not expose `-IncludeFullTranscripts` and must not call `--auto-promote-insights`. Private/gated review exports should use `scripts/export-public-tiktok.py --out <ignored-private-dir>` directly and must not be deployed as the public `/knowledge/` release.
 
 ## One-command deploy
 

@@ -12,15 +12,16 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Add the public release/promotion contract recommended by `docs/project-memory/ARCHITECTURE_CODE_AUDIT_2026_06_12.md`: forbid full transcripts and implicit auto-promotion in the public release lane, then harden Meilisearch deploy and fixture CI around that contract.
-2. Continue source-only GPT/Codex review batches from a freshly filtered no-card queue; promote only exact-evidence candidates that pass `review-insight-candidates`.
-3. Do not use local LLMs as the primary card-extraction/rewrite path. Local models can remain installed, but current reviewed text work should use Codex/GPT review packets, preferably the ChatGPT 5.5 Medium quality lane when available.
-4. Do not bulk-pass the remaining 619 transcript QA rows: every row is currently audio/source-verification sensitive.
-5. Retry the remaining source-review row only when source access is available. Current known blocker: TikTok blocks access to `tiktok-video-7648746368739118350`.
-6. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
-7. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
-8. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
-9. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`.
+1. Finish the legacy public-card promotion migration before the next data-changing Base2026 deploy. The public release contract is now codified, but the current ignored `public-data/tiktok` export still contains legacy `auto_evidence_match` public cards; do not deploy a freshly packaged no-auto export until those cards are explicitly reviewed/migrated or deliberately reduced.
+2. Harden Meilisearch deploy order with a shadow/reindex verification step around the same public release contract.
+3. Continue source-only GPT/Codex review batches from a freshly filtered no-card queue; promote only exact-evidence candidates that pass `review-insight-candidates`.
+4. Do not use local LLMs as the primary card-extraction/rewrite path. Local models can remain installed, but current reviewed text work should use Codex/GPT review packets, preferably the ChatGPT 5.5 Medium quality lane when available.
+5. Do not bulk-pass the remaining 619 transcript QA rows: every row is currently audio/source-verification sensitive.
+6. Retry the remaining source-review row only when source access is available. Current known blocker: TikTok blocks access to `tiktok-video-7648746368739118350`.
+7. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
+8. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
+9. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
+10. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`.
 
 Task queue source of truth:
 
@@ -36,7 +37,7 @@ Task queue source of truth:
 6. Search results link to source pages and creator pages.
 7. Search results show topic chips from real indexed `topics` / `topic_labels` fields.
 8. Public source-dialog payload is excerpt-only by default; full third-party transcripts are not shipped in `web/static/documents.jsonl`.
-9. `scripts/package-public-release.ps1` defaults to excerpt-only public export. Use `-IncludeFullTranscripts` only for private/gated review exports.
+9. `scripts/package-public-release.ps1` uses the public release contract: no `-IncludeFullTranscripts`, no implicit `--auto-promote-insights`, staged export validation before packaging, and a public-insight retention floor to prevent silent card collapse.
 10. Singleton topic/compare pages are generated for UX but marked `noindex,follow`; only aggregate topics with at least two public insight cards are included in topic index pages.
 11. Public roadmap, project story, privacy, source/content policy, support, and site-structure pages are generated from `docs/public-pages/` and deployed under `/knowledge/`.
 12. Public header/footer now use the Alex Yarosh ecosystem style: Base2026 nav link, dark footer, Roadmap CTA, correction/removal email, and text-only orange header hover/active state.
@@ -86,6 +87,7 @@ Task queue source of truth:
 56. ay73 fixed source-modal record loading for fresh search results by versioning the immutable `documents.jsonl` payload with the release cache-bust. The `@joshuamaraney` Google Ads Tracking result now opens the source record instead of a stale `Source record unavailable` modal.
 57. ay76 fixed the systemic Base2026 mobile CSS staleness cause: `scripts/package-public-release.ps1` now normalizes CSS/JS cache-busts across every generated HTML file after all generators run, including `../static/...` source/topic pages. The release also fixes the mobile Base2026 submenu width and tightens the mobile source-record modal header. WordPress child theme `1.5.41` adds visible focus/validation behavior for the mobile roadmap form CTA.
 58. `scripts/mobile-visual-qa.mjs` now includes mobile interaction gates for the WordPress/Kadence hamburger drawer, Base2026 mobile submenu, homepage roadmap CTA focus, and source-record modal open/layout checks so these regressions are caught before future deploys.
+59. `contracts/base2026.public-release-contract.json` and `scripts/validate-public-release-contract.py` now enforce the public release lane: no full transcripts, no implicit insight auto-promotion, no tracked generated export artifacts, fixture-backed CI positive/negative checks, and staged package exports that do not overwrite current deploy data before validation.
 
 ## Latest verification
 
@@ -259,14 +261,15 @@ Task queue source of truth:
 
 ## Exact next steps
 
-1. Implement the public release/promotion contract and fixture-backed CI gate from `docs/project-memory/ARCHITECTURE_CODE_AUDIT_2026_06_12.md`.
-2. Continue the source-only GPT/Codex review lane for queued no-card sources; promote only exact-evidence candidates that pass `review-insight-candidates`. Use GPT/Codex review packets for this text work; do not use local LLMs as the quality source.
-3. Keep the 619 historical transcript QA flags open until audio/source verification exists; do not bulk-pass them.
-4. Keep the remaining source-review blocker parked unless `tiktok-video-7648746368739118350` becomes accessible.
-5. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.
-6. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
-7. Continue TikTok refresh as a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
-8. Re-run publication boundary audit before every future GitHub push.
+1. Resolve the legacy public-card promotion contract gap: current ignored `public-data/tiktok` is excerpt-only but still has 1098 `auto_evidence_match` public cards, so a new no-auto package is correctly blocked until those cards are explicitly reviewed/migrated or deliberately reduced.
+2. Harden Meilisearch deploy order with a shadow/reindex verification step around the same public release contract.
+3. Continue the source-only GPT/Codex review lane for queued no-card sources; promote only exact-evidence candidates that pass `review-insight-candidates`. Use GPT/Codex review packets for this text work; do not use local LLMs as the quality source.
+4. Keep the 619 historical transcript QA flags open until audio/source verification exists; do not bulk-pass them.
+5. Keep the remaining source-review blocker parked unless `tiktok-video-7648746368739118350` becomes accessible.
+6. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.
+7. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
+8. Continue TikTok refresh as a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
+9. Re-run publication boundary audit before every future GitHub push.
 
 ## Open-source readiness already added
 

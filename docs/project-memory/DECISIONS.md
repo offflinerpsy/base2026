@@ -197,3 +197,9 @@ Reason: evidence-exact text can still be bad public product copy, and source pag
 Decision: for the current launch-quality insight-card backlog, use GPT/Codex source-only review packets as the primary semantic/card-writing lane. The preferred working model is ChatGPT/GPT 5.5 Medium through Codex when available. Do not use local LLMs as the primary extractor or final writer for public card text.
 
 Reason: the backlog is low-volume enough that quality and source faithfulness matter more than cheap local throughput. Scripts still own queueing, exact evidence verification, private import, reviewer promotion, rebuild/export, and deployment gates.
+
+## 2026-06-12 — Enforce the public release contract in code and CI
+
+Decision: public Base2026 package/deploy paths must obey `contracts/base2026.public-release-contract.json`: no full transcript release flag, no implicit public insight auto-promotion, no tracked generated export artifacts, fixture-backed positive/negative CI checks, and staged release exports before packaging.
+
+Reason: the public boundary cannot depend on chat memory or manual operator discipline. The live ay76 export is excerpt-only, but it still contains legacy `auto_evidence_match` public cards. Future public data-changing deploys must either explicitly review/migrate those cards or block before replacing the live release.

@@ -7,8 +7,7 @@ param(
   [string]$MeiliUrl = "http://127.0.0.1:7700",
   [string]$MeiliMasterKeyFile = "/var/www/base2026-knowledge/shared/.meili_master_key",
   [switch]$SkipPackage,
-  [switch]$SkipReindex,
-  [switch]$IncludeFullTranscripts
+  [switch]$SkipReindex
 )
 
 $ErrorActionPreference = "Stop"
@@ -33,6 +32,8 @@ if ($RemoteBase -notmatch '^/[-A-Za-z0-9._/]+$') {
 $SshOptions = @("-o", "StrictHostKeyChecking=accept-new")
 
 if (-not $SkipPackage) {
+  python3 ./scripts/validate-public-release-contract.py | Write-Output
+  Assert-NativeSuccess "public-release-contract"
   $packageArgs = @(
     "-NoProfile",
     "-ExecutionPolicy", "Bypass",
@@ -41,9 +42,6 @@ if (-not $SkipPackage) {
     "-MeiliUrl", "/knowledge-search",
     "-MeiliIndex", $MeiliIndex
   )
-  if ($IncludeFullTranscripts) {
-    $packageArgs += "-IncludeFullTranscripts"
-  }
   pwsh @packageArgs | Write-Output
   Assert-NativeSuccess "package-public-release"
 }

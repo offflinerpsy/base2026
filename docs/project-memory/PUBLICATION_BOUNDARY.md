@@ -16,6 +16,8 @@ Base2026 has two layers:
 - `docs/`
 - `docs/public-pages/` public Markdown used to generate site info pages
 - `scripts/`
+- `contracts/`
+- public-safe test fixtures under `tests/fixtures/public-export-*`
 - `web/static/`
 - `10_agent-instructions/`
 - reviewed public-safe documentation under `12_knowledge-base/`
