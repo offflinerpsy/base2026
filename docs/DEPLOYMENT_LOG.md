@@ -882,3 +882,14 @@ nginx -t: pass
 - policy: `include_full_transcripts=false`
 - QA: live source page for `tiktok-video-7650378444122901768` contains `Jensen Huang` and not `Jason Wang`; live public JSONL ASR-slop scan found 0 tracked bad patterns; mobile visual runner passed 66 checks with 0 failures
 - note: the refresh found 1 new `@joshuamaraney` video, closed transcript/polish queues, and deployed after source-backed entity correction.
+
+## 2026-06-12 — base2026-chatgpt-card-batch01-ay67-20260612
+
+- release: `base2026-chatgpt-card-batch01-ay67-20260612`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-chatgpt-card-batch01-ay67-20260612`
+- reason: first source-only GPT/Codex review batch for queued no-card sources.
+- public export: 1215 source records, 1708 passages, 1557 insight cards, 1117 public insight cards, 1464 topics, 1058 public topics.
+- Meilisearch: reindexed 1708 passages into `base2026_public_tiktok`.
+- policy: `include_full_transcripts=false`.
+- QA: `kb-audit.py` passed; public export policy passed; live source page for `tiktok-video-7650000106489433352` contains the new `AI Workflow Automation` card context with `Claude` and `Google Calendar`; mixed mobile visual QA passed with 66 checks and 0 failures.
+- note: 4 reviewed exact-evidence cards were promoted; 5 exact-evidence candidates stayed private due the source promotion-limit reviewer gate.
