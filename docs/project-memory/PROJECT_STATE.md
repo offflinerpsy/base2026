@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-full-pipeline-refresh-ay55-20260612`
+- latest deployed release: `base2026-pipeline-refresh-ay56-20260612`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -33,18 +33,18 @@ Current local repo state:
 
 Latest verification:
 
-- `base2026-full-pipeline-refresh-ay55-20260612` is live after a full four-creator TikTok refresh, clean SQLite rebuild, public export, VPS deploy, and live QA. The refresh checked `@build_in_public`, `@tjrobertson52`, `@joshuamaraney`, and `@webhivedigital`; it found 0 new rows, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
-- Current ay55 public export is excerpt-only with 1214 source records, 1703 passages, 1544 insight cards, 1103 public insight cards, 1452 topics, and 1044 public topics. Meilisearch reindexed 1703 passages.
-- Current source-review audit shows 3 source-review rows: 2 fallback MP4 files have 0 audio streams and no subtitles, and 1 source is currently blocked by TikTok IP access. The private `videos.csv` rows remain local/ignored.
-- Current transcript polish audit checked 1211 polished transcripts: 0 high-risk flags, 417 low-risk/pass items, and 794 historical `needs_review` QA flags. This remains controlled review debt; public export is still excerpt-only and does not expose full transcripts.
+- `base2026-pipeline-refresh-ay56-20260612` is live after a full four-creator TikTok refresh, clean SQLite rebuild, public export, VPS deploy, Meilisearch reindex, and live QA. The refresh checked `@build_in_public`, `@tjrobertson52`, `@joshuamaraney`, and `@webhivedigital`; it found 0 new rows, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
+- Current ay56 public export is excerpt-only with 1214 source records, 1707 passages, 1544 insight cards, 1103 public insight cards, 1452 topics, and 1044 public topics. Meilisearch reindexed 1707 passages.
+- Current source-review audit shows 1 source-review row: `tiktok-video-7648746368739118350` is currently blocked by TikTok IP access. Two previous no-audio source-review rows were retried through h264-first ASR fallback, transcribed, polished, rebuilt into SQLite, and exported publicly as excerpt-only records. The private `videos.csv` and transcript working files remain local/ignored.
+- Current transcript polish status has 1213 transcribed/clean/polished transcripts, 0 missing polished files, and 794 historical `needs_review` QA flags. This remains controlled review debt; public export is still excerpt-only and does not expose full transcripts.
 - Current private insight-card candidate queue remains 21 candidate rows in SQLite: 6 approved public candidates and 15 private `needs_human` candidates. The strict review keeps all 15 private as `needs_human`. Public export still excludes private candidates.
 - Reviewed insight-card candidates are now durable across clean SQLite rebuilds: `scripts/base2026-promote-insight-candidates.py` can archive selected report rows into ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl`, and `scripts/build-kb-sqlite.py` replays approved/reviewed/public plus private queue statuses locally. The clean rebuild gate imported 21 reviewed/private candidate claims and `kb-audit.py` passed.
 - Public export now excludes non-public `insight_card_candidate` rows entirely. Current live export contains only 6 approved candidate cards and 0 private `needs_human` candidates.
 - The default local TikTok refresh queue now resolves to ignored `config/tiktok-intake-queue.local.json` with all 4 public creator sources. Public-safe `config/creators.example.json` also lists the 4 current public creator sources so new environments do not accidentally refresh only part of the dataset.
-- Live ay55 QA passed: `/knowledge/`, sample source/roadmap/sitemap URLs, static gzip/cache headers, `documents.jsonl` 1214-row leak check, publication boundary audit, GitHub metadata validation, controller doctor, and full mixed mobile visual QA with 66 checks and 0 failures.
+- Live ay56 QA passed: `/knowledge/`, sample source/roadmap/sitemap URLs, static gzip/cache headers, `documents.jsonl` 1214-row excerpt-only check, publication boundary audit, GitHub metadata validation, controller doctor, and full mixed mobile visual QA with 66 checks and 0 failures.
 - The ay52 pipeline pass used a private all-creator runtime config, found 5 new active rows dated 2026-06-09 through 2026-06-11, transcribed all 5 via caption-first processing, required 0 ASR fallback jobs, and kept the historical 3 `needs_source_review` rows separate.
 - The ay52 card pass generated 21 local candidates for the 5 new videos, promoted only 6 evidence-verified/reviewed candidates to public, and left 15 candidates private as `needs_human`.
-- Transcript polish debt is now explicit: 1211 polished transcripts exist, 0 polished files are missing, and 794 QA files remain `needs_review` for historical transcript-quality review before they should be treated as final-quality transcript text. Public release remains excerpt-only and does not expose full transcripts.
+- Transcript polish debt is now explicit: 1213 polished transcripts exist, 0 polished files are missing, and 794 QA files remain `needs_review` for historical transcript-quality review before they should be treated as final-quality transcript text. Public release remains excerpt-only and does not expose full transcripts.
 - The Mac pipeline runner now resolves `python3`/`python` and `pwsh`/`powershell` dynamically, and `build-kb-sqlite.py` performs a clean deterministic rebuild with missing TikTok creator/source registration from `videos.csv`.
 - Live ay50 mobile QA passed: 44 WordPress/Base2026 mobile route/viewport checks, 0 failures; evidence is under ignored `output/evidence/ay50-live-mobile-qa/`.
 - `base2026-roadmap-status-ay44-20260611` is live after compacting roadmap status markers: long values such as `Completed - Built In-House` render as tiny status marks such as `Done`, with the full status preserved in tooltip/ARIA.

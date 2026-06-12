@@ -1,7 +1,8 @@
 param(
   [string]$CreatorId = "",
   [int]$Limit = 50,
-  [switch]$AsrFallback
+  [switch]$AsrFallback,
+  [switch]$IncludeSourceReview
 )
 
 $ErrorActionPreference = "Continue"
@@ -28,6 +29,9 @@ New-Item -ItemType Directory -Force -Path $RawDir, $CleanDir, $AudioDir, $AsrDir
 
 $rows = @(Import-Csv $VideosCsv)
 $targetStatuses = if ($AsrFallback) { @("queued", "pending", "", "needs_asr") } else { @("queued", "pending", "") }
+if ($AsrFallback -and $IncludeSourceReview) {
+  $targetStatuses += "needs_source_review"
+}
 $targets = $rows | Where-Object {
   $_.transcript_status -in $targetStatuses -and
   ($CreatorId -eq "" -or $_.creator_id -eq $CreatorId)
@@ -57,6 +61,7 @@ foreach ($row in $targets) {
     $row.transcript_status = "transcribed"
     $row.caption_source = "caption"
     $row.evidence_path = $vtt.FullName.Replace($TikTokRoot + "\", "")
+    $row.review_status = ""
     $row.notes = (($row.notes, "Captions downloaded via yt-dlp") | Where-Object { $_ }) -join "; "
     $caption++
     $done++
@@ -64,7 +69,12 @@ foreach ($row in $targets) {
   }
 
   if ($AsrFallback) {
-    & yt-dlp --quiet --no-warnings -f "h264_540p_362138-0/h264_540p_362138-1/h264_480p_698822-0/h264_480p_698822-1/download/best[ext=mp4]/best" -x --audio-format mp3 --audio-quality 5 --output $AudioOutputTemplate $url 2>$null
+    if ($IncludeSourceReview -and $row.transcript_status -eq "needs_source_review") {
+      Get-ChildItem $AudioDir -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.BaseName -eq $id } |
+        Remove-Item -Force -ErrorAction SilentlyContinue
+    }
+    & yt-dlp --quiet --no-warnings --force-overwrites -f "bv*[ext=mp4][vcodec^=h264]+ba/b[ext=mp4][vcodec^=h264]/download/best[ext=mp4]/best" -x --audio-format mp3 --audio-quality 5 --output $AudioOutputTemplate $url 2>$null
     $media = Get-ChildItem $AudioDir -File -ErrorAction SilentlyContinue |
       Where-Object { $_.BaseName -eq $id -and $_.Extension.ToLowerInvariant() -in @(".mp3", ".mp4", ".m4a", ".webm", ".wav") } |
       Sort-Object LastWriteTime -Descending |
@@ -91,6 +101,7 @@ foreach ($row in $targets) {
             $row.transcript_status = "needs_source_review"
             $row.caption_source = "asr"
             $row.evidence_path = "transcripts\asr\$id.txt"
+            $row.review_status = "needs_source_review"
             $row.notes = (($row.notes, "ASR produced too little usable text; source review required") | Where-Object { $_ }) -join "; "
             $failed++
             continue
@@ -98,6 +109,7 @@ foreach ($row in $targets) {
           $row.transcript_status = "transcribed"
           $row.caption_source = "asr"
           $row.evidence_path = "transcripts\asr\$id.txt"
+          $row.review_status = ""
           $row.notes = (($row.notes, "Caption download failed; faster-whisper ASR completed") | Where-Object { $_ }) -join "; "
           $asrDone++
           $done++
@@ -110,6 +122,7 @@ foreach ($row in $targets) {
       $row.transcript_status = "needs_source_review"
       $row.caption_source = "asr"
       $row.evidence_path = ""
+      $row.review_status = "needs_source_review"
       $row.notes = (($row.notes, "ASR fallback produced no usable transcript; source review required") | Where-Object { $_ }) -join "; "
       $failed++
       continue
@@ -117,6 +130,7 @@ foreach ($row in $targets) {
       $row.transcript_status = "needs_source_review"
       $row.caption_source = ""
       $row.evidence_path = ""
+      $row.review_status = "needs_source_review"
       $row.notes = (($row.notes, "Caption download failed; audio fallback unavailable; source review required") | Where-Object { $_ }) -join "; "
       $failed++
       continue

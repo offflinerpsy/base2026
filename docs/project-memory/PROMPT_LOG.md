@@ -2561,3 +2561,31 @@ Verification:
 Next step:
 
 - continue controlled transcript-QA slices and private `needs_human` card rewrite/review; no new TikTok videos were available in this refresh.
+
+## 2026-06-12 — Full TikTok refresh, source-review recovery, and ay56 deploy
+
+User asked to run the whole pipeline again because new videos may have appeared, process them, deploy after all work, and bring the project to Git.
+
+Actions taken:
+
+- ran the full four-creator TikTok refresh through `scripts/hermes-tiktok-refresh.ps1` with the ignored local queue config and `PlaylistEnd=1000`;
+- checked `@build_in_public`, `@tjrobertson52`, `@joshuamaraney`, and `@webhivedigital`;
+- found 0 new videos, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files;
+- before the refresh, retried two `needs_source_review` rows through h264-first ASR fallback, transcribed and polished them locally, rebuilt SQLite, and exported them as excerpt-only public records;
+- added `scripts/tiktok-qa-review-apply.py` and controller wiring for explicit transcript-QA reviewer manifests;
+- rebuilt SQLite, ran `kb-audit.py`, exported public TikTok data, packaged, deployed, and reindexed Meilisearch as `base2026-pipeline-refresh-ay56-20260612`.
+
+Verification:
+
+- public export policy passed with `include_full_transcripts=false`, 1214 source records, 1707 passages, 1544 insight cards, 1103 public insight cards, 1452 topics, and 1044 public topics;
+- source-review audit now has 1 private blocker: `tiktok-video-7648746368739118350`, blocked by TikTok IP access;
+- transcript polish status has 1213 transcribed/clean/polished transcripts, 0 missing polished files, and 794 historical `needs_review` QA flags;
+- publication boundary audit, GitHub metadata validation, controller doctor, and Python compile checks passed;
+- live `/knowledge/`, sitemap, roadmap, support, and a sample source page returned 200;
+- live `documents.jsonl` has 1214 rows, 0 full-public transcript rows, and empty public `transcript` payloads under the excerpt-only policy;
+- live CSS/JS returned gzip and immutable cache headers;
+- full mixed live mobile visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-ay56/`.
+
+Next step:
+
+- commit and push the public-safe pipeline/QA tooling and memory updates; then continue controlled transcript-QA batches and private `needs_human` card rewrite/review.

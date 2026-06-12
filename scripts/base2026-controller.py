@@ -342,6 +342,27 @@ def cmd_tiktok_source_review_audit(args: argparse.Namespace) -> int:
     return code
 
 
+def cmd_tiktok_qa_review_apply(args: argparse.Namespace) -> int:
+    path = start_run("tiktok-qa-review-apply", args)
+    command = [
+        sys.executable,
+        "scripts/tiktok-qa-review-apply.py",
+        "--manifest",
+        args.manifest,
+    ]
+    if args.reviewed_by:
+        command += ["--reviewed-by", args.reviewed_by]
+    if args.out:
+        command += ["--out", args.out]
+    if args.apply:
+        command.append("--apply")
+    code, stdout, stderr = run_child(path, command)
+    summary = parse_last_json(stdout)
+    finish_run(path, "passed" if code == 0 else "failed", summary or {"stderr": stderr.strip()[:500]})
+    print(stdout.strip())
+    return code
+
+
 def cmd_tiktok_metadata_extract(args: argparse.Namespace) -> int:
     path = start_run("tiktok-metadata-extract", args)
     command = [sys.executable, "scripts/tiktok-ytdlp-metadata-extract.py"]
@@ -414,6 +435,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
         "tiktok_caption_browser_extractor_exists": (ROOT / "scripts" / "tiktok-caption-browser-extract.mjs").exists(),
         "tiktok_staging_importer_exists": (ROOT / "scripts" / "import-tiktok-staging-to-kb.py").exists(),
         "tiktok_polish_audit_exists": (ROOT / "scripts" / "tiktok-polish-audit.py").exists(),
+        "tiktok_qa_review_applier_exists": (ROOT / "scripts" / "tiktok-qa-review-apply.py").exists(),
         "tiktok_source_review_audit_exists": (ROOT / "scripts" / "tiktok-source-review-audit.py").exists(),
         "worker_exists": (ROOT / "scripts" / "base2026-worker.py").exists(),
         "local_worker_requirements_exists": (ROOT / "requirements-local-worker.txt").exists(),
@@ -506,6 +528,13 @@ def main() -> int:
     source_review.add_argument("--out", default="")
     source_review.add_argument("--apply", action="store_true")
     source_review.set_defaults(func=cmd_tiktok_source_review_audit)
+
+    qa_apply = sub.add_parser("tiktok-qa-review-apply")
+    qa_apply.add_argument("--manifest", required=True)
+    qa_apply.add_argument("--reviewed-by", default="")
+    qa_apply.add_argument("--out", default="")
+    qa_apply.add_argument("--apply", action="store_true")
+    qa_apply.set_defaults(func=cmd_tiktok_qa_review_apply)
 
     tiktok_metadata = sub.add_parser("tiktok-metadata-extract")
     tiktok_metadata.add_argument("--queue", default="")
