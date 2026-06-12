@@ -4,7 +4,7 @@ Last updated: 2026-06-12
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay68 GPT/Codex no-card source review batches, deploy, and live QA pass.
+Continue launch operation after the Base2026 ay69 GPT/Codex no-card source review batches, deploy, and live QA pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -78,15 +78,16 @@ Task queue source of truth:
 49. Durable TikTok entity normalization now also covers the ay65 text/entity cleanup set, including Eli Schwartz, r/MinMaxMarketing, Google My Business, Copilot, and spoken Gemini version references.
 50. ay67 added 4 GPT/Codex-reviewed public insight cards from queued no-card sources and kept 5 exact-evidence candidates private after the source promotion-limit reviewer gate.
 51. ay68 added 13 GPT/Codex-reviewed public insight cards from 16 queued no-card sources across two source-only batches, skipped 3 weak/fragile sources, rebuilt/exported/deployed, and reindexed Meilisearch.
+52. ay69 added 15 GPT/Codex-reviewed public insight cards from 16 queued no-card sources across two source-only batches, skipped 1 giveaway/engagement source, rebuilt/exported/deployed, and reindexed Meilisearch.
 
 ## Latest verification
 
-- Deployed release: `base2026-chatgpt-card-batch02-03-ay68-20260612`.
+- Deployed release: `base2026-chatgpt-card-batch04-05-ay69-20260612`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
-- Live ay68 public export: 1215 source records, 1708 passages, 1570 insight cards, 1129 public insight cards, 1473 topics, 1066 public topics.
-- Live ay68 Meilisearch reindex: 1708 passages indexed into `base2026_public_tiktok`.
-- ay68 GPT/Codex card batches: 16 queued no-card sources reviewed from public passages, 13 exact-evidence candidates imported/promoted after reviewer gates, and 3 weak/fragile sources skipped.
-- Live ay68 deploy QA: `kb-audit.py` passed; public export policy passed; live source page `/knowledge/sources/tiktok-video-7647713851504463117.html` contains the new `AI Content Workflow` card context; live topic page `/knowledge/topics/internal-linking.html` contains the new `Internal Linking` card context; 66-check mixed mobile visual QA passed with 0 failures.
+- Live ay69 public export: 1215 source records, 1708 passages, 1585 insight cards, 1144 public insight cards, 1486 topics, 1079 public topics.
+- Live ay69 Meilisearch reindex: 1708 passages indexed into `base2026_public_tiktok`.
+- ay69 GPT/Codex card batches: 16 queued no-card sources reviewed from public passages, 15 exact-evidence candidates imported/promoted after reviewer gates, and 1 giveaway/engagement source skipped.
+- Live ay69 deploy QA: `kb-audit.py` passed; public export policy passed; live source page `/knowledge/sources/tiktok-video-7646800096583044374.html` contains the new `Robots.txt` card context; live topic page `/knowledge/topics/faq-seo.html` contains the new `FAQ SEO` card context; live topic page `/knowledge/topics/ai-skills.html` contains the new `AI Skills` card context; 66-check mixed mobile visual QA passed with 0 failures.
 - ay66 full four-creator refresh: `@build_in_public` 1000 discovered/0 added, `@tjrobertson52` 347/0, `@joshuamaraney` 639/0, `@webhivedigital` 1000/0; local inventory remains 3014 rows and 1215 active rows.
 - Live ay63 all-creator refresh: 1 new `@joshuamaraney` row, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. ay63 added a durable entity normalizer and source-backed the new NVIDIA founder correction before deploy.
 - Post-ay63 2026-06-12 refresh: latest 160 public posts per configured creator produced 0 added rows, 0 queued transcripts, 0 `needs_asr`, and 0 missing polish; deep `PlaylistEnd=1000` inventory check-only also produced 0 added rows.
@@ -94,7 +95,7 @@ Task queue source of truth:
 - Live ay64 public JSONL scan found 0 tracked old ASR/entity tokens; targeted live source pages confirmed `Gary Illyes`, `n8n`, `Comet browser`, `Schemawriter.ai`, `Descript`, `Claude Projects`, `sourceofsources.com`, and `NPR` render correctly.
 - ay65 text/entity QA cleanup: 7 source-backed rows moved to pass; 8 unsafe rows were explicitly kept review-gated with audio/source verification reasons; triage now has 619 remaining review flags, all audio/source-verification rows.
 - Live ay65 public JSONL scan found 0 tracked old text/entity tokens and confirmed public `Eli Schwartz`, `r/MinMaxMarketing`, and `Google My Business` render in the public payload.
-- Durable reviewed/private candidate replay now has 34 `insight_card_candidate` rows replaying locally from ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` during a clean SQLite rebuild.
+- Durable reviewed/private candidate replay now has 62 `insight_card_candidate` rows replaying locally from ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` during a clean SQLite rebuild.
 - Public export gate verified: public export excludes private `needs_human` candidates; live `documents.jsonl` has 1215 rows under excerpt-only policy.
 - Live ay65 deploy QA: static endpoint checks, public export policy, SQLite audit, transcript QA triage, publication boundary audit, GitHub metadata validation, live JSONL ASR-slop scan, and 66-check mixed mobile visual QA passed with 0 failures.
 
@@ -243,7 +244,7 @@ Task queue source of truth:
 
 ## Exact next steps
 
-1. Continue the source-only GPT/Codex review lane for queued no-card sources; promote only exact-evidence candidates that pass `review-insight-candidates`.
+1. Continue the source-only GPT/Codex review lane for queued no-card sources; promote only exact-evidence candidates that pass `review-insight-candidates`. Use GPT/Codex review packets for this text work; do not use local LLMs as the quality source.
 2. Keep the 619 historical transcript QA flags open until audio/source verification exists; do not bulk-pass them.
 3. Keep the remaining source-review blocker parked unless `tiktok-video-7648746368739118350` becomes accessible.
 4. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.

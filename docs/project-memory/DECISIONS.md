@@ -182,6 +182,6 @@ Reason: evidence-exact text can still be bad public product copy, and source pag
 
 ## 2026-06-12 — Use GPT/Codex as the current card text review lane
 
-Decision: for the current launch-quality insight-card backlog, use GPT/Codex source-only review packets as the primary semantic/card-writing lane. Do not use local LLMs as the primary extractor or final writer for public card text.
+Decision: for the current launch-quality insight-card backlog, use GPT/Codex source-only review packets as the primary semantic/card-writing lane. The preferred working model is ChatGPT/GPT 5.5 Medium through Codex when available. Do not use local LLMs as the primary extractor or final writer for public card text.
 
 Reason: the backlog is low-volume enough that quality and source faithfulness matter more than cheap local throughput. Scripts still own queueing, exact evidence verification, private import, reviewer promotion, rebuild/export, and deployment gates.

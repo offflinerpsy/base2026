@@ -904,3 +904,14 @@ nginx -t: pass
 - policy: `include_full_transcripts=false`.
 - QA: `kb-audit.py` passed; public export policy passed; live source page for `tiktok-video-7647713851504463117` contains the new `AI Content Workflow` card context; live topic page `/knowledge/topics/internal-linking.html` contains the new `Internal Linking` card context; mixed mobile visual QA passed with 66 checks and 0 failures.
 - note: 13 reviewed exact-evidence cards were promoted; 3 weak or fragile sources were skipped.
+
+## 2026-06-12 — base2026-chatgpt-card-batch04-05-ay69-20260612
+
+- release: `base2026-chatgpt-card-batch04-05-ay69-20260612`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-chatgpt-card-batch04-05-ay69-20260612`
+- reason: fourth and fifth source-only GPT/Codex review batches for queued no-card sources.
+- public export: 1215 source records, 1708 passages, 1585 insight cards, 1144 public insight cards, 1486 topics, 1079 public topics.
+- Meilisearch: reindexed 1708 passages into `base2026_public_tiktok`.
+- policy: `include_full_transcripts=false`.
+- QA: `kb-audit.py` passed; public export policy passed; live source page for `tiktok-video-7646800096583044374` contains the new `Robots.txt` card context; live topic page `/knowledge/topics/faq-seo.html` contains the new `FAQ SEO` card context; live topic page `/knowledge/topics/ai-skills.html` contains the new `AI Skills` card context; mixed mobile visual QA passed with 66 checks and 0 failures.
+- note: 15 reviewed exact-evidence cards were promoted; 1 giveaway/engagement source was skipped.

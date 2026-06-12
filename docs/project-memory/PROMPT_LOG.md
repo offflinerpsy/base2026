@@ -2924,3 +2924,30 @@ Verification:
 Next step:
 
 - commit/push public-safe memory updates, then continue the same GPT/Codex source-only card-review lane in small batches; rebuild a fresh filtered queue before each packet and do not bulk-pass audio-sensitive transcript QA rows.
+
+## 2026-06-12 — ay69 GPT/Codex no-card source review batches 04-05
+
+User clarified again that local models should not be used for the current public card text work and asked to use GPT/Codex review instead.
+
+Actions taken:
+
+- rebuilt a fresh no-card queue and filtered out already processed packet sources;
+- generated two more source-only GPT/Codex review packets for 16 queued no-card sources;
+- reviewed packet text against public passages only, created 15 new candidate insight cards, and skipped 1 giveaway/engagement source instead of forcing a weak public card;
+- evidence-verified all 15 candidates with exact source matches;
+- imported the 15 candidates as private/pending, ran `review-insight-candidates`, promoted all 15 reviewer-approved candidates, and archived them in ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl`;
+- rebuilt SQLite from the durable private replay archive, ran `kb-audit.py`, exported the public TikTok layer, deployed `base2026-chatgpt-card-batch04-05-ay69-20260612`, and reindexed Meilisearch with 1708 passages.
+
+Verification:
+
+- public export policy passed with `include_full_transcripts=false`, 1215 source records, 1708 passages, 1585 insight cards, 1144 public insight cards, 1486 topics, and 1079 public topics;
+- live source page `/knowledge/sources/tiktok-video-7646800096583044374.html` contains the new `Robots.txt` card context;
+- live topic page `/knowledge/topics/faq-seo.html` contains the new `FAQ SEO` card context;
+- live topic page `/knowledge/topics/ai-skills.html` contains the new `AI Skills` card context;
+- full live mixed visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay69/`;
+- 619 transcript QA rows remain open because all require audio/source verification;
+- `tiktok-video-7648746368739118350` remains parked because TikTok/IP access still blocks source review.
+
+Next step:
+
+- commit/push public-safe memory updates, then continue the same GPT/Codex source-only card-review lane in small batches; rebuild a fresh filtered queue before each packet and do not bulk-pass audio-sensitive transcript QA rows.

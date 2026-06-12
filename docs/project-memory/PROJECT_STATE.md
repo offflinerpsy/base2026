@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-chatgpt-card-batch02-03-ay68-20260612`
+- latest deployed release: `base2026-chatgpt-card-batch04-05-ay69-20260612`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -33,12 +33,12 @@ Current local repo state:
 
 Latest verification:
 
-- `base2026-chatgpt-card-batch02-03-ay68-20260612` is live after two source-only GPT/Codex insight-card review batches, clean rebuild/export, deploy, Meilisearch reindex, live source/topic smoke, and full mixed visual QA. The ay68 pass reviewed 16 queued no-card sources, promoted 13 exact-evidence public cards, and skipped 3 weak/fragile sources.
-- Current ay68 public export is excerpt-only with 1215 source records, 1708 passages, 1570 insight cards, 1129 public insight cards, 1473 topics, and 1066 public topics. Meilisearch reindexed 1708 passages.
+- `base2026-chatgpt-card-batch04-05-ay69-20260612` is live after two more source-only GPT/Codex insight-card review batches, clean rebuild/export, deploy, Meilisearch reindex, live source/topic smoke, and full mixed visual QA. The ay69 pass reviewed 16 queued no-card sources, promoted 15 exact-evidence public cards, and skipped 1 giveaway/engagement source.
+- Current ay69 public export is excerpt-only with 1215 source records, 1708 passages, 1585 insight cards, 1144 public insight cards, 1486 topics, and 1079 public topics. Meilisearch reindexed 1708 passages.
 - Current source-review audit shows 1 source-review row: `tiktok-video-7648746368739118350` is currently blocked by TikTok IP access. Two previous no-audio source-review rows were retried through h264-first ASR fallback, transcribed, polished, rebuilt into SQLite, and exported publicly as excerpt-only records. The private `videos.csv` and transcript working files remain local/ignored.
 - Current transcript polish status has 1214 transcribed/clean/polished transcripts and 0 missing polished files. After ay65, `scripts/tiktok-qa-triage.py` categorizes the remaining 619 review rows as audio/source-verification required. Entity/spelling and human text-review buckets are now 0. This remains controlled review debt; public export is still excerpt-only and does not expose full transcripts.
-- Current private insight-card candidate queue was reduced by the ay57/ay58/ay59/ay67/ay68 review passes: 26 candidates were rewritten or created from exact evidence, verified, imported as approved, archived for clean-rebuild replay, and exported publicly; 5 old candidates were rejected; 8 old rows were resolved as superseded by rewritten approved cards; 5 ay67 candidates remain private after the source promotion-limit gate; and 1 older row remains `needs_human` for source/audio verification. Public export still excludes private candidates.
-- Reviewed insight-card candidates are now durable across clean SQLite rebuilds: `scripts/base2026-promote-insight-candidates.py` can archive selected report rows into ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl`, and `scripts/build-kb-sqlite.py` replays approved/reviewed/public plus private queue statuses locally. The latest build imported 47 reviewed/private candidate claims and `kb-audit.py` passed.
+- Current private insight-card candidate queue was reduced by the ay57/ay58/ay59/ay67/ay68/ay69 review passes: 41 candidates were rewritten or created from exact evidence, verified, imported as approved, archived for clean-rebuild replay, and exported publicly; 5 old candidates were rejected; 8 old rows were resolved as superseded by rewritten approved cards; 5 ay67 candidates remain private after the source promotion-limit gate; and 1 older row remains `needs_human` for source/audio verification. Public export still excludes private candidates.
+- Reviewed insight-card candidates are now durable across clean SQLite rebuilds: `scripts/base2026-promote-insight-candidates.py` can archive selected report rows into ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl`, and `scripts/build-kb-sqlite.py` replays approved/reviewed/public plus private queue statuses locally. The latest build imported 62 reviewed/private candidate claims and `kb-audit.py` passed.
 - Public export now excludes non-public `insight_card_candidate` rows entirely. Current live export contains the approved candidate cards and 0 private `needs_human` candidates.
 - The default local TikTok refresh queue now resolves to ignored `config/tiktok-intake-queue.local.json` with all 4 public creator sources. Public-safe `config/creators.example.json` also lists the 4 current public creator sources so new environments do not accidentally refresh only part of the dataset.
 - Live ay65 QA passed: public export policy, SQLite rebuild/audit, transcript QA triage, publication boundary audit, GitHub metadata validation, live public JSONL ASR-slop scan, Meilisearch indexing, and full mixed mobile visual QA with 66 checks and 0 failures.
@@ -77,11 +77,11 @@ Latest verification:
 - live ay23 QA passed: source pages now explain `Public Evidence Excerpt`, `Related Passages`, and `Public Insight Cards` with info hints; the full-transcript public policy note is visually highlighted; empty insight-card states explain that no reviewed card is linked yet; desktop/mobile checks on `/knowledge/sources/tiktok-video-7647909694559767840.html` have no horizontal overflow or console errors.
 - TikTok refresh automation reality: Windows task `Base2026 Hermes TikTok Check` runs twice daily at 03:30 and 15:30 Minsk time with `scripts/hermes-tiktok-refresh.ps1 -CheckOnly -PlaylistEnd 50`. It detects/inventories candidates only; it does not automatically polish, import, package, or deploy new TikToks yet.
 - SEO readiness pass completed for Base2026 static pages: `/knowledge/`, roadmap, creators, topics, sources, and support now have meta descriptions, canonical URLs, `index,follow`, one H1, and WebPage/Search schema where appropriate.
-- Base2026 sitemap is live at `https://aggressorbulkit.online/knowledge/sitemap.xml` with 1066 URLs, and WordPress `robots.txt` now includes the Base2026 sitemap alongside the WordPress sitemap.
+- Base2026 sitemap is live at `https://aggressorbulkit.online/knowledge/sitemap.xml`; the latest ay69 package generated 1333 sitemap URLs across the sitemap index/children, and WordPress `robots.txt` includes the Base2026 sitemap alongside the WordPress sitemap.
 - public policy pages now include correction/removal contact email: `offflinerpsy@gmail.com`
 - Apache-2.0 license selected and applied
-- indexable aggregate topics: 46; singleton topic/compare pages are `noindex,follow`
-- public `/knowledge/static/documents.jsonl` verified with 957 records and `transcript_leaks=0`
+- indexable aggregate topics: 51; singleton topic/compare pages are `noindex,follow`
+- public `/knowledge/static/documents.jsonl` verified with 1215 records under excerpt-only policy and `transcript_leaks=0`
 - MacBook migration validation passed: required skills/memory are visible, Meilisearch and PowerShell are installed, publication boundary audit passes, GitHub metadata validation passes, and publication staging dry-run passes without staging files.
 - GitHub repository `offflinerpsy/base2026` was created as public on 2026-06-10, `main` was pushed and set as the default branch, and `codex/github-publication-staging` was also pushed.
 - MacBook publication dry-run: `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/stage-public-files.ps1 -SkipPreflight -SkipLicenseCheck -SkipRemoteCheck` reports `stage_path_count=57`, `changed_files=3168`, `forbidden=0`, and `secret_findings=0`.
@@ -148,6 +148,7 @@ Latest verification:
 - `base2026-full-pipeline-refresh-ay66-20260612` is live after a full four-creator refresh, rebuild/export, deploy, and Meilisearch reindex with 1708 passages.
 - `base2026-chatgpt-card-batch01-ay67-20260612` is live after the first GPT/Codex no-card source review batch, rebuild/export, deploy, and Meilisearch reindex with 1708 passages.
 - `base2026-chatgpt-card-batch02-03-ay68-20260612` is live after the second and third GPT/Codex no-card source review batches, rebuild/export, deploy, and Meilisearch reindex with 1708 passages.
+- `base2026-chatgpt-card-batch04-05-ay69-20260612` is live after the fourth and fifth GPT/Codex no-card source review batches, rebuild/export, deploy, and Meilisearch reindex with 1708 passages.
 - ay66 public export counts: 1215 source records, 1708 passages, 1553 insight cards, 1113 public insight cards, 1460 topics, 1054 public topics, 4 creators.
 - ay66 live QA passed: public export policy clean, endpoint smoke passed, and mobile visual QA passed 66 checks with 0 failures.
 - durable transcript cleanup added `scripts/tiktok-normalize-polished-entities.py` plus expanded local polish replacements for obvious public ASR/entity artifacts such as `s c o`, `Chat GBT`, `Chat GPT`, `Open AI`, `AR models`, `AR SEO`, `C m s`, and `m dash`.

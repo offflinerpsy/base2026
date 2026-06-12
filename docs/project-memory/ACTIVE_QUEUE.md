@@ -29,8 +29,8 @@ No task is considered done because a worker reports done. Codex must review, int
 
 ## Current Deployed State
 
-- Base2026 release live: `base2026-chatgpt-card-batch02-03-ay68-20260612`.
-- Base2026 public export live: 1215 source records, 1708 passages, 1570 insight cards, 1129 public insight cards.
+- Base2026 release live: `base2026-chatgpt-card-batch04-05-ay69-20260612`.
+- Base2026 public export live: 1215 source records, 1708 passages, 1585 insight cards, 1144 public insight cards.
 - WordPress child-theme CSS live: `1.5.16`.
 - VPS SSH works through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
 
@@ -117,7 +117,7 @@ Pipeline work starts with controller ownership. Do not jump straight to intake r
 8. Convert scheduled Hermes from check-only to staged local automation.
    - Scheduled mode must stop before deploy, paid LLM, public promotion, or unreviewed transcript publication.
 
-Latest refresh note: ay66 checked all four configured public creators through `scripts/hermes-tiktok-refresh.ps1 -CreatorsConfig config/tiktok-intake-queue.local.json -PlaylistEnd 1000`, rebuilt SQLite, exported public data, deployed `base2026-full-pipeline-refresh-ay66-20260612`, and reindexed Meilisearch. TikTok returned 0 added rows and 0 updated rows. ay67 and ay68 then used GPT/Codex source-only review packets for queued no-card sources; ay68 deployed `base2026-chatgpt-card-batch02-03-ay68-20260612` with 13 additional exact-evidence public cards. Queues remain 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. The remaining 619 transcript QA flags are all audio/source-verification rows.
+Latest refresh note: ay66 checked all four configured public creators through `scripts/hermes-tiktok-refresh.ps1 -CreatorsConfig config/tiktok-intake-queue.local.json -PlaylistEnd 1000`, rebuilt SQLite, exported public data, deployed `base2026-full-pipeline-refresh-ay66-20260612`, and reindexed Meilisearch. TikTok returned 0 added rows and 0 updated rows. ay67, ay68, and ay69 then used GPT/Codex source-only review packets for queued no-card sources; ay69 deployed `base2026-chatgpt-card-batch04-05-ay69-20260612` with 15 additional exact-evidence public cards and 1 skipped giveaway/engagement source. Queues remain 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. The remaining 619 transcript QA flags are all audio/source-verification rows.
 
 ## GIT-01 Buckets
 
