@@ -163,7 +163,7 @@ try {
     & $PythonExe (Join-Path $Root "scripts\kb-audit.py")
   }
   Run-Step "export-public-tiktok" {
-    & $PythonExe (Join-Path $Root "scripts\export-public-tiktok.py")
+    & $PythonExe (Join-Path $Root "scripts\export-public-tiktok.py") --auto-promote-insights
   }
 
   if ($Package -or $Deploy) {

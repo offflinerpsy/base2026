@@ -10,6 +10,7 @@ checks = {
     "foreign_key_errors": len(con.execute("PRAGMA foreign_key_check").fetchall()),
     "claims": con.execute("SELECT COUNT(*) FROM claims").fetchone()[0],
     "claims_fts": con.execute("SELECT COUNT(*) FROM claims_fts").fetchone()[0],
+    "insight_card_candidates": con.execute("SELECT COUNT(*) FROM claims WHERE claim_type='insight_card_candidate'").fetchone()[0],
     "transcripts": con.execute("SELECT COUNT(*) FROM transcripts").fetchone()[0],
     "polished_transcripts": con.execute("SELECT COUNT(*) FROM generic_documents WHERE document_type='transcript_polished'").fetchone()[0],
     "transcripts_fts": con.execute("SELECT COUNT(*) FROM transcripts_fts").fetchone()[0],
@@ -30,7 +31,9 @@ con.close()
 ok = (
     checks["integrity"] == "ok"
     and checks["foreign_key_errors"] == 0
-    and checks["claims"] == checks["claims_fts"] == checks["claim_cards_files"]
+    and checks["claims"] == checks["claims_fts"]
+    and checks["claim_cards_files"] <= checks["claims"]
+    and checks["claims"] - checks["claim_cards_files"] == checks["insight_card_candidates"]
     and checks["transcripts"] == checks["transcripts_fts"] == checks["source_cards"]
     and checks["source_registry"] >= 1
     and checks["generic_items"] >= checks["transcripts"]

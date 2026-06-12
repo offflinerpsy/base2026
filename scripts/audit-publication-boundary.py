@@ -99,6 +99,7 @@ PUBLIC_SAFE_EXACT = {
     "scripts/base2026-worker.py",
     "scripts/build-kb-sqlite.py",
     "scripts/import-tiktok-staging-to-kb.py",
+    "scripts/kb-audit.py",
     "scripts/tiktok-polish-runner.ps1",
     "scripts/tiktok-caption-browser-extract.mjs",
     "scripts/tiktok-faithful-polish-local.py",

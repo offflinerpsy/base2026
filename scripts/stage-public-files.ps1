@@ -75,6 +75,7 @@ $StagePaths = @(
   "scripts/build-kb-sqlite.py",
   "scripts/hermes-tiktok-refresh.ps1",
   "scripts/import-tiktok-staging-to-kb.py",
+  "scripts/kb-audit.py",
   "scripts/meili-index-public.py",
   "scripts/mobile-visual-qa.mjs",
   "scripts/package-public-release.ps1",

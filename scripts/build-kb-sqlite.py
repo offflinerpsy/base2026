@@ -19,6 +19,7 @@ CANON = KB / "canonical"
 SOURCE_CARDS = TIKTOK / "source-cards"
 CLAIM_CARDS = CANON / "claims"
 TITLE_ENRICHMENT_CSV = TIKTOK / "metadata" / "titles.csv"
+REVIEWED_CANDIDATES_JSONL = TIKTOK / "insight-candidates" / "reviewed-candidates.jsonl"
 LOCAL_SOURCE_PREFIXES = (
     "00_",
     "01_",
@@ -180,6 +181,48 @@ def parse_claim_tables(path: Path) -> list[dict[str, str]]:
                 "suggested_action": action,
                 "evidence_path": evidence.strip("`"),
                 "review_status": review_status,
+                "source_file": rel(path),
+            }
+        )
+    return rows
+
+
+def read_jsonl(path: Path) -> list[dict]:
+    rows: list[dict] = []
+    if not path.exists():
+        return rows
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            if line.strip():
+                rows.append(json.loads(line))
+    return rows
+
+
+def load_reviewed_candidate_claims(path: Path) -> list[dict[str, str]]:
+    public_statuses = {"approved", "reviewed", "public"}
+    rows: list[dict[str, str]] = []
+    for row in read_jsonl(path):
+        review_status = (row.get("review_status") or "").strip()
+        if review_status not in public_statuses:
+            continue
+        claim_id = (row.get("claim_id") or "").strip()
+        claim_text = (row.get("claim_text") or "").strip()
+        video_id = str(row.get("video_id") or "").strip()
+        if not claim_id or not claim_text or not video_id:
+            continue
+        source_id = (row.get("source_id") or "").strip()
+        rows.append(
+            {
+                "claim_id": claim_id,
+                "video_id": video_id,
+                "topic": (row.get("topic") or row.get("topic_label") or "Uncategorized").strip(),
+                "claim_text": claim_text,
+                "claim_type": "insight_card_candidate",
+                "suggested_action": (row.get("suggested_action") or "").strip(),
+                "confidence": row.get("confidence") if row.get("confidence") is not None else row.get("evidence_score"),
+                "review_status": review_status,
+                "evidence_path": (row.get("evidence_path") or f"public-data/tiktok/passages.jsonl#source_id={source_id}").strip(),
+                "quote_or_span": (row.get("evidence_excerpt") or "").strip(),
                 "source_file": rel(path),
             }
         )
@@ -853,6 +896,7 @@ def main() -> None:
     claim_rows: list[dict[str, str]] = []
     for path in sorted((TIKTOK / "extracted-claims").glob("*.md")):
         claim_rows.extend(parse_claim_tables(path))
+    reviewed_candidate_rows = load_reviewed_candidate_claims(REVIEWED_CANDIDATES_JSONL)
 
     for claim in claim_rows:
         created = datetime.now().isoformat(timespec="seconds")
@@ -889,6 +933,43 @@ def main() -> None:
         )
         write_claim_card(claim)
 
+    for claim in reviewed_candidate_rows:
+        created = datetime.now().isoformat(timespec="seconds")
+        try:
+            confidence = float(claim["confidence"]) if claim.get("confidence") not in {"", None} else None
+        except (TypeError, ValueError):
+            confidence = None
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO claims
+            (claim_id, claim_text, topic, claim_type, suggested_action, confidence, review_status, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                claim["claim_id"],
+                claim["claim_text"],
+                claim["topic"],
+                claim["claim_type"],
+                claim["suggested_action"],
+                confidence,
+                claim["review_status"],
+                created,
+                created,
+            ),
+        )
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO claim_evidence
+            (claim_id, video_id, evidence_path, quote_or_span)
+            VALUES (?, ?, ?, ?)
+            """,
+            (claim["claim_id"], claim["video_id"], claim["evidence_path"], claim.get("quote_or_span") or None),
+        )
+        conn.execute(
+            "INSERT INTO claims_fts (claim_id, topic, claim_text, suggested_action) VALUES (?, ?, ?, ?)",
+            (claim["claim_id"], claim["topic"], claim["claim_text"], claim["suggested_action"]),
+        )
+
     methods_imported = import_markdown_folder(conn, CANON / "methods", "methods", "method_id", "method")
     strategy_imported = import_markdown_folder(conn, CANON / "strategy-blocks", "strategy_blocks", "strategy_block_id", "strategy")
     local_files_imported = import_local_sources(conn)
@@ -903,6 +984,7 @@ def main() -> None:
         "source_cards": conn.execute("SELECT COUNT(*) FROM source_cards").fetchone()[0],
         "claims": conn.execute("SELECT COUNT(*) FROM claims").fetchone()[0],
         "claim_cards": len(list(CLAIM_CARDS.glob("*.md"))),
+        "reviewed_candidate_claims": len(reviewed_candidate_rows),
         "methods": conn.execute("SELECT COUNT(*) FROM methods").fetchone()[0],
         "strategy_blocks": conn.execute("SELECT COUNT(*) FROM strategy_blocks").fetchone()[0],
         "source_registry": conn.execute("SELECT COUNT(*) FROM source_registry").fetchone()[0],

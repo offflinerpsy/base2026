@@ -2416,3 +2416,37 @@ Not complete:
 Next step:
 
 - stage audited public-safe script/docs changes, commit, push `main`, then implement durable reviewed-candidate replay before the next larger card backfill.
+
+## 2026-06-11 — Durable candidate replay, full refresh check, and ay53 deploy
+
+User asked to run the whole pipeline again because new videos may have appeared, process them, and deploy after the work.
+
+Actions taken:
+
+- implemented durable approved-candidate replay:
+  - `scripts/base2026-promote-insight-candidates.py` now archives promoted `insight_card_candidate` rows to ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl`;
+  - `scripts/build-kb-sqlite.py` now replays `approved/reviewed/public` candidate rows from that ignored archive during clean SQLite rebuilds;
+  - `scripts/kb-audit.py` now allows the expected claim-count difference when it equals the `insight_card_candidate` count;
+- backfilled the ignored reviewed-candidate archive from the 6 already approved ay52 candidates;
+- fixed `scripts/hermes-tiktok-refresh.ps1` so its final public export uses `--auto-promote-insights` and does not accidentally publish a reduced public-card export;
+- ran full all-creator TikTok refresh with `.planning/tiktok-intake-all-creators-20260611.json`;
+- found 0 new videos: `@build_in_public` added 0, `@tjrobertson52` added 0, `@joshuamaraney` added 0, `@webhivedigital` added 0;
+- confirmed 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files;
+- rebuilt SQLite, exported public TikTok data, packaged, deployed, and reindexed Meilisearch as `base2026-pipeline-refresh-ay53-20260611`.
+
+Verification:
+
+- clean SQLite rebuild imported `reviewed_candidate_claims=6`;
+- `kb-audit.py` passed;
+- `check-public-export-policy.py public-data/tiktok` passed with `include_full_transcripts=false`, 1214 source records, 1703 passages, 1544 insight cards, 1103 public insight cards, 1446 topics, and 1044 public topics;
+- publication boundary audit passed with 0 forbidden paths and 0 secret findings;
+- GitHub metadata validation passed;
+- live deploy current symlink points to `/var/www/base2026-knowledge/releases/base2026-pipeline-refresh-ay53-20260611`;
+- live `/knowledge/`, sample source page, sample creator page, sitemap, and `documents.jsonl` checks passed;
+- live `documents.jsonl` has 1214 rows with no `claims` field and no full transcript fields;
+- live static CSS/JS return gzip and immutable cache headers;
+- mixed WordPress/Base2026 visual QA passed: 66 checks, 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-ay53/`.
+
+Next step:
+
+- stage audited public-safe script/docs changes, commit, push `main`, then continue the source-review/transcript-QA queue and GSC/GA4 launch monitoring.

@@ -12,7 +12,7 @@ The public intelligence layer is deployed, GitHub publication is complete, WordP
 
 ## Current exact task
 
-Run the launch monitor and next safe intake slice: retry GSC manual indexing only after quota reset, collect the first GSC/GA4 baseline, keep TikTok intake check-only by default, and harden the reviewed-candidate persistence gap so approved insight-card candidates survive clean SQLite rebuilds before future card backfills are called durable.
+Run launch monitoring and the next reviewed TikTok/source pipeline slice. The reviewed-candidate persistence gap is closed: approved insight-card candidates now replay from a private ignored archive during clean SQLite rebuilds. Continue with source-review/transcript-QA cleanup, GSC/GA4 baseline capture, and future TikTok refreshes through the reviewed gate before public deployment.
 
 ## Important note
 

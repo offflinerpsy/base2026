@@ -155,3 +155,9 @@ Reason: macOS PowerShell path separators created bad backslash-named media paths
 Decision: release packages should use the release name as the static CSS/JS cache-bust value instead of a manually edited hardcoded marker.
 
 Reason: manual cache-bust constants go stale and can make a successful deploy appear broken in the browser. Release-derived cache busting makes every package self-identifying and reduces launch QA ambiguity.
+
+## 2026-06-11 — Replay approved insight-card candidates from private archive
+
+Decision: approved/reviewed/public `insight_card_candidate` rows are persisted in an ignored private JSONL archive under `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` and replayed by `build-kb-sqlite.py` during clean SQLite rebuilds. These replayed candidates do not create markdown claim cards under `12_knowledge-base/canonical/claims`; `kb-audit.py` now treats the difference between SQLite claims and markdown claim-card files as valid only when it equals the `insight_card_candidate` count.
+
+Reason: reviewed candidate promotion must be durable without committing private review artifacts or generated claim-card files. Clean rebuilds should preserve approved public cards, while private `needs_human` candidates remain local and unpublished until separately reviewed.
