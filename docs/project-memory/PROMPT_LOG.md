@@ -2925,6 +2925,30 @@ Next step:
 
 - commit/push public-safe memory updates, then continue the same GPT/Codex source-only card-review lane in small batches; rebuild a fresh filtered queue before each packet and do not bulk-pass audio-sensitive transcript QA rows.
 
+## 2026-06-12 — ay70/ay71 GPT/Codex card batches, new TikTok intake, and deploy
+
+User clarified that local models should not be used for current public card quality work and asked to use ChatGPT/Codex, preferably ChatGPT 5.5 Medium.
+
+Actions taken:
+
+- built a fresh no-card queue, filtered already processed sources, and reviewed two GPT/Codex source-only packets from public passages only;
+- promoted 20 exact-evidence public cards from ay70 batches after `review-insight-candidates`, and rejected 1 over-source-limit candidate instead of forcing it public;
+- ran the TikTok refresh against ignored `config/tiktok-intake-queue.local.json`, found 1 new `@build_in_public` source, downloaded captions, and kept ASR at 0;
+- polished the new caption transcript through Codex/GPT review without local-model rewriting, then imported/promoted 2 exact-evidence public cards for the new source;
+- rebuilt SQLite, ran `kb-audit.py`, exported the excerpt-only public layer, deployed `base2026-intake-gpt-cards-ay71-20260612`, and reindexed Meilisearch with 1709 passages.
+
+Verification:
+
+- public export policy passed with `include_full_transcripts=false`, 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, and 1096 public topics;
+- live source page `/knowledge/sources/tiktok-video-7650481268206931222.html` returns the new source excerpt;
+- full live mixed visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay71/`;
+- source-review audit still has 1 private blocker: `tiktok-video-7648746368739118350`, blocked by TikTok IP access;
+- transcript QA triage still has 619 review flags, all `audio_verification_required`, and they were not bulk-passed.
+
+Next step:
+
+- run publication boundary and GitHub metadata gates, stage/commit/push public-safe memory and script/source changes only, then continue the GPT/Codex source-only review lane for remaining no-card sources.
+
 ## 2026-06-12 — ay69 GPT/Codex no-card source review batches 04-05
 
 User clarified again that local models should not be used for the current public card text work and asked to use GPT/Codex review instead.

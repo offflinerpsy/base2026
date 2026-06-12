@@ -23,9 +23,9 @@ Hermes should become the maintainer automation agent for TikTok refresh.
 
 - Task A inventory/dedupe/status: no LLM or GPT-5.3.
 - Task B captions/ASR routing: no LLM or GPT-5.3.
-- Task C faithful transcript polish: GPT-5.4 low/medium.
+- Task C faithful transcript polish: Codex/GPT review lane; use ChatGPT 5.5 Medium when available for current manual quality work.
 - Task D escalation QA: GPT-5.5 only for damaged captions, uncertain ASR, low preservation score, or QA `needs_review`.
-- Task E insight-card extraction/review for launch-quality small batches: GPT-5.4 high/Codex through generated packets, strict JSON, deterministic evidence verification after.
+- Task E insight-card extraction/review for launch-quality small batches: ChatGPT 5.5 Medium or Codex/GPT through generated packets, strict JSON, deterministic evidence verification after. Do not use local LLMs as the quality source for current public card copy.
 - Task F rebuild/export/package: no LLM or GPT-5.3 for status text only.
 
 ## Rules
@@ -49,9 +49,9 @@ Build dry-run mode:
 
 ## Current safe execution policy
 
-Run local refresh without deploy first. If new caption transcripts are produced, create a small polish batch and hand only that batch to Hermes using GPT-5.4. Do not use GPT-5.5 unless QA fails.
+Run local refresh without deploy first. If new caption transcripts are produced, create a small polish batch and hand only that batch to the Codex/GPT quality lane. For current launch work, prefer ChatGPT 5.5 Medium over local LLMs.
 
-Use `scripts/run-hermes-polish-worker.ps1 -BatchSet <batch-set>` for the GPT-5.4 handoff. The script writes the worker prompt and result under ignored `.planning/` paths and uses `codex exec --ignore-user-config --ignore-rules` to avoid loading the full project context.
+Use `scripts/run-hermes-polish-worker.ps1 -BatchSet <batch-set>` only when a dedicated GPT/Codex handoff is needed. The script writes the worker prompt and result under ignored `.planning/` paths and uses `codex exec --ignore-user-config --ignore-rules` to avoid loading the full project context.
 
 Use `scripts/register-hermes-webui-task.ps1 -Start` to repair/start the local `Hermes WebUI` scheduled task. The task must execute PowerShell by absolute path and use the local Hermes WebUI launcher directory as working directory. Override defaults with `HERMES_PWSH_PATH`, `HERMES_WEBUI_LAUNCHER`, or `HERMES_WEBUI_WORKDIR` when needed.
 

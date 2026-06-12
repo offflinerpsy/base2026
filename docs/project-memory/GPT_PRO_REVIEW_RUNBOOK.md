@@ -4,13 +4,13 @@ Last updated: 2026-06-10
 
 ## Purpose
 
-Use ChatGPT Pro/GPT-5.4 or Codex as a manual high-quality claim extraction and review lane for small Base2026 insight-card batches.
+Use ChatGPT Pro/GPT-5.5 Medium or Codex as a manual high-quality claim extraction and review lane for small Base2026 insight-card batches.
 
 This is not the production ingestion worker and not a browser-automation dependency. The durable pipeline remains local-first and scriptable.
 
 ## Allowed Role
 
-ChatGPT Pro/GPT-5.4 or Codex may be used to:
+ChatGPT Pro/GPT-5.5 Medium or Codex may be used to:
 
 - extract new source-backed insight-card candidates directly from public passages;
 - reject candidate claims that only match evidence text mechanically but do not preserve the source meaning;

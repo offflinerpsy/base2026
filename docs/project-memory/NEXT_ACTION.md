@@ -4,7 +4,7 @@ Last updated: 2026-06-12
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay69 GPT/Codex no-card source review batches, deploy, and live QA pass.
+Continue launch operation after the Base2026 ay71 intake/GPT-card deploy and live QA pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -13,7 +13,7 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 Current next safe action:
 
 1. Continue source-only GPT/Codex review batches from a freshly filtered no-card queue; promote only exact-evidence candidates that pass `review-insight-candidates`.
-2. Do not use local LLMs as the primary card-extraction/rewrite path. Local models can remain installed, but current reviewed text work should use Codex/GPT review packets.
+2. Do not use local LLMs as the primary card-extraction/rewrite path. Local models can remain installed, but current reviewed text work should use Codex/GPT review packets, preferably the ChatGPT 5.5 Medium quality lane when available.
 3. Do not bulk-pass the remaining 619 transcript QA rows: every row is currently audio/source-verification sensitive.
 4. Retry the remaining source-review row only when source access is available. Current known blocker: TikTok blocks access to `tiktok-video-7648746368739118350`.
 5. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
@@ -79,15 +79,17 @@ Task queue source of truth:
 50. ay67 added 4 GPT/Codex-reviewed public insight cards from queued no-card sources and kept 5 exact-evidence candidates private after the source promotion-limit reviewer gate.
 51. ay68 added 13 GPT/Codex-reviewed public insight cards from 16 queued no-card sources across two source-only batches, skipped 3 weak/fragile sources, rebuilt/exported/deployed, and reindexed Meilisearch.
 52. ay69 added 15 GPT/Codex-reviewed public insight cards from 16 queued no-card sources across two source-only batches, skipped 1 giveaway/engagement source, rebuilt/exported/deployed, and reindexed Meilisearch.
+53. ay70 added 20 GPT/Codex-reviewed public insight cards from two more source-only batches, rejected 1 over-source-limit candidate, rebuilt/exported/deployed, and passed 66-check live visual QA.
+54. ay71 refreshed the four TikTok creator queues, found 1 new `@build_in_public` source, caption-polished it via Codex/GPT review, added 2 exact-evidence public cards for that source, rebuilt/exported/deployed, and passed 66-check live visual QA.
 
 ## Latest verification
 
-- Deployed release: `base2026-chatgpt-card-batch04-05-ay69-20260612`.
+- Deployed release: `base2026-intake-gpt-cards-ay71-20260612`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
-- Live ay69 public export: 1215 source records, 1708 passages, 1585 insight cards, 1144 public insight cards, 1486 topics, 1079 public topics.
-- Live ay69 Meilisearch reindex: 1708 passages indexed into `base2026_public_tiktok`.
-- ay69 GPT/Codex card batches: 16 queued no-card sources reviewed from public passages, 15 exact-evidence candidates imported/promoted after reviewer gates, and 1 giveaway/engagement source skipped.
-- Live ay69 deploy QA: `kb-audit.py` passed; public export policy passed; live source page `/knowledge/sources/tiktok-video-7646800096583044374.html` contains the new `Robots.txt` card context; live topic page `/knowledge/topics/faq-seo.html` contains the new `FAQ SEO` card context; live topic page `/knowledge/topics/ai-skills.html` contains the new `AI Skills` card context; 66-check mixed mobile visual QA passed with 0 failures.
+- Live ay71 public export: 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, 1096 public topics.
+- Live ay71 Meilisearch reindex: 1709 passages indexed into `base2026_public_tiktok`.
+- ay70/ay71 GPT/Codex card work: 18 queued/no-card sources plus 1 new intake source reviewed from public passages, 22 exact-evidence candidates imported/promoted after reviewer gates, 1 over-limit candidate rejected, and weak/ASR-fragile sources skipped rather than forced into public cards.
+- Live ay71 deploy QA: `kb-audit.py` passed; public export policy passed; live source page `/knowledge/sources/tiktok-video-7650481268206931222.html` returns the new source excerpt; 66-check mixed mobile visual QA passed with 0 failures.
 - ay66 full four-creator refresh: `@build_in_public` 1000 discovered/0 added, `@tjrobertson52` 347/0, `@joshuamaraney` 639/0, `@webhivedigital` 1000/0; local inventory remains 3014 rows and 1215 active rows.
 - Live ay63 all-creator refresh: 1 new `@joshuamaraney` row, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. ay63 added a durable entity normalizer and source-backed the new NVIDIA founder correction before deploy.
 - Post-ay63 2026-06-12 refresh: latest 160 public posts per configured creator produced 0 added rows, 0 queued transcripts, 0 `needs_asr`, and 0 missing polish; deep `PlaylistEnd=1000` inventory check-only also produced 0 added rows.
@@ -344,7 +346,7 @@ Notes:
 - `gemma3:4b` sample: 1 source, 1 candidate, 1 exact verified, 1 imported private/pending, average 9.720 seconds/source.
 - `gemma4:12b` same-current-queue benchmark: 3 sources, 1 candidate, 1 verified, 0 imported, average 49.870 seconds/source.
 - `qwen3:8b` same-current-queue benchmark: 3 sources, 5 candidates, 5 verified, 0 imported, average 33.972 seconds/source.
-- Routing result: do not set `gemma4:12b` as primary extractor yet; keep `qwen3:8b` optional as a local draft/prefilter and use ChatGPT Pro/GPT-5.4 or Codex packets as the primary semantic/copy quality lane for small batches.
+- Current routing result: do not use local LLMs as the quality source for public card copy. Use ChatGPT Pro/GPT-5.5 Medium or Codex packets as the primary semantic/copy quality lane for small batches, then require exact evidence verification and reviewer promotion gates before export.
 - Review tooling added: `scripts/base2026-build-chatgpt-review-packet.py`, `scripts/base2026-apply-chatgpt-review.py`, and controller commands `build-chatgpt-review-packet` / `apply-chatgpt-review`.
 - Current review packet generated: `.planning/chatgpt-review-packet-20260610-current-qwen3-8b.md` and `.planning/chatgpt-review-packet-20260610-current-qwen3-8b.json` with 3 sources, 5 candidates, and 5 public passages.
 - Current source-only GPT/Codex extraction packet generated: `.planning/chatgpt-extract-packet-20260610-source-only.md` and `.planning/chatgpt-extract-packet-20260610-source-only.json` with 3 sources, 0 local candidates, and 5 public passages.
