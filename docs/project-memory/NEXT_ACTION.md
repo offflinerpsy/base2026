@@ -1,10 +1,10 @@
 # Next Action
 
-Last updated: 2026-06-11
+Last updated: 2026-06-12
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay54 full-creator TikTok refresh check, private-candidate replay/export gate, deploy, live QA pass, and source-review audit tooling pass.
+Continue launch operation after the Base2026 ay55 full-creator TikTok refresh, clean rebuild, export gate, deploy, and live QA pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,7 +12,7 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Continue TikTok intake through the reviewed gate. The ay54 all-creator inventory found 0 new videos, 0 queued transcripts, 0 `needs_asr`, and 0 queued ASR jobs.
+1. Continue TikTok intake through the reviewed gate. The ay55 all-creator inventory found 0 new videos, 0 queued transcripts, 0 `needs_asr`, and 0 queued ASR jobs.
 2. Work the remaining quality queues separately: 794 faithful transcript QA review flags, 3 source-review rows, and 15 private `needs_human` candidates from the ay52 card slice. Promote only evidence-verified approved candidates; non-public candidates now replay locally but are excluded from public export.
 3. Use `python3 scripts/base2026-controller.py tiktok-source-review-audit --probe-network --out .planning/source-review-audit-YYYYMMDD.json` before retrying the 3 source-review rows. Current known reasons: 2 fallback media files have no audio stream; 1 source is blocked by TikTok IP access.
 4. Use `python3 scripts/base2026-controller.py tiktok-polish-audit --risk review --qa-status needs_review --limit 25 --out-json .planning/transcript-qa-batch-YYYYMMDD.json --out-md .planning/transcript-qa-batch-YYYYMMDD.md` for controlled transcript-QA slices. Current full summary: 1211 audited, 0 high-risk, 794 review, 417 low/pass.
@@ -76,14 +76,14 @@ Task queue source of truth:
 
 ## Latest verification
 
-- Deployed release: `base2026-private-candidate-gate-ay54-20260611`.
+- Deployed release: `base2026-full-pipeline-refresh-ay55-20260612`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
-- Live ay54 public export: 1214 source records, 1703 passages, 1544 insight cards, 1103 public insight cards, 1452 topics, 1044 public topics.
-- Live ay54 Meilisearch reindex: 1703 passages indexed into `base2026_public_tiktok`.
-- Live ay54 all-creator inventory: 0 new rows across `@build_in_public`, `@tjrobertson52`, `@joshuamaraney`, and `@webhivedigital`; 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
+- Live ay55 public export: 1214 source records, 1703 passages, 1544 insight cards, 1103 public insight cards, 1452 topics, 1044 public topics.
+- Live ay55 Meilisearch reindex: 1703 passages indexed into `base2026_public_tiktok`.
+- Live ay55 all-creator inventory: 0 new rows across `@build_in_public`, `@tjrobertson52`, `@joshuamaraney`, and `@webhivedigital`; 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
 - Durable reviewed/private candidate replay is now implemented: 21 `insight_card_candidate` rows replay locally from ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` during a clean SQLite rebuild.
 - Public export gate verified: live `insight_cards.jsonl` contains 6 approved candidate cards and 0 private `needs_human` candidates; live `documents.jsonl` has 1214 rows with 0 transcript/claim leaks.
-- Live ay54 deploy QA: `/knowledge/`, source/topic/creator sample pages, sitemap, static gzip/cache headers, publication boundary audit, and GitHub metadata validation passed.
+- Live ay55 deploy QA: `/knowledge/`, sample source/roadmap/sitemap URLs, static gzip/cache headers, publication boundary audit, GitHub metadata validation, controller doctor, `documents.jsonl` leak check, and 66-check mixed mobile visual QA passed with 0 failures.
 
 - Deployed release: `base2026-asr-pipeline-ay51-20260611`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.

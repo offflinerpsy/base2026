@@ -2533,3 +2533,31 @@ Verification:
 Next step:
 
 - run publication/preflight gates, commit/push the public-safe tooling/memory changes, then continue the transcript-QA batches and private card rewrite queue.
+
+## 2026-06-12 — Full TikTok pipeline refresh and ay55 deploy
+
+User asked to run the whole pipeline because new videos may have appeared, process them, and deploy after all work.
+
+Actions taken:
+
+- ran the full four-creator TikTok refresh through `scripts/hermes-tiktok-refresh.ps1` with the ignored local queue config;
+- checked `@build_in_public`, `@tjrobertson52`, `@joshuamaraney`, and `@webhivedigital`;
+- found 0 new videos, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files;
+- rebuilt SQLite, ran `kb-audit.py`, exported public TikTok data, packaged, deployed, and reindexed Meilisearch as `base2026-full-pipeline-refresh-ay55-20260612`;
+- reran source-review, transcript-QA, and private candidate-review gates.
+
+Verification:
+
+- public export policy passed with `include_full_transcripts=false`, 1214 source records, 1703 passages, 1544 insight cards, 1103 public insight cards, 1452 topics, and 1044 public topics;
+- source-review audit still has 3 private blockers: 2 fallback media files with no audio stream and 1 TikTok IP-blocked source;
+- transcript polish audit still has 0 high-risk rows and 794 historical `needs_review` rows;
+- strict private candidate review kept all 15 private `needs_human` candidates unpublished;
+- publication boundary audit, GitHub metadata validation, and controller doctor passed;
+- live `/knowledge/`, sitemap, roadmap, and sample source page returned 200;
+- live `documents.jsonl` had 1214 rows with 0 transcript/claim leaks;
+- live CSS/JS returned gzip and immutable cache headers;
+- full mixed live mobile visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-ay55/`.
+
+Next step:
+
+- continue controlled transcript-QA slices and private `needs_human` card rewrite/review; no new TikTok videos were available in this refresh.
