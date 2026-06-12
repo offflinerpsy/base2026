@@ -101,6 +101,7 @@ PUBLIC_SAFE_EXACT = {
     "scripts/import-tiktok-staging-to-kb.py",
     "scripts/tiktok-polish-runner.ps1",
     "scripts/tiktok-caption-browser-extract.mjs",
+    "scripts/tiktok-faithful-polish-local.py",
     "scripts/tiktok-process-transcripts.ps1",
     "scripts/tiktok-ytdlp-metadata-extract.py",
     "scripts/validate-github-metadata.py",

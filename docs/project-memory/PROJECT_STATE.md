@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-asr-pipeline-ay51-20260611`
+- latest deployed release: `base2026-tiktok-refresh-ay52-20260611`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -33,9 +33,10 @@ Current local repo state:
 
 Latest verification:
 
-- `base2026-asr-pipeline-ay51-20260611` is live after the MacBook ASR/pipeline pass. Public export is excerpt-only with 1209 source records, 1696 passages, 1538 insight cards, 1097 public insight cards, 1442 topics, and 1040 public topics. Meilisearch reindexed 1696 passages.
-- The ay51 pipeline pass rechecked creator inventory at playlist depth 1000 and found no new rows after ay50. Current local TikTok state: 3008 total inventory rows, 1209 active rows, 1206 transcribed rows, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 3 `needs_source_review` rows.
-- Transcript polish debt is now explicit: 941 polished transcripts exist and 265 transcribed clean files still need faithful polish/QA before they should be treated as final-quality public transcript text. Public release remains excerpt-only and does not expose full transcripts.
+- `base2026-tiktok-refresh-ay52-20260611` is live after the full four-creator TikTok refresh. Public export is excerpt-only with 1214 source records, 1703 passages, 1559 insight cards, 1103 public insight cards, 1452 topics, and 1044 public topics. Meilisearch reindexed 1703 passages.
+- The ay52 pipeline pass used a private all-creator runtime config, found 5 new active rows dated 2026-06-09 through 2026-06-11, transcribed all 5 via caption-first processing, required 0 ASR fallback jobs, and kept the historical 3 `needs_source_review` rows separate.
+- The ay52 card pass generated 21 local candidates for the 5 new videos, promoted only 6 evidence-verified/reviewed candidates to public, and left 15 candidates private as `needs_human`.
+- Transcript polish debt is now explicit: 1211 polished transcripts exist, 0 polished files are missing, and 794 QA files remain `needs_review` for historical transcript-quality review before they should be treated as final-quality transcript text. Public release remains excerpt-only and does not expose full transcripts.
 - The Mac pipeline runner now resolves `python3`/`python` and `pwsh`/`powershell` dynamically, and `build-kb-sqlite.py` performs a clean deterministic rebuild with missing TikTok creator/source registration from `videos.csv`.
 - Live ay50 mobile QA passed: 44 WordPress/Base2026 mobile route/viewport checks, 0 failures; evidence is under ignored `output/evidence/ay50-live-mobile-qa/`.
 - `base2026-roadmap-status-ay44-20260611` is live after compacting roadmap status markers: long values such as `Completed - Built In-House` render as tiny status marks such as `Done`, with the full status preserved in tooltip/ARIA.

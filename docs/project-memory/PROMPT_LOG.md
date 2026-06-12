@@ -2379,3 +2379,40 @@ Verification:
 Next step:
 
 - stage audited public-safe files, commit, push `main`, then continue GSC indexing and the reviewed intake pipeline.
+
+## 2026-06-11 — Full creator TikTok refresh and ay52 deploy
+
+User asked to run the whole pipeline because new videos may have appeared, process them, and deploy after the work.
+
+Actions taken:
+
+- verified repo status and project memory before running intake;
+- ran the default check-only refresh and confirmed the tracked discovery config only covers `@joshuamaraney` and `@webhivedigital`;
+- created an ignored `.planning` runtime config for all four indexed TikTok creators and ran full check-only inventory at playlist depth 1000;
+- found 5 new active rows: 3 for `@build_in_public` and 2 for `@tjrobertson52`;
+- canonicalized the temporary `@build_in_public` creator id back to existing `tiktok-build-in-public`;
+- transcribed all 5 new videos from captions; ASR fallback was not needed;
+- ran deterministic faithful polish for the 5 new clean transcripts: 3 passed, 2 retained honest `needs_review` QA flags because the raw caption text may need audio/source review;
+- rebuilt SQLite, ran `kb-audit.py`, exported public TikTok data, and validated excerpt-only public export policy;
+- generated 21 local insight-card candidates for the 5 new sources, evidence-verified all 21, promoted 6 reviewed candidates, and left 15 private as `needs_human`;
+- deployed `base2026-tiktok-refresh-ay52-20260611` and reindexed Meilisearch with 1703 passages.
+
+Verification:
+
+- public export policy passed with `include_full_transcripts=false`;
+- live export counts: 1214 source records, 1703 passages, 1559 insight cards, 1103 public insight cards, 1452 topics, 1044 public topics;
+- live `/knowledge/static/documents.jsonl` has 1214 rows and includes all 5 new videos;
+- all 5 new source pages return 200, contain `Source Excerpt`, and do not show the old empty-source message;
+- the 6 promoted public-card claim texts are present on the expected live source pages;
+- live mixed WordPress/Base2026 visual QA passed with 66 checks and 0 failures.
+
+Not complete:
+
+- reviewed candidate imports/promotions are not yet durable across a clean `build-kb-sqlite.py` rebuild; future card backfill needs a replay/persistence layer before being called fully production-grade;
+- 794 historical transcript polish QA files still say `needs_review`;
+- 3 source-review rows remain;
+- 15 ay52 candidates remain private as `needs_human`.
+
+Next step:
+
+- stage audited public-safe script/docs changes, commit, push `main`, then implement durable reviewed-candidate replay before the next larger card backfill.

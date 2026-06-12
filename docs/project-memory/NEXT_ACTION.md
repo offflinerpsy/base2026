@@ -4,7 +4,7 @@ Last updated: 2026-06-11
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay51 ASR/pipeline deploy and Mac TikTok processor hardening pass.
+Continue launch operation after the Base2026 ay52 full-creator TikTok refresh, reviewed card slice, deploy, and live QA pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,13 +12,14 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Stage the ay51 public-safe pipeline-script and memory changes through the audited public allowlist, commit, and push `main`.
-2. Continue TikTok intake in check-only mode until new `queued` or `needs_asr` rows appear. Current ay51 inventory has 0 queued transcripts, 0 `needs_asr`, and 0 queued ASR jobs.
-3. Work the remaining quality queues separately: 265 faithful transcript polish/QA files, 3 source-review rows, and source-only GPT/Codex review packets for sources with passages but no public cards. Promote only evidence-verified approved candidates.
-4. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
-5. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
-6. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
-7. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`.
+1. Stage the ay52 public-safe pipeline-script and memory changes through the audited public allowlist, commit, and push `main`.
+2. Fix the durable insight-card persistence gap: candidate imports/promotions currently live in SQLite after rebuild, but `build-kb-sqlite.py` does not yet replay reviewed candidate files. Do not claim a durable card backfill until reviewed candidates survive a clean SQLite rebuild.
+3. Continue TikTok intake in check-only mode until new `queued` or `needs_asr` rows appear. Current ay52 inventory has 0 queued transcripts, 0 `needs_asr`, and 0 queued ASR jobs.
+4. Work the remaining quality queues separately: 794 faithful transcript QA review flags, 3 source-review rows, 15 private `needs_human` candidates from the ay52 card slice, and the historical source-with-passages/no-public-card backlog. Promote only evidence-verified approved candidates.
+5. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
+6. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
+7. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
+8. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`.
 
 Task queue source of truth:
 
@@ -74,6 +75,16 @@ Task queue source of truth:
 46. WordPress homepage/services/footer now include the acid-green Base2026 CTA/card treatment.
 
 ## Latest verification
+
+- Deployed release: `base2026-tiktok-refresh-ay52-20260611`.
+- Live path: `https://aggressorbulkit.online/knowledge/`.
+- Live ay52 public export: 1214 source records, 1703 passages, 1559 insight cards, 1103 public insight cards, 1452 topics, 1044 public topics.
+- Live ay52 Meilisearch reindex: 1703 passages indexed into `base2026_public_tiktok`.
+- Live ay52 new TikTok slice: 5 new rows found across `@build_in_public` and `@tjrobertson52`; all 5 transcribed from captions, 0 ASR fallback jobs, 0 queued transcripts, 0 `needs_asr`.
+- Live ay52 card slice: 21 candidates generated locally, 21 evidence-verified, 6 promoted public, 15 retained private as `needs_human`.
+- Live ay52 visual QA: 66 WordPress/Base2026 checks, 0 failures, evidence under ignored `output/evidence/ay52-live-mobile-visual-qa/`.
+- Live ay52 source smoke: the 5 new source pages return 200, contain `Source Excerpt`, and do not show the old empty-source message.
+- Live ay52 public-card smoke: the 6 promoted claim texts are present on the expected new source pages.
 
 - Deployed release: `base2026-asr-pipeline-ay51-20260611`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
