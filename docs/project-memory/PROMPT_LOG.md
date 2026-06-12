@@ -2589,3 +2589,31 @@ Verification:
 Next step:
 
 - commit and push the public-safe pipeline/QA tooling and memory updates; then continue controlled transcript-QA batches and private `needs_human` card rewrite/review.
+
+## 2026-06-12 — Needs-human card review, transcript QA triage, and ay57 deploy
+
+User asked to continue the pipeline honestly, process anything new, deploy after the work, and bring the project to Git.
+
+Actions taken:
+
+- confirmed the ay56 all-creator TikTok refresh had already found 0 new videos and left 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files;
+- added `scripts/tiktok-qa-triage.py` to categorize the 794 historical transcript QA flags without bulk-passing uncertain transcript text;
+- added `scripts/base2026-prepare-needs-human-review.py` to convert `needs_human` candidate reports into private review-packet JSONL inputs;
+- extended `scripts/base2026-import-claim-candidates.py` with `--default-archive` so approved reviewed candidates are written to SQLite and the ignored private replay archive in one step;
+- added controller wiring for `prepare-needs-human-review`, `tiktok-qa-triage`, and archived candidate imports;
+- reviewed the 15 private `needs_human` candidates: 8 rewritten and promoted after exact evidence verification, 5 rejected, and 2 left private for source/audio verification;
+- rebuilt SQLite from the private replay archive, exported public TikTok data, deployed `base2026-reviewed-cards-ay57-20260612`, and reindexed Meilisearch.
+
+Verification:
+
+- transcript QA triage: 576 audio-verification rows, 193 entity/spelling rows, and 25 human text-review rows;
+- clean SQLite rebuild replayed 29 reviewed/private candidate rows;
+- public export policy passed with `include_full_transcripts=false`, 1214 source records, 1707 passages, 1552 insight cards, 1111 public insight cards, 1460 topics, and 1052 public topics;
+- live deploy active release is `base2026-reviewed-cards-ay57-20260612`;
+- live `documents.jsonl` has 1214 rows;
+- live CSS/JS returned gzip and long-lived cache headers;
+- live mixed mobile visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-ay57-20260612/`.
+
+Next step:
+
+- commit and push public-safe tooling/memory changes; continue transcript QA triage slices and retry the remaining TikTok IP-blocked source only when accessible.

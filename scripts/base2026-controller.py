@@ -165,6 +165,32 @@ def cmd_import_claim_candidates(args: argparse.Namespace) -> int:
     ]
     if args.apply:
         command.append("--apply")
+    if args.archive:
+        command += ["--archive", args.archive]
+    if args.default_archive:
+        command.append("--default-archive")
+    code, stdout, stderr = run_child(path, command)
+    summary = parse_last_json(stdout)
+    finish_run(path, "passed" if code == 0 else "failed", summary or {"stderr": stderr.strip()[:500]})
+    print(stdout.strip())
+    return code
+
+
+def cmd_prepare_needs_human_review(args: argparse.Namespace) -> int:
+    path = start_run("prepare-needs-human-review", args)
+    review_report = Path(args.review_report) if args.review_report else latest_file("needs-human-candidate-review-*.json")
+    if not review_report:
+        finish_run(path, "failed", {"error": "No needs_human candidate review report found."})
+        print(json.dumps({"error": "No needs_human candidate review report found."}, indent=2))
+        return 2
+    command = [
+        sys.executable,
+        "scripts/base2026-prepare-needs-human-review.py",
+        "--review-report",
+        str(review_report),
+    ]
+    if args.out_dir:
+        command += ["--out-dir", args.out_dir]
     code, stdout, stderr = run_child(path, command)
     summary = parse_last_json(stdout)
     finish_run(path, "passed" if code == 0 else "failed", summary or {"stderr": stderr.strip()[:500]})
@@ -407,6 +433,25 @@ def cmd_daily_digest(args: argparse.Namespace) -> int:
     return code
 
 
+def cmd_tiktok_qa_triage(args: argparse.Namespace) -> int:
+    path = start_run("tiktok-qa-triage", args)
+    command = [
+        sys.executable,
+        "scripts/tiktok-qa-triage.py",
+        "--limit",
+        str(args.limit),
+    ]
+    if args.out_json:
+        command += ["--out-json", args.out_json]
+    if args.out_md:
+        command += ["--out-md", args.out_md]
+    code, stdout, stderr = run_child(path, command)
+    summary = parse_last_json(stdout)
+    finish_run(path, "passed" if code == 0 else "failed", summary or {"stderr": stderr.strip()[:500]})
+    print(stdout.strip())
+    return code
+
+
 def cmd_list_runs(args: argparse.Namespace) -> int:
     rows = []
     for run_path in sorted(RUNS.glob("*"), reverse=True)[: args.limit]:
@@ -427,6 +472,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
         "evidence_verifier_exists": (ROOT / "scripts" / "base2026-evidence-verify.py").exists(),
         "claim_extract_local_exists": (ROOT / "scripts" / "base2026-claim-extract-local.py").exists(),
         "claim_candidate_import_exists": (ROOT / "scripts" / "base2026-import-claim-candidates.py").exists(),
+        "needs_human_review_preparer_exists": (ROOT / "scripts" / "base2026-prepare-needs-human-review.py").exists(),
         "chatgpt_review_packet_builder_exists": (ROOT / "scripts" / "base2026-build-chatgpt-review-packet.py").exists(),
         "chatgpt_review_applier_exists": (ROOT / "scripts" / "base2026-apply-chatgpt-review.py").exists(),
         "insight_candidate_reviewer_exists": (ROOT / "scripts" / "base2026-review-insight-candidates.py").exists(),
@@ -435,6 +481,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
         "tiktok_caption_browser_extractor_exists": (ROOT / "scripts" / "tiktok-caption-browser-extract.mjs").exists(),
         "tiktok_staging_importer_exists": (ROOT / "scripts" / "import-tiktok-staging-to-kb.py").exists(),
         "tiktok_polish_audit_exists": (ROOT / "scripts" / "tiktok-polish-audit.py").exists(),
+        "tiktok_qa_triage_exists": (ROOT / "scripts" / "tiktok-qa-triage.py").exists(),
         "tiktok_qa_review_applier_exists": (ROOT / "scripts" / "tiktok-qa-review-apply.py").exists(),
         "tiktok_source_review_audit_exists": (ROOT / "scripts" / "tiktok-source-review-audit.py").exists(),
         "worker_exists": (ROOT / "scripts" / "base2026-worker.py").exists(),
@@ -474,8 +521,15 @@ def main() -> int:
     import_claims.add_argument("--input", default="")
     import_claims.add_argument("--status", default="verified")
     import_claims.add_argument("--review-status", default="pending")
+    import_claims.add_argument("--archive", default="")
+    import_claims.add_argument("--default-archive", action="store_true")
     import_claims.add_argument("--apply", action="store_true")
     import_claims.set_defaults(func=cmd_import_claim_candidates)
+
+    needs_human = sub.add_parser("prepare-needs-human-review")
+    needs_human.add_argument("--review-report", default="")
+    needs_human.add_argument("--out-dir", default="")
+    needs_human.set_defaults(func=cmd_prepare_needs_human_review)
 
     review_packet = sub.add_parser("build-chatgpt-review-packet")
     review_packet.add_argument("--queue", default="")
@@ -522,6 +576,12 @@ def main() -> int:
     polish_audit.add_argument("--out-json", default="")
     polish_audit.add_argument("--out-md", default="")
     polish_audit.set_defaults(func=cmd_tiktok_polish_audit)
+
+    qa_triage = sub.add_parser("tiktok-qa-triage")
+    qa_triage.add_argument("--limit", type=int, default=50)
+    qa_triage.add_argument("--out-json", default="")
+    qa_triage.add_argument("--out-md", default="")
+    qa_triage.set_defaults(func=cmd_tiktok_qa_triage)
 
     source_review = sub.add_parser("tiktok-source-review-audit")
     source_review.add_argument("--probe-network", action="store_true")

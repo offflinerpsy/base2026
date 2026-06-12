@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 KB = ROOT / "12_knowledge-base"
 DB = KB / "indexes" / "kb.sqlite"
 DATA_ROOT = ROOT / "public-data" / "tiktok"
+DEFAULT_ARCHIVE = KB / "sources" / "tiktok" / "insight-candidates" / "reviewed-candidates.jsonl"
 
 
 def now_iso() -> str:
@@ -50,6 +51,21 @@ def source_map(data_root: Path) -> dict[str, dict]:
     return mapping
 
 
+def read_archive(path: Path) -> dict[str, dict]:
+    archived: dict[str, dict] = {}
+    if not path.exists():
+        return archived
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            claim_id = row.get("claim_id") or ""
+            if claim_id:
+                archived[claim_id] = row
+    return archived
+
+
 def video_id_for(row: dict, sources: dict[str, dict]) -> str:
     source = sources.get(row.get("source_id") or "", {})
     for key in ("video_id", "post_id"):
@@ -61,6 +77,51 @@ def video_id_for(row: dict, sources: dict[str, dict]) -> str:
         return item_id.removeprefix("tiktok-video-")
     source_id = row.get("source_id") or ""
     return source_id.rsplit(":", 1)[-1] if ":" in source_id else ""
+
+
+def archive_row(row: dict, source: dict, claim_id: str, review_status: str) -> dict:
+    source_id = row.get("source_id") or source.get("source_id") or ""
+    video_id = video_id_for(row, {source_id: source})
+    return {
+        "archive_version": 1,
+        "archived_at": now_iso(),
+        "claim_id": claim_id,
+        "claim_text": row.get("claim_text") or "",
+        "claim_type": "insight_card_candidate",
+        "confidence": row.get("evidence_score"),
+        "creator_handle": row.get("creator_handle") or source.get("creator_handle") or source.get("handle") or "",
+        "evidence_excerpt": row.get("evidence_excerpt") or "",
+        "evidence_path": row.get("evidence_path") or f"public-data/tiktok/passages.jsonl#source_id={source_id}",
+        "evidence_score": row.get("evidence_score"),
+        "item_id": row.get("item_id") or source.get("item_id") or f"tiktok-video-{video_id}",
+        "review_status": review_status,
+        "source_id": source_id,
+        "source_url": row.get("source_url") or source.get("source_url") or "",
+        "suggested_action": row.get("suggested_action") or "",
+        "topic": row.get("topic_label") or row.get("topic") or "Uncategorized",
+        "video_id": str(video_id),
+    }
+
+
+def archive_imported(path: Path, rows: list[dict], sources: dict[str, dict], review_status: str) -> int:
+    if not rows:
+        return 0
+    archived = read_archive(path)
+    written = 0
+    for row in rows:
+        source_id = row.get("source_id") or ""
+        source = sources.get(source_id) or {}
+        claim_id = row.get("claim_id") or stable_claim_id(row)
+        record = archive_row(row, source, claim_id, review_status)
+        if not record["claim_text"] or not record["video_id"]:
+            continue
+        archived[claim_id] = record
+        written += 1
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        for claim_id in sorted(archived):
+            handle.write(json.dumps(archived[claim_id], ensure_ascii=False, sort_keys=True) + "\n")
+    return written
 
 
 def import_candidates(args: argparse.Namespace) -> dict:
@@ -86,6 +147,8 @@ def import_candidates(args: argparse.Namespace) -> dict:
         "skipped_missing_video": 0,
         "review_status": args.review_status,
         "backup": "",
+        "archive": str(args.archive) if args.archive else "",
+        "archived": 0,
     }
     if not args.apply:
         return stats
@@ -144,6 +207,8 @@ def import_candidates(args: argparse.Namespace) -> dict:
         con.commit()
     finally:
         con.close()
+    if args.archive:
+        stats["archived"] = archive_imported(args.archive, selected, sources, args.review_status)
     return stats
 
 
@@ -154,8 +219,12 @@ def main() -> int:
     parser.add_argument("--db", type=Path, default=DB)
     parser.add_argument("--status", default="verified", help="Comma-separated candidate statuses eligible for import.")
     parser.add_argument("--review-status", default="pending", help="SQLite claims.review_status to assign.")
+    parser.add_argument("--archive", type=Path, default=None, help="Optional private reviewed-candidates replay archive.")
+    parser.add_argument("--default-archive", action="store_true", help="Archive imported rows to the standard private replay archive.")
     parser.add_argument("--apply", action="store_true", help="Write to SQLite. Default is dry-run.")
     args = parser.parse_args()
+    if args.default_archive and not args.archive:
+        args.archive = DEFAULT_ARCHIVE
     stats = import_candidates(args)
     print(json.dumps(stats, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
