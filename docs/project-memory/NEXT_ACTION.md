@@ -4,7 +4,7 @@ Last updated: 2026-06-12
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay72 roadmap-status sync deploy and live QA pass.
+Continue launch operation after the Base2026 ay73 source-modal document-cache fix deploy and live QA pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -82,13 +82,16 @@ Task queue source of truth:
 53. ay70 added 20 GPT/Codex-reviewed public insight cards from two more source-only batches, rejected 1 over-source-limit candidate, rebuilt/exported/deployed, and passed 66-check live visual QA.
 54. ay71 refreshed the four TikTok creator queues, found 1 new `@build_in_public` source, caption-polished it via Codex/GPT review, added 2 exact-evidence public cards for that source, rebuilt/exported/deployed, and passed 66-check live visual QA.
 55. ay72 synced the public roadmap with the actual ay71 pipeline state: source metadata model and transcription workflow are marked completed; evidence-gated insight-card extraction/review, entity/topic cleanup, and moderation queue are marked in progress; source-backed public insight cards are marked live.
+56. ay73 fixed source-modal record loading for fresh search results by versioning the immutable `documents.jsonl` payload with the release cache-bust. The `@joshuamaraney` Google Ads Tracking result now opens the source record instead of a stale `Source record unavailable` modal.
 
 ## Latest verification
 
-- Deployed release: `base2026-roadmap-status-sync-ay72-20260612`.
+- Deployed release: `base2026-documents-cachefix-ay73-20260612`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
-- Live ay72 public export: 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, 1096 public topics.
-- Live ay72 Meilisearch reindex: 1709 passages indexed into `base2026_public_tiktok`.
+- Live ay73 public export: 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, 1096 public topics.
+- Live ay73 Meilisearch reindex: 1709 passages indexed into `base2026_public_tiktok`.
+- Live ay73 source-modal QA: `/knowledge/?base2026_public_tiktok%5Bquery%5D=Google%20Ads%20Tracking` result `tiktok-video-7649635621287316743` opens `Source record` with `@joshuamaraney`, `2026-06-10`, and the Google Ads Tracking excerpt; `Source record unavailable`/`Source record not found` are absent.
+- Live ay73 mixed visual QA passed: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay73-cachefix/`.
 - ay70/ay71 GPT/Codex card work: 18 queued/no-card sources plus 1 new intake source reviewed from public passages, 22 exact-evidence candidates imported/promoted after reviewer gates, 1 over-limit candidate rejected, and weak/ASR-fragile sources skipped rather than forced into public cards.
 - Live ay71 deploy QA: `kb-audit.py` passed; public export policy passed; live source page `/knowledge/sources/tiktok-video-7650481268206931222.html` returns the new source excerpt; 66-check mixed mobile visual QA passed with 0 failures.
 - Live ay72 roadmap sync QA: live `/knowledge/static/roadmap.js` contains the updated statuses; publication boundary audit and GitHub metadata validation passed; 66-check mixed mobile visual QA passed with 0 failures.
@@ -248,13 +251,14 @@ Task queue source of truth:
 
 ## Exact next steps
 
-1. Continue the source-only GPT/Codex review lane for queued no-card sources; promote only exact-evidence candidates that pass `review-insight-candidates`. Use GPT/Codex review packets for this text work; do not use local LLMs as the quality source.
-2. Keep the 619 historical transcript QA flags open until audio/source verification exists; do not bulk-pass them.
-3. Keep the remaining source-review blocker parked unless `tiktok-video-7648746368739118350` becomes accessible.
-4. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.
-5. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
-6. Continue TikTok refresh as a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
-7. Re-run publication boundary audit before every future GitHub push.
+1. Commit/push the public-safe ay73 source-modal cache fix and memory updates after publication boundary and metadata gates pass.
+2. Continue the source-only GPT/Codex review lane for queued no-card sources; promote only exact-evidence candidates that pass `review-insight-candidates`. Use GPT/Codex review packets for this text work; do not use local LLMs as the quality source.
+3. Keep the 619 historical transcript QA flags open until audio/source verification exists; do not bulk-pass them.
+4. Keep the remaining source-review blocker parked unless `tiktok-video-7648746368739118350` becomes accessible.
+5. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.
+6. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
+7. Continue TikTok refresh as a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
+8. Re-run publication boundary audit before every future GitHub push.
 
 ## Open-source readiness already added
 

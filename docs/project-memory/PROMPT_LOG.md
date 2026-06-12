@@ -2925,6 +2925,30 @@ Next step:
 
 - commit/push public-safe memory updates, then continue the same GPT/Codex source-only card-review lane in small batches; rebuild a fresh filtered queue before each packet and do not bulk-pass audio-sensitive transcript QA rows.
 
+## 2026-06-12 — ay73 source-modal document cache fix
+
+User reported that a live `/knowledge/` search result opened `Source record unavailable` for `@joshuamaraney` / Google Ads Tracking even though the result card and source data existed.
+
+Actions taken:
+
+- traced the bug to immutable browser caching of `/knowledge/static/documents.jsonl`: live Meilisearch had the new result, but the modal lookup could read an older cached JSONL payload;
+- changed `web/static/meili.js` so delayed static payload fetches include the release asset version and use `cache: "no-cache"`;
+- changed `scripts/package-public-release.ps1` to inject `window.BASE2026_ASSET_VERSION` into packaged `/knowledge/`;
+- deployed `base2026-documents-cachefix-ay73-20260612` and reindexed Meilisearch.
+
+Verification:
+
+- live root `/knowledge/` loads `static/meili.js?v=base2026-documents-cachefix-ay73-20260612`;
+- in-app browser QA clicked result `tiktok-video-7649635621287316743` and confirmed the modal opens `Source record` with `@joshuamaraney`, `2026-06-10`, and the Google Ads Tracking excerpt;
+- the old `Source record unavailable` and `Source record not found` states were absent in that flow;
+- full live mixed visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay73-cachefix/`;
+- `node --check web/static/meili.js` passed;
+- `git diff --check` passed.
+
+Next step:
+
+- finish full live mixed visual QA, run publication boundary and metadata gates, stage/commit/push the public-safe ay73 fix, then return to GPT/Codex source-only card review.
+
 ## 2026-06-12 — ay70/ay71 GPT/Codex card batches, new TikTok intake, and deploy
 
 User clarified that local models should not be used for current public card quality work and asked to use ChatGPT/Codex, preferably ChatGPT 5.5 Medium.

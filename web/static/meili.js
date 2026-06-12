@@ -4,6 +4,15 @@ const searchHost = configuredSearchHost.startsWith("/")
   : configuredSearchHost;
 const searchKey = window.BASE2026_MEILI_KEY || "";
 const searchIndex = window.BASE2026_MEILI_INDEX || "base2026_public_tiktok";
+const scriptAssetVersion = (() => {
+  try {
+    const scriptSrc = document.currentScript?.getAttribute("src") || "";
+    return scriptSrc ? new URL(scriptSrc, window.location.href).searchParams.get("v") || "" : "";
+  } catch {
+    return "";
+  }
+})();
+const assetVersion = window.BASE2026_ASSET_VERSION || scriptAssetVersion;
 const urlQuery = new URLSearchParams(window.location.search).get("q") || "";
 const presetButtons = [...document.querySelectorAll("[data-query]")];
 const selectedTerms = document.querySelector("#selected-terms");
@@ -244,6 +253,10 @@ function sourcePageHref(hit) {
   return `./sources/${pageSlug(hit.item_id || hit.source_id)}.html`;
 }
 
+function staticAssetHref(path) {
+  return assetVersion ? `${path}?v=${encodeURIComponent(assetVersion)}` : path;
+}
+
 function creatorPageHref(hit) {
   return `./creators/${pageSlug(hit.handle || hit.author || hit.creator_handle, "creator")}.html`;
 }
@@ -379,7 +392,7 @@ function hitTemplate(hit) {
 
 async function loadDocumentById(itemId) {
   if (documentCache.has(itemId)) return documentCache.get(itemId);
-  const response = await fetch("./static/documents.jsonl", { cache: "force-cache" });
+  const response = await fetch(staticAssetHref("./static/documents.jsonl"), { cache: "no-cache" });
   if (!response.ok) throw new Error(`documents.jsonl ${response.status}`);
 
   async function inspectLine(line) {

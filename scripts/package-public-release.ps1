@@ -38,7 +38,8 @@ $Html = $Html -replace 'src="(?:\./|/)static/cookie-consent\.js\?v=[^"]+"', "src
 $ConfigLines = @(
   '    <script>',
   "      window.BASE2026_MEILI_URL = `"$MeiliUrl`";",
-  "      window.BASE2026_MEILI_INDEX = `"$MeiliIndex`";"
+  "      window.BASE2026_MEILI_INDEX = `"$MeiliIndex`";",
+  "      window.BASE2026_ASSET_VERSION = `"$CacheBust`";"
 )
 
 if ($MeiliKey -ne "") {
