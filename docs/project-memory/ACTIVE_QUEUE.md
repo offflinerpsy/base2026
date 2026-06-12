@@ -29,8 +29,8 @@ No task is considered done because a worker reports done. Codex must review, int
 
 ## Current Deployed State
 
-- Base2026 release live: `base2026-intake-entity-normalizer-ay63-20260612`.
-- Base2026 public export live: 1215 source records, 1708 passages, 1553 insight cards, 1112 public insight cards.
+- Base2026 release live: `base2026-entity-qa-cleanup-ay64-20260612`.
+- Base2026 public export live: 1215 source records, 1708 passages, 1553 insight cards, 1113 public insight cards.
 - WordPress child-theme CSS live: `1.5.16`.
 - VPS SSH works through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
 
@@ -117,7 +117,7 @@ Pipeline work starts with controller ownership. Do not jump straight to intake r
 8. Convert scheduled Hermes from check-only to staged local automation.
    - Scheduled mode must stop before deploy, paid LLM, public promotion, or unreviewed transcript publication.
 
-Latest refresh note: the 2026-06-12 post-ay63 scan checked the latest 160 public posts per configured creator through the local rebuild/export path and ran a deeper `PlaylistEnd=1000` check-only inventory. Both found 0 new videos and no changed public payload, so no duplicate deploy was needed.
+Latest refresh note: the 2026-06-12 post-ay63 scan checked the latest 160 public posts per configured creator through the local rebuild/export path and ran a deeper `PlaylistEnd=1000` check-only inventory. Both found 0 new videos. ay64 then completed a source-backed entity QA cleanup slice, rebuilt/exported public data, deployed `base2026-entity-qa-cleanup-ay64-20260612`, and reindexed Meilisearch.
 
 ## GIT-01 Buckets
 

@@ -2724,6 +2724,31 @@ Next step:
 
 - commit and push public-safe memory updates, then continue controlled transcript QA slices and retry the IP-blocked TikTok source when network access allows.
 
+## 2026-06-12 — ay64 source-backed entity QA cleanup and deploy
+
+User asked to run the whole pipeline because new videos may have appeared, process them, and deploy after all work.
+
+Actions taken:
+
+- confirmed the previous post-ay63 intake scan found 0 new videos across the configured public creator queue;
+- fixed `scripts/tiktok-qa-triage.py` so boilerplate local polish notes no longer inflate the entity queue and audio/source-verification notes classify correctly;
+- expanded durable TikTok entity normalization in `scripts/tiktok-normalize-polished-entities.py` and `scripts/tiktok-faithful-polish-local.py` for source-backed public ASR/entity artifacts;
+- applied an explicit ignored QA manifest for 11 source-backed entity rows, moving them from private QA review to pass;
+- rebuilt SQLite, exported public data, deployed `base2026-entity-qa-cleanup-ay64-20260612`, and reindexed Meilisearch.
+
+Verification:
+
+- SQLite audit passed with 1214 polished transcripts, 1215 source records, and 1708 passages;
+- public export policy passed with `include_full_transcripts=false`;
+- transcript QA triage is now 626 review flags: 611 audio-verification rows, 6 entity/spelling rows, and 9 human text-review rows;
+- live public JSONL scan found 0 tracked old ASR/entity tokens;
+- targeted live source-page smoke checks confirmed corrected public names such as `Gary Illyes`, `n8n`, `Comet browser`, `Schemawriter.ai`, `Descript`, `Claude Projects`, `sourceofsources.com`, and `NPR`;
+- live mixed mobile visual QA passed with 66 checks and 0 failures.
+
+Next step:
+
+- commit/push public-safe script and memory updates, then continue controlled transcript QA slices and retry the IP-blocked TikTok source when network access allows.
+
 ## 2026-06-12 — ay62 follow-up false-positive transcript QA cleanup
 
 Continuation of the overnight launch-quality task after ay62 deploy.

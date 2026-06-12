@@ -786,6 +786,15 @@ nginx -t: pass
 - QA: mobile visual runner passed 44 checks with 0 failures
 - note: TikTok refresh expanded the local inventory and left 266 ASR jobs queued; no unreviewed cards were auto-promoted.
 
+## 2026-06-12 — base2026-entity-qa-cleanup-ay64-20260612
+
+- release: `base2026-entity-qa-cleanup-ay64-20260612`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-entity-qa-cleanup-ay64-20260612`
+- reason: source-backed TikTok entity QA cleanup after the post-ay63 no-new-video scan.
+- public export: 1215 source records, 1708 passages, 1553 insight cards, 1113 public insight cards, 1460 topics, 1054 public topics.
+- Meilisearch: reindexed 1708 passages into `base2026_public_tiktok`.
+- verification: public export policy passed; live public JSONL scan found 0 tracked old ASR/entity tokens; targeted live source pages confirmed corrected entity/product names; mixed mobile visual QA passed with 66 checks and 0 failures.
+
 ## 2026-06-12 — base2026-intake-entity-normalizer-ay63-20260612
 
 - release: `base2026-intake-entity-normalizer-ay63-20260612`

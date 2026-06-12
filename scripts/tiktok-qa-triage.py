@@ -16,8 +16,12 @@ POLISHED_DIR = TIKTOK / "transcripts" / "polished"
 PLANNING = ROOT / ".planning"
 
 
-AUDIO_RE = re.compile(r"\b(audio verification|needs audio|asr|unclear|clipped|likely wrong|likely asr|possible asr|raw captions contain)\b", re.I)
+AUDIO_RE = re.compile(
+    r"\b(audio verification|audio-verified|needs audio|need audio|audio/source review|audio/source verification|source/audio verification|audio/caption verification|verify exact spoken|exact spoken|asr|unclear|clipped|likely wrong|likely asr|possible asr|raw captions contain)\b",
+    re.I,
+)
 ENTITY_RE = re.compile(r"\b(entity|brand|person|name|spelling|subreddit|domain)\b", re.I)
+BOILERPLATE_ENTITY_RE = re.compile(r"\bobvious acronym/entity casing\b", re.I)
 
 
 def utc_now() -> str:
@@ -35,7 +39,7 @@ def notes_text(notes: Any) -> str:
 
 
 def classify(qa: dict[str, Any]) -> str:
-    text = notes_text(qa.get("notes"))
+    text = BOILERPLATE_ENTITY_RE.sub("", notes_text(qa.get("notes")))
     if AUDIO_RE.search(text):
         return "audio_verification_required"
     if ENTITY_RE.search(text):

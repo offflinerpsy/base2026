@@ -41,6 +41,25 @@ REPLACEMENTS: list[Replacement] = [
     ("wp_rocket_spelled", re.compile(r"\bw\s+p\s+rocket\b", re.IGNORECASE), "WP Rocket"),
     ("shure_mv7_spoken", re.compile(r"\bsure\s+m\s+v\s+seven\b", re.IGNORECASE), "Shure MV7"),
     ("shure_mv7_asr", re.compile(r"\bsr\s+m\s+v\s+7\b", re.IGNORECASE), "Shure MV7"),
+    ("leadferno_spaced", re.compile(r"\blead\s+ferno\b", re.IGNORECASE), "Leadferno"),
+    ("gary_illyes_asr", re.compile(r"\bharry\s+ilyas\b", re.IGNORECASE), "Gary Illyes"),
+    ("qwoted_case", re.compile(r"\bqwoted\b", re.IGNORECASE), "Qwoted"),
+    ("n8n_spelled_nan", re.compile(r"\bn\s+a\s+n\b", re.IGNORECASE), "n8n"),
+    ("schemawriter_dot_ai", re.compile(r"\bschema\s+writer\s+dot\s+ai\b", re.IGNORECASE), "Schemawriter.ai"),
+    ("perplexity_comet_browser_asr", re.compile(r"\bcomment\s+browser\b", re.IGNORECASE), "Comet browser"),
+    ("claude_truncated", re.compile(r"\bclaud\b", re.IGNORECASE), "Claude"),
+    ("compactkeywords_domain", re.compile(r"\bcompact\s+keywords\.com\b", re.IGNORECASE), "compactkeywords.com"),
+    ("aipodcastmatcher_domain", re.compile(r"\bAI\s+podcast\s+Matcher\s+com\b", re.IGNORECASE), "AIPodcastMatcher.com"),
+    ("descript_asr_descriptor", re.compile(r"\bAI\s+video\s+editor\s+descriptor\b", re.IGNORECASE), "AI video editor Descript"),
+    ("claude_projects_asr", re.compile(r"\bcloud\s+projects\b", re.IGNORECASE), "Claude Projects"),
+    ("sourceofsources_domain", re.compile(r"\bsource\s+of\s+sources\.com\b", re.IGNORECASE), "sourceofsources.com"),
+    (
+        "sourceofsources_npr_asr",
+        re.compile(r"\bWashington Post,\s*Tripadvisor,\s*MPR,\s*New York Times\b", re.IGNORECASE),
+        "Washington Post, Tripadvisor, NPR, New York Times",
+    ),
+    ("notebooklm_case", re.compile(r"\bnotebook\s+LM\b", re.IGNORECASE), "NotebookLM"),
+    ("powerpoint_case", re.compile(r"\bpowerpoint\b", re.IGNORECASE), "PowerPoint"),
 ]
 
 
