@@ -179,3 +179,9 @@ Reason: a partial default creator config caused a full refresh command to check 
 Decision: insight-card promotion review must count already approved/reviewed/public candidate cards for the same source before recommending more candidates from that source. The reviewer must also flag speculative claims, generic actions, and overbroad actions as `needs_human`.
 
 Reason: evidence-exact text can still be bad public product copy, and source pages should not be overfilled by repeatedly promoting mechanically verified candidates from the same video.
+
+## 2026-06-12 — Use GPT/Codex as the current card text review lane
+
+Decision: for the current launch-quality insight-card backlog, use GPT/Codex source-only review packets as the primary semantic/card-writing lane. Do not use local LLMs as the primary extractor or final writer for public card text.
+
+Reason: the backlog is low-volume enough that quality and source faithfulness matter more than cheap local throughput. Scripts still own queueing, exact evidence verification, private import, reviewer promotion, rebuild/export, and deployment gates.

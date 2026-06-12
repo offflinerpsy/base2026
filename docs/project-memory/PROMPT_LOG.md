@@ -2898,3 +2898,29 @@ Verification:
 Next step:
 
 - commit/push public-safe memory updates, then continue the same GPT/Codex source-only card-review lane in small batches; do not bulk-pass audio-sensitive transcript QA rows.
+
+## 2026-06-12 — ay68 GPT/Codex no-card source review batches 02-03
+
+User clarified that local models should not be used for the current public card text work and asked to use ChatGPT/Codex review instead.
+
+Actions taken:
+
+- built a freshly filtered no-card source queue after ay67;
+- generated two source-only GPT/Codex review packets for 16 queued no-card sources;
+- reviewed packet text against public passages only, created 13 new candidate insight cards, and skipped 3 weak or fragile sources rather than forcing public cards;
+- evidence-verified all 13 candidates with exact source matches;
+- imported the 13 candidates as private/pending, ran `review-insight-candidates`, promoted all 13 reviewer-approved candidates, and archived them in ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl`;
+- rebuilt SQLite from the durable private replay archive, ran `kb-audit.py`, exported the public TikTok layer, deployed `base2026-chatgpt-card-batch02-03-ay68-20260612`, and reindexed Meilisearch with 1708 passages.
+
+Verification:
+
+- public export policy passed with `include_full_transcripts=false`, 1215 source records, 1708 passages, 1570 insight cards, 1129 public insight cards, 1473 topics, and 1066 public topics;
+- live source page `/knowledge/sources/tiktok-video-7647713851504463117.html` contains the new `AI Content Workflow` card context;
+- live topic page `/knowledge/topics/internal-linking.html` contains the new `Internal Linking` card context;
+- full live mixed visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay68/`;
+- 619 transcript QA rows remain open because all require audio/source verification;
+- `tiktok-video-7648746368739118350` remains parked because TikTok/IP access still blocks source review.
+
+Next step:
+
+- commit/push public-safe memory updates, then continue the same GPT/Codex source-only card-review lane in small batches; rebuild a fresh filtered queue before each packet and do not bulk-pass audio-sensitive transcript QA rows.

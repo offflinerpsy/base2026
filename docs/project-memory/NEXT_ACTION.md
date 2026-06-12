@@ -4,7 +4,7 @@ Last updated: 2026-06-12
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay67 GPT/Codex no-card source review batch, deploy, and live QA pass.
+Continue launch operation after the Base2026 ay68 GPT/Codex no-card source review batches, deploy, and live QA pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,7 +12,7 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Continue source-only GPT/Codex review batches from `.planning/backfill-insight-cards-20260612-newrun.jsonl`; promote only exact-evidence candidates that pass `review-insight-candidates`.
+1. Continue source-only GPT/Codex review batches from a freshly filtered no-card queue; promote only exact-evidence candidates that pass `review-insight-candidates`.
 2. Do not use local LLMs as the primary card-extraction/rewrite path. Local models can remain installed, but current reviewed text work should use Codex/GPT review packets.
 3. Do not bulk-pass the remaining 619 transcript QA rows: every row is currently audio/source-verification sensitive.
 4. Retry the remaining source-review row only when source access is available. Current known blocker: TikTok blocks access to `tiktok-video-7648746368739118350`.
@@ -77,15 +77,16 @@ Task queue source of truth:
 48. Durable TikTok entity normalization now covers the ay64 source-backed public ASR/entity cleanup set, including Leadferno, Gary Illyes, Qwoted, n8n, Schemawriter.ai, Comet browser, Claude, Descript, Claude Projects, AIPodcastMatcher.com, sourceofsources.com, NPR, NotebookLM, and PowerPoint.
 49. Durable TikTok entity normalization now also covers the ay65 text/entity cleanup set, including Eli Schwartz, r/MinMaxMarketing, Google My Business, Copilot, and spoken Gemini version references.
 50. ay67 added 4 GPT/Codex-reviewed public insight cards from queued no-card sources and kept 5 exact-evidence candidates private after the source promotion-limit reviewer gate.
+51. ay68 added 13 GPT/Codex-reviewed public insight cards from 16 queued no-card sources across two source-only batches, skipped 3 weak/fragile sources, rebuilt/exported/deployed, and reindexed Meilisearch.
 
 ## Latest verification
 
-- Deployed release: `base2026-chatgpt-card-batch01-ay67-20260612`.
+- Deployed release: `base2026-chatgpt-card-batch02-03-ay68-20260612`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
-- Live ay67 public export: 1215 source records, 1708 passages, 1557 insight cards, 1117 public insight cards, 1464 topics, 1058 public topics.
-- Live ay67 Meilisearch reindex: 1708 passages indexed into `base2026_public_tiktok`.
-- ay67 GPT/Codex card batch: 10 queued no-card sources reviewed from public passages, 9 exact-evidence candidates imported, 4 reviewer-approved candidates promoted, and 5 exact-evidence candidates kept private by the source promotion-limit gate.
-- Live ay67 deploy QA: `kb-audit.py` passed; public export policy passed; live source page `/knowledge/sources/tiktok-video-7650000106489433352.html` contains the new `AI Workflow Automation` card context with `Claude` and `Google Calendar`; 66-check mixed mobile visual QA passed with 0 failures.
+- Live ay68 public export: 1215 source records, 1708 passages, 1570 insight cards, 1129 public insight cards, 1473 topics, 1066 public topics.
+- Live ay68 Meilisearch reindex: 1708 passages indexed into `base2026_public_tiktok`.
+- ay68 GPT/Codex card batches: 16 queued no-card sources reviewed from public passages, 13 exact-evidence candidates imported/promoted after reviewer gates, and 3 weak/fragile sources skipped.
+- Live ay68 deploy QA: `kb-audit.py` passed; public export policy passed; live source page `/knowledge/sources/tiktok-video-7647713851504463117.html` contains the new `AI Content Workflow` card context; live topic page `/knowledge/topics/internal-linking.html` contains the new `Internal Linking` card context; 66-check mixed mobile visual QA passed with 0 failures.
 - ay66 full four-creator refresh: `@build_in_public` 1000 discovered/0 added, `@tjrobertson52` 347/0, `@joshuamaraney` 639/0, `@webhivedigital` 1000/0; local inventory remains 3014 rows and 1215 active rows.
 - Live ay63 all-creator refresh: 1 new `@joshuamaraney` row, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. ay63 added a durable entity normalizer and source-backed the new NVIDIA founder correction before deploy.
 - Post-ay63 2026-06-12 refresh: latest 160 public posts per configured creator produced 0 added rows, 0 queued transcripts, 0 `needs_asr`, and 0 missing polish; deep `PlaylistEnd=1000` inventory check-only also produced 0 added rows.
