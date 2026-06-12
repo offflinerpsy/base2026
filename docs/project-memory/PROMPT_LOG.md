@@ -2617,3 +2617,30 @@ Verification:
 Next step:
 
 - commit and push public-safe tooling/memory changes; continue transcript QA triage slices and retry the remaining TikTok IP-blocked source only when accessible.
+
+## 2026-06-12 — ay58 full creator refresh, candidate resolver, transcript QA slice, deploy
+
+User asked to run the whole pipeline because new videos may have appeared, process them, deploy after all work, and bring public-safe changes to Git.
+
+Actions taken:
+
+- ran `scripts/hermes-tiktok-refresh.ps1` against ignored `config/tiktok-intake-queue.local.json` with the latest 80 public posts per configured creator;
+- refresh found 0 new videos, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files;
+- added `scripts/base2026-resolve-candidate-decisions.py` and controller wiring so old reviewed `needs_human` candidate rows are resolved after rewrite/reject decisions instead of reappearing after clean rebuilds;
+- applied the resolver to the ignored private reviewed-candidates archive and local SQLite: 8 old rows marked `reject_candidate` because they were superseded by rewritten approved cards, 5 marked `rejected`, 2 left private as `needs_human`;
+- ran a conservative transcript-QA human-text slice: 8 clean technical artifact rows passed, 17 source-sensitive rows stayed `needs_review`;
+- rebuilt SQLite, exported public TikTok data, deployed `base2026-pipeline-refresh-ay58-20260612`, and reindexed Meilisearch.
+
+Verification:
+
+- public export policy passed with `include_full_transcripts=false`, 1214 source records, 1707 passages, 1552 insight cards, 1111 public insight cards, 1460 topics, and 1052 public topics;
+- source-review audit still has 1 private blocker: `tiktok-video-7648746368739118350`, blocked by TikTok IP access;
+- transcript QA triage now has 786 `needs_review` rows: 576 audio-verification, 193 entity/spelling, and 17 human text-review;
+- reviewed insight-card candidate queue now shows only 2 private `needs_human` rows;
+- controller doctor, publication boundary audit, GitHub metadata validation, Python compile, export policy, and `git diff --check` passed;
+- live `/knowledge/`, `documents.jsonl`, sitemap, roadmap, and source-policy returned 200;
+- live mixed mobile visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-ay58/`.
+
+Next step:
+
+- commit and push the public-safe resolver/tooling/memory changes; then continue transcript QA audio/entity slices and retry the IP-blocked source when TikTok access is available.

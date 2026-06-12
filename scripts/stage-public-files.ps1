@@ -64,6 +64,7 @@ $StagePaths = @(
   "scripts/base2026-import-claim-candidates.py",
   "scripts/base2026-prepare-needs-human-review.py",
   "scripts/base2026-promote-insight-candidates.py",
+  "scripts/base2026-resolve-candidate-decisions.py",
   "scripts/base2026-review-insight-candidates.py",
   "scripts/base2026-worker.py",
   "scripts/check-public-export-policy.py",

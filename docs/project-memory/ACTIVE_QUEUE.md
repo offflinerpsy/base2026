@@ -24,12 +24,12 @@ No task is considered done because a worker reports done. Codex must review, int
 | GEO-02 | About hero portrait scale and quote treatment | Codex after worker review | done/live | None | Live `/about/` loads CSS `1.5.15`; desktop portrait is about full card height; copy has pullquote styling; mobile stacks cleanly; desktop/mobile overflow false. |
 | UI-QA-01 | Mixed WordPress/Base2026 mobile visual QA automation | Codex | done/live | Use `node scripts/mobile-visual-qa.mjs --base-url https://aggressorbulkit.online --viewports full` before public UI deploys. | Runner and runbook exist; Base2026 `base2026-mobile-visual-qa-ay25-20260610` and WordPress CSS `1.5.16` are live; final matrix has 66 checks, 0 failures, 0 warnings. |
 | PIPE-01 | New TikTok intake/transcription/card automation | Codex | in_progress | Work transcript QA triage slices and the remaining IP-blocked source-review row; keep future imports behind review/promotion/export gates. | A repeatable local pipeline exists for check -> caption/ASR -> polish -> claim extraction -> evidence verify -> review -> import/archive -> export/package/deploy gate, with private candidates durable locally and excluded from public export. |
-| GIT-01 | Repo/git hygiene for `base2026` and `geo` | Codex | in_progress | Stage only public-safe source/docs/tooling changes from the ay57 pipeline pass after boundary and metadata gates. | Public-safe source changes are committed/pushed; generated/private artifacts remain ignored. |
+| GIT-01 | Repo/git hygiene for `base2026` and `geo` | Codex | in_progress | Stage only public-safe source/docs/tooling changes from the ay58 pipeline pass after boundary and metadata gates. | Public-safe source changes are committed/pushed; generated/private artifacts remain ignored. |
 | PUB-01 | GitHub/open-source publication staging | Codex | done | Keep running publication audit before every future push. | Public GitHub repo exists on `main`; public/private boundary is documented and enforced by audit/stage scripts. |
 
 ## Current Deployed State
 
-- Base2026 release live: `base2026-reviewed-cards-ay57-20260612`.
+- Base2026 release live: `base2026-pipeline-refresh-ay58-20260612`.
 - Base2026 public export live: 1214 source records, 1707 passages, 1552 insight cards, 1111 public insight cards.
 - WordPress child-theme CSS live: `1.5.16`.
 - VPS SSH works through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
@@ -111,7 +111,7 @@ Pipeline work starts with controller ownership. Do not jump straight to intake r
 6. Wire source-backed card extraction after new-source import.
    - Status: in_progress.
    - Current reviewed lane can prepare private `needs_human` packets, apply reviewer decisions, verify exact evidence, import approved candidates, and archive them for clean rebuild replay.
-   - ay57 result: 8 candidates promoted, 5 rejected, 2 left private for source/audio verification.
+   - ay57/ay58 result: 8 candidates promoted, 5 rejected, 8 old rows resolved as superseded by rewritten approved cards, 2 left private for source/audio verification.
 7. Lock public promotion/export/package gates.
    - Promotion must require explicit reviewed report/IDs, never status-only automation.
 8. Convert scheduled Hermes from check-only to staged local automation.
@@ -148,7 +148,7 @@ Recommended sequence:
 
 ## Blockers / Constraints
 
-- Commit/push is allowed for the current public-safe ay57 pipeline pass because the user explicitly requested bringing the project to Git; still run boundary and metadata gates first.
+- Commit/push is allowed for the current public-safe ay58 pipeline pass because the user explicitly requested bringing the project to Git; still run boundary and metadata gates first.
 - Do not run TikTok intake against production or scheduled deploy until the pipeline gate is implemented.
 - Do not commit generated archives, local DB files, raw transcripts/captions, media, logs, cookies, keys, or private research.
 - Visual `geo` changes require live desktop and mobile verification before being marked done.

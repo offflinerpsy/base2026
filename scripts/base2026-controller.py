@@ -198,6 +198,39 @@ def cmd_prepare_needs_human_review(args: argparse.Namespace) -> int:
     return code
 
 
+def cmd_resolve_candidate_decisions(args: argparse.Namespace) -> int:
+    path = start_run("resolve-candidate-decisions", args)
+    candidates = Path(args.candidates) if args.candidates else latest_file("needs-human-review-*/candidates.jsonl")
+    review = Path(args.review) if args.review else latest_file("needs-human-review-*/chatgpt-review-decision.json")
+    if not candidates or not review:
+        finish_run(path, "failed", {"error": "No candidates/review decision files found."})
+        print(json.dumps({"error": "No candidates/review decision files found."}, indent=2))
+        return 2
+    command = [
+        sys.executable,
+        "scripts/base2026-resolve-candidate-decisions.py",
+        "--candidates",
+        str(candidates),
+        "--review",
+        str(review),
+        "--from-status",
+        args.from_status,
+        "--rewrite-status",
+        args.rewrite_status,
+        "--reject-status",
+        args.reject_status,
+    ]
+    if args.archive:
+        command += ["--archive", args.archive]
+    if args.apply:
+        command.append("--apply")
+    code, stdout, stderr = run_child(path, command)
+    summary = parse_last_json(stdout)
+    finish_run(path, "passed" if code == 0 else "failed", summary or {"stderr": stderr.strip()[:500]})
+    print(stdout.strip())
+    return code
+
+
 def cmd_build_chatgpt_review_packet(args: argparse.Namespace) -> int:
     path = start_run("build-chatgpt-review-packet", args)
     queue = Path(args.queue) if args.queue else latest_file("backfill-insight-cards-*.jsonl")
@@ -473,6 +506,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
         "claim_extract_local_exists": (ROOT / "scripts" / "base2026-claim-extract-local.py").exists(),
         "claim_candidate_import_exists": (ROOT / "scripts" / "base2026-import-claim-candidates.py").exists(),
         "needs_human_review_preparer_exists": (ROOT / "scripts" / "base2026-prepare-needs-human-review.py").exists(),
+        "candidate_decision_resolver_exists": (ROOT / "scripts" / "base2026-resolve-candidate-decisions.py").exists(),
         "chatgpt_review_packet_builder_exists": (ROOT / "scripts" / "base2026-build-chatgpt-review-packet.py").exists(),
         "chatgpt_review_applier_exists": (ROOT / "scripts" / "base2026-apply-chatgpt-review.py").exists(),
         "insight_candidate_reviewer_exists": (ROOT / "scripts" / "base2026-review-insight-candidates.py").exists(),
@@ -530,6 +564,16 @@ def main() -> int:
     needs_human.add_argument("--review-report", default="")
     needs_human.add_argument("--out-dir", default="")
     needs_human.set_defaults(func=cmd_prepare_needs_human_review)
+
+    resolve_decisions = sub.add_parser("resolve-candidate-decisions")
+    resolve_decisions.add_argument("--candidates", default="")
+    resolve_decisions.add_argument("--review", default="")
+    resolve_decisions.add_argument("--archive", default="")
+    resolve_decisions.add_argument("--from-status", default="needs_human")
+    resolve_decisions.add_argument("--rewrite-status", default="reject_candidate")
+    resolve_decisions.add_argument("--reject-status", default="rejected")
+    resolve_decisions.add_argument("--apply", action="store_true")
+    resolve_decisions.set_defaults(func=cmd_resolve_candidate_decisions)
 
     review_packet = sub.add_parser("build-chatgpt-review-packet")
     review_packet.add_argument("--queue", default="")
