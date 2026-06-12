@@ -89,6 +89,29 @@ Copy-Item "./public-data/tiktok/*" $DataRoot -Recurse -Force
 python3 ./scripts/generate-public-pages.py --data ./public-data/tiktok --out $WebRoot | Write-Output
 python3 ./scripts/generate-base2026-sitemap.py --web-root $WebRoot | Write-Output
 
+# Normalize generated asset cache-busts after every generator has written HTML.
+# Source/topic pages use ../static/... paths, while root pages use ./static/...
+# paths; the public package must give all of them the current release version.
+$VersionedAssets = @(
+  "styles.css",
+  "meili.js",
+  "cookie-consent.js",
+  "share-actions.js",
+  "roadmap.js"
+)
+Get-ChildItem -Path $WebRoot -Recurse -Filter "*.html" | ForEach-Object {
+  $PageHtml = Get-Content -Path $_.FullName -Raw
+  foreach ($Asset in $VersionedAssets) {
+    $EscapedAsset = [regex]::Escape($Asset)
+    $AssetPattern = "(?i)(href|src)=`"([^`"]*static/$EscapedAsset)\?v=[^`"]*`""
+    $PageHtml = [regex]::Replace($PageHtml, $AssetPattern, {
+      param($Match)
+      $Match.Groups[1].Value + '="' + $Match.Groups[2].Value + "?v=$CacheBust" + '"'
+    })
+  }
+  $PageHtml | Set-Content -Path $_.FullName -Encoding UTF8
+}
+
 $Manifest = Get-Content "./public-data/tiktok/manifest.json" -Raw
 $ReleaseInfo = @"
 Base2026 Public TikTok Release

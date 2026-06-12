@@ -4,7 +4,7 @@ Last updated: 2026-06-12
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay73 source-modal document-cache fix deploy and live QA pass.
+Continue launch operation after the Base2026 ay76 mobile interaction/cache-bust fix deploy and live QA pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,14 +12,15 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Continue source-only GPT/Codex review batches from a freshly filtered no-card queue; promote only exact-evidence candidates that pass `review-insight-candidates`.
-2. Do not use local LLMs as the primary card-extraction/rewrite path. Local models can remain installed, but current reviewed text work should use Codex/GPT review packets, preferably the ChatGPT 5.5 Medium quality lane when available.
-3. Do not bulk-pass the remaining 619 transcript QA rows: every row is currently audio/source-verification sensitive.
-4. Retry the remaining source-review row only when source access is available. Current known blocker: TikTok blocks access to `tiktok-video-7648746368739118350`.
-5. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
-6. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
-7. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
-8. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`.
+1. Use `docs/project-memory/ARCHITECTURE_CODE_AUDIT_2026_06_12.md` as the next architecture-hardening brief: start with a public release/promotion contract that forbids full transcripts and implicit auto-promotion in the public release lane, then harden Meilisearch deploy and fixture CI around that contract.
+2. Continue source-only GPT/Codex review batches from a freshly filtered no-card queue; promote only exact-evidence candidates that pass `review-insight-candidates`.
+3. Do not use local LLMs as the primary card-extraction/rewrite path. Local models can remain installed, but current reviewed text work should use Codex/GPT review packets, preferably the ChatGPT 5.5 Medium quality lane when available.
+4. Do not bulk-pass the remaining 619 transcript QA rows: every row is currently audio/source-verification sensitive.
+5. Retry the remaining source-review row only when source access is available. Current known blocker: TikTok blocks access to `tiktok-video-7648746368739118350`.
+6. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
+7. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
+8. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
+9. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`.
 
 Task queue source of truth:
 
@@ -83,13 +84,18 @@ Task queue source of truth:
 54. ay71 refreshed the four TikTok creator queues, found 1 new `@build_in_public` source, caption-polished it via Codex/GPT review, added 2 exact-evidence public cards for that source, rebuilt/exported/deployed, and passed 66-check live visual QA.
 55. ay72 synced the public roadmap with the actual ay71 pipeline state: source metadata model and transcription workflow are marked completed; evidence-gated insight-card extraction/review, entity/topic cleanup, and moderation queue are marked in progress; source-backed public insight cards are marked live.
 56. ay73 fixed source-modal record loading for fresh search results by versioning the immutable `documents.jsonl` payload with the release cache-bust. The `@joshuamaraney` Google Ads Tracking result now opens the source record instead of a stale `Source record unavailable` modal.
+57. ay76 fixed the systemic Base2026 mobile CSS staleness cause: `scripts/package-public-release.ps1` now normalizes CSS/JS cache-busts across every generated HTML file after all generators run, including `../static/...` source/topic pages. The release also fixes the mobile Base2026 submenu width and tightens the mobile source-record modal header. WordPress child theme `1.5.41` adds visible focus/validation behavior for the mobile roadmap form CTA.
 
 ## Latest verification
 
-- Deployed release: `base2026-documents-cachefix-ay73-20260612`.
+- Deployed release: `base2026-cachebust-mobilefix-ay76-20260612`.
+- Architecture/code audit completed at `docs/project-memory/ARCHITECTURE_CODE_AUDIT_2026_06_12.md`; recommended next hardening is a public release/promotion contract, shadow Meilisearch deploy, fixture-backed policy CI, and a generated-page policy decision.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
-- Live ay73 public export: 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, 1096 public topics.
-- Live ay73 Meilisearch reindex: 1709 passages indexed into `base2026_public_tiktok`.
+- Live ay76 public export: 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, 1096 public topics.
+- Live ay76 Meilisearch reindex: 1709 passages indexed into `base2026_public_tiktok`.
+- Live ay76 mobile interaction QA: source pages now load `../static/styles.css?v=base2026-cachebust-mobilefix-ay76-20260612`; mobile Base2026 menu summary width is 296px with no horizontal overflow; submenu links align inside the panel; source-modal body begins at y=229 instead of y=288; homepage roadmap form focuses `ay_website` and shows attention state on invalid submit.
+- Live ay76 mixed visual QA passed: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay76-mobile-interactions/`.
+- Live WordPress theme CSS: `1.5.41`.
 - Live ay73 source-modal QA: `/knowledge/?base2026_public_tiktok%5Bquery%5D=Google%20Ads%20Tracking` result `tiktok-video-7649635621287316743` opens `Source record` with `@joshuamaraney`, `2026-06-10`, and the Google Ads Tracking excerpt; `Source record unavailable`/`Source record not found` are absent.
 - Live ay73 mixed visual QA passed: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay73-cachefix/`.
 - ay70/ay71 GPT/Codex card work: 18 queued/no-card sources plus 1 new intake source reviewed from public passages, 22 exact-evidence candidates imported/promoted after reviewer gates, 1 over-limit candidate rejected, and weak/ASR-fragile sources skipped rather than forced into public cards.
@@ -251,7 +257,7 @@ Task queue source of truth:
 
 ## Exact next steps
 
-1. Commit/push the public-safe ay73 source-modal cache fix and memory updates after publication boundary and metadata gates pass.
+1. Commit/push the public-safe ay76 mobile/cache-bust stabilization and memory updates after publication boundary and metadata gates pass.
 2. Continue the source-only GPT/Codex review lane for queued no-card sources; promote only exact-evidence candidates that pass `review-insight-candidates`. Use GPT/Codex review packets for this text work; do not use local LLMs as the quality source.
 3. Keep the 619 historical transcript QA flags open until audio/source verification exists; do not bulk-pass them.
 4. Keep the remaining source-review blocker parked unless `tiktok-video-7648746368739118350` becomes accessible.

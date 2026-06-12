@@ -3022,3 +3022,54 @@ Verification:
 Next step:
 
 - commit/push public-safe memory updates, then continue the same GPT/Codex source-only card-review lane in small batches; rebuild a fresh filtered queue before each packet and do not bulk-pass audio-sensitive transcript QA rows.
+
+## 2026-06-12 — Mobile interaction/cache-bust root-cause fix
+
+User reported live mobile regressions: Base2026 mobile dropdown alignment, source-record modal layout, and homepage roadmap CTA appearing unresponsive on phone.
+
+Actions:
+- Diagnosed the Base2026 source/topic pages still shipping old `styles.css?v=20260611-creatorcta1` references because `generate-public-pages.py` ran after package-time cache-bust replacement.
+- Fixed `scripts/package-public-release.ps1` to normalize CSS/JS cache-busts across every generated release HTML file after all generators run, including `../static/...` source/topic paths.
+- Tightened Base2026 mobile source modal layout and fixed mobile Base2026 submenu width/alignment.
+- Updated WordPress child theme to `1.5.41` with visible mobile roadmap-form focus/validation behavior for invalid submits.
+- Deployed WordPress theme files with server backup and PHP/nginx checks.
+- Deployed Base2026 `base2026-cachebust-mobilefix-ay76-20260612` and reindexed Meilisearch.
+
+Verification:
+- Live source page HTML now references `../static/styles.css?v=base2026-cachebust-mobilefix-ay76-20260612`.
+- Live mobile Browser QA: Base2026 submenu width 296px, submenu links aligned, no horizontal overflow; source modal body starts at y=229; roadmap form focuses `ay_website` and adds attention state on invalid submit; console errors empty.
+- Publication boundary audit and GitHub metadata validation passed.
+- Full mixed live visual QA passed: 66 checks, 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay76-mobile-interactions/`.
+
+Next step:
+- Commit/push public-safe source/docs changes after final git review; continue pipeline/card backlog separately.
+
+## 2026-06-12 — architecture/code audit council
+
+User asked for a full project architecture/code audit with four independent expert roles, special attention to the BS2026/Base2026 text and insight pipeline, and no shallow first-take conclusion.
+
+Actions taken:
+
+- read the required project-memory files, deployment/automation runbooks, visual contract, publication boundary, and public GitHub audit docs;
+- checked the active phase and current dirty working tree before audit work;
+- ran four independent read-only expert passes: full-stack, systems architecture, QA/test architecture, and a skeptical opposing reviewer;
+- reviewed the Base2026 TikTok intake, SQLite/review/export/package/deploy/search pipeline and the public/private boundary;
+- used external security references for Meilisearch result sanitization, GitHub Actions permissions/secret handling, OWASP secret scanning, and Subresource Integrity;
+- created `docs/project-memory/ARCHITECTURE_CODE_AUDIT_2026_06_12.md`.
+
+Verification:
+
+- `python3 -m py_compile scripts/*.py web/server.py` passed;
+- `node --check web/static/meili.js` passed;
+- `node --check web/static/share-actions.js` passed;
+- `node --check scripts/mobile-visual-qa.mjs` passed;
+- `python3 scripts/audit-publication-boundary.py` passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- `python3 scripts/check-public-export-policy.py public-data/tiktok` passed with `include_full_transcripts=false`, 1216 source records, and 1709 passages;
+- `python3 scripts/validate-github-metadata.py` passed;
+- `python3 scripts/base2026-controller.py doctor` passed and wrote only ignored `.planning/runs/...` trace files;
+- `python3 scripts/kb-audit.py` printed `audit=PASS`;
+- `git diff --check` passed.
+
+Next step:
+
+- implement the audit's first recommended hardening step: a public release/promotion contract that makes full transcripts and implicit public auto-promotion impossible in the public release lane, then add shadow Meilisearch deploy and fixture-backed CI gates.

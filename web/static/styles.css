@@ -1949,6 +1949,7 @@ em {
   .transcript-dialog-actions-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px;
   }
 
   .transcript-actions--header {
@@ -1987,12 +1988,14 @@ em {
   }
 
   .record-policy-grid.record-policy-grid--header {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 6px;
   }
 
   .record-policy-grid--header div {
+    flex: 1 1 96px;
+    min-width: 0;
     padding: 7px 8px;
   }
 
@@ -4211,8 +4214,12 @@ blockquote {
   }
 
   .transcript-dialog-head {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .transcript-dialog-main {
     gap: 7px;
-    padding: 9px;
   }
 
   .transcript-attribution {
@@ -4238,19 +4245,51 @@ blockquote {
 
   .transcript-dialog h2 {
     margin: 2px 0;
-    font-size: 20px;
-    line-height: 1.06;
+    display: none;
+  }
+
+  #transcript-meta {
+    display: none;
+  }
+
+  .transcript-dialog-controls {
+    gap: 6px;
+  }
+
+  .transcript-dialog-actions-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 36px;
+    gap: 6px;
+    align-items: stretch;
+  }
+
+  .transcript-actions--header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    overflow: visible;
+    padding-bottom: 0;
   }
 
   .transcript-actions--header .button-link {
+    flex: 1 1 calc(50% - 3px);
+    justify-content: center;
+    min-width: 0;
     min-height: 31px;
     padding: 6px 9px;
     font-size: 12px;
+    line-height: 1.1;
+    text-align: center;
+    white-space: normal;
   }
 
   .dialog-close {
+    display: inline-flex;
+    width: 34px;
     min-width: 34px;
     min-height: 34px;
+    align-items: center;
+    justify-content: center;
     padding: 0;
     color: transparent;
     font-size: 0;
@@ -4265,11 +4304,14 @@ blockquote {
   }
 
   .record-policy-grid.record-policy-grid--header {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 4px;
   }
 
   .record-policy-grid--header div {
+    flex: 1 1 78px;
+    min-width: 0;
     padding: 5px 6px;
   }
 
@@ -4652,11 +4694,16 @@ blockquote {
   .site-header__mobile-base div {
     display: grid;
     gap: 3px;
+    width: 100%;
   }
 
   .site-header__mobile-panel a,
   .site-header__mobile-base summary {
+    display: flex;
+    width: 100%;
+    min-width: 0;
     min-height: 36px;
+    align-items: center;
     padding: 7px 12px;
     border-radius: 8px;
     color: var(--ay-text);
@@ -4673,6 +4720,7 @@ blockquote {
 
   .site-header__mobile-base summary {
     position: relative;
+    justify-content: flex-start;
     list-style: none;
     cursor: pointer;
   }
@@ -4699,6 +4747,8 @@ blockquote {
   }
 
   .site-header__mobile-base {
+    width: 100%;
+    min-width: 0;
     border-top: 1px solid rgba(18, 26, 31, 0.09);
     border-bottom: 1px solid rgba(18, 26, 31, 0.09);
     padding: 5px 0 7px;

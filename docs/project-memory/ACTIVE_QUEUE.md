@@ -29,9 +29,9 @@ No task is considered done because a worker reports done. Codex must review, int
 
 ## Current Deployed State
 
-- Base2026 release live: `base2026-documents-cachefix-ay73-20260612`.
+- Base2026 release live: `base2026-cachebust-mobilefix-ay76-20260612`.
 - Base2026 public export live: 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards.
-- WordPress child-theme CSS live: `1.5.16`.
+- WordPress child-theme CSS live: `1.5.41`.
 - VPS SSH works through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
 
 ## Immediate Execution Order
@@ -42,6 +42,7 @@ No task is considered done because a worker reports done. Codex must review, int
 4. Keep `scripts/tiktok-qa-triage.py` as the first transcript-QA classifier before detailed batch review.
 5. Keep `scripts/tiktok-polish-audit.py` as the repeatable transcript-QA batch gate; use controller reports under ignored `.planning/`.
 6. Re-run publication boundary audit before every future push/deploy.
+7. Keep Base2026 package cache-bust normalization in `scripts/package-public-release.ps1`; do not trust generator-local hardcoded CSS versions for public releases.
 
 ## PUB-01 Gates
 
@@ -117,7 +118,7 @@ Pipeline work starts with controller ownership. Do not jump straight to intake r
 8. Convert scheduled Hermes from check-only to staged local automation.
    - Scheduled mode must stop before deploy, paid LLM, public promotion, or unreviewed transcript publication.
 
-Latest refresh note: ay71 checked all four configured public creators through `scripts/hermes-tiktok-refresh.ps1`, found 1 new `@build_in_public` source, caption-polished it through Codex/GPT review, added 2 exact-evidence public cards, rebuilt SQLite, exported public data, deployed, and reindexed Meilisearch. ay72 then synced roadmap statuses with that actual pipeline state and deployed `base2026-roadmap-status-sync-ay72-20260612` without changing public data counts. ay73 fixed the live source-modal document-cache mismatch by release-versioning `documents.jsonl` and deployed `base2026-documents-cachefix-ay73-20260612`. ay67-ay70 used GPT/Codex source-only review packets for queued no-card sources and promoted 52 exact-evidence public cards after reviewer gates. Queues remain 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. The remaining 619 transcript QA flags are all audio/source-verification rows.
+Latest refresh note: ay71 checked all four configured public creators through `scripts/hermes-tiktok-refresh.ps1`, found 1 new `@build_in_public` source, caption-polished it through Codex/GPT review, added 2 exact-evidence public cards, rebuilt SQLite, exported public data, deployed, and reindexed Meilisearch. ay72 then synced roadmap statuses with that actual pipeline state and deployed `base2026-roadmap-status-sync-ay72-20260612` without changing public data counts. ay73 fixed the live source-modal document-cache mismatch by release-versioning `documents.jsonl` and deployed `base2026-documents-cachefix-ay73-20260612`. ay76 fixed the remaining generated-page cache-bust gap by normalizing `../static/...` CSS/JS references after all static generators run, tightened the mobile source modal/menu, deployed `base2026-cachebust-mobilefix-ay76-20260612`, and reindexed Meilisearch. ay67-ay70 used GPT/Codex source-only review packets for queued no-card sources and promoted 52 exact-evidence public cards after reviewer gates. Queues remain 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. The remaining 619 transcript QA flags are all audio/source-verification rows.
 
 ## GIT-01 Buckets
 
@@ -150,7 +151,7 @@ Recommended sequence:
 
 ## Blockers / Constraints
 
-- Commit/push is allowed for the current public-safe ay73 cachefix pass because the user explicitly requested bringing the project to Git; still run boundary and metadata gates first.
+- Commit/push is allowed for the current public-safe ay76 mobile/cache-bust stabilization because the user explicitly requested bringing the project to Git; still run boundary and metadata gates first.
 - Do not run TikTok intake against production or scheduled deploy until the pipeline gate is implemented.
 - Do not commit generated archives, local DB files, raw transcripts/captions, media, logs, cookies, keys, or private research.
 - Visual `geo` changes require live desktop and mobile verification before being marked done.

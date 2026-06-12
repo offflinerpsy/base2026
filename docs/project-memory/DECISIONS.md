@@ -162,6 +162,12 @@ Decision: static JSONL payloads loaded by Base2026 JavaScript after page load, s
 
 Reason: Meilisearch results can update with a new deploy while a browser still holds an older immutable JSONL payload. Versioning delayed payload fetches keeps source-modal record lookup aligned with the deployed search index and prevents false `Source record unavailable` states.
 
+## 2026-06-12 — Normalize Base2026 asset versions after all static generators run
+
+Decision: `scripts/package-public-release.ps1` must run a final recursive HTML pass over the release `web/` folder after every generator has finished and rewrite all public CSS/JS asset query strings to the current release cache-bust, including `../static/...` paths used by source/topic pages.
+
+Reason: generator-local hardcoded style versions can overwrite earlier package-time replacements. With immutable `/knowledge/static/` cache headers, stale query strings make mobile fixes appear missing on live source/topic pages even when the deployed CSS file is correct.
+
 ## 2026-06-11 — Replay approved insight-card candidates from private archive
 
 Decision: approved/reviewed/public `insight_card_candidate` rows are persisted in an ignored private JSONL archive under `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` and replayed by `build-kb-sqlite.py` during clean SQLite rebuilds. These replayed candidates do not create markdown claim cards under `12_knowledge-base/canonical/claims`; `kb-audit.py` now treats the difference between SQLite claims and markdown claim-card files as valid only when it equals the `insight_card_candidate` count.
