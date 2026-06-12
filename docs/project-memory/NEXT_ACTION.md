@@ -4,7 +4,7 @@ Last updated: 2026-06-12
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay64 source-backed entity QA cleanup, deploy, live QA pass, and post-refresh no-new-video scan.
+Continue launch operation after the Base2026 ay65 text/entity QA cleanup, deploy, live QA pass, and post-refresh no-new-video scan.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,11 +12,11 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Continue TikTok intake through the reviewed gate. The ay63 all-creator refresh found 1 new `@joshuamaraney` video, transcribed it from caption metadata, locally polished it, corrected the source-backed NVIDIA founder entity artifact, exported it, and deployed it. A follow-up 2026-06-12 scan checked the latest 160 public posts per configured creator through rebuild/export and then ran deep `PlaylistEnd=1000` inventory check-only; both found 0 new videos. ay64 then closed a source-backed entity QA cleanup slice, rebuilt/exported public data, deployed `base2026-entity-qa-cleanup-ay64-20260612`, and reindexed Meilisearch. Current queues: 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
-2. Work the remaining quality queues separately: 626 faithful transcript QA review flags, 1 source-review row blocked by TikTok IP access, and 1 private `needs_human` insight-card candidate that still needs source/audio verification.
+1. Continue TikTok intake through the reviewed gate. The ay63 all-creator refresh found 1 new `@joshuamaraney` video, transcribed it from caption metadata, locally polished it, corrected the source-backed NVIDIA founder entity artifact, exported it, and deployed it. A follow-up 2026-06-12 scan checked the latest 160 public posts per configured creator through rebuild/export and then ran deep `PlaylistEnd=1000` inventory check-only; both found 0 new videos. ay65 then closed the remaining text/entity QA bucket, rebuilt/exported public data, deployed `base2026-text-qa-cleanup-ay65-20260612`, and reindexed Meilisearch. Current queues: 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
+2. Work the remaining quality queue separately: 619 faithful transcript QA review flags, all categorized as audio/source verification required; 1 source-review row is still blocked by TikTok IP access, and 1 private `needs_human` insight-card candidate still needs source/audio verification.
 3. Use `python3 scripts/base2026-controller.py tiktok-source-review-audit --probe-network --out .planning/source-review-audit-YYYYMMDD.json` before retrying the remaining source-review row. Current known reason: TikTok blocks current IP access to `tiktok-video-7648746368739118350`.
-4. Use `python3 scripts/base2026-controller.py tiktok-qa-triage --limit 50 --out-json .planning/tiktok-qa-triage-YYYYMMDD.json --out-md .planning/tiktok-qa-triage-YYYYMMDD.md` before transcript-QA slices. Current triage: 611 audio-verification rows, 6 real entity/spelling rows, and 9 human text-review rows.
-5. Use `python3 scripts/base2026-controller.py tiktok-polish-audit --risk review --qa-status needs_review --limit 25 --out-json .planning/transcript-qa-batch-YYYYMMDD.json --out-md .planning/transcript-qa-batch-YYYYMMDD.md` for controlled transcript-QA slices. Current full summary: 1214 transcribed/clean/polished files, 0 missing polished, 626 triaged review flags after adding the ay63 new source and completing the ay64 source-backed entity cleanup slice.
+4. Use `python3 scripts/base2026-controller.py tiktok-qa-triage --limit 50 --out-json .planning/tiktok-qa-triage-YYYYMMDD.json --out-md .planning/tiktok-qa-triage-YYYYMMDD.md` before transcript-QA slices. Current triage: 619 audio/source-verification rows, 0 entity/spelling rows, and 0 human text-review rows.
+5. Use `python3 scripts/base2026-controller.py tiktok-polish-audit --risk review --qa-status needs_review --limit 25 --out-json .planning/transcript-qa-batch-YYYYMMDD.json --out-md .planning/transcript-qa-batch-YYYYMMDD.md` for controlled transcript-QA slices. Current full summary: 1214 transcribed/clean/polished files, 0 missing polished, 619 triaged review flags after adding the ay63 new source and completing the ay65 text/entity cleanup slice.
 6. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
 7. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
 8. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
@@ -76,20 +76,23 @@ Task queue source of truth:
 46. WordPress homepage/services/footer now include the acid-green Base2026 CTA/card treatment.
 47. TikTok QA triage now separates boilerplate local polish notes from real entity/spelling review and recognizes audio/source verification notes more accurately.
 48. Durable TikTok entity normalization now covers the ay64 source-backed public ASR/entity cleanup set, including Leadferno, Gary Illyes, Qwoted, n8n, Schemawriter.ai, Comet browser, Claude, Descript, Claude Projects, AIPodcastMatcher.com, sourceofsources.com, NPR, NotebookLM, and PowerPoint.
+49. Durable TikTok entity normalization now also covers the ay65 text/entity cleanup set, including Eli Schwartz, r/MinMaxMarketing, Google My Business, Copilot, and spoken Gemini version references.
 
 ## Latest verification
 
-- Deployed release: `base2026-entity-qa-cleanup-ay64-20260612`.
+- Deployed release: `base2026-text-qa-cleanup-ay65-20260612`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
-- Live ay64 public export: 1215 source records, 1708 passages, 1553 insight cards, 1113 public insight cards, 1460 topics, 1054 public topics.
-- Live ay64 Meilisearch reindex: 1708 passages indexed into `base2026_public_tiktok`.
+- Live ay65 public export: 1215 source records, 1708 passages, 1553 insight cards, 1113 public insight cards, 1460 topics, 1054 public topics.
+- Live ay65 Meilisearch reindex: 1708 passages indexed into `base2026_public_tiktok`.
 - Live ay63 all-creator refresh: 1 new `@joshuamaraney` row, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. ay63 added a durable entity normalizer and source-backed the new NVIDIA founder correction before deploy.
 - Post-ay63 2026-06-12 refresh: latest 160 public posts per configured creator produced 0 added rows, 0 queued transcripts, 0 `needs_asr`, and 0 missing polish; deep `PlaylistEnd=1000` inventory check-only also produced 0 added rows.
 - ay64 entity QA cleanup: 11 source-backed entity rows moved from private QA review to pass through an explicit ignored manifest; triage now has 626 remaining review flags: 611 audio-verification rows, 6 entity/spelling rows, and 9 human text-review rows.
 - Live ay64 public JSONL scan found 0 tracked old ASR/entity tokens; targeted live source pages confirmed `Gary Illyes`, `n8n`, `Comet browser`, `Schemawriter.ai`, `Descript`, `Claude Projects`, `sourceofsources.com`, and `NPR` render correctly.
+- ay65 text/entity QA cleanup: 7 source-backed rows moved to pass; 8 unsafe rows were explicitly kept review-gated with audio/source verification reasons; triage now has 619 remaining review flags, all audio/source-verification rows.
+- Live ay65 public JSONL scan found 0 tracked old text/entity tokens and confirmed public `Eli Schwartz`, `r/MinMaxMarketing`, and `Google My Business` render in the public payload.
 - Durable reviewed/private candidate replay now has 30 `insight_card_candidate` rows replaying locally from ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` during a clean SQLite rebuild.
 - Public export gate verified: public export excludes private `needs_human` candidates; live `documents.jsonl` has 1215 rows under excerpt-only policy.
-- Live ay64 deploy QA: static endpoint checks, public export policy, SQLite audit, transcript QA triage, publication boundary audit, GitHub metadata validation, live targeted source-page smoke checks, live JSONL ASR-slop scan, and 66-check mixed mobile visual QA passed with 0 failures.
+- Live ay65 deploy QA: static endpoint checks, public export policy, SQLite audit, transcript QA triage, publication boundary audit, GitHub metadata validation, live JSONL ASR-slop scan, and 66-check mixed mobile visual QA passed with 0 failures.
 
 - Deployed release: `base2026-asr-pipeline-ay51-20260611`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.

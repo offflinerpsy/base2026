@@ -2724,6 +2724,30 @@ Next step:
 
 - commit and push public-safe memory updates, then continue controlled transcript QA slices and retry the IP-blocked TikTok source when network access allows.
 
+## 2026-06-12 — ay65 text/entity QA cleanup and deploy
+
+Continuation of the overnight production-hardening task after ay64 deploy.
+
+Actions taken:
+
+- reran transcript QA triage and confirmed 626 remaining review rows: 611 audio-verification, 6 entity/spelling, and 9 human text-review;
+- added durable local normalizer rules for source-backed text/entity artifacts including Eli Schwartz, r/MinMaxMarketing, Google My Business, Copilot, and spoken Gemini version references;
+- applied normalizer cleanup to ignored private polished transcript files, then used an explicit private QA manifest for the remaining text/entity bucket;
+- moved 7 source-backed text/entity rows to QA pass and explicitly kept 8 unsafe rows review-gated with audio/source verification reasons;
+- rebuilt SQLite, exported public data, deployed `base2026-text-qa-cleanup-ay65-20260612`, and reindexed Meilisearch.
+
+Verification:
+
+- SQLite audit passed with 1214 polished transcripts, 1215 source records, and 1708 passages;
+- public export policy passed with `include_full_transcripts=false`;
+- transcript QA triage is now 619 review flags, all categorized as audio/source-verification required;
+- live public JSONL scan found 0 tracked old text/entity tokens and confirmed corrected public names;
+- live mixed mobile visual QA passed with 66 checks and 0 failures.
+
+Next step:
+
+- continue audio/source-verification QA in controlled slices; do not bulk-pass the remaining 619 rows without stronger evidence.
+
 ## 2026-06-12 — ay64 source-backed entity QA cleanup and deploy
 
 User asked to run the whole pipeline because new videos may have appeared, process them, and deploy after all work.

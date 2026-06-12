@@ -29,7 +29,7 @@ No task is considered done because a worker reports done. Codex must review, int
 
 ## Current Deployed State
 
-- Base2026 release live: `base2026-entity-qa-cleanup-ay64-20260612`.
+- Base2026 release live: `base2026-text-qa-cleanup-ay65-20260612`.
 - Base2026 public export live: 1215 source records, 1708 passages, 1553 insight cards, 1113 public insight cards.
 - WordPress child-theme CSS live: `1.5.16`.
 - VPS SSH works through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
@@ -117,7 +117,7 @@ Pipeline work starts with controller ownership. Do not jump straight to intake r
 8. Convert scheduled Hermes from check-only to staged local automation.
    - Scheduled mode must stop before deploy, paid LLM, public promotion, or unreviewed transcript publication.
 
-Latest refresh note: the 2026-06-12 post-ay63 scan checked the latest 160 public posts per configured creator through the local rebuild/export path and ran a deeper `PlaylistEnd=1000` check-only inventory. Both found 0 new videos. ay64 then completed a source-backed entity QA cleanup slice, rebuilt/exported public data, deployed `base2026-entity-qa-cleanup-ay64-20260612`, and reindexed Meilisearch.
+Latest refresh note: the 2026-06-12 post-ay63 scan checked the latest 160 public posts per configured creator through the local rebuild/export path and ran a deeper `PlaylistEnd=1000` check-only inventory. Both found 0 new videos. ay65 then completed the remaining text/entity QA cleanup bucket, rebuilt/exported public data, deployed `base2026-text-qa-cleanup-ay65-20260612`, and reindexed Meilisearch. The remaining 619 transcript QA flags are all audio/source-verification rows.
 
 ## GIT-01 Buckets
 

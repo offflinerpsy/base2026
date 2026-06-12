@@ -60,6 +60,15 @@ REPLACEMENTS: list[Replacement] = [
     ),
     ("notebooklm_case", re.compile(r"\bnotebook\s+LM\b", re.IGNORECASE), "NotebookLM"),
     ("powerpoint_case", re.compile(r"\bpowerpoint\b", re.IGNORECASE), "PowerPoint"),
+    ("eli_schwartz_asr", re.compile(r"\bEli\s+Soren(?:s|c)on\b", re.IGNORECASE), "Eli Schwartz"),
+    ("minmaxmarketing_rslash", re.compile(r"\br\s+slash\s+(?:min\s*max|mid\s+max)\s+marketing\b", re.IGNORECASE), "r/MinMaxMarketing"),
+    ("minmaxmarketing_spaced", re.compile(r"\bmin\s+max\s+marketing\b", re.IGNORECASE), "MinMaxMarketing"),
+    ("minmaxmarketing_mid_asr", re.compile(r"\bmid\s+max\s+marketing\b", re.IGNORECASE), "MinMaxMarketing"),
+    ("google_my_business_case", re.compile(r"\bgoogle\s+my\s+business\b", re.IGNORECASE), "Google My Business"),
+    ("copilot_case", re.compile(r"\bcopilot\b", re.IGNORECASE), "Copilot"),
+    ("gemini_31_spoken", re.compile(r"\bgemini\s+three\s+point\s+one\b", re.IGNORECASE), "Gemini 3.1"),
+    ("gemini_4_spoken", re.compile(r"\bgemini\s+four\b", re.IGNORECASE), "Gemini 4"),
+    ("gemini_5_spoken", re.compile(r"\bgemini\s+five\b", re.IGNORECASE), "Gemini 5"),
 ]
 
 
