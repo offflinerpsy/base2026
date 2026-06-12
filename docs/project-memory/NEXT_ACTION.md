@@ -4,7 +4,7 @@ Last updated: 2026-06-12
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay58 pipeline refresh deploy and live QA pass.
+Continue launch operation after the Base2026 ay62 intake refresh, public-text cleanup, deploy, and live QA pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,11 +12,11 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Continue TikTok intake through the reviewed gate. The ay58 all-creator refresh checked the latest 80 public posts per configured creator and found 0 new videos, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
-2. Work the remaining quality queues separately: 786 faithful transcript QA review flags and 1 source-review row blocked by TikTok IP access. The former false 15-row private `needs_human` queue is resolved: 8 were rewritten/promoted, 5 rejected, 8 old rows marked superseded by rewritten approved cards, and 2 remain private for source/audio verification.
+1. Continue TikTok intake through the reviewed gate. The ay62 all-creator refresh checked the latest 160 public posts per configured creator and found 0 new videos, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
+2. Work the remaining quality queues separately: 777 faithful transcript QA review flags, 1 source-review row blocked by TikTok IP access, and 1 private `needs_human` insight-card candidate that still needs source/audio verification.
 3. Use `python3 scripts/base2026-controller.py tiktok-source-review-audit --probe-network --out .planning/source-review-audit-YYYYMMDD.json` before retrying the remaining source-review row. Current known reason: TikTok blocks current IP access to `tiktok-video-7648746368739118350`.
-4. Use `python3 scripts/base2026-controller.py tiktok-qa-triage --limit 50 --out-json .planning/tiktok-qa-triage-YYYYMMDD.json --out-md .planning/tiktok-qa-triage-YYYYMMDD.md` before transcript-QA slices. Current triage: 576 audio-verification rows, 193 entity/spelling rows, and 17 human text-review rows.
-5. Use `python3 scripts/base2026-controller.py tiktok-polish-audit --risk review --qa-status needs_review --limit 25 --out-json .planning/transcript-qa-batch-YYYYMMDD.json --out-md .planning/transcript-qa-batch-YYYYMMDD.md` for controlled transcript-QA slices. Current full summary: 1213 transcribed/clean/polished files, 0 missing polished, 786 review flags.
+4. Use `python3 scripts/base2026-controller.py tiktok-qa-triage --limit 50 --out-json .planning/tiktok-qa-triage-YYYYMMDD.json --out-md .planning/tiktok-qa-triage-YYYYMMDD.md` before transcript-QA slices. Current triage: 575 audio-verification rows, 193 entity/spelling rows, and 9 human text-review rows.
+5. Use `python3 scripts/base2026-controller.py tiktok-polish-audit --risk review --qa-status needs_review --limit 25 --out-json .planning/transcript-qa-batch-YYYYMMDD.json --out-md .planning/transcript-qa-batch-YYYYMMDD.md` for controlled transcript-QA slices. Current full summary: 1213 transcribed/clean/polished files, 0 missing polished, 777 review flags.
 6. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
 7. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
 8. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
@@ -77,14 +77,14 @@ Task queue source of truth:
 
 ## Latest verification
 
-- Deployed release: `base2026-pipeline-refresh-ay58-20260612`.
+- Deployed release: `base2026-intake-refresh-ay62-20260612`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
-- Live ay58 public export: 1214 source records, 1707 passages, 1552 insight cards, 1111 public insight cards, 1460 topics, 1052 public topics.
-- Live ay58 Meilisearch reindex: 1707 passages indexed into `base2026_public_tiktok`.
-- Live ay58 all-creator refresh: 0 new rows across the latest 80 public posts for `@build_in_public`, `@tjrobertson52`, `@joshuamaraney`, and `@webhivedigital`; 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
-- Durable reviewed/private candidate replay now has 29 `insight_card_candidate` rows replaying locally from ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` during a clean SQLite rebuild.
+- Live ay62 public export: 1214 source records, 1707 passages, 1553 insight cards, 1112 public insight cards, 1460 topics, 1053 public topics.
+- Live ay62 Meilisearch reindex: 1707 passages indexed into `base2026_public_tiktok`.
+- Live ay62 all-creator refresh: 0 new rows across the latest 160 public posts for `@build_in_public`, `@tjrobertson52`, `@joshuamaraney`, and `@webhivedigital`; 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. ay62 also removed four public mojibake/title artifacts and passed one additional QA row, moving transcript QA debt to 777 rows.
+- Durable reviewed/private candidate replay now has 30 `insight_card_candidate` rows replaying locally from ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` during a clean SQLite rebuild.
 - Public export gate verified: public export excludes private `needs_human` candidates; live `documents.jsonl` has 1214 rows under excerpt-only policy.
-- Live ay58 deploy QA: static endpoint checks, public export policy, controller doctor, clean rebuild, publication boundary audit, GitHub metadata validation, and 66-check mixed mobile visual QA passed with 0 failures.
+- Live ay62 deploy QA: static endpoint checks, public export policy, SQLite audit, source-review audit, transcript QA triage, publication boundary audit, GitHub metadata validation, Meilisearch search smoke, gzip/static cache smoke, live JSONL mojibake/unsafe-field smoke, and 66-check mixed mobile visual QA passed with 0 failures.
 
 - Deployed release: `base2026-asr-pipeline-ay51-20260611`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
@@ -234,7 +234,7 @@ Task queue source of truth:
 1. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.
 2. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
 3. Work the 794 historical transcript QA flags in controlled batches through the controller-backed audit; current audit has 0 high-risk flags, so this is review debt, not a public-leak blocker.
-4. Keep the 15 private `needs_human` insight-card candidates private until rewritten/promoted or rejected through an explicit review report. Current strict review keeps all 15 private because of action rewrite needs, speculative/generic/overbroad copy, or existing approved-card source limits.
+4. Keep the remaining private `needs_human` insight-card candidate private until source/audio verification resolves the damaged evidence text. Do not normalize the `click UPS` caption to `clicks` without stronger evidence.
 5. Continue TikTok refresh as a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
 6. Re-run publication boundary audit before every future GitHub push.
 

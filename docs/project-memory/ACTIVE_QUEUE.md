@@ -24,20 +24,20 @@ No task is considered done because a worker reports done. Codex must review, int
 | GEO-02 | About hero portrait scale and quote treatment | Codex after worker review | done/live | None | Live `/about/` loads CSS `1.5.15`; desktop portrait is about full card height; copy has pullquote styling; mobile stacks cleanly; desktop/mobile overflow false. |
 | UI-QA-01 | Mixed WordPress/Base2026 mobile visual QA automation | Codex | done/live | Use `node scripts/mobile-visual-qa.mjs --base-url https://aggressorbulkit.online --viewports full` before public UI deploys. | Runner and runbook exist; Base2026 `base2026-mobile-visual-qa-ay25-20260610` and WordPress CSS `1.5.16` are live; final matrix has 66 checks, 0 failures, 0 warnings. |
 | PIPE-01 | New TikTok intake/transcription/card automation | Codex | in_progress | Work transcript QA triage slices and the remaining IP-blocked source-review row; keep future imports behind review/promotion/export gates. | A repeatable local pipeline exists for check -> caption/ASR -> polish -> claim extraction -> evidence verify -> review -> import/archive -> export/package/deploy gate, with private candidates durable locally and excluded from public export. |
-| GIT-01 | Repo/git hygiene for `base2026` and `geo` | Codex | in_progress | Stage only public-safe source/docs/tooling changes from the ay58 pipeline pass after boundary and metadata gates. | Public-safe source changes are committed/pushed; generated/private artifacts remain ignored. |
+| GIT-01 | Repo/git hygiene for `base2026` and `geo` | Codex | in_progress | Stage only public-safe source/docs/tooling changes from the ay62 pipeline pass after boundary and metadata gates. | Public-safe source changes are committed/pushed; generated/private artifacts remain ignored. |
 | PUB-01 | GitHub/open-source publication staging | Codex | done | Keep running publication audit before every future push. | Public GitHub repo exists on `main`; public/private boundary is documented and enforced by audit/stage scripts. |
 
 ## Current Deployed State
 
-- Base2026 release live: `base2026-pipeline-refresh-ay58-20260612`.
-- Base2026 public export live: 1214 source records, 1707 passages, 1552 insight cards, 1111 public insight cards.
+- Base2026 release live: `base2026-intake-refresh-ay62-20260612`.
+- Base2026 public export live: 1214 source records, 1707 passages, 1553 insight cards, 1112 public insight cards.
 - WordPress child-theme CSS live: `1.5.16`.
 - VPS SSH works through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
 
 ## Immediate Execution Order
 
 1. Keep `PIPE-01` running through reviewed slices only.
-2. Work the remaining IP-blocked source-review row and transcript QA debt separately from public deploy.
+2. Work the remaining IP-blocked source-review row and transcript QA debt separately from public deploy unless transcript fixes change public excerpts.
 3. Keep `scripts/tiktok-source-review-audit.py` as the repeatable reason gate before retrying parked rows.
 4. Keep `scripts/tiktok-qa-triage.py` as the first transcript-QA classifier before detailed batch review.
 5. Keep `scripts/tiktok-polish-audit.py` as the repeatable transcript-QA batch gate; use controller reports under ignored `.planning/`.

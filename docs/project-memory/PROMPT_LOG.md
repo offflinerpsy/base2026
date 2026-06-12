@@ -2644,3 +2644,82 @@ Verification:
 Next step:
 
 - commit and push the public-safe resolver/tooling/memory changes; then continue transcript QA audio/entity slices and retry the IP-blocked source when TikTok access is available.
+
+## 2026-06-12 — ay59 full creator refresh, safe card sync, deploy
+
+User asked to run the whole pipeline again because new videos may have appeared, process them, and deploy after all work.
+
+Actions taken:
+
+- ran `scripts/hermes-tiktok-refresh.ps1` against ignored `config/tiktok-intake-queue.local.json` with the latest 80 public posts per configured creator;
+- refresh found 0 new videos, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files;
+- imported one additional exact-evidence Fable/software-engineering insight card through the private reviewed-candidate archive before this run, then rebuilt/exported the public dataset;
+- retried the source-review audit with network probing; the only remaining source-review row is still blocked by TikTok IP access;
+- deployed `base2026-night-card-refresh-ay59-20260612` and reindexed Meilisearch.
+
+Verification:
+
+- public export policy passed with `include_full_transcripts=false`, 1214 source records, 1707 passages, 1553 insight cards, 1112 public insight cards, 1460 topics, and 1053 public topics;
+- live `documents.jsonl` has 1214 rows, 0 full transcript payloads, and 0 raw `claims` fields;
+- live sitemap index has 4 child sitemap files;
+- live Meilisearch search proxy returned results for `Fable software engineering`;
+- live CSS returned gzip and long-lived immutable cache headers;
+- publication boundary audit and GitHub metadata validation passed;
+- live mixed mobile visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay59/`.
+
+Next step:
+
+- continue controlled transcript-QA slices and retry the remaining TikTok IP-blocked source when access is available; keep the remaining private `needs_human` candidate unpublished until source/audio evidence resolves it.
+
+## 2026-06-12 — ay60 human-text transcript QA slice and deploy
+
+User's overnight goal is to keep closing the honest launch-quality gaps without bulk-passing uncertain transcript text or publishing private/raw material.
+
+Actions taken:
+
+- reran private `needs_human` card review: 1 candidate remains private because the evidence text still needs source/audio verification;
+- reran source-review audit with network probing: 1 `@tjrobertson52` source remains blocked by TikTok IP access;
+- generated full transcript QA triage and selected the 17 human-text review rows for a controlled slice;
+- corrected 8 obvious polished-transcript artifacts: mojibake, duplicated caption tokens, `M dashes`/`em dashes`, `SEO. S`, `spamy`, domain casing, and numeric formatting;
+- kept 9 source-sensitive rows in `needs_review` rather than guessing damaged phrases;
+- applied an explicit private QA manifest with audit trail, rebuilt SQLite, exported public data, deployed `base2026-transcript-qa-ay60-20260612`, and reindexed Meilisearch.
+
+Verification:
+
+- transcript QA debt moved from 786 to 778 rows;
+- current QA triage: 576 audio-verification rows, 193 entity/spelling rows, and 9 human text-review rows;
+- public export policy passed with `include_full_transcripts=false`, 1214 source records, 1707 passages, 1553 insight cards, 1112 public insight cards, 1460 topics, and 1053 public topics;
+- SQLite audit, controller doctor, publication boundary audit, GitHub metadata validation, and Python compile passed;
+- live `documents.jsonl` has 1214 rows, 0 transcript payloads, 0 raw `claims` fields, and 0 mojibake rows;
+- live corrected-source smoke confirmed `If you are not making short YouTube videos...` and no old `If you you are` text;
+- live mixed mobile visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay60/`.
+
+Next step:
+
+- continue transcript QA through smaller audio/entity/source-verification batches; keep the remaining private card and IP-blocked source parked until stronger evidence is available.
+
+## 2026-06-12 — ay62 intake refresh, public-text cleanup, and deploy
+
+User asked to run the full pipeline because new TikToks may have appeared, process anything new, deploy after the work, and keep the project Git-ready.
+
+Actions taken:
+
+- ran `scripts/hermes-tiktok-refresh.ps1` against ignored `config/tiktok-intake-queue.local.json` with the latest 160 public posts per configured creator;
+- refresh found 0 new videos, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files;
+- rebuilt SQLite and exported public data: 1214 source records, 1707 passages, 1553 insight cards, 1112 public insight cards, 1460 topics, and 1053 public topics;
+- deployed intermediate `base2026-intake-refresh-ay61-20260612`, then live JSONL smoke found four public mojibake/title artifacts;
+- corrected those public text artifacts in private local TikTok source files, including one polished transcript QA row, rebuilt/exported again, deployed `base2026-intake-refresh-ay62-20260612`, and reindexed Meilisearch.
+
+Verification:
+
+- public export policy passed with `include_full_transcripts=false`;
+- transcript QA debt moved from 778 to 777 rows: 575 audio-verification rows, 193 entity/spelling rows, and 9 human text-review rows;
+- source-review audit still has 1 private blocker: `tiktok-video-7648746368739118350`, blocked by TikTok IP access;
+- live `/knowledge/` contains the ay62 release marker;
+- live `documents.jsonl` has 1214 rows, 0 mojibake rows, and 0 unsafe public full-transcript/raw-caption/claims fields;
+- live Meilisearch search proxy returned results for `AI Overviews`;
+- live mixed mobile visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay62/`.
+
+Next step:
+
+- commit and push public-safe memory updates, then continue controlled transcript QA slices and retry the IP-blocked TikTok source when network access allows.
