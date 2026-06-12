@@ -2746,3 +2746,29 @@ Verification:
 Next step:
 
 - continue only evidence-backed transcript QA slices; do not bulk-pass the remaining audio/source-sensitive rows without stronger evidence.
+
+## 2026-06-12 — ay63 new TikTok intake, entity normalizer, and deploy
+
+User asked to run the full TikTok pipeline again because new videos may have appeared, process them, and deploy after the work.
+
+Actions taken:
+
+- ran `scripts/hermes-tiktok-refresh.ps1` against ignored `config/tiktok-intake-queue.local.json`;
+- refresh found 1 new `@joshuamaraney` video (`7650378444122901768`), added it to the local inventory, transcribed it from caption metadata, and produced a polish batch;
+- ran local faithful polish for the new caption transcript and corrected the source-backed entity artifact `Jason Wang is a C O and founder` to `Jensen Huang is CEO and founder` using the official NVIDIA executive bio as the review source;
+- added `scripts/tiktok-normalize-polished-entities.py` and expanded the existing local polish normalizer so obvious ASR/entity artifacts are fixed durably before public export;
+- normalized existing private polished transcripts for public-facing artifacts including `s c o`, `Chat GBT`, `Chat GPT`, `Open AI`, `AR models`, `AR SEO`, `C m s`, `m dash`, and `Paypal`;
+- rebuilt SQLite, exported public data, deployed `base2026-intake-entity-normalizer-ay63-20260612`, and reindexed Meilisearch.
+
+Verification:
+
+- public export policy passed with `include_full_transcripts=false`;
+- local export now has 1215 source records, 1708 passages, 1553 insight cards, 1112 public insight cards, 1460 topics, and 1053 public topics;
+- current queues: 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files;
+- live source page `/knowledge/sources/tiktok-video-7650378444122901768.html` contains `Jensen Huang` and does not contain `Jason Wang`;
+- live public JSONL scan found 0 matches for the tracked ASR-slop patterns;
+- live mixed mobile visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay63/`.
+
+Next step:
+
+- commit/push public-safe script and memory updates, then continue controlled transcript QA slices and retry the IP-blocked TikTok source when network access allows.

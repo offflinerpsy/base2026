@@ -88,6 +88,7 @@ $StagePaths = @(
   "scripts/tiktok-backfill-inventory.ps1",
   "scripts/tiktok-caption-browser-extract.mjs",
   "scripts/tiktok-faithful-polish-local.py",
+  "scripts/tiktok-normalize-polished-entities.py",
   "scripts/tiktok-process-transcripts.ps1",
   "scripts/tiktok-polish-audit.py",
   "scripts/tiktok-qa-triage.py",

@@ -785,3 +785,13 @@ nginx -t: pass
 - policy: `include_full_transcripts=false`
 - QA: mobile visual runner passed 44 checks with 0 failures
 - note: TikTok refresh expanded the local inventory and left 266 ASR jobs queued; no unreviewed cards were auto-promoted.
+
+## 2026-06-12 — base2026-intake-entity-normalizer-ay63-20260612
+
+- release: `base2026-intake-entity-normalizer-ay63-20260612`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-intake-entity-normalizer-ay63-20260612`
+- public export: 1215 source records, 1708 passages, 1553 insight cards, 1112 public insight cards, 1460 topics, 1053 public topics
+- Meilisearch reindex: 1708 passages indexed into `base2026_public_tiktok`
+- policy: `include_full_transcripts=false`
+- QA: live source page for `tiktok-video-7650378444122901768` contains `Jensen Huang` and not `Jason Wang`; live public JSONL ASR-slop scan found 0 tracked bad patterns; mobile visual runner passed 66 checks with 0 failures
+- note: the refresh found 1 new `@joshuamaraney` video, closed transcript/polish queues, and deployed after source-backed entity correction.
