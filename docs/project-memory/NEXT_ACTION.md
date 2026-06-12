@@ -4,7 +4,7 @@ Last updated: 2026-06-12
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay63 intake refresh, entity-normalization cleanup, deploy, and live QA pass.
+Continue launch operation after the Base2026 ay63 intake refresh, entity-normalization cleanup, deploy, live QA pass, and post-refresh no-new-video scan.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,7 +12,7 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Continue TikTok intake through the reviewed gate. The ay63 all-creator refresh found 1 new `@joshuamaraney` video, transcribed it from caption metadata, locally polished it, corrected the source-backed NVIDIA founder entity artifact, exported it, and deployed it. Current queues: 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
+1. Continue TikTok intake through the reviewed gate. The ay63 all-creator refresh found 1 new `@joshuamaraney` video, transcribed it from caption metadata, locally polished it, corrected the source-backed NVIDIA founder entity artifact, exported it, and deployed it. A follow-up 2026-06-12 scan checked the latest 160 public posts per configured creator through rebuild/export and then ran deep `PlaylistEnd=1000` inventory check-only; both found 0 new videos and no public payload change, so no duplicate VPS deploy was needed. Current queues: 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
 2. Work the remaining quality queues separately: 637 faithful transcript QA review flags, 1 source-review row blocked by TikTok IP access, and 1 private `needs_human` insight-card candidate that still needs source/audio verification.
 3. Use `python3 scripts/base2026-controller.py tiktok-source-review-audit --probe-network --out .planning/source-review-audit-YYYYMMDD.json` before retrying the remaining source-review row. Current known reason: TikTok blocks current IP access to `tiktok-video-7648746368739118350`.
 4. Use `python3 scripts/base2026-controller.py tiktok-qa-triage --limit 50 --out-json .planning/tiktok-qa-triage-YYYYMMDD.json --out-md .planning/tiktok-qa-triage-YYYYMMDD.md` before transcript-QA slices. Current triage: 583 audio-verification rows, 45 real entity/spelling rows, and 9 human text-review rows.
@@ -82,6 +82,7 @@ Task queue source of truth:
 - Live ay63 public export: 1215 source records, 1708 passages, 1553 insight cards, 1112 public insight cards, 1460 topics, 1053 public topics.
 - Live ay63 Meilisearch reindex: 1708 passages indexed into `base2026_public_tiktok`.
 - Live ay63 all-creator refresh: 1 new `@joshuamaraney` row, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. ay63 added a durable entity normalizer and source-backed the new NVIDIA founder correction before deploy.
+- Post-ay63 2026-06-12 refresh: latest 160 public posts per configured creator produced 0 added rows, 0 queued transcripts, 0 `needs_asr`, and 0 missing polish; deep `PlaylistEnd=1000` inventory check-only also produced 0 added rows. Local rebuild/export remained unchanged at 1215 source records and 1708 passages, so no duplicate deploy was run.
 - Durable reviewed/private candidate replay now has 30 `insight_card_candidate` rows replaying locally from ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-candidates.jsonl` during a clean SQLite rebuild.
 - Public export gate verified: public export excludes private `needs_human` candidates; live `documents.jsonl` has 1215 rows under excerpt-only policy.
 - Live ay63 deploy QA: static endpoint checks, public export policy, SQLite audit, transcript QA triage, publication boundary audit, GitHub metadata validation, live new-source smoke, live JSONL ASR-slop scan, and 66-check mixed mobile visual QA passed with 0 failures.

@@ -2772,3 +2772,28 @@ Verification:
 Next step:
 
 - commit/push public-safe script and memory updates, then continue controlled transcript QA slices and retry the IP-blocked TikTok source when network access allows.
+
+## 2026-06-12 — post-ay63 no-new-video pipeline scan
+
+User asked to run the whole TikTok pipeline again because new videos may have appeared, process them, and deploy after the work.
+
+Actions taken:
+
+- ran `scripts/hermes-tiktok-refresh.ps1` against ignored `config/tiktok-intake-queue.local.json` with `PlaylistEnd=160`, transcript processing, rebuild, SQLite audit, and public export;
+- ran a deeper `PlaylistEnd=1000` check-only inventory pass after the rebuild/export pass;
+- confirmed all four configured public creator sources returned 0 added rows and 0 updated rows;
+- did not deploy a duplicate VPS release because the public payload did not change after rebuild/export.
+
+Verification:
+
+- current local inventory remains 3014 total rows, 1215 active rows, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files;
+- public export policy passed with `include_full_transcripts=false`;
+- public export counts remained 1215 source records, 1708 passages, 1553 insight cards, 1112 public insight cards, 1460 topics, and 1053 public topics;
+- publication boundary audit passed with 0 forbidden files and 0 secret findings;
+- GitHub metadata validation passed;
+- transcript QA triage remains 637 review flags: 583 audio-verification rows, 45 entity/spelling rows, and 9 human text-review rows;
+- source-review audit still has 1 private blocker: `tiktok-video-7648746368739118350`, blocked by TikTok IP access.
+
+Next step:
+
+- continue controlled transcript QA slices and retry the IP-blocked TikTok source when network access allows; deploy only when the reviewed public payload changes.

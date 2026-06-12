@@ -24,7 +24,7 @@ No task is considered done because a worker reports done. Codex must review, int
 | GEO-02 | About hero portrait scale and quote treatment | Codex after worker review | done/live | None | Live `/about/` loads CSS `1.5.15`; desktop portrait is about full card height; copy has pullquote styling; mobile stacks cleanly; desktop/mobile overflow false. |
 | UI-QA-01 | Mixed WordPress/Base2026 mobile visual QA automation | Codex | done/live | Use `node scripts/mobile-visual-qa.mjs --base-url https://aggressorbulkit.online --viewports full` before public UI deploys. | Runner and runbook exist; Base2026 `base2026-mobile-visual-qa-ay25-20260610` and WordPress CSS `1.5.16` are live; final matrix has 66 checks, 0 failures, 0 warnings. |
 | PIPE-01 | New TikTok intake/transcription/card automation | Codex | in_progress | Work transcript QA triage slices and the remaining IP-blocked source-review row; keep future imports behind review/promotion/export gates. | A repeatable local pipeline exists for check -> caption/ASR -> polish -> claim extraction -> evidence verify -> review -> import/archive -> export/package/deploy gate, with private candidates durable locally and excluded from public export. |
-| GIT-01 | Repo/git hygiene for `base2026` and `geo` | Codex | in_progress | Stage only public-safe source/docs/tooling changes from the ay63 pipeline pass after boundary and metadata gates. | Public-safe source changes are committed/pushed; generated/private artifacts remain ignored. |
+| GIT-01 | Repo/git hygiene for `base2026` and `geo` | Codex | in_progress | Keep future public-safe source/docs/tooling changes staged only after boundary and metadata gates. | Public-safe source changes are committed/pushed; generated/private artifacts remain ignored. |
 | PUB-01 | GitHub/open-source publication staging | Codex | done | Keep running publication audit before every future push. | Public GitHub repo exists on `main`; public/private boundary is documented and enforced by audit/stage scripts. |
 
 ## Current Deployed State
@@ -116,6 +116,8 @@ Pipeline work starts with controller ownership. Do not jump straight to intake r
    - Promotion must require explicit reviewed report/IDs, never status-only automation.
 8. Convert scheduled Hermes from check-only to staged local automation.
    - Scheduled mode must stop before deploy, paid LLM, public promotion, or unreviewed transcript publication.
+
+Latest refresh note: the 2026-06-12 post-ay63 scan checked the latest 160 public posts per configured creator through the local rebuild/export path and ran a deeper `PlaylistEnd=1000` check-only inventory. Both found 0 new videos and no changed public payload, so no duplicate deploy was needed.
 
 ## GIT-01 Buckets
 
