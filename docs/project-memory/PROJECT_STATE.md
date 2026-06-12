@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-text-qa-cleanup-ay65-20260612`
+- latest deployed release: `base2026-full-pipeline-refresh-ay66-20260612`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -33,7 +33,7 @@ Current local repo state:
 
 Latest verification:
 
-- `base2026-text-qa-cleanup-ay65-20260612` is live after the post-ay63 no-new-video scan and two source-backed transcript QA cleanup slices. ay65 closed the remaining text/entity QA bucket, kept unsafe rows explicitly review-gated, rebuilt/exported public data, deployed, and reindexed Meilisearch.
+- `base2026-full-pipeline-refresh-ay66-20260612` is live after a full four-creator TikTok refresh at `PlaylistEnd=1000`, clean rebuild/export, deploy, and live QA. The ay66 refresh found 0 added rows and left 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
 - Current ay65 public export is excerpt-only with 1215 source records, 1708 passages, 1553 insight cards, 1113 public insight cards, 1460 topics, and 1054 public topics. Meilisearch reindexed 1708 passages.
 - Current source-review audit shows 1 source-review row: `tiktok-video-7648746368739118350` is currently blocked by TikTok IP access. Two previous no-audio source-review rows were retried through h264-first ASR fallback, transcribed, polished, rebuilt into SQLite, and exported publicly as excerpt-only records. The private `videos.csv` and transcript working files remain local/ignored.
 - Current transcript polish status has 1214 transcribed/clean/polished transcripts and 0 missing polished files. After ay65, `scripts/tiktok-qa-triage.py` categorizes the remaining 619 review rows as audio/source-verification required. Entity/spelling and human text-review buckets are now 0. This remains controlled review debt; public export is still excerpt-only and does not expose full transcripts.
@@ -145,16 +145,16 @@ Latest verification:
 - caption-first browser extractor proved unreliable for TikTok full captions; `yt-dlp` metadata extraction worked for URL inventory and caption metadata
 - `@joshuamaraney` import: 14 caption-ready records imported into local KB and public export
 - current staged extraction summary: 68 videos checked, 26 caption-ready import candidates, 14 new imports, 12 duplicates, 36 need ASR, 5 out-of-scope candidates, 1 caption too short
-- `base2026-text-qa-cleanup-ay65-20260612` is live after text/entity QA cleanup, rebuild/export, deploy, and Meilisearch reindex with 1708 passages.
-- ay65 public export counts: 1215 source records, 1708 passages, 1553 insight cards, 1113 public insight cards, 1460 topics, 1054 public topics, 4 creators.
-- ay65 live QA passed: public export policy clean, live JSONL text/entity scan found 0 tracked old bad patterns, and mobile visual QA passed 66 checks with 0 failures.
+- `base2026-full-pipeline-refresh-ay66-20260612` is live after a full four-creator refresh, rebuild/export, deploy, and Meilisearch reindex with 1708 passages.
+- ay66 public export counts: 1215 source records, 1708 passages, 1553 insight cards, 1113 public insight cards, 1460 topics, 1054 public topics, 4 creators.
+- ay66 live QA passed: public export policy clean, endpoint smoke passed, and mobile visual QA passed 66 checks with 0 failures.
 - durable transcript cleanup added `scripts/tiktok-normalize-polished-entities.py` plus expanded local polish replacements for obvious public ASR/entity artifacts such as `s c o`, `Chat GBT`, `Chat GPT`, `Open AI`, `AR models`, `AR SEO`, `C m s`, and `m dash`.
-- current TikTok queues after ay63: 3014 total rows, 1215 active rows, 1214 transcribed rows, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
-- current transcript QA triage after ay65: 619 private review flags, all categorized as audio/source-verification rows.
+- current TikTok queues after ay66: 3014 total rows, 1215 active rows, 1214 transcribed rows, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files.
+- current transcript QA triage after ay66: 619 private review flags, all categorized as audio/source-verification rows.
 
 Primary risk:
 
-- remaining product/pipeline risk after GitHub publication: ASR fallback for 36 staged videos, source review for out-of-scope/short-caption records, automated safe promotion/deploy gates, and continued prevention of private research/raw source/generated artifact leakage.
+- remaining product/pipeline risk after GitHub publication: 619 private transcript QA rows that require audio/source verification, 1 TikTok source-review row blocked by TikTok IP access, 1 private `needs_human` insight-card candidate, automated safe promotion/deploy gates, and continued prevention of private research/raw source/generated artifact leakage.
 
 Current pipeline risk:
 

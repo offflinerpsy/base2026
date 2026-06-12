@@ -2846,3 +2846,29 @@ Verification:
 Next step:
 
 - continue controlled transcript QA slices and retry the IP-blocked TikTok source when network access allows; deploy only when the reviewed public payload changes.
+
+## 2026-06-12 — ay66 full four-creator refresh, deploy, and live QA
+
+User asked to run the whole pipeline because new videos may have appeared, process them, and deploy after the work.
+
+Actions taken:
+
+- ran `scripts/hermes-tiktok-refresh.ps1` against ignored `config/tiktok-intake-queue.local.json` with `PlaylistEnd=1000`, transcript processing, rebuild, SQLite audit, and public export;
+- confirmed all four configured public creator sources returned 0 added rows and 0 updated rows: `@build_in_public` 1000 discovered, `@tjrobertson52` 347, `@joshuamaraney` 639, and `@webhivedigital` 1000;
+- confirmed current queues remain 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files;
+- deployed `base2026-full-pipeline-refresh-ay66-20260612` and reindexed Meilisearch with 1708 passages.
+
+Verification:
+
+- `kb-audit.py` passed;
+- `check-public-export-policy.py public-data/tiktok` passed with `include_full_transcripts=false`, 1215 source records, 1708 passages, 1553 insight cards, 1113 public insight cards, 1460 topics, and 1054 public topics;
+- transcript QA triage remains 619 review flags, all `audio_verification_required`;
+- source-review audit still has 1 private blocker: `tiktok-video-7648746368739118350`, blocked by TikTok IP access;
+- private `needs_human` candidate review still has 1 candidate parked for source/audio verification;
+- publication boundary audit and GitHub metadata validation passed;
+- live endpoint smoke passed for `/knowledge/`, `/knowledge/static/documents.jsonl`, `/knowledge/sitemap.xml`, `/knowledge/roadmap.html`, and `/knowledge/creators/`;
+- live mixed mobile visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay66/`.
+
+Next step:
+
+- stage/commit/push the public-safe memory updates, then continue controlled transcript QA slices and retry the IP-blocked TikTok source only when network/source access allows.

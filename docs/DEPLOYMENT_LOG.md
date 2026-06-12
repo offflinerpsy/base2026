@@ -1,5 +1,74 @@
 # Deployment Log
 
+## 2026-06-12 — ay66 Full Pipeline Refresh Deploy
+
+Release:
+
+```text
+base2026-full-pipeline-refresh-ay66-20260612
+```
+
+What changed:
+
+```text
+Ran the full four-creator TikTok refresh with PlaylistEnd=1000.
+No new TikTok inventory rows were added and no existing rows were updated.
+Rebuilt SQLite, audited the KB, exported public TikTok data, packaged, deployed, and reindexed Meilisearch.
+```
+
+Dataset:
+
+```text
+source_records=1215
+passages=1708
+insight_cards=1553
+public_insight_cards=1113
+topics=1460
+public_topics=1054
+creators=4
+include_full_transcripts=false
+```
+
+Meilisearch:
+
+```text
+index=base2026_public_tiktok
+indexed=1708
+task=243
+```
+
+Verification:
+
+```text
+build-kb-sqlite.py: pass
+kb-audit.py: PASS
+check-public-export-policy.py: ok=true
+tiktok-qa-triage: 619 needs_review, all audio_verification_required
+tiktok-source-review-audit --probe-network: 1 row, source_blocked_by_tiktok_ip
+review-insight-candidates --status needs_human: 1 candidate remains needs_human
+audit-publication-boundary.py: forbidden=0, secret_findings=0
+validate-github-metadata.py: ok
+mobile-visual-qa.mjs --viewports full: 66 checks, 0 failures
+```
+
+Live smoke:
+
+```text
+/knowledge/: 200
+/knowledge/static/documents.jsonl: 200
+/knowledge/sitemap.xml: 200
+/knowledge/roadmap.html: 200
+/knowledge/creators/: 200
+```
+
+Remaining non-deploy debt:
+
+```text
+619 transcript QA rows remain private audio/source-verification debt.
+1 TikTok source-review row remains blocked by TikTok IP access.
+1 private needs_human insight-card candidate remains parked for source/audio verification.
+```
+
 ## 2026-06-11 — ay51 ASR Pipeline Deploy
 
 Release:
