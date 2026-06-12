@@ -4,7 +4,7 @@ Last updated: 2026-06-12
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay71 intake/GPT-card deploy and live QA pass.
+Continue launch operation after the Base2026 ay72 roadmap-status sync deploy and live QA pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -81,15 +81,17 @@ Task queue source of truth:
 52. ay69 added 15 GPT/Codex-reviewed public insight cards from 16 queued no-card sources across two source-only batches, skipped 1 giveaway/engagement source, rebuilt/exported/deployed, and reindexed Meilisearch.
 53. ay70 added 20 GPT/Codex-reviewed public insight cards from two more source-only batches, rejected 1 over-source-limit candidate, rebuilt/exported/deployed, and passed 66-check live visual QA.
 54. ay71 refreshed the four TikTok creator queues, found 1 new `@build_in_public` source, caption-polished it via Codex/GPT review, added 2 exact-evidence public cards for that source, rebuilt/exported/deployed, and passed 66-check live visual QA.
+55. ay72 synced the public roadmap with the actual ay71 pipeline state: source metadata model and transcription workflow are marked completed; evidence-gated insight-card extraction/review, entity/topic cleanup, and moderation queue are marked in progress; source-backed public insight cards are marked live.
 
 ## Latest verification
 
-- Deployed release: `base2026-intake-gpt-cards-ay71-20260612`.
+- Deployed release: `base2026-roadmap-status-sync-ay72-20260612`.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
-- Live ay71 public export: 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, 1096 public topics.
-- Live ay71 Meilisearch reindex: 1709 passages indexed into `base2026_public_tiktok`.
+- Live ay72 public export: 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, 1096 public topics.
+- Live ay72 Meilisearch reindex: 1709 passages indexed into `base2026_public_tiktok`.
 - ay70/ay71 GPT/Codex card work: 18 queued/no-card sources plus 1 new intake source reviewed from public passages, 22 exact-evidence candidates imported/promoted after reviewer gates, 1 over-limit candidate rejected, and weak/ASR-fragile sources skipped rather than forced into public cards.
 - Live ay71 deploy QA: `kb-audit.py` passed; public export policy passed; live source page `/knowledge/sources/tiktok-video-7650481268206931222.html` returns the new source excerpt; 66-check mixed mobile visual QA passed with 0 failures.
+- Live ay72 roadmap sync QA: live `/knowledge/static/roadmap.js` contains the updated statuses; publication boundary audit and GitHub metadata validation passed; 66-check mixed mobile visual QA passed with 0 failures.
 - ay66 full four-creator refresh: `@build_in_public` 1000 discovered/0 added, `@tjrobertson52` 347/0, `@joshuamaraney` 639/0, `@webhivedigital` 1000/0; local inventory remains 3014 rows and 1215 active rows.
 - Live ay63 all-creator refresh: 1 new `@joshuamaraney` row, 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. ay63 added a durable entity normalizer and source-backed the new NVIDIA founder correction before deploy.
 - Post-ay63 2026-06-12 refresh: latest 160 public posts per configured creator produced 0 added rows, 0 queued transcripts, 0 `needs_asr`, and 0 missing polish; deep `PlaylistEnd=1000` inventory check-only also produced 0 added rows.

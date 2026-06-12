@@ -28,7 +28,7 @@ Base2026 turns that stream of public spoken knowledge into structured source rec
 
 ### Current limitations
 
-- Transcription is still partly local and experimental.
+- Transcription is local-first and working, but historical QA still requires source/audio verification for some rows.
 - TikTok and Instagram extraction are unstable by nature.
 - Small VPS is not suitable for heavy ASR/transcription workloads.
 - AI-powered answer generation is not yet a public feature.
@@ -70,7 +70,8 @@ Before scaling the database, we publish the rules: what the project is, how cont
 - Source metadata model.
 - Media/audio/video ingestion logic.
 - Transcription workflow.
-- Summary and entity extraction.
+- Evidence-gated insight-card extraction.
+- Entity/topic cleanup.
 - Moderation/review queue.
 
 ## Phase 3 - AI Knowledge Layer
@@ -85,6 +86,7 @@ Before scaling the database, we publish the rules: what the project is, how cont
 - Entity and topic clustering.
 - Search and filtering.
 - Source-backed answer blocks.
+- Source-backed public insight cards.
 - Confidence / verification labels.
 - Internal linking between related entries.
 
@@ -150,6 +152,7 @@ Before scaling the database, we publish the rules: what the project is, how cont
 - Local transcription pipeline.
 - Source metadata model.
 - Transcription workflow.
+- Evidence-gated insight-card review.
 - Moderation/review queue.
 
 ## Later

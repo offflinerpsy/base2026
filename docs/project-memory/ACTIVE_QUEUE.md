@@ -29,7 +29,7 @@ No task is considered done because a worker reports done. Codex must review, int
 
 ## Current Deployed State
 
-- Base2026 release live: `base2026-intake-gpt-cards-ay71-20260612`.
+- Base2026 release live: `base2026-roadmap-status-sync-ay72-20260612`.
 - Base2026 public export live: 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards.
 - WordPress child-theme CSS live: `1.5.16`.
 - VPS SSH works through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
@@ -117,7 +117,7 @@ Pipeline work starts with controller ownership. Do not jump straight to intake r
 8. Convert scheduled Hermes from check-only to staged local automation.
    - Scheduled mode must stop before deploy, paid LLM, public promotion, or unreviewed transcript publication.
 
-Latest refresh note: ay71 checked all four configured public creators through `scripts/hermes-tiktok-refresh.ps1`, found 1 new `@build_in_public` source, caption-polished it through Codex/GPT review, added 2 exact-evidence public cards, rebuilt SQLite, exported public data, deployed `base2026-intake-gpt-cards-ay71-20260612`, and reindexed Meilisearch. ay67-ay70 used GPT/Codex source-only review packets for queued no-card sources and promoted 52 exact-evidence public cards after reviewer gates. Queues remain 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. The remaining 619 transcript QA flags are all audio/source-verification rows.
+Latest refresh note: ay71 checked all four configured public creators through `scripts/hermes-tiktok-refresh.ps1`, found 1 new `@build_in_public` source, caption-polished it through Codex/GPT review, added 2 exact-evidence public cards, rebuilt SQLite, exported public data, deployed, and reindexed Meilisearch. ay72 then synced roadmap statuses with that actual pipeline state and deployed `base2026-roadmap-status-sync-ay72-20260612` without changing public data counts. ay67-ay70 used GPT/Codex source-only review packets for queued no-card sources and promoted 52 exact-evidence public cards after reviewer gates. Queues remain 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. The remaining 619 transcript QA flags are all audio/source-verification rows.
 
 ## GIT-01 Buckets
 

@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-intake-gpt-cards-ay71-20260612`
+- latest deployed release: `base2026-roadmap-status-sync-ay72-20260612`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -33,8 +33,8 @@ Current local repo state:
 
 Latest verification:
 
-- `base2026-intake-gpt-cards-ay71-20260612` is live after ay70 GPT/Codex no-card source review, ay71 TikTok refresh, one new `@build_in_public` caption-polish/import, clean rebuild/export, deploy, Meilisearch reindex, live source smoke, and full mixed visual QA. The ay70/ay71 pass promoted 22 exact-evidence public cards and rejected 1 over-source-limit candidate rather than forcing it public.
-- Current ay71 public export is excerpt-only with 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, and 1096 public topics. Meilisearch reindexed 1709 passages.
+- `base2026-roadmap-status-sync-ay72-20260612` is live after syncing the public roadmap with the actual ay71 pipeline state: source metadata model and transcription workflow are now marked completed, evidence-gated insight-card extraction/review and moderation queue are marked in progress, and source-backed public insight cards are marked live. The ay72 deploy kept the ay71 public data counts unchanged and passed live QA.
+- Current ay72 public export is excerpt-only with 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, and 1096 public topics. Meilisearch reindexed 1709 passages.
 - Current source-review audit shows 1 source-review row: `tiktok-video-7648746368739118350` is currently blocked by TikTok IP access. Two previous no-audio source-review rows were retried through h264-first ASR fallback, transcribed, polished, rebuilt into SQLite, and exported publicly as excerpt-only records. The private `videos.csv` and transcript working files remain local/ignored.
 - Current transcript polish status has 1215 transcribed/clean/polished transcripts and 0 missing polished files. The ay71 refresh added one new caption-backed `@build_in_public` transcript and polished it through Codex/GPT review without local-model rewriting. `scripts/tiktok-qa-triage.py` still categorizes the remaining 619 review rows as audio/source-verification required. Entity/spelling and human text-review buckets are now 0. This remains controlled review debt; public export is still excerpt-only and does not expose full transcripts.
 - Current private insight-card candidate queue was reduced by the ay57/ay58/ay59/ay67/ay68/ay69/ay70/ay71 review passes: 63 candidates were rewritten or created from exact evidence, verified, imported as approved, archived for clean-rebuild replay, and exported publicly; 6 candidates were rejected or kept out by reviewer gates; 8 old rows were resolved as superseded by rewritten approved cards; and 1 older row remains `needs_human` for source/audio verification. Public export still excludes private candidates.
@@ -77,7 +77,7 @@ Latest verification:
 - live ay23 QA passed: source pages now explain `Public Evidence Excerpt`, `Related Passages`, and `Public Insight Cards` with info hints; the full-transcript public policy note is visually highlighted; empty insight-card states explain that no reviewed card is linked yet; desktop/mobile checks on `/knowledge/sources/tiktok-video-7647909694559767840.html` have no horizontal overflow or console errors.
 - TikTok refresh automation reality: Windows task `Base2026 Hermes TikTok Check` runs twice daily at 03:30 and 15:30 Minsk time with `scripts/hermes-tiktok-refresh.ps1 -CheckOnly -PlaylistEnd 50`. It detects/inventories candidates only; it does not automatically polish, import, package, or deploy new TikToks yet.
 - SEO readiness pass completed for Base2026 static pages: `/knowledge/`, roadmap, creators, topics, sources, and support now have meta descriptions, canonical URLs, `index,follow`, one H1, and WebPage/Search schema where appropriate.
-- Base2026 sitemap is live at `https://aggressorbulkit.online/knowledge/sitemap.xml`; the latest ay71 package generated 1342 sitemap URLs across the sitemap index/children, and WordPress `robots.txt` includes the Base2026 sitemap alongside the WordPress sitemap.
+- Base2026 sitemap is live at `https://aggressorbulkit.online/knowledge/sitemap.xml`; the latest ay72 package generated 1342 sitemap URLs across the sitemap index/children, and WordPress `robots.txt` includes the Base2026 sitemap alongside the WordPress sitemap.
 - public policy pages now include correction/removal contact email: `offflinerpsy@gmail.com`
 - Apache-2.0 license selected and applied
 - indexable aggregate topics: 51; singleton topic/compare pages are `noindex,follow`

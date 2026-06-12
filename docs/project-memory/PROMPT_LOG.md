@@ -2949,6 +2949,29 @@ Next step:
 
 - run publication boundary and GitHub metadata gates, stage/commit/push public-safe memory and script/source changes only, then continue the GPT/Codex source-only review lane for remaining no-card sources.
 
+## 2026-06-12 — ay72 roadmap status sync
+
+User asked to mark completed roadmap items inside the roadmap itself so public statuses match actual work.
+
+Actions taken:
+
+- updated `docs/public-pages/01_ROADMAP.md` and `web/static/roadmap.js` so the public roadmap matches the ay71 pipeline reality;
+- marked source metadata model and transcription workflow as completed;
+- marked evidence-gated insight-card extraction/review, entity/topic cleanup, and moderation/review queue as in progress;
+- marked source-backed public insight cards as live;
+- regenerated/deployed `base2026-roadmap-status-sync-ay72-20260612` without changing public data counts and reindexed Meilisearch.
+
+Verification:
+
+- live `/knowledge/static/roadmap.js` contains the updated roadmap statuses;
+- public export remained excerpt-only with 1216 source records, 1709 passages, 1607 insight cards, and 1165 public insight cards;
+- publication boundary audit and GitHub metadata validation passed;
+- full mixed live visual QA passed with 66 checks and 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay72-roadmap/`.
+
+Next step:
+
+- commit/push the public-safe roadmap/status-sync source and memory updates, then continue the GPT/Codex source-only card-review lane.
+
 ## 2026-06-12 — ay69 GPT/Codex no-card source review batches 04-05
 
 User clarified again that local models should not be used for the current public card text work and asked to use GPT/Codex review instead.
