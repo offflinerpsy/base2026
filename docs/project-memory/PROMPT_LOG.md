@@ -3044,6 +3044,13 @@ Verification:
 Next step:
 - Commit/push public-safe source/docs changes after final git review; continue pipeline/card backlog separately.
 
+Follow-up:
+
+- Added mobile interaction gates to `scripts/mobile-visual-qa.mjs` for WordPress/Kadence hamburger drawer, Base2026 mobile submenu layout, homepage roadmap CTA focus, and source modal open/layout.
+- Targeted live interaction gate passed: 12 checks, 0 failures.
+- Full live interaction-gated mixed QA passed: 66 checks, 0 failures, evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay76-full-interaction-gate/`.
+- Base2026 `main` was pushed to GitHub at commit `5efa8643`; the WordPress theme branch `codex/wp-native-content-seo-foundation` was pushed at commit `7295c14`.
+
 ## 2026-06-12 — architecture/code audit council
 
 User asked for a full project architecture/code audit with four independent expert roles, special attention to the BS2026/Base2026 text and insight pipeline, and no shallow first-take conclusion.

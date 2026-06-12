@@ -394,7 +394,139 @@ async function exerciseSourceModal(page, route, viewport, outputDir, options) {
   return result;
 }
 
-function buildFailures({ status, route, readiness, diagnostics, consoleMessages, pageErrors, modal }) {
+async function exerciseMobileMenu(page, route, viewport) {
+  if (viewport.width > 480) return null;
+
+  const result = {
+    attempted: true,
+    open: false,
+    baseSubmenuOpen: false,
+    overflowX: false,
+    failure: "",
+  };
+
+  try {
+    const menuSummary = page.locator(".site-header__mobile-menu > summary, #mobile-toggle, .menu-toggle-open, .site-header__hamburger, .site-header__menu-toggle").first();
+    if ((await menuSummary.count()) === 0) {
+      result.failure = "No mobile menu toggle found.";
+      return result;
+    }
+
+    await menuSummary.click({ timeout: 5000 });
+    await page.waitForTimeout(250);
+
+    const menuState = await page.evaluate(() => {
+      const panel = document.querySelector(".site-header__mobile-panel, .site-header__mobile-nav, .site-header__drawer, #mobile-drawer .drawer-inner, #mobile-drawer");
+      const base = document.querySelector(".site-header__mobile-base");
+      const baseSummary = base ? base.querySelector("summary") : null;
+      const panelRect = panel ? panel.getBoundingClientRect() : null;
+      const baseRect = baseSummary ? baseSummary.getBoundingClientRect() : null;
+      return {
+        panelVisible: !!panel && panelRect.width > 0 && panelRect.height > 0,
+        panelWidth: panelRect ? panelRect.width : 0,
+        baseSummaryWidth: baseRect ? baseRect.width : 0,
+        overflowX: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
+        hasBaseSubmenu: !!base,
+      };
+    });
+
+    result.open = menuState.panelVisible;
+    result.overflowX = menuState.overflowX;
+
+    if (route.group === "base2026" && !menuState.hasBaseSubmenu) {
+      result.failure = "Base2026 mobile submenu missing.";
+      return result;
+    }
+
+    if (menuState.hasBaseSubmenu) {
+      const baseSummary = page.locator(".site-header__mobile-base > summary").first();
+      await baseSummary.click({ timeout: 5000 });
+      await page.waitForTimeout(250);
+
+      const submenuState = await page.evaluate(() => {
+        const base = document.querySelector(".site-header__mobile-base");
+        const summary = base ? base.querySelector("summary") : null;
+        const links = Array.from(base ? base.querySelectorAll("a") : []);
+        const panel = document.querySelector(".site-header__mobile-panel, .site-header__mobile-nav, .site-header__drawer, #mobile-drawer .drawer-inner, #mobile-drawer");
+        const panelRect = panel ? panel.getBoundingClientRect() : null;
+        const summaryRect = summary ? summary.getBoundingClientRect() : null;
+        const linkRects = links.map((link) => {
+          const rect = link.getBoundingClientRect();
+          return { text: (link.textContent || "").trim(), left: rect.left, right: rect.right, width: rect.width };
+        });
+        const overflowLink = panelRect && linkRects.some((rect) => rect.left < panelRect.left - 2 || rect.right > panelRect.right + 2);
+        return {
+          open: !!base && base.open,
+          summaryWidth: summaryRect ? summaryRect.width : 0,
+          linkCount: links.length,
+          overflowLink: !!overflowLink,
+        };
+      });
+
+      result.baseSubmenuOpen = submenuState.open;
+      if (submenuState.open && (submenuState.summaryWidth < 120 || submenuState.linkCount === 0 || submenuState.overflowLink)) {
+        result.failure = `Base submenu layout invalid: width=${Math.round(submenuState.summaryWidth)} links=${submenuState.linkCount} overflow=${submenuState.overflowLink}`;
+      }
+    }
+
+    const closeButton = page.locator(".site-header__mobile-menu[open] > summary, #mobile-drawer .menu-toggle-close, .menu-toggle-close").first();
+    if ((await closeButton.count()) > 0) {
+      await closeButton.click({ timeout: 3000 }).catch(() => {});
+      await page.waitForTimeout(150);
+    }
+    await page.keyboard.press("Escape").catch(() => {});
+  } catch (error) {
+    result.failure = error.message;
+  }
+
+  return result;
+}
+
+async function exerciseRoadmapCta(page, route, viewport) {
+  if (route.id !== "wp-home" || viewport.width > 480) return null;
+
+  const result = {
+    attempted: true,
+    focused: false,
+    attention: false,
+    activeName: "",
+    failure: "",
+  };
+
+  try {
+    const cta = page.locator("a[href='#roadmap-form'], a[data-roadmap-scroll]").first();
+    if ((await cta.count()) === 0) {
+      result.failure = "No roadmap CTA anchor found.";
+      return result;
+    }
+
+    await cta.click({ timeout: 5000 });
+    await page.waitForTimeout(500);
+
+    const state = await page.evaluate(() => {
+      const form = document.querySelector("#roadmap-form form, form.ay-roadmap-mini-form, form.ay-audit-form");
+      const active = document.activeElement;
+      return {
+        activeName: active ? active.getAttribute("name") || active.id || active.tagName.toLowerCase() : "",
+        focused: !!form && !!active && form.contains(active),
+        attention: !!form && form.classList.contains("is-attention"),
+      };
+    });
+
+    result.focused = state.focused;
+    result.attention = state.attention;
+    result.activeName = state.activeName;
+    if (!state.focused) {
+      result.failure = `Roadmap CTA did not focus the form; active=${state.activeName || "none"}`;
+    }
+  } catch (error) {
+    result.failure = error.message;
+  }
+
+  return result;
+}
+
+function buildFailures({ status, route, readiness, diagnostics, consoleMessages, pageErrors, modal, mobileMenu, roadmapCta }) {
   const failures = [];
   const consoleErrors = relevantConsole(consoleMessages);
 
@@ -424,6 +556,12 @@ function buildFailures({ status, route, readiness, diagnostics, consoleMessages,
   }
   if (modal?.attempted && (!modal.open || modal.overflowX || modal.failure)) {
     failures.push(`Source modal failed: ${modal.failure || (modal.overflowX ? "horizontal overflow" : "not open")}`);
+  }
+  if (mobileMenu?.attempted && (!mobileMenu.open || mobileMenu.overflowX || mobileMenu.failure)) {
+    failures.push(`Mobile menu failed: ${mobileMenu.failure || (mobileMenu.overflowX ? "horizontal overflow" : "not open")}`);
+  }
+  if (roadmapCta?.attempted && (!roadmapCta.focused || roadmapCta.failure)) {
+    failures.push(`Roadmap CTA failed: ${roadmapCta.failure || "form did not receive focus"}`);
   }
 
   return failures;
@@ -549,6 +687,8 @@ async function run() {
         let readiness = {};
         let diagnostics = null;
         let modal = null;
+        let mobileMenu = null;
+        let roadmapCta = null;
         let screenshot = "";
         let navigationError = "";
 
@@ -568,6 +708,8 @@ async function run() {
             screenshot = file;
           }
 
+          mobileMenu = await exerciseMobileMenu(page, route, viewport);
+          roadmapCta = await exerciseRoadmapCta(page, route, viewport);
           modal = await exerciseSourceModal(page, route, viewport, outputDir, options);
         } catch (error) {
           navigationError = error.message;
@@ -585,7 +727,7 @@ async function run() {
           };
         }
 
-        const failures = buildFailures({ status, route, readiness, diagnostics, consoleMessages, pageErrors, modal });
+        const failures = buildFailures({ status, route, readiness, diagnostics, consoleMessages, pageErrors, modal, mobileMenu, roadmapCta });
         if (navigationError) failures.push(`Navigation/check failed: ${navigationError}`);
 
         const item = {
@@ -600,6 +742,8 @@ async function run() {
           consoleMessages: relevantConsole(consoleMessages),
           pageErrors,
           modal,
+          mobileMenu,
+          roadmapCta,
           screenshot,
           failures,
         };
