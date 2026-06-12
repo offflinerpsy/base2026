@@ -37,8 +37,8 @@ No task is considered done because a worker reports done. Codex must review, int
 ## Immediate Execution Order
 
 1. Keep `PIPE-01` running through reviewed slices only.
-2. Commit/push ay54 public-safe pipeline and memory changes after audited staging.
-3. Work source-review rows and transcript QA debt separately from public deploy.
+2. Work source-review rows and transcript QA debt separately from public deploy.
+3. Keep `scripts/tiktok-source-review-audit.py` as the repeatable reason gate before retrying parked rows.
 4. Re-run publication boundary audit before every future push/deploy.
 
 ## PUB-01 Gates

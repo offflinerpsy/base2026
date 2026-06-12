@@ -4,7 +4,7 @@ Last updated: 2026-06-11
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay54 full-creator TikTok refresh check, private-candidate replay/export gate, deploy, and live QA pass.
+Continue launch operation after the Base2026 ay54 full-creator TikTok refresh check, private-candidate replay/export gate, deploy, live QA pass, and source-review audit tooling pass.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,9 +12,9 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Stage the ay54 public-safe pipeline-script/config-example/memory changes through the audited public allowlist, commit, and push `main`.
-2. Continue TikTok intake through the reviewed gate. The ay54 all-creator inventory found 0 new videos, 0 queued transcripts, 0 `needs_asr`, and 0 queued ASR jobs.
-3. Work the remaining quality queues separately: 794 faithful transcript QA review flags, 3 source-review rows, and 15 private `needs_human` candidates from the ay52 card slice. Promote only evidence-verified approved candidates; non-public candidates now replay locally but are excluded from public export.
+1. Continue TikTok intake through the reviewed gate. The ay54 all-creator inventory found 0 new videos, 0 queued transcripts, 0 `needs_asr`, and 0 queued ASR jobs.
+2. Work the remaining quality queues separately: 794 faithful transcript QA review flags, 3 source-review rows, and 15 private `needs_human` candidates from the ay52 card slice. Promote only evidence-verified approved candidates; non-public candidates now replay locally but are excluded from public export.
+3. Use `python3 scripts/tiktok-source-review-audit.py --probe-network --out .planning/source-review-audit-YYYYMMDD.json` before retrying the 3 source-review rows. Current known reasons: 2 fallback media files have no audio stream; 1 source is blocked by TikTok IP access.
 4. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
 5. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
 6. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
@@ -231,9 +231,9 @@ Task queue source of truth:
 
 1. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.
 2. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
-3. Run the next checked local queue step for the queued transcripts discovered by Mac launchd check-only inventory.
-4. Keep the one `needs_human` insight-card candidate private until rewritten or rejected.
-5. Convert TikTok refresh from check-only to a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
+3. Work the 794 historical transcript QA flags in controlled batches; current audit has 0 high-risk flags, so this is review debt, not a public-leak blocker.
+4. Keep the 15 private `needs_human` insight-card candidates private until rewritten/promoted or rejected through an explicit review report.
+5. Continue TikTok refresh as a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
 6. Re-run publication boundary audit before every future GitHub push.
 
 ## Open-source readiness already added

@@ -11,6 +11,7 @@ Date: 2026-06-06
 - `SECURITY.md`
 - `docs/`
 - `scripts/`
+- `scripts/tiktok-source-review-audit.py`
 - `web/static/`
 - `10_agent-instructions/`
 - `config/creator-profiles.json`

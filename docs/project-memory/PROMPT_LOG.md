@@ -2481,3 +2481,30 @@ Verification:
 Next step:
 
 - stage audited public-safe changes, commit, push `main`, then continue with source-review/transcript-QA cleanup and GSC/GA4 launch monitoring.
+
+## 2026-06-11 — Source-review audit gate after ay54
+
+User asked to bring the project to Git with senior engineering discipline and no sloppy manual state.
+
+Actions taken:
+
+- added `scripts/tiktok-source-review-audit.py` to make parked TikTok `needs_source_review` rows auditable without publishing private source data;
+- ran the audit with network probing and confirmed 3 parked rows:
+  - 2 older `@tjrobertson52` fallback MP4 files have no audio stream and no subtitles;
+  - 1 newer `@tjrobertson52` source is currently blocked by TikTok IP access;
+- ran full transcript polish audit over 1211 polished transcripts: 0 high-risk flags, 794 `needs_review`, 417 low/pass;
+- confirmed public export counts remain ay54: 1214 source records, 1703 passages, 1544 insight cards, 1103 public insight cards, 1452 topics;
+- confirmed SQLite candidate queue remains 6 approved public candidate cards and 15 private `needs_human` candidates;
+- updated project memory, data-source notes, status board, active queue, and publication audit allowlist for the new public-safe audit script.
+
+Verification:
+
+- `python3 scripts/tiktok-source-review-audit.py --probe-network --out .planning/source-review-audit-20260612-rerun.json` passed;
+- `python3 scripts/tiktok-polish-audit.py --limit 2000 --json` passed with `high_risk=0`;
+- `python3 scripts/check-public-export-policy.py public-data/tiktok` passed with `include_full_transcripts=false`;
+- `python3 scripts/validate-github-metadata.py` passed;
+- `python3 -m py_compile` passed for the touched/related pipeline scripts.
+
+Next step:
+
+- rerun publication boundary audit, stage only public-safe script/docs changes, commit, push `main`, then continue the 794 transcript-QA batch review and 15 private card-candidate rewrite/review queue.

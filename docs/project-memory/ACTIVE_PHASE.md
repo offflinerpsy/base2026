@@ -12,7 +12,7 @@ The public intelligence layer is deployed, GitHub publication is complete, WordP
 
 ## Current exact task
 
-Run launch monitoring and the next reviewed TikTok/source pipeline slice. The reviewed-candidate persistence gap is closed for both public approved candidates and private `needs_human` review-queue candidates. Non-public `insight_card_candidate` rows replay locally but are excluded from public export. Continue with source-review/transcript-QA cleanup, GSC/GA4 baseline capture, and future TikTok refreshes through the reviewed gate before public deployment.
+Run launch monitoring and the next reviewed TikTok/source pipeline slice. The reviewed-candidate persistence gap is closed for both public approved candidates and private `needs_human` review-queue candidates. Non-public `insight_card_candidate` rows replay locally but are excluded from public export. Source-review blockers are now auditable with `scripts/tiktok-source-review-audit.py`; continue with transcript-QA cleanup, candidate rewrite/review, GSC/GA4 baseline capture, and future TikTok refreshes through the reviewed gate before public deployment.
 
 ## Important note
 
