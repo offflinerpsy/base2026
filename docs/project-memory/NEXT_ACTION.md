@@ -12,15 +12,14 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Stage only public-safe memory updates after publication-boundary and metadata gates, commit the ay67 pipeline record, and push `main`.
-2. Continue source-only GPT/Codex review batches from `.planning/backfill-insight-cards-20260612-newrun.jsonl`; promote only exact-evidence candidates that pass `review-insight-candidates`.
-3. Do not use local LLMs as the primary card-extraction/rewrite path. Local models can remain installed, but current reviewed text work should use Codex/GPT review packets.
-4. Do not bulk-pass the remaining 619 transcript QA rows: every row is currently audio/source-verification sensitive.
-5. Retry the remaining source-review row only when source access is available. Current known blocker: TikTok blocks access to `tiktok-video-7648746368739118350`.
-6. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
-7. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
-8. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
-9. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`.
+1. Continue source-only GPT/Codex review batches from `.planning/backfill-insight-cards-20260612-newrun.jsonl`; promote only exact-evidence candidates that pass `review-insight-candidates`.
+2. Do not use local LLMs as the primary card-extraction/rewrite path. Local models can remain installed, but current reviewed text work should use Codex/GPT review packets.
+3. Do not bulk-pass the remaining 619 transcript QA rows: every row is currently audio/source-verification sensitive.
+4. Retry the remaining source-review row only when source access is available. Current known blocker: TikTok blocks access to `tiktok-video-7648746368739118350`.
+5. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
+6. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
+7. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
+8. Continue GitHub work from the public repo `https://github.com/offflinerpsy/base2026` on default branch `main`.
 
 Task queue source of truth:
 
@@ -243,14 +242,13 @@ Task queue source of truth:
 
 ## Exact next steps
 
-1. Commit and push the public-safe ay67 memory updates after the publication-boundary, GitHub metadata, and diff checks pass.
-2. Continue the source-only GPT/Codex review lane for queued no-card sources; promote only exact-evidence candidates that pass `review-insight-candidates`.
-3. Keep the 619 historical transcript QA flags open until audio/source verification exists; do not bulk-pass them.
-4. Keep the remaining source-review blocker parked unless `tiktok-video-7648746368739118350` becomes accessible.
-5. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.
-6. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
-7. Continue TikTok refresh as a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
-8. Re-run publication boundary audit before every future GitHub push.
+1. Continue the source-only GPT/Codex review lane for queued no-card sources; promote only exact-evidence candidates that pass `review-insight-candidates`.
+2. Keep the 619 historical transcript QA flags open until audio/source verification exists; do not bulk-pass them.
+3. Keep the remaining source-review blocker parked unless `tiktok-video-7648746368739118350` becomes accessible.
+4. Request GSC indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets.
+5. Capture the first GSC/GA4 baseline after Google has processed the submitted sitemaps.
+6. Continue TikTok refresh as a reviewed local update flow: check -> captions/ASR -> polish -> claim extraction -> review -> import -> export -> package -> deploy gate.
+7. Re-run publication boundary audit before every future GitHub push.
 
 ## Open-source readiness already added
 
