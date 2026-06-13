@@ -7,14 +7,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 REQUIRED_FILES = [
-    ".github/dependabot.yml",
     ".github/pull_request_template.md",
     ".github/ISSUE_TEMPLATE/config.yml",
     ".github/ISSUE_TEMPLATE/bug_report.yml",
     ".github/ISSUE_TEMPLATE/feature_request.yml",
     ".github/ISSUE_TEMPLATE/source_correction.yml",
-    ".github/workflows/ci.yml",
-    ".github/workflows/scorecard.yml",
     "CONTRIBUTING.md",
     "CODE_OF_CONDUCT.md",
     "SECURITY.md",
@@ -42,22 +39,15 @@ def main() -> int:
     if "docs/PUBLICATION_STAGING_PLAN.md" not in pr_template:
         fail("pull request template must reference publication staging plan")
 
-    dependabot = read(".github/dependabot.yml")
-    for needle in ['version: 2', 'package-ecosystem: "github-actions"', 'directory: "/"', 'interval: "weekly"']:
-        if needle not in dependabot:
-            fail(f"dependabot.yml missing expected setting: {needle}")
+    workflows_dir = ROOT / ".github" / "workflows"
+    workflow_files = sorted(workflows_dir.glob("*")) if workflows_dir.exists() else []
+    if workflow_files:
+        names = ", ".join(path.name for path in workflow_files)
+        fail(f"GitHub Actions workflows are disabled for this repository; remove: {names}")
 
-    scorecard = read(".github/workflows/scorecard.yml")
-    for needle in [
-        "ossf/scorecard-action@",
-        "security-events: write",
-        "id-token: write",
-        "contents: read",
-        "github/codeql-action/upload-sarif@",
-        "persist-credentials: false",
-    ]:
-        if needle not in scorecard:
-            fail(f"scorecard workflow missing expected setting: {needle}")
+    dependabot = ROOT / ".github" / "dependabot.yml"
+    if dependabot.exists():
+        fail("dependabot.yml is disabled because this public repo does not use GitHub Actions.")
 
     for issue_form in [
         ".github/ISSUE_TEMPLATE/bug_report.yml",

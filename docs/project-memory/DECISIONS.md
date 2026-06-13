@@ -215,3 +215,9 @@ Reason: rough TikTok transcripts often omit or distort the visual point of the v
 Decision: reviewed legacy public insight cards are persisted in an ignored local archive at `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-legacy-insights.jsonl` and replayed by `scripts/build-kb-sqlite.py` during clean SQLite rebuilds. The replay deletes any prior claim evidence for that claim before inserting reviewed evidence so one claim cannot duplicate in public export.
 
 Reason: the ay80 pipeline showed that a clean SQLite rebuild can erase DB-only reviewed legacy approvals and collapse public cards unless those approvals have a replayable source of truth. Keeping the replay hook in code and the reviewed archive local/ignored preserves launch-quality public cards without committing private review artifacts or generated exports.
+
+## 2026-06-13 — Keep the public GitHub repo Actions-free
+
+Decision: do not ship `.github/workflows` or GitHub Actions Dependabot config in the public Base2026 repository. Local scripts (`validate-github-metadata.py`, publication boundary audit, public release contract, export policy checks, and visual QA) are the required validation lane before push/deploy.
+
+Reason: the current GitHub account/repo setup should not depend on GitHub Actions. Keeping the repository Actions-free prevents GitHub from creating failing/unavailable checks while preserving the public/private boundary through local deterministic gates.

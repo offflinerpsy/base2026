@@ -16,7 +16,7 @@ The public product must show attribution, provenance, excerpts, topics, reviewed
 - Meilisearch docs: filterable attributes and facets require explicit index settings.
 - Meilisearch docs: multi-search/federated search can query passages, sources, insights, creators, and topics without client-side hacks.
 - GitHub docs: serious open-source repos need README, license, contributing guide, code of conduct, security policy, and clear contribution expectations.
-- OpenSSF Scorecard: use automated security-health checks before grant/public submission.
+- OpenSSF Scorecard was considered for security-health checks, but the current public repo is intentionally Actions-free; use local validation gates before push/deploy.
 
 ## Architecture decision
 
@@ -175,7 +175,7 @@ Before GitHub:
 - add CONTRIBUTING;
 - add CODE_OF_CONDUCT;
 - add SECURITY;
-- add `.github/workflows` for tests and OpenSSF Scorecard;
+- add local validation gates and keep GitHub Actions disabled unless the repository plan changes;
 - run publication boundary audit;
 - stage only public-safe files.
 
@@ -227,4 +227,4 @@ Remaining:
 
 - Phase 4 reviewed insight queue UI;
 - Phase 6 multi-index search tabs;
-- Phase 7 open-source readiness, license, security/publication audit, and GitHub workflow.
+- Phase 7 open-source readiness, license, security/publication audit, and local GitHub metadata validation.

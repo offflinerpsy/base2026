@@ -102,8 +102,7 @@ GitHub metadata check passed:
 
 - issue templates
 - pull request template
-- Dependabot config
-- OpenSSF Scorecard workflow
+- Actions-free GitHub metadata contract
 - metadata validator
 
 ## Public Boundary

@@ -29,7 +29,8 @@ No task is considered done because a worker reports done. Codex must review, int
 
 ## Current Deployed State
 
-- Base2026 release live: `base2026-clean-replay-pipeline-ay81-20260613`.
+- Base2026 release live: `base2026-modal-caption-tooltip-ay82-20260613`.
+- Base2026 latest data/reindex checkpoint: `base2026-clean-replay-pipeline-ay81-20260613`.
 - Base2026 public export live: 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards.
 - WordPress child-theme CSS live: `1.5.41`.
 - VPS SSH works through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
@@ -119,7 +120,7 @@ Pipeline work starts with controller ownership. Do not jump straight to intake r
 8. Convert scheduled Hermes from check-only to staged local automation.
    - Scheduled mode must stop before deploy, paid LLM, public promotion, or unreviewed transcript publication.
 
-Latest refresh note: ay80 checked all four configured public creators through `scripts/hermes-tiktok-refresh.ps1`, found 2 queued 2026-06-12 caption-backed sources, polished both through GPT/Codex review, rebuilt SQLite, exported public data, deployed, and reindexed Meilisearch. ay81 then fixed the clean-rebuild replay root cause for reviewed legacy cards, proved duplicate `claim_evidence` count is 0, redeployed, and reindexed Meilisearch. Queues remain 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. The remaining 619 transcript QA flags are all audio/source-verification rows.
+Latest refresh note: ay80 checked all four configured public creators through `scripts/hermes-tiktok-refresh.ps1`, found 2 queued 2026-06-12 caption-backed sources, polished both through GPT/Codex review, rebuilt SQLite, exported public data, deployed, and reindexed Meilisearch. ay81 then fixed the clean-rebuild replay root cause for reviewed legacy cards, proved duplicate `claim_evidence` count is 0, redeployed, and reindexed Meilisearch. ay82 is a data-preserving source-dialog UI hotfix over ay81 and did not reindex Meilisearch. Queues remain 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. The remaining 619 transcript QA flags are all audio/source-verification rows.
 
 ## GIT-01 Buckets
 

@@ -20,7 +20,7 @@ Passed:
 - repeatable deploy script exists;
 - preflight and safe staging helper scripts exist;
 - preflight verifies live search and live public documents contract (`claimLeaks=0`, `transcriptLeaks=0`);
-- GitHub issue forms, PR template, Dependabot config, and OpenSSF Scorecard workflow exist;
+- GitHub issue forms and PR template exist; GitHub Actions, Dependabot, and Scorecard workflows are intentionally disabled for the public repo;
 - publication audit script passes for current changed files.
 
 Still needed:

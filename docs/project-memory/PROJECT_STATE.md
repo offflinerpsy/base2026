@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-clean-replay-pipeline-ay81-20260613`
+- latest deployed release: `base2026-modal-caption-tooltip-ay82-20260613`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -26,14 +26,16 @@ Current local repo state:
 - current UI/data-model decision: separate `Platform` filters (TikTok now, Instagram planned) from content `Topic/Category` filters
 - current UI direction: light Alex Yarosh WordPress-compatible style, not the previous dark AI app shell
 - GitHub publication is complete for the current public-safe source tree after final boundary audit and metadata validation
-- open-source readiness files now exist locally: README, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, `.github/workflows/ci.yml`
+- open-source readiness files now exist locally: README, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, GitHub issue templates, and PR template; GitHub Actions/Dependabot are intentionally disabled and local scripts are the required validation gate
 - repeatable VPS deploy script exists: `scripts/deploy-public-vps.ps1`
 - public/private git boundary documented
 - generated/private folders ignored in `.gitignore`
 
 Latest verification:
 
-- `base2026-clean-replay-pipeline-ay81-20260613` is live after the reviewed legacy-card contract and two-source TikTok pipeline pass. The release was packaged from a clean SQLite rebuild that replayed 967 ignored reviewed legacy insight rows and 85 reviewed/private candidate rows, then exported 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards, 1504 topics, and 987 public topics under excerpt-only policy. Meilisearch reindexed 1713 passages. `claim_evidence` duplicate claim IDs are 0, `review-legacy-insights` reports `total_legacy_auto_public_cards=0`, public export policy passed, text-excerpt validation passed, and the public release contract passed against the ay80 baseline.
+- `base2026-modal-caption-tooltip-ay82-20260613` is live as a data-preserving UI hotfix after source-dialog caption metadata and info tooltips regressed visually. The hotfix preserved the ay81 public export membership/counts and skipped Meilisearch reindex. Live mobile/desktop browser QA confirmed the source dialog fits the viewport, `Caption metadata snippet` opens without nested text cropping, the tooltip remains inside the dialog and viewport, and full mixed visual QA passed with 66 checks and 0 failures. GitHub Actions/Dependabot were removed from the public repo contract because this repo now uses local validation scripts instead of GitHub Actions.
+
+- `base2026-clean-replay-pipeline-ay81-20260613` remains the latest data/reindex checkpoint after the reviewed legacy-card contract and two-source TikTok pipeline pass. The release was packaged from a clean SQLite rebuild that replayed 967 ignored reviewed legacy insight rows and 85 reviewed/private candidate rows, then exported 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards, 1504 topics, and 987 public topics under excerpt-only policy. Meilisearch reindexed 1713 passages. `claim_evidence` duplicate claim IDs are 0, `review-legacy-insights` reports `total_legacy_auto_public_cards=0`, public export policy passed, text-excerpt validation passed, and the public release contract passed against the ay80 baseline.
 
 - `base2026-pipeline-two-sources-ay80-20260613` processed the next TikTok slice: 2 queued 2026-06-12 caption-backed sources were polished through the GPT/Codex text lane, rebuilt/exported, packaged/deployed, and verified live at `/knowledge/sources/tiktok-video-7650601606215372046.html` and `/knowledge/sources/tiktok-video-7650509272832380183.html`.
 

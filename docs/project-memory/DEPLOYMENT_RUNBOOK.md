@@ -7,7 +7,7 @@ Current public path:
 - WordPress root: `/var/www/alex-yarosh`
 - server current symlink: `/var/www/base2026-knowledge/current`
 - server releases: `/var/www/base2026-knowledge/releases/`
-- latest deployed release: `base2026-mobile-modal-text-hotfix-ay78-20260613`
+- latest deployed release: `base2026-modal-caption-tooltip-ay82-20260613`
 - SSL certificate: Let's Encrypt `aggressorbulkit.online`, domains `aggressorbulkit.online` and `www.aggressorbulkit.online`, auto-renewed by `certbot.timer`
 
 ## Domain and SSL
@@ -46,7 +46,7 @@ nginx -t
 
 ## Local package
 
-Current live release checkpoint: `base2026-clean-replay-pipeline-ay81-20260613`.
+Current live release checkpoint: `base2026-modal-caption-tooltip-ay82-20260613`. The latest data/reindex checkpoint remains `base2026-clean-replay-pipeline-ay81-20260613`.
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package-public-release.ps1 -ReleaseName <release-name>

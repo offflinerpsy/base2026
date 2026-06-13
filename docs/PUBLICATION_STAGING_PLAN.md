@@ -18,9 +18,6 @@ Root:
 - `CONTRIBUTING.md`
 - `CODE_OF_CONDUCT.md`
 - `LICENSE`
-- `.github/workflows/ci.yml`
-- `.github/workflows/scorecard.yml`
-- `.github/dependabot.yml`
 - `.github/pull_request_template.md`
 - `.github/ISSUE_TEMPLATE/`
 

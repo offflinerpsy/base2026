@@ -110,8 +110,9 @@ function sourceIdentityMarkup(doc) {
   `;
 }
 
-function infoHint(label, text) {
-  return `<span class="info-hint" tabindex="0" aria-label="${escapeHtml(`${label}: ${text}`)}" data-tooltip="${escapeHtml(text)}">i</span>`;
+function infoHint(label, text, align = "") {
+  const alignAttr = align ? ` data-tooltip-align="${escapeHtml(align)}"` : "";
+  return `<span class="info-hint" tabindex="0" aria-label="${escapeHtml(`${label}: ${text}`)}" data-tooltip="${escapeHtml(text)}"${alignAttr}>i</span>`;
 }
 
 function stripHandle(value) {
@@ -223,19 +224,22 @@ function isTruncatedCaption(value) {
   return /(?:\.\.\.|…)$/.test(compactText(String(value || "").replace(/<[^>]*>/g, "")));
 }
 
-function renderPlatformCaption(value, className = "") {
+function renderPlatformCaption(value, className = "", status = "") {
   const caption = compactText(value);
   if (!caption) return "";
-  const truncated = isTruncatedCaption(caption);
+  const truncated = compactText(status).toLowerCase() === "truncated" || isTruncatedCaption(caption);
   const safeCaption = escapeHtml(caption);
-  const label = truncated ? "Caption metadata · truncated" : "Caption metadata";
+  const label = truncated ? "Caption metadata snippet" : "Caption metadata";
+  const tooltip = truncated
+    ? "This is the exact platform metadata snippet Base2026 received. It was already shortened before import, so the source excerpt above remains the readable public text."
+    : "Raw platform caption metadata can be incomplete. Base2026 shows it for provenance, while the public evidence excerpt above is the main readable source text.";
   const note = truncated
-    ? `<p class="caption-note">This caption comes from platform metadata and is already truncated before Base2026 receives it. It is not used as the main public evidence text.</p>`
+    ? `<p class="caption-note">This is the platform metadata snippet as collected. It was already shortened before Base2026 received it; the source excerpt above is the readable public evidence text.</p>`
     : "";
   return `
-    <details class="caption-preview ${className}">
-      <summary><span>${label}</span>${infoHint("Platform caption metadata", "Raw platform caption metadata can be incomplete or truncated. Base2026 shows it for provenance, while the public evidence excerpt above is the main readable source text.")}</summary>
-      <p>${safeCaption}</p>
+    <details class="caption-preview ${className} ${truncated ? "caption-preview--truncated" : ""}">
+      <summary><span>${label}</span>${infoHint("Platform caption metadata", tooltip, "right")}</summary>
+      <p class="caption-preview__text">${safeCaption}</p>
       ${note}
     </details>
   `;
@@ -485,7 +489,7 @@ async function openTranscript(itemId) {
       ${renderRecordTopics(doc)}
       <h3 class="section-title-with-info">${textLabel} ${infoHint(textLabel, "This is the public evidence text shown for research and attribution. It is kept excerpt-first by default to avoid publishing full third-party transcripts as standalone public content.")}</h3>
       <div class="transcript-full-text">${paragraphizePlainText(publicText || "No public excerpt is available for this source yet.", activeTerms)}</div>
-      ${renderPlatformCaption(doc.title, "transcript-caption")}
+      ${renderPlatformCaption(doc.title, "transcript-caption", doc.title_status)}
     `;
     transcriptBody.querySelectorAll(".caption-preview").forEach((details) => {
       details.addEventListener("toggle", () => {

@@ -27,11 +27,9 @@ $AuditScript = Join-Path $Root "scripts/audit-publication-boundary.py"
 $StagePaths = @(
   ".env.example",
   ".gitignore",
-  ".github/dependabot.yml",
+  ".github",
   ".github/pull_request_template.md",
   ".github/ISSUE_TEMPLATE",
-  ".github/workflows/ci.yml",
-  ".github/workflows/scorecard.yml",
   "AGENTS.md",
   "README.md",
   "requirements-local-worker.txt",
@@ -190,6 +188,13 @@ if (-not $Apply) {
 git add -- $ExistingPaths
 if ($LASTEXITCODE -ne 0) {
   throw "git add failed."
+}
+
+if ($StagePaths.Count -gt 0) {
+  git add -u -- $StagePaths
+  if ($LASTEXITCODE -ne 0) {
+    throw "git add -u failed."
+  }
 }
 
 git diff --cached --stat

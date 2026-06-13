@@ -3323,3 +3323,33 @@ Verification:
 Next step:
 
 - rerun boundary/GitHub metadata checks, then stage/commit/push only public-safe code/docs/tooling changes.
+
+## 2026-06-13 — ay82 source-dialog tooltip/caption hotfix and Actions-free GitHub
+
+User reported two live source-dialog regressions: caption metadata looked cut when opened, and the info tooltip overflowed outside the modal. User also reported GitHub complaining about Actions on the free GitHub setup.
+
+Actions taken:
+
+- changed caption metadata disclosure copy to `Caption metadata snippet` when the source metadata is already truncated before import;
+- removed nested caption metadata scroll/crop in the source dialog by allowing the caption preview body to expand normally;
+- constrained `info-hint` tooltip width and added right-aligned tooltip positioning for modal-edge controls;
+- removed `.github/workflows/ci.yml`, `.github/workflows/scorecard.yml`, and `.github/dependabot.yml`;
+- updated `scripts/validate-github-metadata.py` so GitHub Actions workflows and Actions Dependabot config are explicitly disallowed for this public repo;
+- updated `scripts/stage-public-files.ps1` so safe tracked deletions can be staged with the public staging helper;
+- packaged/deployed data-preserving release `base2026-modal-caption-tooltip-ay82-20260613` with `-SkipReindex`.
+
+Verification:
+
+- `git diff --check` passed;
+- `node --check web/static/meili.js` passed;
+- `python3 scripts/validate-github-metadata.py` passed;
+- `python3 scripts/audit-publication-boundary.py` passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- `python3 scripts/check-public-export-policy.py public-data/tiktok` passed with `include_full_transcripts=false`;
+- `python3 scripts/validate-public-release-contract.py --export-dir public-data/tiktok` passed;
+- live mobile browser QA at 390x844 confirmed no horizontal overflow, modal bounds inside viewport, caption metadata preview open with no internal cropping, and tooltip bounds inside both dialog and viewport;
+- live desktop browser QA at 1159x863 confirmed the same tooltip/text geometry;
+- full live visual QA passed: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-ay82-20260613/`.
+
+Next step:
+
+- stage, commit, and push public-safe code/docs/tooling changes only.

@@ -24,7 +24,7 @@ Four independent expert roles reviewed the project in parallel:
 External references checked:
 
 - Meilisearch security guidance: API keys, tenant tokens, and result sanitization: <https://www.meilisearch.com/docs/capabilities/security/overview>
-- GitHub Actions secure-use guidance: least privilege permissions and secret handling: <https://docs.github.com/en/actions/reference/security/secure-use>
+- GitHub Actions secure-use guidance was checked during the audit, but the current public repo is intentionally Actions-free; local scripts are the validation gate.
 - OWASP DevSecOps secrets management: detect secrets in commits, repos, and pipelines: <https://owasp.org/www-project-devsecops-guideline/latest/01a-Secrets-Management>
 - MDN Subresource Integrity guidance for CDN assets: <https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity>
 
@@ -185,8 +185,8 @@ Rename the command to `public-export-policy`, or make it run both the export pol
 
 Evidence:
 
-- `.github/workflows/ci.yml:27-44` syntax-checks four Python scripts and one JS file.
-- The export policy job skips when ignored `public-data/tiktok` is absent.
+- At audit time, the GitHub Actions CI syntax-checked only a small script subset and skipped export policy when ignored `public-data/tiktok` was absent.
+- Current correction: GitHub Actions are disabled; local release/publication scripts must be run explicitly before push/deploy.
 - `scripts/kb-audit.py:31-47` prints PASS/FAIL but does not exit non-zero on failure.
 
 Risk:

@@ -4,7 +4,7 @@ Last updated: 2026-06-13
 
 ## Current next action
 
-Continue launch operation after `base2026-clean-replay-pipeline-ay81-20260613`, with the public release contract and TikTok intake slice verified live.
+Continue launch operation after `base2026-modal-caption-tooltip-ay82-20260613`, with the public release contract, TikTok intake slice, source-dialog hotfix, and Actions-free GitHub metadata verified live.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,7 +12,7 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Treat ay81 as the current release checkpoint. Live release: 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards, 1504 topics, 987 public topics, 4 creators; `review-legacy-insights` reports `total_legacy_auto_public_cards=0`.
+1. Treat ay82 as the current live release checkpoint and ay81 as the latest data/reindex checkpoint. Live release data remains 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards, 1504 topics, 987 public topics, 4 creators; `review-legacy-insights` reports `total_legacy_auto_public_cards=0`.
 2. Keep the clean-rebuild replay mechanism intact: `scripts/build-kb-sqlite.py` now replays ignored reviewed legacy insight rows from `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-legacy-insights.jsonl` and reviewed/private candidate rows from `reviewed-candidates.jsonl`. Do not delete those ignored local archives without rebuilding from another reviewed source of truth.
 3. Harden Meilisearch deploy order with a shadow/reindex verification step around the same public release contract.
 4. Continue source-only GPT/Codex review batches from a freshly filtered no-card queue only after exact-evidence review gates pass. Promote only candidates that pass `review-insight-candidates`; do not use local LLMs as the primary public card writer.
@@ -91,12 +91,16 @@ Task queue source of truth:
 60. `scripts/base2026-review-legacy-insights.py` now audits legacy `auto_evidence_match` public cards, separates deterministic approvals from GPT/Codex repair packets and visual-context cases, and applies reviewed JSON decisions back into SQLite with backup and exact-evidence checks. The controller exposes `review-legacy-insights`, `apply-legacy-insight-report`, and `apply-legacy-insight-review`.
 61. `scripts/build-kb-sqlite.py` now replays ignored reviewed legacy insight archives during clean rebuilds, preventing approved public cards from collapsing after SQLite is rebuilt from source files.
 62. `base2026-clean-replay-pipeline-ay81-20260613` is live after a clean rebuild, contract validation, package/deploy, Meilisearch reindex, and live smoke checks.
+63. `base2026-modal-caption-tooltip-ay82-20260613` is live as a data-preserving source-dialog UI hotfix: caption metadata is labeled as a snippet, source-dialog tooltip geometry is contained, GitHub Actions/Dependabot are disabled, and local metadata validation enforces the Actions-free contract.
 
 ## Latest verification
 
-- Deployed release: `base2026-clean-replay-pipeline-ay81-20260613`.
-- Live ay81 public export: 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards, 1504 topics, 987 public topics, 4 creators.
-- Live ay81 Meilisearch reindex: 1713 passages indexed into `base2026_public_tiktok`.
+- Deployed release: `base2026-modal-caption-tooltip-ay82-20260613`.
+- Latest data/reindex checkpoint: `base2026-clean-replay-pipeline-ay81-20260613`.
+- Live ay82 public export: 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards, 1504 topics, 987 public topics, 4 creators.
+- Live ay81 Meilisearch reindex remains current: 1713 passages indexed into `base2026_public_tiktok`.
+- Live ay82 source-dialog QA passed on mobile 390x844 and desktop 1159x863: CSS/JS cache-bust `base2026-modal-caption-tooltip-ay82-20260613`, no horizontal overflow, modal fits viewport, caption metadata opens with `max-height:none` and `overflow:visible`, and tooltip bounds remain inside both dialog and viewport.
+- Live ay82 mixed visual QA passed: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-ay82-20260613/`.
 - Clean rebuild replay QA: `reviewed_legacy_insight_claims=967`, `reviewed_candidate_claims=85`, `claim_evidence_total=1623`, `claim_evidence_distinct=1623`, duplicate claim IDs 0, `kb-audit.py` passed, public export policy passed, text excerpt validation passed, public release contract passed, and `review-legacy-insights` reports `total_legacy_auto_public_cards=0`.
 - Live ay81 source smoke: `/knowledge/sources/tiktok-video-7650601606215372046.html` and `/knowledge/sources/tiktok-video-7650509272832380183.html` return source pages with `Source Excerpt` and without the old empty-source message.
 - Live ay81 mixed visual QA passed: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260613-ay81/`.
@@ -286,7 +290,7 @@ Task queue source of truth:
 - `CONTRIBUTING.md`
 - `CODE_OF_CONDUCT.md`
 - `SECURITY.md`
-- `.github/workflows/ci.yml`
+- local validation scripts instead of GitHub Actions
 - `scripts/deploy-public-vps.ps1`
 - `scripts/generate-info-pages.py`
 - `scripts/audit-publication-boundary.py`
@@ -300,8 +304,6 @@ Task queue source of truth:
 - `docs/GITHUB_LAUNCH_CHECKLIST.md`
 - `.github/pull_request_template.md`
 - `.github/ISSUE_TEMPLATE/`
-- `.github/dependabot.yml`
-- `.github/workflows/scorecard.yml`
 - `scripts/validate-github-metadata.py`
 
 ## Latest publication audit
