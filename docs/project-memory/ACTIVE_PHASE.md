@@ -1,6 +1,6 @@
 # Active Phase
 
-Last updated: 2026-06-12
+Last updated: 2026-06-13
 
 ## Current active phase
 
@@ -12,7 +12,11 @@ The public intelligence layer is deployed, GitHub publication is complete, WordP
 
 ## Current exact task
 
-Run launch monitoring and the next reviewed TikTok/source pipeline slice. The ay66 full four-creator `PlaylistEnd=1000` refresh found 0 added rows and left 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. ay67-ay69 used source-only GPT/Codex review packets for queued no-card sources and promoted 32 exact-evidence public cards. ay70 used two more GPT/Codex batches, promoted 20 exact-evidence public cards, and rejected 1 over-limit candidate instead of overloading a source page. ay71 then ran the local TikTok refresh, found 1 new `@build_in_public` source, caption-polished it via Codex/GPT review, promoted 2 exact-evidence public cards for that new source, rebuilt/exported/deployed, and reindexed Meilisearch. ay72 synced the public roadmap statuses to that actual pipeline state and deployed `base2026-roadmap-status-sync-ay72-20260612`. ay73 fixed the live source-modal document payload cache mismatch by versioning `documents.jsonl` with the release cache-bust. ay76 fixed the root mobile-regression cause by normalizing generated source/topic/static-page CSS/JS cache-busts after all generators run, tightened the mobile source modal, fixed the Base2026 mobile submenu width, and deployed `base2026-cachebust-mobilefix-ay76-20260612`. WordPress child theme `1.5.41` adds visible mobile form focus/validation for the roadmap CTA. Current live release is `base2026-cachebust-mobilefix-ay76-20260612`. The live export has 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, and 1096 public topics. The remaining transcript QA bucket is 619 audio/source-verification rows, and one TikTok source-review row remains blocked by TikTok/IP access.
+Run launch monitoring and the next reviewed TikTok/source pipeline slice. The current live release is `base2026-clean-replay-pipeline-ay81-20260613`.
+
+ay79 completed the legacy public-card migration contract: old `auto_evidence_match` public cards were moved to explicit reviewed/approved state, the export kept the public-card floor, and the release deployed with 1216 source records, 1709 passages, and 1034 public insight cards. ay80 then ran the next TikTok slice, found 2 queued 2026-06-12 caption-backed sources, polished both through the GPT/Codex text lane, rebuilt SQLite, exported 1218 source records and 1713 passages, packaged/deployed, and reindexed Meilisearch. ay81 closed the rebuild root cause by adding a clean-rebuild replay hook for ignored reviewed legacy insight archives, creating the local reviewed legacy archive, rebuilding SQLite from scratch, proving `claim_evidence` has 0 duplicate claim IDs, repackaging, deploying, and reindexing Meilisearch.
+
+Current live export: 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards, 1504 topics, 987 public topics, 4 creators, and excerpt-only source/dialog payloads. `review-legacy-insights` reports `total_legacy_auto_public_cards=0`. Current transcript status: 1217 polished transcripts, 0 queued transcripts, 0 queued ASR jobs, and 0 missing polish files. Remaining QA debt is the historical 619 audio/source-verification transcript rows plus source-access review debt that must stay gated.
 
 ## Important note
 

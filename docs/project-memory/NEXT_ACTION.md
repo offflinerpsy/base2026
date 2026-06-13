@@ -1,10 +1,10 @@
 # Next Action
 
-Last updated: 2026-06-12
+Last updated: 2026-06-13
 
 ## Current next action
 
-Continue launch operation after the Base2026 ay76 mobile interaction/cache-bust fix deploy, GitHub push, and live interaction QA gate pass.
+Continue launch operation after `base2026-clean-replay-pipeline-ay81-20260613`, with the public release contract and TikTok intake slice verified live.
 
 Active phase: launch monitoring plus check-only TikTok intake pipeline hardening.
 
@@ -12,12 +12,12 @@ VPS SSH access is restored on MacBook through `~/.ssh/geo_contabo_ed25519` and a
 
 Current next safe action:
 
-1. Finish the legacy public-card promotion migration before the next data-changing Base2026 deploy. The public release contract is now codified, but the current ignored `public-data/tiktok` export still contains legacy `auto_evidence_match` public cards; do not deploy a freshly packaged no-auto export until those cards are explicitly reviewed/migrated or deliberately reduced.
-2. Harden Meilisearch deploy order with a shadow/reindex verification step around the same public release contract.
-3. Continue source-only GPT/Codex review batches from a freshly filtered no-card queue; promote only exact-evidence candidates that pass `review-insight-candidates`.
-4. Do not use local LLMs as the primary card-extraction/rewrite path. Local models can remain installed, but current reviewed text work should use Codex/GPT review packets, preferably the ChatGPT 5.5 Medium quality lane when available.
+1. Treat ay81 as the current release checkpoint. Live release: 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards, 1504 topics, 987 public topics, 4 creators; `review-legacy-insights` reports `total_legacy_auto_public_cards=0`.
+2. Keep the clean-rebuild replay mechanism intact: `scripts/build-kb-sqlite.py` now replays ignored reviewed legacy insight rows from `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-legacy-insights.jsonl` and reviewed/private candidate rows from `reviewed-candidates.jsonl`. Do not delete those ignored local archives without rebuilding from another reviewed source of truth.
+3. Harden Meilisearch deploy order with a shadow/reindex verification step around the same public release contract.
+4. Continue source-only GPT/Codex review batches from a freshly filtered no-card queue only after exact-evidence review gates pass. Promote only candidates that pass `review-insight-candidates`; do not use local LLMs as the primary public card writer.
 5. Do not bulk-pass the remaining 619 transcript QA rows: every row is currently audio/source-verification sensitive.
-6. Retry the remaining source-review row only when source access is available. Current known blocker: TikTok blocks access to `tiktok-video-7648746368739118350`.
+6. Retry the remaining source-review/IP-blocked row only when source access is available. Current known blocker: TikTok blocks access to `tiktok-video-7648746368739118350`.
 7. Retry Google Search Console manual indexing for `/pricing/`, `/about/`, and `/ai-visibility-audit/` after the daily quota resets. Do not keep clicking while GSC shows `Quota Exceeded`.
 8. Capture the first GSC/GA4 baseline after Google processes the submitted WordPress and Base2026 sitemaps and GA4 UI catches up with verified collect hits.
 9. Keep generated `public-data`, release zips, local DB backups, `.planning`, raw media, and transcript working folders out of GitHub commits.
@@ -88,10 +88,18 @@ Task queue source of truth:
 57. ay76 fixed the systemic Base2026 mobile CSS staleness cause: `scripts/package-public-release.ps1` now normalizes CSS/JS cache-busts across every generated HTML file after all generators run, including `../static/...` source/topic pages. The release also fixes the mobile Base2026 submenu width and tightens the mobile source-record modal header. WordPress child theme `1.5.41` adds visible focus/validation behavior for the mobile roadmap form CTA.
 58. `scripts/mobile-visual-qa.mjs` now includes mobile interaction gates for the WordPress/Kadence hamburger drawer, Base2026 mobile submenu, homepage roadmap CTA focus, and source-record modal open/layout checks so these regressions are caught before future deploys.
 59. `contracts/base2026.public-release-contract.json` and `scripts/validate-public-release-contract.py` now enforce the public release lane: no full transcripts, no implicit insight auto-promotion, no tracked generated export artifacts, fixture-backed CI positive/negative checks, and staged package exports that do not overwrite current deploy data before validation.
+60. `scripts/base2026-review-legacy-insights.py` now audits legacy `auto_evidence_match` public cards, separates deterministic approvals from GPT/Codex repair packets and visual-context cases, and applies reviewed JSON decisions back into SQLite with backup and exact-evidence checks. The controller exposes `review-legacy-insights`, `apply-legacy-insight-report`, and `apply-legacy-insight-review`.
+61. `scripts/build-kb-sqlite.py` now replays ignored reviewed legacy insight archives during clean rebuilds, preventing approved public cards from collapsing after SQLite is rebuilt from source files.
+62. `base2026-clean-replay-pipeline-ay81-20260613` is live after a clean rebuild, contract validation, package/deploy, Meilisearch reindex, and live smoke checks.
 
 ## Latest verification
 
-- Deployed release: `base2026-cachebust-mobilefix-ay76-20260612`.
+- Deployed release: `base2026-clean-replay-pipeline-ay81-20260613`.
+- Live ay81 public export: 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards, 1504 topics, 987 public topics, 4 creators.
+- Live ay81 Meilisearch reindex: 1713 passages indexed into `base2026_public_tiktok`.
+- Clean rebuild replay QA: `reviewed_legacy_insight_claims=967`, `reviewed_candidate_claims=85`, `claim_evidence_total=1623`, `claim_evidence_distinct=1623`, duplicate claim IDs 0, `kb-audit.py` passed, public export policy passed, text excerpt validation passed, public release contract passed, and `review-legacy-insights` reports `total_legacy_auto_public_cards=0`.
+- Live ay81 source smoke: `/knowledge/sources/tiktok-video-7650601606215372046.html` and `/knowledge/sources/tiktok-video-7650509272832380183.html` return source pages with `Source Excerpt` and without the old empty-source message.
+- Live ay81 mixed visual QA passed: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260613-ay81/`.
 - Architecture/code audit completed at `docs/project-memory/ARCHITECTURE_CODE_AUDIT_2026_06_12.md`; recommended next hardening is a public release/promotion contract, shadow Meilisearch deploy, fixture-backed policy CI, and a generated-page policy decision.
 - Live path: `https://aggressorbulkit.online/knowledge/`.
 - Live ay76 public export: 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, 1096 public topics.
@@ -99,6 +107,7 @@ Task queue source of truth:
 - Live ay76 mobile interaction QA: source pages now load `../static/styles.css?v=base2026-cachebust-mobilefix-ay76-20260612`; mobile Base2026 menu summary width is 296px with no horizontal overflow; submenu links align inside the panel; source-modal body begins at y=229 instead of y=288; homepage roadmap form focuses `ay_website` and shows attention state on invalid submit.
 - Live ay76 mixed visual QA passed: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay76-mobile-interactions/`.
 - Live ay76 full interaction-gated QA passed: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay76-full-interaction-gate/`.
+- Legacy public-card migration smoke on 2026-06-12: 30 old auto-promoted public cards are now locally `approved` in SQLite; regenerated no-auto export has 1216 source records, 1709 passages, 1607 insight cards, 97 public approved insight cards, and 0 contract violations when the public-card retention floor is not enforced. The retention-floor contract correctly blocks deploy because candidate public cards would drop below the live baseline: baseline 1165, candidate 97, floor ratio 0.8.
 - Live WordPress theme CSS: `1.5.41`.
 - Live ay73 source-modal QA: `/knowledge/?base2026_public_tiktok%5Bquery%5D=Google%20Ads%20Tracking` result `tiktok-video-7649635621287316743` opens `Source record` with `@joshuamaraney`, `2026-06-10`, and the Google Ads Tracking excerpt; `Source record unavailable`/`Source record not found` are absent.
 - Live ay73 mixed visual QA passed: 66 checks, 0 failures; evidence under ignored `output/evidence/mobile-visual-qa-live-20260612-ay73-cachefix/`.
@@ -261,7 +270,7 @@ Task queue source of truth:
 
 ## Exact next steps
 
-1. Resolve the legacy public-card promotion contract gap: current ignored `public-data/tiktok` is excerpt-only but still has 1098 `auto_evidence_match` public cards, so a new no-auto package is correctly blocked until those cards are explicitly reviewed/migrated or deliberately reduced.
+1. Treat `base2026-clean-replay-pipeline-ay81-20260613` as the current launch checkpoint and keep clean-rebuild replay archives intact; `auto_evidence_match` public cards are now 0.
 2. Harden Meilisearch deploy order with a shadow/reindex verification step around the same public release contract.
 3. Continue the source-only GPT/Codex review lane for queued no-card sources; promote only exact-evidence candidates that pass `review-insight-candidates`. Use GPT/Codex review packets for this text work; do not use local LLMs as the quality source.
 4. Keep the 619 historical transcript QA flags open until audio/source verification exists; do not bulk-pass them.
@@ -386,6 +395,25 @@ Notes:
 - Modal policy text now reads `excerpt only`, and caption metadata uses the shorter `Caption metadata` label.
 - Verification passed: publication boundary audit, GitHub metadata validation, targeted live DOM checks, and full live mixed visual QA with 66 checks and 0 failures.
 - `base2026-topic-ia-ay43-20260611` is live after compacting topic pages: share icons and public insight/source/creator counts now live inside the `Topic evidence page` hero, and the hero width matches the lower content sections.
+
+## Latest mobile text-excerpt integrity fix
+
+- Root cause found for mobile/source-page cut text: `documents.jsonl` excerpts were sliced from transcript text, and static source pages used extra display truncation for source excerpts/related passages.
+- Fixed the source exporter so public `documents.jsonl` excerpts come from reviewed public passage text first and are shortened only on sentence/word boundaries with an explicit ellipsis.
+- Fixed static source pages so `Source Excerpt` and source-page `Related Passages` render the public passage body instead of silent cropped previews.
+- Added `scripts/validate-public-text-excerpts.py` and wired it into `scripts/package-public-release.ps1` so a future package fails if a public source excerpt is silently cut from a passage without an ellipsis.
+- Verification: old `public-data/tiktok` fails the new validator with silent cuts such as `coming ou` and `honest assess`; fresh fixed export passes with 1215 checked records.
+- Do not deploy a fresh package yet unless the legacy public-card retention-floor issue is handled or an explicitly approved UI-only/data-preserving deploy path is used; current no-auto export still drops public approved cards to 97 and is intentionally blocked by the release contract.
+
+## Latest deployed data-preserving hotfix
+
+- `base2026-mobile-modal-text-hotfix-ay78-20260613` is live under `/knowledge/`.
+- Hotfix path preserved current public export membership/counts while repairing public excerpt text and mobile modal layout.
+- Added `scripts/repair-public-text-excerpts.py` to repair `documents.jsonl` and `source_records.jsonl` excerpts from already-public `passages.jsonl`.
+- Added `scripts/package-public-hotfix-from-export.ps1` for approved data-preserving hotfixes that must not run a new no-auto export until legacy-card migration is complete.
+- Live verification passed on `390x844`: source page no horizontal overflow, source modal bounds within viewport, modal body scrolls, repaired excerpt visible, and CSS cache-bust points to `base2026-mobile-modal-text-hotfix-ay78-20260613`.
+- Full live mobile visual QA also passed: 44 checks, 0 failures, evidence under `output/evidence/mobile-visual-qa-live-ay78/`.
+- Next safe action: continue the legacy public insight-card repair migration (`729` text-repair cards, `339` visual-context cards) before any normal no-auto data-changing public release. For immediate UI regressions, use the data-preserving hotfix package path and live mobile smoke before deploy.
 
 ## Parallel backlog
 

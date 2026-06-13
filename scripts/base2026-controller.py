@@ -353,6 +353,91 @@ def cmd_promote_insight_candidates(args: argparse.Namespace) -> int:
     return code
 
 
+def cmd_review_legacy_insights(args: argparse.Namespace) -> int:
+    path = start_run("review-legacy-insights", args)
+    command = [
+        sys.executable,
+        "scripts/base2026-review-legacy-insights.py",
+        "--packet-limit",
+        str(args.packet_limit),
+        "--packet-recommendation",
+        args.packet_recommendation,
+    ]
+    if args.out_json:
+        command += ["--out-json", args.out_json]
+    if args.out_md:
+        command += ["--out-md", args.out_md]
+    if args.packet_json:
+        command += ["--packet-json", args.packet_json]
+    if args.packet_md:
+        command += ["--packet-md", args.packet_md]
+    code, stdout, stderr = run_child(path, command)
+    summary = parse_last_json(stdout)
+    finish_run(path, "passed" if code == 0 else "failed", summary or {"stderr": stderr.strip()[:500]})
+    print(stdout.strip())
+    return code
+
+
+def cmd_apply_legacy_insight_report(args: argparse.Namespace) -> int:
+    path = start_run("apply-legacy-insight-report", args)
+    report = Path(args.report) if args.report else latest_file("legacy-insight-review-*.json")
+    if not report:
+        finish_run(path, "failed", {"error": "No legacy insight review report found."})
+        print(json.dumps({"error": "No legacy insight review report found."}, indent=2))
+        return 2
+    command = [
+        sys.executable,
+        "scripts/base2026-review-legacy-insights.py",
+        "--apply-report",
+        "--report-json",
+        str(report),
+        "--recommendation",
+        args.recommendation,
+    ]
+    if args.claim_ids:
+        command += ["--claim-ids", args.claim_ids]
+    if args.apply:
+        command.append("--apply")
+    code, stdout, stderr = run_child(path, command)
+    summary = parse_last_json(stdout)
+    finish_run(path, "passed" if code == 0 else "failed", summary or {"stderr": stderr.strip()[:500]})
+    print(stdout.strip())
+    return code
+
+
+def cmd_apply_legacy_insight_review(args: argparse.Namespace) -> int:
+    path = start_run("apply-legacy-insight-review", args)
+    packet = Path(args.packet) if args.packet else latest_file("legacy-insight-repair-packet-*.json")
+    if not packet:
+        finish_run(path, "failed", {"error": "No legacy insight repair packet found."})
+        print(json.dumps({"error": "No legacy insight repair packet found."}, indent=2))
+        return 2
+    command = [
+        sys.executable,
+        "scripts/base2026-review-legacy-insights.py",
+        "--apply-review",
+        "--packet-json",
+        str(packet),
+        "--review-json",
+        args.review,
+        "--min-quality-score",
+        str(args.min_quality_score),
+        "--max-claim-chars",
+        str(args.max_claim_chars),
+        "--max-action-chars",
+        str(args.max_action_chars),
+        "--max-evidence-chars",
+        str(args.max_evidence_chars),
+    ]
+    if args.apply:
+        command.append("--apply")
+    code, stdout, stderr = run_child(path, command)
+    summary = parse_last_json(stdout)
+    finish_run(path, "passed" if code == 0 else "failed", summary or {"stderr": stderr.strip()[:500]})
+    print(stdout.strip())
+    return code
+
+
 def cmd_public_boundary_audit(args: argparse.Namespace) -> int:
     path = start_run("public-boundary-audit", args)
     code, stdout, stderr = run_child(path, [sys.executable, "scripts/check-public-export-policy.py", "public-data/tiktok"])
@@ -511,6 +596,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
         "chatgpt_review_applier_exists": (ROOT / "scripts" / "base2026-apply-chatgpt-review.py").exists(),
         "insight_candidate_reviewer_exists": (ROOT / "scripts" / "base2026-review-insight-candidates.py").exists(),
         "insight_candidate_promoter_exists": (ROOT / "scripts" / "base2026-promote-insight-candidates.py").exists(),
+        "legacy_insight_reviewer_exists": (ROOT / "scripts" / "base2026-review-legacy-insights.py").exists(),
         "tiktok_metadata_extractor_exists": (ROOT / "scripts" / "tiktok-ytdlp-metadata-extract.py").exists(),
         "tiktok_caption_browser_extractor_exists": (ROOT / "scripts" / "tiktok-caption-browser-extract.mjs").exists(),
         "tiktok_staging_importer_exists": (ROOT / "scripts" / "import-tiktok-staging-to-kb.py").exists(),
@@ -610,6 +696,36 @@ def main() -> int:
     promote_insights.add_argument("--to-status", default="approved")
     promote_insights.add_argument("--apply", action="store_true")
     promote_insights.set_defaults(func=cmd_promote_insight_candidates)
+
+    legacy_review = sub.add_parser("review-legacy-insights")
+    legacy_review.add_argument("--packet-limit", type=int, default=25)
+    legacy_review.add_argument(
+        "--packet-recommendation",
+        choices=["repair_with_gpt", "needs_visual_context", "reject_candidate", "approve_candidate"],
+        default="repair_with_gpt",
+    )
+    legacy_review.add_argument("--out-json", default="")
+    legacy_review.add_argument("--out-md", default="")
+    legacy_review.add_argument("--packet-json", default="")
+    legacy_review.add_argument("--packet-md", default="")
+    legacy_review.set_defaults(func=cmd_review_legacy_insights)
+
+    legacy_apply_report = sub.add_parser("apply-legacy-insight-report")
+    legacy_apply_report.add_argument("--report", default="")
+    legacy_apply_report.add_argument("--recommendation", default="approve_candidate")
+    legacy_apply_report.add_argument("--claim-ids", default="")
+    legacy_apply_report.add_argument("--apply", action="store_true")
+    legacy_apply_report.set_defaults(func=cmd_apply_legacy_insight_report)
+
+    legacy_apply_review = sub.add_parser("apply-legacy-insight-review")
+    legacy_apply_review.add_argument("--packet", default="")
+    legacy_apply_review.add_argument("--review", required=True)
+    legacy_apply_review.add_argument("--apply", action="store_true")
+    legacy_apply_review.add_argument("--min-quality-score", type=int, default=4)
+    legacy_apply_review.add_argument("--max-claim-chars", type=int, default=220)
+    legacy_apply_review.add_argument("--max-action-chars", type=int, default=280)
+    legacy_apply_review.add_argument("--max-evidence-chars", type=int, default=900)
+    legacy_apply_review.set_defaults(func=cmd_apply_legacy_insight_review)
 
     sub.add_parser("public-boundary-audit").set_defaults(func=cmd_public_boundary_audit)
 

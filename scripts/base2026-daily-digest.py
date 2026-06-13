@@ -69,6 +69,9 @@ def counts() -> dict:
         "passages": len(passages),
         "insight_cards": len(insights),
         "public_insight_cards": sum(1 for row in insights if row.get("public")),
+        "legacy_auto_public_cards": sum(
+            1 for row in insights if row.get("public") and row.get("promotion_method") == "auto_evidence_match"
+        ),
         "topics": len(topics),
         "public_topics": sum(1 for row in topics if row.get("public")),
         "creators": len(creators),
@@ -99,7 +102,7 @@ def main() -> int:
         "latest_queue": str(queue[0]) if queue else "",
         "failed_or_stalled_runs": failed_runs[:5],
         "next_action": next_action,
-        "deployment_blocked": True,
+        "deployment_blocked": data["legacy_auto_public_cards"] > 0,
     }
     DIGESTS.mkdir(parents=True, exist_ok=True)
     path = DIGESTS / f"base2026-digest-{datetime.now().strftime('%Y%m%d')}.md"
@@ -112,11 +115,12 @@ def main() -> int:
         f"- passages: {data['passages']}",
         f"- insight cards: {data['insight_cards']}",
         f"- public insight cards: {data['public_insight_cards']}",
+        f"- legacy auto public cards: {data['legacy_auto_public_cards']}",
         f"- queued sources estimate: {data['queued_sources_estimate']}",
         f"- latest queue: `{digest['latest_queue'] or 'none'}`",
         f"- failed/stalled runs: {', '.join(failed_runs[:5]) if failed_runs else 'none'}",
         f"- next action: {next_action}",
-        "- deployment blocked: yes",
+        f"- deployment blocked: {'yes' if digest['deployment_blocked'] else 'no'}",
         "",
         "## Do Not Do",
         "",

@@ -20,6 +20,7 @@ SOURCE_CARDS = TIKTOK / "source-cards"
 CLAIM_CARDS = CANON / "claims"
 TITLE_ENRICHMENT_CSV = TIKTOK / "metadata" / "titles.csv"
 REVIEWED_CANDIDATES_JSONL = TIKTOK / "insight-candidates" / "reviewed-candidates.jsonl"
+REVIEWED_LEGACY_INSIGHTS_JSONL = TIKTOK / "insight-candidates" / "reviewed-legacy-insights.jsonl"
 LOCAL_SOURCE_PREFIXES = (
     "00_",
     "01_",
@@ -221,6 +222,40 @@ def load_reviewed_candidate_claims(path: Path) -> list[dict[str, str]]:
                 "suggested_action": (row.get("suggested_action") or "").strip(),
                 "confidence": row.get("confidence") if row.get("confidence") is not None else row.get("evidence_score"),
                 "review_status": review_status,
+                "evidence_path": (row.get("evidence_path") or f"public-data/tiktok/passages.jsonl#source_id={source_id}").strip(),
+                "quote_or_span": (row.get("evidence_excerpt") or "").strip(),
+                "source_file": rel(path),
+            }
+        )
+    return rows
+
+
+def load_reviewed_legacy_insights(path: Path) -> list[dict[str, str]]:
+    replay_statuses = {"approved", "reviewed", "public", "needs_human", "rejected", "reject_candidate", "needs_visual_context"}
+    rows: list[dict[str, str]] = []
+    for row in read_jsonl(path):
+        review_status = (row.get("review_status") or "").strip()
+        if review_status not in replay_statuses:
+            continue
+        claim_id = (row.get("claim_id") or "").strip()
+        claim_text = (row.get("claim_text") or "").strip()
+        source_id = (row.get("source_id") or "").strip()
+        video_id = str(row.get("video_id") or row.get("post_id") or source_id.split(":")[-1]).strip()
+        if not claim_id or not claim_text or not video_id:
+            continue
+        claim_type = (row.get("claim_type") or "").strip()
+        if claim_type not in {"claim", "risk"}:
+            claim_type = "claim"
+        rows.append(
+            {
+                "claim_id": claim_id,
+                "video_id": video_id,
+                "topic": (row.get("topic") or row.get("topic_label") or "Uncategorized").strip(),
+                "claim_text": claim_text,
+                "claim_type": claim_type,
+                "suggested_action": (row.get("suggested_action") or "").strip(),
+                "confidence": row.get("confidence") if row.get("confidence") is not None else row.get("evidence_score"),
+                "review_status": "approved" if review_status == "public" else review_status,
                 "evidence_path": (row.get("evidence_path") or f"public-data/tiktok/passages.jsonl#source_id={source_id}").strip(),
                 "quote_or_span": (row.get("evidence_excerpt") or "").strip(),
                 "source_file": rel(path),
@@ -896,6 +931,7 @@ def main() -> None:
     claim_rows: list[dict[str, str]] = []
     for path in sorted((TIKTOK / "extracted-claims").glob("*.md")):
         claim_rows.extend(parse_claim_tables(path))
+    reviewed_legacy_rows = load_reviewed_legacy_insights(REVIEWED_LEGACY_INSIGHTS_JSONL)
     reviewed_candidate_rows = load_reviewed_candidate_claims(REVIEWED_CANDIDATES_JSONL)
 
     for claim in claim_rows:
@@ -932,6 +968,45 @@ def main() -> None:
             (claim["claim_id"], claim["topic"], claim["claim_text"], claim["suggested_action"]),
         )
         write_claim_card(claim)
+
+    for claim in reviewed_legacy_rows:
+        created = datetime.now().isoformat(timespec="seconds")
+        try:
+            confidence = float(claim["confidence"]) if claim.get("confidence") not in {"", None} else None
+        except (TypeError, ValueError):
+            confidence = None
+        conn.execute("DELETE FROM claims_fts WHERE claim_id = ?", (claim["claim_id"],))
+        conn.execute("DELETE FROM claim_evidence WHERE claim_id = ?", (claim["claim_id"],))
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO claims
+            (claim_id, claim_text, topic, claim_type, suggested_action, confidence, review_status, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                claim["claim_id"],
+                claim["claim_text"],
+                claim["topic"],
+                claim["claim_type"],
+                claim["suggested_action"],
+                confidence,
+                claim["review_status"],
+                created,
+                created,
+            ),
+        )
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO claim_evidence
+            (claim_id, video_id, evidence_path, quote_or_span)
+            VALUES (?, ?, ?, ?)
+            """,
+            (claim["claim_id"], claim["video_id"], claim["evidence_path"], claim.get("quote_or_span") or None),
+        )
+        conn.execute(
+            "INSERT INTO claims_fts (claim_id, topic, claim_text, suggested_action) VALUES (?, ?, ?, ?)",
+            (claim["claim_id"], claim["topic"], claim["claim_text"], claim["suggested_action"]),
+        )
 
     for claim in reviewed_candidate_rows:
         created = datetime.now().isoformat(timespec="seconds")
@@ -984,6 +1059,7 @@ def main() -> None:
         "source_cards": conn.execute("SELECT COUNT(*) FROM source_cards").fetchone()[0],
         "claims": conn.execute("SELECT COUNT(*) FROM claims").fetchone()[0],
         "claim_cards": len(list(CLAIM_CARDS.glob("*.md"))),
+        "reviewed_legacy_insight_claims": len(reviewed_legacy_rows),
         "reviewed_candidate_claims": len(reviewed_candidate_rows),
         "methods": conn.execute("SELECT COUNT(*) FROM methods").fetchone()[0],
         "strategy_blocks": conn.execute("SELECT COUNT(*) FROM strategy_blocks").fetchone()[0],

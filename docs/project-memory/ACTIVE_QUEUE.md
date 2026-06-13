@@ -1,6 +1,6 @@
 # Base2026 / Geo Command Center Queue
 
-Last updated: 2026-06-12
+Last updated: 2026-06-13
 
 This file is the working queue. Chat is not the source of truth for tasks.
 
@@ -23,26 +23,27 @@ No task is considered done because a worker reports done. Codex must review, int
 | GEO-01 | Homepage Base2026 CTA acid-green highlight | Codex after worker review | done/live | None | Live homepage loads CSS `1.5.15`; Base2026 CTA is `#b7ff00`; text is white; audit CTA remains white; desktop/mobile overflow false. |
 | GEO-02 | About hero portrait scale and quote treatment | Codex after worker review | done/live | None | Live `/about/` loads CSS `1.5.15`; desktop portrait is about full card height; copy has pullquote styling; mobile stacks cleanly; desktop/mobile overflow false. |
 | UI-QA-01 | Mixed WordPress/Base2026 mobile visual QA automation | Codex | done/live | Use `node scripts/mobile-visual-qa.mjs --base-url https://aggressorbulkit.online --viewports full` before public UI deploys. | Runner and runbook exist; Base2026 `base2026-mobile-visual-qa-ay25-20260610` and WordPress CSS `1.5.16` are live; final matrix has 66 checks, 0 failures, 0 warnings. |
-| PIPE-01 | New TikTok intake/transcription/card automation | Codex | in_progress | Work transcript QA triage slices and the remaining IP-blocked source-review row; keep future imports behind review/promotion/export gates. | A repeatable local pipeline exists for check -> caption/ASR -> polish -> claim extraction -> evidence verify -> review -> import/archive -> export/package/deploy gate, with private candidates durable locally and excluded from public export. |
+| PIPE-01 | New TikTok intake/transcription/card automation | Codex | in_progress | Add shadow Meilisearch deploy verification and continue source/card review slices behind exact-evidence gates. | A repeatable local pipeline exists for check -> caption/ASR -> polish -> claim extraction -> evidence verify -> review -> import/archive -> clean rebuild replay -> export/package/deploy gate, with private candidates durable locally and excluded from public export. |
 | GIT-01 | Repo/git hygiene for `base2026` and `geo` | Codex | in_progress | Keep future public-safe source/docs/tooling changes staged only after boundary and metadata gates. | Public-safe source changes are committed/pushed; generated/private artifacts remain ignored. |
 | PUB-01 | GitHub/open-source publication staging | Codex | done | Keep running publication audit before every future push. | Public GitHub repo exists on `main`; public/private boundary is documented and enforced by audit/stage scripts. |
 
 ## Current Deployed State
 
-- Base2026 release live: `base2026-cachebust-mobilefix-ay76-20260612`.
-- Base2026 public export live: 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards.
+- Base2026 release live: `base2026-clean-replay-pipeline-ay81-20260613`.
+- Base2026 public export live: 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards.
 - WordPress child-theme CSS live: `1.5.41`.
 - VPS SSH works through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
 
 ## Immediate Execution Order
 
 1. Keep `PIPE-01` running through reviewed slices only.
-2. Work the remaining IP-blocked source-review row and transcript QA debt separately from public deploy unless transcript fixes change public excerpts.
-3. Keep `scripts/tiktok-source-review-audit.py` as the repeatable reason gate before retrying parked rows.
-4. Keep `scripts/tiktok-qa-triage.py` as the first transcript-QA classifier before detailed batch review.
-5. Keep `scripts/tiktok-polish-audit.py` as the repeatable transcript-QA batch gate; use controller reports under ignored `.planning/`.
-6. Re-run publication boundary audit before every future push/deploy.
-7. Keep Base2026 package cache-bust normalization in `scripts/package-public-release.ps1`; do not trust generator-local hardcoded CSS versions for public releases.
+2. Add a shadow/reindex verification step to the deploy path before the next data-changing public release.
+3. Work the remaining IP-blocked source-review row and transcript QA debt separately from public deploy unless transcript fixes change public excerpts.
+4. Keep `scripts/tiktok-source-review-audit.py` as the repeatable reason gate before retrying parked rows.
+5. Keep `scripts/tiktok-qa-triage.py` as the first transcript-QA classifier before detailed batch review.
+6. Keep `scripts/tiktok-polish-audit.py` as the repeatable transcript-QA batch gate; use controller reports under ignored `.planning/`.
+7. Re-run publication boundary audit before every future push/deploy.
+8. Keep Base2026 package cache-bust normalization in `scripts/package-public-release.ps1`; do not trust generator-local hardcoded CSS versions for public releases.
 
 ## PUB-01 Gates
 
@@ -118,7 +119,7 @@ Pipeline work starts with controller ownership. Do not jump straight to intake r
 8. Convert scheduled Hermes from check-only to staged local automation.
    - Scheduled mode must stop before deploy, paid LLM, public promotion, or unreviewed transcript publication.
 
-Latest refresh note: ay71 checked all four configured public creators through `scripts/hermes-tiktok-refresh.ps1`, found 1 new `@build_in_public` source, caption-polished it through Codex/GPT review, added 2 exact-evidence public cards, rebuilt SQLite, exported public data, deployed, and reindexed Meilisearch. ay72 then synced roadmap statuses with that actual pipeline state and deployed `base2026-roadmap-status-sync-ay72-20260612` without changing public data counts. ay73 fixed the live source-modal document-cache mismatch by release-versioning `documents.jsonl` and deployed `base2026-documents-cachefix-ay73-20260612`. ay76 fixed the remaining generated-page cache-bust gap by normalizing `../static/...` CSS/JS references after all static generators run, tightened the mobile source modal/menu, deployed `base2026-cachebust-mobilefix-ay76-20260612`, and reindexed Meilisearch. ay67-ay70 used GPT/Codex source-only review packets for queued no-card sources and promoted 52 exact-evidence public cards after reviewer gates. Queues remain 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. The remaining 619 transcript QA flags are all audio/source-verification rows.
+Latest refresh note: ay80 checked all four configured public creators through `scripts/hermes-tiktok-refresh.ps1`, found 2 queued 2026-06-12 caption-backed sources, polished both through GPT/Codex review, rebuilt SQLite, exported public data, deployed, and reindexed Meilisearch. ay81 then fixed the clean-rebuild replay root cause for reviewed legacy cards, proved duplicate `claim_evidence` count is 0, redeployed, and reindexed Meilisearch. Queues remain 0 queued transcripts, 0 `needs_asr`, 0 queued ASR jobs, and 0 missing polish files. The remaining 619 transcript QA flags are all audio/source-verification rows.
 
 ## GIT-01 Buckets
 

@@ -30,6 +30,8 @@ jobs:
             scripts/export-public-tiktok.py \
             scripts/check-public-export-policy.py \
             scripts/validate-public-release-contract.py \
+            scripts/base2026-review-legacy-insights.py \
+            scripts/audit-publication-boundary.py \
             scripts/generate-public-pages.py \
             scripts/meili-index-public.py
 

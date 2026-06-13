@@ -84,9 +84,28 @@ STOPWORDS = {
 
 def compact_text(value: str, limit: int = 420) -> str:
     text = re.sub(r"\s+", " ", value or "").strip()
-    if len(text) <= limit:
+    if not limit or len(text) <= limit:
         return text
-    return text[: limit - 3].rstrip() + "..."
+    candidate = text[: max(limit - 3, 0)].rstrip()
+    sentence_cut = max(candidate.rfind(". "), candidate.rfind("? "), candidate.rfind("! "))
+    if sentence_cut >= max(80, int(limit * 0.55)):
+        candidate = candidate[: sentence_cut + 1].rstrip()
+    else:
+        word_cut = candidate.rfind(" ")
+        if word_cut >= max(40, int(limit * 0.65)):
+            candidate = candidate[:word_cut].rstrip()
+    return candidate.rstrip(" ,;:.") + "..."
+
+
+def public_excerpt_text(transcript: str, chunk_rows: list[sqlite3.Row], limit: int = 1600) -> str:
+    public_text = ""
+    for chunk in chunk_rows:
+        public_text = chunk["text"] or ""
+        if public_text.strip():
+            break
+    if not public_text:
+        public_text = transcript or ""
+    return compact_text(public_text, limit)
 
 
 def tokenize(value: str) -> set[str]:
@@ -330,15 +349,6 @@ def main() -> int:
                 "public_policy": "full_transcript" if args.include_full_transcripts else "excerpt_only",
                 "full_transcript_public": bool(args.include_full_transcripts),
             }
-            documents.append(
-                {
-                    **base,
-                    "transcript_type": doc_row["document_type"] if doc_row else "",
-                    "language": doc_row["language"] if doc_row else "en",
-                    "transcript": transcript if args.include_full_transcripts else "",
-                    "excerpt": transcript[:900],
-                }
-            )
             item_chunks = con.execute(
                 """
                 SELECT chunk_id, chunk_index, text
@@ -348,6 +358,15 @@ def main() -> int:
                 """,
                 (item_id,),
             ).fetchall()
+            documents.append(
+                {
+                    **base,
+                    "transcript_type": doc_row["document_type"] if doc_row else "",
+                    "language": doc_row["language"] if doc_row else "en",
+                    "transcript": transcript if args.include_full_transcripts else "",
+                    "excerpt": public_excerpt_text(transcript, item_chunks),
+                }
+            )
             for chunk in item_chunks:
                 chunks.append(
                     {

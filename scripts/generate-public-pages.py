@@ -53,9 +53,17 @@ def slug(value: str, fallback: str = "record") -> str:
 
 def compact(value: str, limit: int = 520) -> str:
     text = re.sub(r"\s+", " ", value or "").strip()
-    if len(text) <= limit:
+    if not limit or len(text) <= limit:
         return text
-    return text[: limit - 3].rstrip() + "..."
+    candidate = text[: max(limit - 3, 0)].rstrip()
+    sentence_cut = max(candidate.rfind(". "), candidate.rfind("? "), candidate.rfind("! "))
+    if sentence_cut >= max(80, int(limit * 0.55)):
+        candidate = candidate[: sentence_cut + 1].rstrip()
+    else:
+        word_cut = candidate.rfind(" ")
+        if word_cut >= max(40, int(limit * 0.65)):
+            candidate = candidate[:word_cut].rstrip()
+    return candidate.rstrip(" ,;:.") + "..."
 
 
 def clean_handle(value: str | None, fallback: str = "creator") -> str:
@@ -72,7 +80,7 @@ def paragraphize(value: str, limit: int = 900, sentences_per_paragraph: int = 2)
     if not text:
         return '<p class="empty-state">No public excerpt is available for this source yet.</p>'
     if len(text) > 80 and not re.search(r'[.!?…]"?$', text):
-        text = text.rstrip(" ,;:") + "..."
+        text = text.rstrip(" ,;:.") + "..."
     sentences = re.split(r"(?<=[.!?])\s+", text)
     paragraphs: list[str] = []
     for index in range(0, len(sentences), sentences_per_paragraph):
@@ -80,6 +88,14 @@ def paragraphize(value: str, limit: int = 900, sentences_per_paragraph: int = 2)
         if chunk:
             paragraphs.append(f"<p>{escape(chunk)}</p>")
     return "".join(paragraphs) or f"<p>{escape(text)}</p>"
+
+
+def public_source_excerpt(source: dict, passages: list[dict]) -> str:
+    for row in passages:
+        body = (row.get("body") or "").strip()
+        if body:
+            return body
+    return source.get("excerpt") or ""
 
 
 def icon_svg(name: str) -> str:
@@ -640,6 +656,7 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
     ]
     topic_html = topic_chips(source_topic_rows)
     compact_topic_html = topic_html or '<span class="source-meta-empty">No public topics</span>'
+    readable_excerpt = public_source_excerpt(source, passages)
     passage_html = "".join(
         f"""
         <article class="passage-card">
@@ -647,7 +664,7 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
             <span>{escape(handle)}</span>
             <span>{escape(source.get('published_date') or source.get('published_at') or 'No date')}</span>
           </div>
-          <div class="passage-card__body">{paragraphize(row.get("body") or "", 420, 2)}</div>
+          <div class="passage-card__body">{paragraphize(row.get("body") or "", 0, 2)}</div>
         </article>
         """
         for row in passages[:5]
@@ -699,7 +716,7 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
       </section>
       <section class="content-section">
         {section_title("Source Excerpt", "A short, attributed excerpt from a public source record. Base2026 uses this as evidence context and links back to the original creator source.")}
-        <div class="source-excerpt-text">{paragraphize(source.get('excerpt') or '', 900, 2)}</div>
+        <div class="source-excerpt-text">{paragraphize(readable_excerpt, 0, 2)}</div>
         <aside class="source-policy-note" aria-label="Public source policy note">
           <strong>Public source policy</strong>
           <span>Full third-party transcripts are not published as standalone public pages by default. This page keeps attribution, source link, and short evidence context.</span>
@@ -777,7 +794,7 @@ def topic_page(topic: dict, sources: list[dict], passages: list[dict], insights:
                 <span>{escape(handle)}</span>
                 <span>{escape(date)}</span>
               </div>
-              <div class="passage-card__body">{paragraphize(row.get('body') or '', 520, 2)}</div>
+              <div class="passage-card__body">{paragraphize(row.get('body') or '', 1100, 2)}</div>
             </article>
             """
         )

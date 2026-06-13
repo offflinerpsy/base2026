@@ -3112,3 +3112,214 @@ Verification:
 Next step:
 
 - run full publication/metadata/live QA gates, then commit/push this contract hardening; the next data task is reviewed migration or deliberate reduction of the legacy auto-promoted public card set before any further Base2026 data deploy.
+
+## 2026-06-12 — Legacy public insight-card repair lane
+
+User clarified that borderline cards should be turned into good cards through a high-quality translation/rewrite lane, not discarded or guessed. User also noted that TikTok meaning can depend on visual context, so screenshots/frame evidence would be useful but should not become unmanaged manual work.
+
+Actions taken:
+
+- added `scripts/base2026-review-legacy-insights.py` to audit legacy `auto_evidence_match` public cards from the ignored public export against public passages and SQLite claim rows;
+- separated legacy cards into deterministic approvals, GPT/Codex text-repair packets, visual-context cases, and rejects;
+- blocked fragile transcript phrases from deterministic approval so rough transcript wording does not become public product copy;
+- applied 22 deterministic exact-evidence approvals and 8 GPT/Codex-reviewed rewrites to SQLite with automatic local DB backups;
+- added controller commands: `review-legacy-insights`, `apply-legacy-insight-report`, and `apply-legacy-insight-review`;
+- added the new script to CI Python syntax checks and publication-boundary allowlist;
+- documented the split text/visual migration decision in `DECISIONS.md`, `NEXT_ACTION.md`, `DATA_SOURCES.md`, and `STATUS_BOARD.csv`.
+
+Verification:
+
+- legacy review report now shows 30 `already_migrated`, 729 `repair_with_gpt`, and 339 `needs_visual_context` cards out of 1098 legacy public cards;
+- `python3 scripts/base2026-controller.py doctor` passed and includes `legacy_insight_reviewer_exists=true`;
+- no-auto smoke export passed public export policy with 1216 source records, 1709 passages, 1607 insight cards, and 97 public approved cards;
+- no-auto smoke export passed the public release contract when the retention floor was not enforced;
+- retention-floor contract correctly failed with baseline 1165, candidate 97, and floor ratio 0.8, so this export is not deployable yet.
+
+Next step:
+
+- continue GPT/Codex repair batches for the 729 text-repair cards and design a thumbnail/frame evidence lane before approving the 339 visual-context cards.
+
+## 2026-06-13 — Mobile source-page excerpt truncation root-cause fix
+
+User reported that Base2026 mobile source pages and source modals were cutting text in the middle of words or thoughts.
+
+Actions taken:
+
+- diagnosed two truncation layers: `scripts/export-public-tiktok.py` sliced `documents.excerpt` from transcript text, and `scripts/generate-public-pages.py` cropped source-page text again during rendering;
+- changed public export excerpts to prefer already-public passage bodies and to shorten only on sentence/word boundaries with explicit `...`;
+- changed source pages to render the public passage body for `Source Excerpt` and source-page `Related Passages`, avoiding silent cropped previews;
+- added `scripts/validate-public-text-excerpts.py` to catch future silent prefix cuts between `documents.jsonl` and `passages.jsonl`;
+- wired the new validator into `scripts/package-public-release.ps1` and public staging allowlist.
+
+Verification:
+
+- `python3 -m py_compile scripts/export-public-tiktok.py scripts/generate-public-pages.py scripts/validate-public-text-excerpts.py` passed;
+- `python3 scripts/export-public-tiktok.py --out output/evidence/mobile-text-excerpt-export` produced 1216 source records and 1709 passages;
+- `python3 scripts/validate-public-text-excerpts.py --data output/evidence/mobile-text-excerpt-export` passed with 1215 checked records;
+- `python3 scripts/validate-public-text-excerpts.py --data public-data/tiktok` reproduced the existing live-data bug, including tails such as `coming ou` and `honest assess`;
+- `python3 scripts/check-public-export-policy.py output/evidence/mobile-text-excerpt-export` passed with `include_full_transcripts=false`;
+- local mobile Playwright smoke against a package-like test site passed for the source page and `openTranscript()` modal path, with evidence screenshots under ignored `output/evidence/mobile-text-render-site/screens`;
+- `git diff --check` passed;
+- `python3 scripts/audit-publication-boundary.py` passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`.
+
+Next step:
+
+- package/deploy only after the legacy public-card retention-floor issue is resolved or via an explicitly approved data-preserving UI patch path; a fresh no-auto export is still not deployable because it drops public approved cards to 97.
+
+## 2026-06-13 — Data-preserving mobile modal/text hotfix deploy
+
+User showed that live mobile source modals still did not fit the phone viewport cleanly and that public excerpt text was still visibly cut on live Base2026 pages.
+
+Actions taken:
+
+- tightened the mobile source modal contract in `web/static/styles.css`: bounded dialog width/height inside mobile viewport, compact three-column header actions, compact metadata row, and overflow protection for transcript/caption text;
+- added `scripts/repair-public-text-excerpts.py` to repair public document/source excerpts from already-public passage text without exposing full transcripts;
+- added `scripts/package-public-hotfix-from-export.ps1` to package an explicitly approved data-preserving hotfix from current `public-data/tiktok` while preserving JSONL counts;
+- added the new hotfix scripts to publication boundary/staging allowlists;
+- packaged and deployed `base2026-mobile-modal-text-hotfix-ay78-20260613` with `-SkipReindex` because search passages/index content did not change.
+
+Verification:
+
+- Python compile passed for the changed Python scripts;
+- PowerShell parser passed for the hotfix/staging scripts;
+- repair check on a copied export repaired 1047 document/source excerpts and passed `validate-public-text-excerpts.py`;
+- package gate passed `check-public-export-policy.py` with `include_full_transcripts=false`, 1216 source records, 1709 passages, 1607 insight cards, and 1165 public insight cards;
+- package gate passed `validate-public-text-excerpts.py` with 1215 checked records;
+- publication boundary audit passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- local and live Playwright mobile smoke passed for a source page and source modal at `390x844`, with no horizontal overflow, modal bounds inside viewport, scrollable modal body, repaired excerpt tail visible, and live CSS cache-bust set to the ay78 release.
+- full live mobile visual QA passed with 44 checks and 0 failures; evidence: `output/evidence/mobile-visual-qa-live-ay78/`.
+
+Next step:
+
+- continue legacy insight-card migration before a normal data-changing no-auto public release; use the data-preserving hotfix path only for explicitly approved UI/rendering fixes that preserve current public export counts.
+
+## 2026-06-13 — Current card-quality queue repair packet
+
+Delegated card-repair lane requested a read-only breakdown of current no-card/private/legacy card queues and the next safe GPT/Codex repair packet, without SQLite mutation, promotion, deploy, or private/raw transcript output.
+
+Actions taken:
+
+- confirmed active phase and public/private boundary from project-memory;
+- checked current local export and SQLite read-only counts from the main local repo;
+- generated read-only legacy review artifacts: `.planning/legacy-insight-review-current-card-quality-readonly.json` / `.md`;
+- generated the next GPT/Codex legacy repair packet: `.planning/legacy-insight-repair-packet-next30.json` / `.md`;
+- did not apply review decisions, mutate SQLite, promote cards, package a release, deploy, or print raw captions/full transcripts.
+
+Verification:
+
+- `python3 scripts/base2026-build-backfill-queue.py --dry-run` reports 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 335 queued no-any-card sources after reviewed-no-card filtering, and 45 reviewed-no-card sources;
+- direct export count check reports 1215 sources with passages, 380 sources with passages and no insight card, and 513 sources with passages but no public insight card;
+- read-only SQLite check reports 85 `insight_card_candidate` rows: 69 approved, 1 `needs_human`, 9 `reject_candidate`, and 6 rejected; pending count is 0;
+- legacy report still shows 1098 legacy `auto_evidence_match` public cards: 30 already migrated, 729 `repair_with_gpt`, and 339 `needs_visual_context`;
+- `python3 scripts/check-public-export-policy.py public-data/tiktok` passed with `include_full_transcripts=false`;
+- `python3 scripts/validate-public-release-contract.py --export-dir public-data/tiktok --max-violations 5` failed as expected with legacy promotion-contract violations, so this export remains blocked for normal no-auto data deploys;
+- `python3 scripts/base2026-controller.py doctor` passed;
+- `python3 scripts/audit-publication-boundary.py` passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`.
+
+Next step:
+
+- run GPT/Codex/ChatGPT 5.5 Medium against `.planning/legacy-insight-repair-packet-next30.md`, then apply only reviewed JSON after parent-thread approval and the exact-evidence/release-contract gates.
+
+## 2026-06-13 — Legacy repair chunk02 review-only worker output
+
+Delegated CARD/LEGACY QUALITY LANE requested strict JSON review for `.planning/legacy-insight-repair-packet-after-5x30-chunk02.json`, with no SQLite mutation, promotion, deploy, or raw/full transcript output.
+
+Actions taken:
+
+- reviewed the supplied public passages and 30 legacy cards across 21 sources;
+- wrote `.planning/legacy-insight-repair-review-after-5x30-chunk02.worker.json`;
+- wrote `.planning/legacy-insight-repair-review-after-5x30-chunk02.worker.md`;
+- kept all decisions as `rewrite` with exact public-passage evidence excerpts under 900 chars;
+- narrowed risk-sensitive cards with compliance/verification/risk-avoid wording.
+
+Verification:
+
+- local JSON self-check: 30 decisions, max evidence 898 chars, max claim 203 chars, max action 154 chars;
+- requested dry-run apply passed: `accepted=30`, `skipped={}`, `dry_run=true`, `updated=0`, `status_counts.approved=30`;
+- SQLite was not mutated because `--apply` was not used.
+
+Risk-edge claim IDs:
+
+- `tiktok-claim-023`
+- `tiktok-build-20260524-001`
+- `tiktok-b036-claim-019`
+- `tiktok-b036-claim-020`
+
+## 2026-06-13 — Legacy repair after-12x30 chunk02 review-only worker output
+
+Delegated LEGACY/CARD QUALITY LANE requested strict JSON review for `.planning/legacy-insight-repair-packet-after-12x30-chunk02.json`, with no SQLite mutation, promotion, deploy, or raw/full transcript output.
+
+Actions taken:
+
+- reviewed 30 legacy cards across 12 supplied-public-passage sources;
+- wrote `.planning/legacy-insight-repair-review-after-12x30-chunk02.worker.json`;
+- wrote `.planning/legacy-insight-repair-review-after-12x30-chunk02.worker.md`;
+- kept all decisions as `rewrite` with exact public-passage evidence excerpts;
+- narrowed risk-sensitive press-release, Reddit AMA, recommendation-content, and GBP-name cards with verification/compliance language.
+
+Verification:
+
+- local JSON self-check: 30 decisions, max evidence 417 chars, max claim 188 chars, max action 181 chars;
+- requested dry-run apply passed: `accepted=30`, `skipped={}`, `dry_run=true`, `updated=0`, `status_counts.approved=30`;
+- SQLite was not mutated because `--apply` was not used.
+
+Risk-edge claim IDs:
+
+- `tiktok-b021-claim-005`
+- `tiktok-b020-claim-042`
+- `tiktok-b020-claim-043`
+- `tiktok-b020-claim-018`
+- `tiktok-b019-claim-032`
+
+## 2026-06-13 — Command-center review of forked card threads
+
+User asked the parent thread to verify the forked card/legacy workstreams rather than trusting their final reports.
+
+Actions taken:
+
+- inspected the two forked Codex threads `Разобрать очередь карточек` and `Разобрать legacy insight cards`;
+- verified their generated `.planning` artifacts exist in the main repo checkout;
+- checked both packet schemas and compared claim IDs without printing raw/private source text;
+- confirmed `.planning/legacy-public-insight-lane-20260613/legacy-insight-repair-packet-20260613-batch01.json` is a 25-card subset of `.planning/legacy-insight-repair-packet-next30.json`;
+- accepted `next30` as the primary next repair packet and marked `batch01` as duplicate/archival context, not a parallel apply lane.
+
+Verification:
+
+- `git diff --check` passed;
+- `python3 scripts/base2026-controller.py doctor` passed;
+- `python3 scripts/check-public-export-policy.py public-data/tiktok` passed with `include_full_transcripts=false`;
+- `python3 scripts/audit-publication-boundary.py` passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- `python3 scripts/validate-public-release-contract.py --export-dir public-data/tiktok --max-violations 5` still fails as expected on legacy auto-promotion violations.
+
+Next step:
+
+- run the GPT/Codex review pass only on `.planning/legacy-insight-repair-packet-next30.json` / `.md`; do not process `batch01` separately.
+
+## 2026-06-13 — ay79-ay81 legacy contract, TikTok slice, clean replay deploy
+
+User asked to stop drifting, finish the card/text pipeline work, process new TikTok sources, deploy, and verify the site end to end.
+
+Actions taken:
+
+- migrated legacy public cards away from public `auto_evidence_match` output through reviewed/approved SQLite state;
+- processed 2 queued 2026-06-12 caption-backed TikTok sources through the GPT/Codex text lane with word-count preserving polish QA;
+- rebuilt SQLite, exported public data, packaged/deployed ay80, and verified both new source pages live;
+- found the clean-rebuild root cause: DB-only legacy approvals could be lost on rebuild and the first replay attempt duplicated `claim_evidence`;
+- added clean-rebuild replay of ignored reviewed legacy insight archives to `scripts/build-kb-sqlite.py`;
+- created local ignored `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-legacy-insights.jsonl` with 967 reviewed legacy rows;
+- fixed replay to delete previous claim evidence before inserting reviewed evidence;
+- rebuilt from scratch, proved duplicate claim IDs are 0, packaged/deployed `base2026-clean-replay-pipeline-ay81-20260613`, and reindexed Meilisearch.
+
+Verification:
+
+- `python3 scripts/kb-audit.py` passed;
+- `python3 scripts/check-public-export-policy.py public-data/tiktok` passed;
+- `python3 scripts/validate-public-text-excerpts.py --data public-data/tiktok` passed;
+- `python3 scripts/validate-public-release-contract.py --export-dir public-data/tiktok --baseline-export-dir output/releases/base2026-pipeline-two-sources-ay80-20260613/public-data/tiktok --enforce-count-floor --max-violations 20` passed;
+- `python3 scripts/base2026-controller.py review-legacy-insights` reports `total_legacy_auto_public_cards=0`;
+- live ay81 smoke found release marker, 1218 live documents, both new source records, and no empty-source state on the new source pages;
+- live ay81 mixed visual QA passed with 66 checks and 0 failures.
+
+Next step:
+
+- rerun boundary/GitHub metadata checks, then stage/commit/push only public-safe code/docs/tooling changes.

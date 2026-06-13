@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-06-12
+Last updated: 2026-06-13
 
 Base2026 is being split into a public open-source TikTok transcript search product and private local research assets.
 
@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-cachebust-mobilefix-ay76-20260612`
+- latest deployed release: `base2026-clean-replay-pipeline-ay81-20260613`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, and excerpt-only source-dialog payload
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
@@ -33,7 +33,13 @@ Current local repo state:
 
 Latest verification:
 
-- `base2026-cachebust-mobilefix-ay76-20260612` is live after fixing the root mobile-regression/cache mismatch: the package step now normalizes generated source/topic/static-page CSS/JS references after all generators run, including `../static/...` paths. Mobile source-modal density, Base2026 mobile submenu width/alignment, and homepage roadmap CTA invalid-submit focus were verified live. `scripts/mobile-visual-qa.mjs` now includes mobile interaction gates for WordPress/Kadence drawer, Base2026 submenu, roadmap CTA focus, and source modal open/layout checks. Full live interaction-gated mixed visual QA passed with 66 checks and 0 failures.
+- `base2026-clean-replay-pipeline-ay81-20260613` is live after the reviewed legacy-card contract and two-source TikTok pipeline pass. The release was packaged from a clean SQLite rebuild that replayed 967 ignored reviewed legacy insight rows and 85 reviewed/private candidate rows, then exported 1218 source records, 1713 passages, 1607 insight cards, 1034 public insight cards, 1504 topics, and 987 public topics under excerpt-only policy. Meilisearch reindexed 1713 passages. `claim_evidence` duplicate claim IDs are 0, `review-legacy-insights` reports `total_legacy_auto_public_cards=0`, public export policy passed, text-excerpt validation passed, and the public release contract passed against the ay80 baseline.
+
+- `base2026-pipeline-two-sources-ay80-20260613` processed the next TikTok slice: 2 queued 2026-06-12 caption-backed sources were polished through the GPT/Codex text lane, rebuilt/exported, packaged/deployed, and verified live at `/knowledge/sources/tiktok-video-7650601606215372046.html` and `/knowledge/sources/tiktok-video-7650509272832380183.html`.
+
+- `base2026-mobile-modal-text-hotfix-ay78-20260613` shipped as a data-preserving hotfix after mobile source pages/modals showed public excerpt text cut in the middle of words/thoughts and the source modal still exceeded the mobile viewport visually. The hotfix preserved current public export membership and counts, repaired 1047 `documents.jsonl` and 1047 `source_records.jsonl` excerpt fields from already-public passage text, rebuilt source pages/static assets, and deployed without Meilisearch reindex because the search passage index did not change. Live mobile smoke passed on `390x844`: source page body width `390`, no inner overflow, modal bounds `left=6/right=384`, scrollable modal body, repaired excerpt tail visible, and CSS cache-bust `base2026-mobile-modal-text-hotfix-ay78-20260613`.
+
+- Previous release `base2026-cachebust-mobilefix-ay76-20260612` fixed the root mobile-regression/cache mismatch: the package step now normalizes generated source/topic/static-page CSS/JS references after all generators run, including `../static/...` paths. Mobile source-modal density, Base2026 mobile submenu width/alignment, and homepage roadmap CTA invalid-submit focus were verified live. `scripts/mobile-visual-qa.mjs` now includes mobile interaction gates for WordPress/Kadence drawer, Base2026 submenu, roadmap CTA focus, and source modal open/layout checks. Full live interaction-gated mixed visual QA passed with 66 checks and 0 failures.
 - Current ay76 public export is excerpt-only with 1216 source records, 1709 passages, 1607 insight cards, 1165 public insight cards, 1505 topics, and 1096 public topics. Meilisearch reindexed 1709 passages.
 - Current source-review audit shows 1 source-review row: `tiktok-video-7648746368739118350` is currently blocked by TikTok IP access. Two previous no-audio source-review rows were retried through h264-first ASR fallback, transcribed, polished, rebuilt into SQLite, and exported publicly as excerpt-only records. The private `videos.csv` and transcript working files remain local/ignored.
 - Current transcript polish status has 1215 transcribed/clean/polished transcripts and 0 missing polished files. The ay71 refresh added one new caption-backed `@build_in_public` transcript and polished it through Codex/GPT review without local-model rewriting. `scripts/tiktok-qa-triage.py` still categorizes the remaining 619 review rows as audio/source-verification required. Entity/spelling and human text-review buckets are now 0. This remains controlled review debt; public export is still excerpt-only and does not expose full transcripts.

@@ -203,3 +203,15 @@ Reason: the backlog is low-volume enough that quality and source faithfulness ma
 Decision: public Base2026 package/deploy paths must obey `contracts/base2026.public-release-contract.json`: no full transcript release flag, no implicit public insight auto-promotion, no tracked generated export artifacts, fixture-backed positive/negative CI checks, and staged release exports before packaging.
 
 Reason: the public boundary cannot depend on chat memory or manual operator discipline. The live ay76 export is excerpt-only, but it still contains legacy `auto_evidence_match` public cards. Future public data-changing deploys must either explicitly review/migrate those cards or block before replacing the live release.
+
+## 2026-06-12 — Split legacy public-card migration into text and visual lanes
+
+Decision: legacy `auto_evidence_match` public cards must be migrated through `scripts/base2026-review-legacy-insights.py`. Text-only cards can be approved deterministically or repaired through GPT/Codex source-only JSON packets. Cards whose meaning depends on what the TikTok shows must be marked `needs_visual_context` until a thumbnail/frame evidence layer confirms the visible context.
+
+Reason: rough TikTok transcripts often omit or distort the visual point of the video. Rewriting those cards from text alone can create confident but false public claims. A separate visual-context lane keeps the public insight layer useful without inventing screenshots, UI states, charts, or visual demonstrations that the supplied public passages do not prove.
+
+## 2026-06-13 — Replay reviewed legacy public cards during clean rebuilds
+
+Decision: reviewed legacy public insight cards are persisted in an ignored local archive at `12_knowledge-base/sources/tiktok/insight-candidates/reviewed-legacy-insights.jsonl` and replayed by `scripts/build-kb-sqlite.py` during clean SQLite rebuilds. The replay deletes any prior claim evidence for that claim before inserting reviewed evidence so one claim cannot duplicate in public export.
+
+Reason: the ay80 pipeline showed that a clean SQLite rebuild can erase DB-only reviewed legacy approvals and collapse public cards unless those approvals have a replayable source of truth. Keeping the replay hook in code and the reviewed archive local/ignored preserves launch-quality public cards without committing private review artifacts or generated exports.
