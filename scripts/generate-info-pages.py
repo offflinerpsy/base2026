@@ -64,6 +64,13 @@ PAGE_MAP = {
         "lead": "How creators can request attribution fixes, excerpt corrections, record removal, or future source suppression.",
         "body_class": "doc-page",
     },
+    "08_API_ACCESS.md": {
+        "slug": "api.html",
+        "eyebrow": "AI and API access",
+        "title": "Base2026 API & AI Access",
+        "lead": "Public read-only files and agent-readable entry points for using Base2026 as an attributed source intelligence library.",
+        "body_class": "doc-page",
+    },
 }
 
 
@@ -74,6 +81,7 @@ FONT_LINK = "https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;60
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
     ("analytics", "Analytics", "analytics.html"),
+    ("api", "API", "api.html"),
     ("topics", "Topics", "topics/"),
     ("creators", "Creators", "creators/"),
     ("methodology", "Methodology", "methodology.html"),
@@ -89,6 +97,7 @@ def write_text(path: Path, text: str) -> None:
 FOOTER_LINKS = [
     ("Roadmap", "./roadmap.html"),
     ("Methodology", "./methodology.html"),
+    ("API & AI access", "./api.html"),
     ("Source policy", "./source-policy.html"),
     ("Privacy", "./privacy.html"),
     ("Support", "./support.html"),
@@ -124,6 +133,8 @@ def nav_key_for_slug(slug_value: str) -> str:
         return "methodology"
     if slug_value == "support.html":
         return "support"
+    if slug_value == "api.html":
+        return "api"
     return ""
 
 
@@ -360,6 +371,44 @@ def cookie_consent_markup() -> str:
       </form>
     </dialog>
     <script src="./static/cookie-consent.js?v={STYLE_VERSION}" defer></script>
+	"""
+
+
+def contact_form_markup(kind: str) -> str:
+    subject = "Base2026 support request" if kind == "support" else "Base2026 roadmap feedback"
+    intro = (
+        "Send a correction, support note, sponsorship question, or source suggestion."
+        if kind == "support"
+        else "Send roadmap feedback, phase corrections, or a proposal for the next public build step."
+    )
+    return f"""
+      <section class="base-contact-section" aria-labelledby="base-contact-title">
+        <div class="base-contact-copy">
+          <p class="eyebrow">Contact</p>
+          <h2 id="base-contact-title">Send the message.</h2>
+          <p>{html.escape(intro)}</p>
+          <a class="contact-email-link" href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a>
+        </div>
+        <form class="base-contact-form" action="mailto:{CONTACT_EMAIL}?subject={html.escape(subject).replace(' ', '%20')}" method="post" enctype="text/plain">
+          <label>
+            <span>Your name</span>
+            <input name="name" autocomplete="name" placeholder="Your name" />
+          </label>
+          <label>
+            <span>Email</span>
+            <input name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+          </label>
+          <label>
+            <span>Website or source URL</span>
+            <input name="website_or_source" type="url" placeholder="https://example.com" />
+          </label>
+          <label class="base-contact-form__full">
+            <span>Your message</span>
+            <textarea name="message" rows="6" placeholder="What should we talk about?" required></textarea>
+          </label>
+          <button class="ay-button" type="submit">Send Message</button>
+        </form>
+      </section>
 """
 
 
@@ -386,6 +435,7 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
     footer_links = "\n".join(f'<a href="{href}">{label}</a>' for label, href in FOOTER_LINKS)
     roadmap_experience = ""
     support_experience = ""
+    contact_experience = ""
     script_tag = ""
     body_markup = body
     if page_class == "roadmap-page":
@@ -475,6 +525,7 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
 """
         body_markup = f'<section class="roadmap-fallback" aria-label="Roadmap fallback details">{body}</section>'
         script_tag = f'\n    <script src="./static/roadmap.js?v={STYLE_VERSION}" defer></script>'
+        contact_experience = contact_form_markup("roadmap")
     if page_class == "support-page":
         support_experience = """
       <section class="support-experience" aria-labelledby="support-experience-title">
@@ -509,6 +560,7 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
         </div>
       </section>
 """
+        contact_experience = contact_form_markup("support")
     return f"""<!doctype html>
 <html lang="en">
   <head>
@@ -546,6 +598,7 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
       {roadmap_experience}
       {support_experience}
       {body_markup}
+      {contact_experience}
     </main>
     <footer class="site-footer">
       <div class="ay-wrap ay-footer-grid">
@@ -556,6 +609,7 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
           <div class="ay-actions">
             <a class="ay-button" href="/ai-visibility-audit/">Get My Free Roadmap</a>
             <a class="ay-button-secondary" href="/pricing/">View Pricing</a>
+            <a class="ay-button ay-button-base2026" href="/knowledge/">Base2026</a>
           </div>
         </section>
         <nav aria-label="Footer services">

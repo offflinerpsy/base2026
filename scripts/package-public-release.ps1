@@ -107,6 +107,7 @@ foreach ($TestPageAsset in @("roadmap-dataviz-test.html", "roadmap-dataviz-test.
 }
 $DocPages = @(
   "methodology.html",
+  "api.html",
   "opt-out.html",
   "roadmap.html",
   "story.html",

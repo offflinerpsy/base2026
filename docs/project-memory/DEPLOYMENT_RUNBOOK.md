@@ -7,7 +7,7 @@ Current public path:
 - WordPress root: `/var/www/alex-yarosh`
 - server current symlink: `/var/www/base2026-knowledge/current`
 - server releases: `/var/www/base2026-knowledge/releases/`
-- latest deployed release: `base2026-source-page-polish-20260615`
+- latest deployed release: `base2026-footer-api-pricing-context-r2-20260615`
 - SSL certificate: Let's Encrypt `aggressorbulkit.online`, domains `aggressorbulkit.online` and `www.aggressorbulkit.online`, auto-renewed by `certbot.timer`
 
 Latest WordPress root homepage design-system pass: `alex-yarosh` child theme `style.css?ver=1.5.43`, applied directly through Novamira on 2026-06-14. Cache Enabler generated cache for `aggressorbulkit.online` was cleared after the direct update.
@@ -48,9 +48,9 @@ nginx -t
 
 ## Local package
 
-Current live release: `base2026-source-page-polish-20260615`.
+Current live release: `base2026-footer-api-pricing-context-r2-20260615`.
 
-Latest data/reindex checkpoint: `base2026-source-page-polish-20260615`.
+Latest data/reindex checkpoint: `base2026-footer-api-pricing-context-r2-20260615`.
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package-public-release.ps1 -ReleaseName <release-name>

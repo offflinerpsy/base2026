@@ -6,6 +6,8 @@ The current public demo focuses on TikTok creators talking about SEO, GEO, AEO, 
 
 Live demo: <https://aggressorbulkit.online/knowledge/>
 
+AI/API entry point: <https://aggressorbulkit.online/knowledge/api.html>
+
 ## What It Does
 
 - converts public creator videos into searchable English source text and evidence passages;
@@ -15,26 +17,27 @@ Live demo: <https://aggressorbulkit.online/knowledge/>
 - indexes searchable passages with Meilisearch;
 - serves a static read-only web UI under `/knowledge/`;
 - generates creator, source, topic, and comparison pages from public JSONL.
+- exposes agent-readable public entry points (`/knowledge/llms.txt`, `/knowledge/data-dictionary.json`, `/knowledge/api-index.json`) so AI tools can inspect the public library without scraping the visual UI.
 
 The public site is designed for source discovery, attribution, comparison, citation, and searchable source reading. It is not a video re-hosting platform and not a raw transcript dump.
 
 ## Current Status
 
-Latest deployed release: `base2026-source-hero-ay35-20260610`.
+Latest deployed release: `base2026-footer-api-pricing-context-r2-20260615`.
 
 Current public export:
 
-- 957 source records;
-- 1,396 searchable passages;
-- 1,690 insight cards;
-- 1,226 public insight cards;
-- 1,584 topics;
-- 1,159 public topics;
-- 1,079 indexable sitemap URLs in the local GitHub-prep build.
+- 1,219 source records;
+- 1,715 searchable passages;
+- 1,614 insight cards;
+- 1,043 public insight cards;
+- 1,510 topics;
+- 995 public topics;
+- 1,308 sitemap URLs in the live release.
 
 Recent readiness checks:
 
-- public export policy: current live release is excerpt-only; product contract now allows reviewed public source text where policy allows and continues to forbid raw/unreviewed transcript dumps;
+- public export policy: current live release uses reviewed public source text where policy allows and continues to forbid raw/unreviewed transcript dumps;
 - publication boundary audit: passing for current changed public-safe files;
 - GitHub metadata validation: passing;
 - static SEO metadata audit: passing for 3,294 HTML files with title, description, canonical URL, H1, and JSON-LD schema present.
@@ -70,6 +73,15 @@ Compatibility files:
 
 - `documents.jsonl`
 - `chunks.jsonl`
+
+Agent-readable public files:
+
+- `/knowledge/llms.txt`
+- `/knowledge/api.html`
+- `/knowledge/api-index.json`
+- `/knowledge/data-dictionary.json`
+
+The public search UI also uses a server-side Meilisearch proxy at `/knowledge-search/multi-search`. The proxy is read-only and injects the public search key server-side; integrations should prefer static JSONL for bulk/offline analysis.
 
 Generated public data and release archives are deploy artifacts, not GitHub source.
 

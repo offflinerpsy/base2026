@@ -1,6 +1,6 @@
 # Source & Content Policy
 
-_Last updated: 2026-06-08_
+_Last updated: 2026-06-15_
 
 Base2026 is a public knowledge-base project for searchable short-form expert content.
 
@@ -12,7 +12,7 @@ This policy explains what the project is intended to collect, how records should
 
 Base2026 exists to make public expert knowledge easier to search and understand while preserving attribution and source context.
 
-The project should not hide where information came from, misrepresent creators, or present extracted transcripts as original editorial articles.
+The project should not hide where information came from, misrepresent creators, or present raw extracted transcripts as original editorial articles.
 
 ---
 
@@ -75,6 +75,10 @@ Base2026 may store several transcript forms:
 
 The cleaned transcript should preserve meaning. Cleanup may include punctuation, casing, paragraph breaks, and readability formatting. Cleanup should not invent claims, add facts, remove important qualifications, or rewrite the creator's meaning.
 
+Raw captions, raw ASR, downloaded media, extraction logs, and local QA notes remain private by default.
+
+Reviewed polished public source text may be published when policy allows. It should appear as an attributed source record with the original source link, Base2026-authored explanation, topics, source-backed insight cards, methodology, and correction/removal path.
+
 ---
 
 ## 6. AI use
@@ -100,10 +104,11 @@ The safest public display model is:
 
 - show attributed records;
 - link to original sources;
-- show short excerpts when appropriate;
+- show reviewed public source text when policy allows;
+- show short search-result previews and evidence excerpts where appropriate;
 - provide search and topic organization;
 - add editorial context where possible;
-- avoid presenting mass transcript pages as original articles.
+- avoid presenting raw transcript dumps or mass transcript mirrors as original articles.
 
 Base2026 should prioritize useful research value over search-engine manipulation.
 

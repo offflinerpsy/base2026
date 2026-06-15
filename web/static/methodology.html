@@ -14,7 +14,7 @@
     <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Base2026 Methodology | Base2026", "description": "How Base2026 turns public short-form expert videos into attributed, searchable source records without replacing creator channels.", "url": "https://aggressorbulkit.online/knowledge/methodology.html", "isPartOf": {"@type": "WebSite", "name": "Base2026", "url": "https://aggressorbulkit.online/knowledge/"}}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./static/styles.css?v=20260611-creatorcta1" />
   </head>
   <body>
@@ -23,28 +23,21 @@
     <header class="site-header">
       <div class="site-header__bar">
         <a class="site-header__brand" href="/"><span class="site-header__avatar" aria-hidden="true"></span><span>Alex Yarosh</span></a>
-        <nav class="site-header__nav" aria-label="Main navigation">
-          <a class="site-header__link" href="/services/">Services</a><a class="site-header__link" href="/pricing/">Pricing</a>
-          <div class="site-header__base">
-            <a class="site-header__link site-header__link--base2026" href="./index.html" aria-haspopup="true">Base2026</a>
-            <div class="site-header__base-menu" aria-label="Base2026 navigation">
-              <span>Base2026 Library</span>
-              <a href="./index.html">Search</a><a href="./topics/">Topics</a><a href="./creators/">Creators</a><a href="./sources/">Sources</a><a href="./roadmap.html">Roadmap</a><a href="./methodology.html" aria-current="page">Methodology</a><a href="./support.html">Support</a>
-            </div>
-          </div>
-<a class="site-header__link" href="/about/">About</a>
+        <nav class="site-header__nav" aria-label="Base2026 navigation">
+          <a class="site-header__link" href="./index.html">Search</a><a class="site-header__link" href="./analytics.html">Analytics</a><a class="site-header__link" href="./api.html">API</a><a class="site-header__link" href="./topics/">Topics</a><a class="site-header__link" href="./creators/">Creators</a><a class="site-header__link" href="./methodology.html" aria-current="page">Methodology</a><span class="site-header__nav-divider" aria-hidden="true"></span><a class="site-header__link site-header__link--site" href="/services/">Services</a><a class="site-header__link site-header__link--site" href="/pricing/">Pricing</a><a class="site-header__link site-header__link--site" href="/about/">About</a>
         </nav>
         <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
         <details class="site-header__mobile-menu">
           <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
           <div class="site-header__mobile-panel">
             <nav aria-label="Mobile navigation">
+              <details class="site-header__mobile-base" open>
+                <summary>Base2026</summary>
+                <div><a href="./index.html">Search</a><a href="./analytics.html">Analytics</a><a href="./api.html">API</a><a href="./topics/">Topics</a><a href="./creators/">Creators</a><a href="./methodology.html" aria-current="page">Methodology</a></div>
+              </details>
+              <strong class="mobile-menu-label">Alex Yarosh</strong>
               <a href="/services/">Services</a>
               <a href="/pricing/">Pricing</a>
-              <details class="site-header__mobile-base">
-                <summary>Base2026</summary>
-                <div><a href="./index.html">Search</a><a href="./topics/">Topics</a><a href="./creators/">Creators</a><a href="./sources/">Sources</a><a href="./roadmap.html">Roadmap</a><a href="./methodology.html" aria-current="page">Methodology</a><a href="./support.html">Support</a></div>
-              </details>
               <a href="/about/">About</a>
               <a class="site-header__mobile-cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
             </nav>
@@ -73,11 +66,12 @@
       </section>
 
 
-      <section class="content-section"><p>Base2026 turns public short-form expert videos into attributed source records that can be searched, compared, and cited.</p><p>The public layer is built for discovery and verification. It is not a video re-hosting platform, not a transcript dump, and not a replacement for creator channels.</p></section>
-<section class="content-section"><h2>Source-first records</h2><p>Each public record should preserve the creator handle, platform, original source URL, publication date when available, and enough excerpt context for a reader to understand why the record appears in search.</p><p>The original creator source remains the canonical place to watch the full video.</p></section>
-<section class="content-section"><h2>Caption and transcript handling</h2><p>The local pipeline may use platform captions, local ASR, cleaned transcript text, and manual review notes.</p><p>Public pages expose short evidence excerpts and source-backed insight cards. Raw captions, full third-party transcripts, local media, and private review notes stay local by default unless a reviewed opt-in, gated, or noindex policy changes that.</p></section>
-<section class="content-section"><h2>Public extraction rules</h2><p>Insight cards should be tied to source evidence. Topic and comparison pages should help a reader understand patterns across creators without inventing claims or declaring a winner.</p><p>AI can help classify, summarize, and review records, but public output must remain source-backed and correction-friendly.</p></section>
+      <section class="content-section"><p>Base2026 turns public short-form expert videos into attributed source records that can be searched, read, compared, and cited.</p><p>The public layer is built for discovery and verification. It is not a video re-hosting platform, not a transcript dump, and not a replacement for creator channels.</p></section>
+<section class="content-section"><h2>Source-first records</h2><p>Each public record should preserve the creator handle, platform, original source URL, publication date when available, reviewed public source text, topics, and enough Base2026-authored context for a reader to understand why the record appears in search.</p><p>The original creator source remains the canonical place to watch the full video.</p></section>
+<section class="content-section"><h2>Caption and transcript handling</h2><p>The local pipeline may use platform captions, local ASR, cleaned transcript text, and manual review notes.</p><p>Raw captions, raw ASR, downloaded media, extraction logs, and private review notes stay local/private.</p><p>Public pages may expose reviewed polished public source text when policy allows. That text is normalized for readability, split into useful paragraphs, and surrounded by attribution, original-source links, Base2026-authored summaries, topics, source-backed insight cards, methodology, and correction/removal paths.</p><p>The distinction is important: Base2026 does not publish raw caption dumps or unreviewed transcript files as standalone content. It publishes reviewed source records that help people search what experts said and understand the context.</p></section>
+<section class="content-section"><h2>Public extraction rules</h2><p>Insight cards should be tied to source evidence. Topic and comparison pages should help a reader understand patterns across creators without inventing claims or declaring a winner.</p><p>AI can help classify, summarize, and review records, but public output must remain source-backed, attributed, and correction-friendly.</p></section>
 <section class="content-section"><h2>Review and correction</h2><p>Base2026 keeps visible correction and removal paths because source intelligence is only useful when attribution and context can be challenged.</p><p>Creators can request attribution fixes, excerpt corrections, record removal, or future source suppression through the correction/removal page.</p></section>
+
     </main>
     <footer class="site-footer">
       <div class="ay-wrap ay-footer-grid">
@@ -88,6 +82,7 @@
           <div class="ay-actions">
             <a class="ay-button" href="/ai-visibility-audit/">Get My Free Roadmap</a>
             <a class="ay-button-secondary" href="/pricing/">View Pricing</a>
+            <a class="ay-button ay-button-base2026" href="/knowledge/">Base2026</a>
           </div>
         </section>
         <nav aria-label="Footer services">

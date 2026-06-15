@@ -1,0 +1,36 @@
+# Base2026 Knowledge Library
+
+Base2026 is a public, searchable source-text library built from short-form expert videos about SEO, GEO, AEO, AI search visibility, schema, local SEO, content strategy, and related digital marketing topics.
+
+The public library contains attributed source records, reviewed public source text, public insight cards, topic pages, creator profiles, topic signal briefs, and source-backed comparison pages. It does not publish raw captions, raw ASR, private QA notes, local databases, or media files.
+
+## Primary Public Entry Points
+
+- Search workspace: https://aggressorbulkit.online/knowledge/
+- Topic index: https://aggressorbulkit.online/knowledge/topics/
+- Creator index: https://aggressorbulkit.online/knowledge/creators/
+- Source index: https://aggressorbulkit.online/knowledge/sources/
+- Creator comparisons: https://aggressorbulkit.online/knowledge/compare/
+- Methodology: https://aggressorbulkit.online/knowledge/methodology.html
+- Source and content policy: https://aggressorbulkit.online/knowledge/source-policy.html
+- Correction or removal: https://aggressorbulkit.online/knowledge/opt-out.html
+- API and AI access: https://aggressorbulkit.online/knowledge/api.html
+
+## Public Data Files
+
+- Release manifest: https://aggressorbulkit.online/knowledge/static/manifest.json
+- Search documents: https://aggressorbulkit.online/knowledge/static/documents.jsonl
+- Public passages: https://aggressorbulkit.online/knowledge/static/passages.jsonl
+- Public insight cards: https://aggressorbulkit.online/knowledge/static/insight_cards.jsonl
+- Topic signal briefs: https://aggressorbulkit.online/knowledge/static/topic_signal_briefs.jsonl
+- Data dictionary: https://aggressorbulkit.online/knowledge/data-dictionary.json
+- API index: https://aggressorbulkit.online/knowledge/api-index.json
+- Search proxy: https://aggressorbulkit.online/knowledge-search/multi-search
+
+## Recommended Use
+
+Use the search workspace for exploration, topic pages for canonical topic evidence, source pages for source-level attribution, and topic signal briefs for compact summaries of repeated creator signals. Use the public JSONL files for offline analysis and the search proxy only when live Meilisearch ranking is needed. Cite the canonical source or topic page when referencing Base2026 evidence.
+
+## Public Boundary
+
+Public source text is reviewed and normalized for readability and search. Raw scraped captions, raw ASR, media files, private research notes, credentials, and local pipeline data are not public Base2026 content.

@@ -25,6 +25,6 @@ Email [offflinerpsy@gmail.com](mailto:offflinerpsy@gmail.com) with:
 
 ## Public boundary
 
-Full third-party transcripts are not published as standalone public pages by default.
+Raw captions, raw ASR, local media, extraction logs, private QA notes, and unreviewed transcripts are not published.
 
-The public site keeps attribution, source links, short evidence context, methodology, and a correction/removal path visible.
+Reviewed public source text may appear on source records when policy allows. The public site keeps attribution, original source links, Base2026-authored context, methodology, and a correction/removal path visible.

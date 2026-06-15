@@ -13,7 +13,7 @@
     <title>Base2026 Video Knowledge Search</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@8/themes/reset-min.css" />
     <link rel="stylesheet" href="./static/styles.css?v=20260611-creatorcta1" />
     <script src="https://cdn.jsdelivr.net/npm/@meilisearch/instant-meilisearch/dist/instant-meilisearch.umd.min.js"></script>
@@ -49,43 +49,35 @@
     <header class="site-header">
       <div class="site-header__bar">
         <a class="site-header__brand" href="/"><span class="site-header__avatar" aria-hidden="true"></span><span>Alex Yarosh</span></a>
-        <nav class="site-header__nav" aria-label="Main navigation">
-          <a class="site-header__link" href="/services/">Services</a>
-          <a class="site-header__link" href="/pricing/">Pricing</a>
-          <div class="site-header__base">
-            <a class="site-header__link site-header__link--base2026" href="./" aria-haspopup="true" aria-current="page">Base2026</a>
-            <div class="site-header__base-menu" aria-label="Base2026 navigation">
-              <span>Base2026 Library</span>
-              <a href="./index.html" aria-current="page">Search</a>
-              <a href="./topics/">Topics</a>
-              <a href="./creators/">Creators</a>
-              <a href="./sources/">Sources</a>
-              <a href="./roadmap.html">Roadmap</a>
-              <a href="./methodology.html">Methodology</a>
-              <a href="./support.html">Support</a>
-            </div>
-          </div>
-          <a class="site-header__link" href="/about/">About</a>
+        <nav class="site-header__nav" aria-label="Base2026 navigation">
+          <a class="site-header__link" href="./index.html" aria-current="page">Search</a>
+          <a class="site-header__link" href="./analytics.html">Analytics</a>
+          <a class="site-header__link" href="./topics/">Topics</a>
+          <a class="site-header__link" href="./creators/">Creators</a>
+          <a class="site-header__link" href="./methodology.html">Methodology</a>
+          <span class="site-header__nav-divider" aria-hidden="true"></span>
+          <a class="site-header__link site-header__link--site" href="/services/">Services</a>
+          <a class="site-header__link site-header__link--site" href="/pricing/">Pricing</a>
+          <a class="site-header__link site-header__link--site" href="/about/">About</a>
         </nav>
         <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
         <details class="site-header__mobile-menu">
           <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
           <div class="site-header__mobile-panel">
             <nav aria-label="Mobile navigation">
-              <a href="/services/">Services</a>
-              <a href="/pricing/">Pricing</a>
-              <details class="site-header__mobile-base">
+              <details class="site-header__mobile-base" open>
                 <summary>Base2026</summary>
                 <div>
                   <a href="./index.html" aria-current="page">Search</a>
+                  <a href="./analytics.html">Analytics</a>
                   <a href="./topics/">Topics</a>
                   <a href="./creators/">Creators</a>
-                  <a href="./sources/">Sources</a>
-                  <a href="./roadmap.html">Roadmap</a>
                   <a href="./methodology.html">Methodology</a>
-                  <a href="./support.html">Support</a>
                 </div>
               </details>
+              <strong class="mobile-menu-label">Alex Yarosh</strong>
+              <a href="/services/">Services</a>
+              <a href="/pricing/">Pricing</a>
               <a href="/about/">About</a>
               <a class="site-header__mobile-cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
             </nav>
@@ -99,36 +91,34 @@
         <span aria-hidden="true">/</span>
         <span aria-current="page">Search</span>
       </nav>
-      <section class="hero">
+      <section class="hero workspace-hero">
         <div class="hero-copy">
-          <p class="eyebrow">Video source intelligence</p>
-          <h1>Search what SEO, GEO and AEO creators actually said.</h1>
-          <p class="lead">A searchable source library for short-form creator videos. Find the exact passage, filter by creator and year, then open the original post.</p>
+          <p class="eyebrow">Base2026 source search</p>
+          <h1>Search creator-video evidence.</h1>
+          <p class="lead">Find exact passages, creators, topics, and source-backed SEO/GEO/AEO signals in one search workspace.</p>
           <div class="hero-actions">
-            <a class="ay-button is-current" href="#searchbox" aria-current="page">Search the Library</a>
-            <a class="ay-button-secondary" href="./topics/">Topics</a>
-            <a class="ay-button-secondary" href="./creators/">Creators</a>
-            <a class="ay-button-secondary" href="./roadmap.html">Roadmap</a>
-            <a class="ay-button-secondary" href="./support.html">Support</a>
+            <a class="ay-button is-current" href="#searchbox" aria-current="page">Search</a>
+            <a class="ay-button-secondary" href="./analytics.html">Analytics</a>
           </div>
         </div>
-        <div class="hero-card" aria-label="Dataset summary">
+        <div class="hero-card workspace-stat-card" aria-label="Dataset summary">
           <div>
-            <strong>957</strong>
-            <span>in-scope videos</span>
+            <strong data-manifest-count="documents">1,219</strong>
+            <span>sources</span>
           </div>
           <div>
-            <strong>1,392</strong>
-            <span>searchable passages</span>
+            <strong data-manifest-count="chunks">1,715</strong>
+            <span>passages</span>
           </div>
           <div>
-            <strong>4</strong>
-            <span>creators indexed</span>
+            <strong data-manifest-count="creators">4</strong>
+            <span>creators</span>
           </div>
+          <a class="workspace-stat-link" href="./analytics.html">Analytics</a>
         </div>
       </section>
 
-      <section class="project-identity" aria-labelledby="project-identity-title">
+      <section class="project-identity project-identity--collapsed" aria-labelledby="project-identity-title">
         <div>
           <p class="eyebrow">Independent research pilot</p>
           <h2 id="project-identity-title">A source library for creator video knowledge.</h2>
@@ -155,6 +145,24 @@
         </div>
         <div id="selected-terms" class="selected-terms" aria-live="polite"></div>
         <div id="current-refinements"></div>
+        <div id="analytics-strip" class="analytics-strip" aria-label="Base2026 analytics" hidden></div>
+      </section>
+
+      <section class="signal-strip" aria-labelledby="signal-strip-title">
+        <div class="signal-strip-copy">
+          <p class="eyebrow">Signals</p>
+          <h2 id="signal-strip-title">Repeated topics across the base.</h2>
+          <p>Use quick searches for high-signal clusters, then inspect sources and creators.</p>
+        </div>
+        <div class="signal-chip-row" aria-label="Signal map topics">
+          <a class="signal-chip" href="./index.html?topic=internal-linking&q=Internal%20Linking" data-workspace-route data-route-topic="internal-linking" data-route-label="Internal Linking">Internal Linking</a>
+          <a class="signal-chip" href="./index.html?topic=on-page-seo&q=On-Page%20SEO" data-workspace-route data-route-topic="on-page-seo" data-route-label="On-Page SEO">On-Page SEO</a>
+          <a class="signal-chip" href="./index.html?q=AI%20Overviews">AI Overviews</a>
+          <a class="signal-chip" href="./index.html?q=Schema">Schema</a>
+          <a class="signal-chip" href="./index.html?q=Local%20SEO">Local SEO</a>
+          <a class="signal-chip" href="./index.html?q=Answer-ready%20content">Answer-ready content</a>
+          <a class="signal-chip" href="./index.html?q=Tools%20automation">Tools</a>
+        </div>
       </section>
 
       <div class="mobile-filter-bar" aria-label="Mobile search filters">
@@ -185,31 +193,20 @@
             <h2>Matched source passages</h2>
             <p id="stats"></p>
           </div>
+          <div id="search-signal" class="search-signal" aria-live="polite" hidden></div>
           <div id="hits"></div>
           <div id="pagination"></div>
         </section>
+
+        <aside id="source-detail-panel" class="source-detail-panel" aria-live="polite">
+          <div class="source-detail-empty">
+            <p class="eyebrow">Source detail</p>
+            <h2>Select a source record</h2>
+            <p>Open any search result to inspect reviewed source text, matched query context, source intelligence, related topics, and source actions without losing your filters.</p>
+          </div>
+        </aside>
       </section>
 
-      <dialog id="transcript-dialog" class="transcript-dialog" aria-label="Source record">
-        <div class="transcript-dialog-head">
-          <div class="transcript-dialog-main">
-            <p class="source-kicker">Public source</p>
-            <div id="transcript-attribution" class="transcript-attribution"></div>
-            <div>
-              <h2 id="transcript-title">Source record</h2>
-              <p id="transcript-meta" class="meta"></p>
-            </div>
-          </div>
-          <div class="transcript-dialog-controls">
-            <div class="transcript-dialog-actions-row">
-              <div id="transcript-header-actions" class="transcript-actions transcript-actions--header"></div>
-              <button type="button" id="transcript-close" class="dialog-close">Close</button>
-            </div>
-            <div id="transcript-header-meta" class="record-policy-grid record-policy-grid--header"></div>
-          </div>
-        </div>
-        <div id="transcript-body" class="transcript-body"></div>
-      </dialog>
     </main>
 
     <footer class="site-footer">
@@ -306,6 +303,7 @@
       window.BASE2026_MEILI_INDEX = "base2026_public_tiktok";
     </script>
     <script src="./static/cookie-consent.js?v=20260611-creatorcta1" defer></script>
+    <script src="./static/share-actions.js?v=20260611-creatorcta1" defer></script>
     <script src="./static/meili.js?v=20260611-creatorcta1"></script>
   </body>
 </html>
