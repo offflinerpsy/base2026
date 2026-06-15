@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 FORBIDDEN_PREFIXES = {
+    ".github/workflows/",
     ".planning/",
     ".playwright-mcp/",
     "00_sources/",
@@ -33,6 +34,7 @@ FORBIDDEN_PREFIXES = {
     "meili_data/",
     "output/",
     "public-data/",
+    "tests/fixtures/public-export-auto-promote/",
 }
 
 FORBIDDEN_EXACT = {"manifest.json"}
@@ -42,16 +44,15 @@ FORBIDDEN_PATTERNS = [
     re.compile(r"^audio_.*\.ogg$"),
     re.compile(r"^base2026-.*\.(?:png|md)$"),
     re.compile(r"^config/(?:tiktok-intake-queue|release-target).*\.json$"),
+    re.compile(r"^\.github/dependabot\.ya?ml$"),
     re.compile(r".*\.(?:log|zip)$"),
 ]
 
 PUBLIC_SAFE_PREFIXES = {
     ".github/ISSUE_TEMPLATE/",
-    ".github/workflows/",
     "10_agent-instructions/",
     "contracts/",
     "docs/",
-    "tests/fixtures/public-export-auto-promote/",
     "tests/fixtures/public-export-leaky/",
     "tests/fixtures/public-export-valid/",
     "web/static/",
@@ -68,7 +69,6 @@ PUBLIC_SAFE_EXACT = {
     "CODE_OF_CONDUCT.md",
     "LICENSE",
     "LICENSE.md",
-    ".github/dependabot.yml",
     ".github/pull_request_template.md",
     "config/creator-profiles.json",
     "config/creators.example.json",

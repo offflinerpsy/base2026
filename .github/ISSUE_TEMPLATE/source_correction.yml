@@ -11,7 +11,7 @@ body:
     id: source_url
     attributes:
       label: Base2026 source page
-      placeholder: "http://207.244.242.42/knowledge/sources/..."
+      placeholder: "https://aggressorbulkit.online/knowledge/sources/..."
     validations:
       required: true
   - type: input
