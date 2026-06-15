@@ -134,9 +134,11 @@ No live LLM call is required during public search.
 Export public TikTok data:
 
 ```bash
-python3 scripts/export-public-tiktok.py --auto-promote-insights
+python3 scripts/export-public-tiktok.py
 python3 scripts/check-public-export-policy.py public-data/tiktok
 ```
+
+Do not use implicit public-card promotion for GitHub or public release preparation. Public insight cards should come from reviewed source-backed rows, not from one-off export flags.
 
 Index passages into Meilisearch:
 
@@ -163,6 +165,7 @@ Audit before staging for GitHub:
 ```bash
 python3 scripts/audit-publication-boundary.py
 python3 scripts/validate-github-metadata.py
+pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/preflight-github-launch.ps1 -SkipExportPolicy -SkipLiveCheck
 ```
 
 ## Project Control
