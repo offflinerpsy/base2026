@@ -1,0 +1,102 @@
+{
+  "name": "Base2026 public data dictionary",
+  "version": "2026-06-14",
+  "public_boundary": {
+    "allowed": [
+      "attributed public source records",
+      "reviewed public source text",
+      "public passages",
+      "public insight cards",
+      "public topic and creator metadata",
+      "deterministic topic signal briefs"
+    ],
+    "not_public": [
+      "raw captions",
+      "raw ASR",
+      "private QA notes",
+      "local databases",
+      "credentials",
+      "audio files",
+      "video files",
+      "unreviewed source vaults"
+    ]
+  },
+  "datasets": [
+    {
+      "file": "/knowledge/static/manifest.json",
+      "format": "json",
+      "description": "Release-level public export counts, timestamps, and policy flags."
+    },
+    {
+      "file": "/knowledge/static/documents.jsonl",
+      "format": "jsonl",
+      "description": "Search-ready public documents used by the Base2026 workspace.",
+      "primary_keys": ["item_id"],
+      "common_fields": [
+        "item_id",
+        "source_id",
+        "creator_handle",
+        "published_date",
+        "source_type",
+        "language",
+        "source_url",
+        "public_source_text",
+        "source_summary_short",
+        "source_summary_long",
+        "topics",
+        "topic_labels"
+      ]
+    },
+    {
+      "file": "/knowledge/static/passages.jsonl",
+      "format": "jsonl",
+      "description": "Public evidence passages linked to source records for search and citation.",
+      "common_fields": [
+        "source_id",
+        "item_id",
+        "body",
+        "topics",
+        "creator_handle"
+      ]
+    },
+    {
+      "file": "/knowledge/static/insight_cards.jsonl",
+      "format": "jsonl",
+      "description": "Reviewed public insight cards derived from public source evidence.",
+      "common_fields": [
+        "source_id",
+        "topic_id",
+        "topic",
+        "creator_handle",
+        "claim_text",
+        "stance",
+        "evidence_excerpt",
+        "suggested_action",
+        "public"
+      ]
+    },
+    {
+      "file": "/knowledge/static/topic_signal_briefs.jsonl",
+      "format": "jsonl",
+      "description": "Deterministic compact topic signal summaries generated only for strong public topics.",
+      "strong_topic_threshold": {
+        "source_count": ">= 5",
+        "creator_count": ">= 2",
+        "public_insight_count": ">= 3"
+      },
+      "common_fields": [
+        "topic_id",
+        "topic_label",
+        "status",
+        "source_count",
+        "creator_count",
+        "public_insight_count",
+        "creator_angles",
+        "repeated_tactics",
+        "source_backed_actions",
+        "monthly_activity",
+        "top_sources"
+      ]
+    }
+  ]
+}

@@ -4085,3 +4085,63 @@ Not done:
 
 - Playwright was not run in this repo because the local project does not currently have Playwright installed in `node_modules`;
 - no new TikTok intake was run.
+## 2026-06-15 — Base2026 info-page, roadmap, support, and footer polish
+
+User asked to align public Methodology, Source & Content Policy, Creator Correction/Removal, Project Story, and Roadmap copy with the corrected Base2026 product passport; make roadmap milestone badges smaller and inline; verify roadmap statuses against actual project state; add support/contact forms to support and roadmap pages; unify the Base2026 footer with the WordPress/global footer CTA set; deploy immediately; and record GitHub repo/Page/Project cleanup as a separate next task.
+
+Actions taken:
+
+- updated public docs under `docs/public-pages/` so they distinguish private raw captions/ASR/media/private QA from reviewed public source text that may appear on source records when policy allows;
+- corrected roadmap status language: search/source pages, Source Intelligence, analytics, topic/source pages, and public database counters are live; TikTok intake handoff, evidence-gated review, historical transcript QA/source-review debt, creator claims, visitor/search analytics, API/MCP access, and monetization remain in progress/planned/research;
+- changed `web/static/roadmap.js` so milestone cards render `title | status` through `milestone-card__head`;
+- added a static contact form to generated roadmap/support pages through `scripts/generate-info-pages.py`, using `offflinerpsy@gmail.com`;
+- added the third footer CTA `Base2026` to both info-page and generated source/topic/creator page shells;
+- added CSS for compact milestone status rows, Base2026 footer CTA, and the support/roadmap contact form;
+- regenerated info pages and generated public pages;
+- deployed `base2026-info-pages-polish-20260615` with the normal VPS deploy script and reindexed Meilisearch;
+- updated project memory and queued GitHub repo presentation cleanup as the next separate workstream.
+
+Verification:
+
+- `python3 -m py_compile scripts/generate-info-pages.py scripts/generate-public-pages.py` passed;
+- `node --check web/static/roadmap.js` passed;
+- `python3 scripts/check-public-export-policy.py public-data/tiktok` passed;
+- `python3 scripts/validate-public-text-excerpts.py --data public-data/tiktok` passed;
+- `python3 scripts/validate-public-release-contract.py --export-dir public-data/tiktok --baseline-export-dir public-data/tiktok` passed;
+- `git diff --check` passed for the edited source/docs files;
+- deploy completed with 1219 source records, 1715 passages, 1614 insight cards, 1043 public insight cards, 1510 topics, 995 public topics, and Meilisearch indexed 1715 passages;
+- live smoke confirmed 200 responses for `/knowledge/roadmap.html`, `/knowledge/support.html`, and `/knowledge/sources/tiktok-video-7640117982898752790.html`;
+- live smoke confirmed release marker `base2026-info-pages-polish-20260615`, roadmap/support contact sections, footer `Base2026` CTA on both info and source pages, updated methodology/source-policy/opt-out text, and live roadmap JS strings including `milestone-card__head`.
+
+Not done:
+
+- Playwright/browser screenshot QA was not run because the repo has no local `node_modules` and no Playwright package installed;
+- GitHub repo/Page/Project cleanup was not started in this pass and is intentionally queued as the next separate workstream.
+
+## 2026-06-15 — Base2026 footer/contact/API polish, WordPress plan context, and live deploy
+
+User asked to make the Base2026 contact form block use the main orange brand color, unify oversized footer CTAs, verify that paid pricing buttons preserve selected package context on the WordPress audit form, add a simple AI/API access surface for Base2026, push the public-safe project state toward GitHub, and deploy.
+
+Actions taken:
+
+- changed Base2026 footer CTAs from large uneven cards to compact same-row actions matching the main-site footer rhythm;
+- changed Base2026 support/roadmap contact copy block to an orange brand panel while keeping the form readable;
+- added `/knowledge/api.html`, `api-index.json` metadata, `llms.txt` references, README copy, and release-script checks for public read-only AI/API access;
+- added a public GitHub Pages landing page under `docs/index.html`;
+- added a WordPress Novamira sandbox snippet that reads pricing `?plan=` context on `/ai-visibility-audit/`, displays the selected package, writes it into a hidden field, and prepends it to submitted notes before the existing email handler runs;
+- confirmed WordPress audit/snapshot submissions use `AY_CONTACT_EMAIL`, currently `offflinerpsy@gmail.com`;
+- regenerated Base2026 info pages and deployed `base2026-footer-api-pricing-context-r2-20260615`.
+
+Verification:
+
+- public release packaged and deployed with 1219 source records, 1715 passages, 1614 insight cards, 1043 public insight cards, 1510 topics, 995 public topics, and 1308 sitemap URLs;
+- Meilisearch reindexed 1715 passages;
+- live `/knowledge/api.html`, `/knowledge/api-index.json`, `/knowledge/llms.txt`, `/knowledge/roadmap.html`, and `/knowledge-search/multi-search` smoke checks passed;
+- live CSS contains the compact footer and orange contact block changes;
+- live WordPress audit page with `?plan=sprint` contains the selected-package client code and footer mail target `offflinerpsy@gmail.com`;
+- no robots/noindex/canonical code path was changed; `/knowledge/api.html` was added to the generated sitemap.
+
+Not done:
+
+- no fake form submission was sent to avoid generating a test lead email;
+- Playwright screenshot QA was not run because this repo does not currently have Playwright installed locally.

@@ -1,5 +1,11 @@
 # Decisions
 
+## 2026-06-15 — Use static mailto forms on Base2026 until a backend form endpoint exists
+
+Decision: `/knowledge/support.html` and `/knowledge/roadmap.html` may render a styled contact form, but for now it submits through `mailto:offflinerpsy@gmail.com` instead of copying the WordPress `admin-post.php` form.
+
+Reason: Base2026 is a generated static site under `/knowledge/`. The WordPress form uses server-side handling and nonce/state that cannot be safely hardcoded into static generated HTML. A mailto form gives a visible support path now without pretending a backend submit flow exists. A future WordPress/plugin endpoint can replace it as a separate task.
+
 ## 2026-06-14 — Add public analytics as a compact search signal layer, not another navigation mode
 
 Decision: Base2026 should expose deterministic public analytics generated from public JSONL during normal release packaging. Analytics may appear as a compact strip, topic/creator counts, and a dedicated `/knowledge/analytics.html` page. It should not create another modal, third column, or extra per-result button layer. Typography for the Base2026 product surface should use Geist / Geist Mono for a denser search-product feel.
@@ -323,3 +329,9 @@ Reason: multiple reviewed rows can be valid data while still looking like duplic
 Decision: generated source pages and runtime source detail should show the platform icon only in compact metadata, not beside the creator identity. Source hero primary actions should stay limited to `Open in Search Workspace`, `Open original`, and `Creator`; correction/removal remains a trust/support/footer path, not a hero CTA. Supporting passage blocks should render only for genuinely distinct public passages, not same-source chunks already contained in the visible Source Text.
 
 Reason: duplicated platform badges, second-row trust buttons, and tail passage fragments make source records feel unstructured and non-production. Source detail should read as one clear record: identity, metadata, primary actions, Source Text, Source Intelligence, and only meaningful supporting context.
+
+## 2026-06-15 — Publish AI/API access as a read-only public contract
+
+Decision: Base2026 exposes a public `API & AI Access` page, `api-index.json`, `llms.txt`, and static JSONL entry points for reviewed public data. The live search proxy at `/knowledge-search/multi-search` is documented as read-only and ranking-oriented; bulk/agent analysis should prefer the static public JSONL files. Raw captions, raw ASR, media, private QA, local databases, and unreviewed transcript material remain excluded.
+
+Reason: Base2026 is meant to be useful to humans and AI tools as a source-backed knowledge base. Publishing a clear read-only access contract makes integrations possible without encouraging scraping of the visual UI or leaking private pipeline material.

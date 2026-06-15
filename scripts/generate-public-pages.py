@@ -638,6 +638,7 @@ def page_shell(
           <div class="ay-actions">
             <a class="ay-button" href="/ai-visibility-audit/">Get My Free Roadmap</a>
             <a class="ay-button-secondary" href="/pricing/">View Pricing</a>
+            <a class="ay-button ay-button-base2026" href="/knowledge/">Base2026</a>
           </div>
         </section>
         <nav aria-label="Footer services">

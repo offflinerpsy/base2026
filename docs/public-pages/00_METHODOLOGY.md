@@ -1,6 +1,6 @@
 # How this source library works
 
-Base2026 turns public short-form expert videos into attributed source records that can be searched, compared, and cited.
+Base2026 turns public short-form expert videos into attributed source records that can be searched, read, compared, and cited.
 
 The public layer is built for discovery and verification. It is not a video re-hosting platform, not a transcript dump, and not a replacement for creator channels.
 
@@ -8,7 +8,7 @@ The public layer is built for discovery and verification. It is not a video re-h
 
 ## Source-first records
 
-Each public record should preserve the creator handle, platform, original source URL, publication date when available, and enough excerpt context for a reader to understand why the record appears in search.
+Each public record should preserve the creator handle, platform, original source URL, publication date when available, reviewed public source text, topics, and enough Base2026-authored context for a reader to understand why the record appears in search.
 
 The original creator source remains the canonical place to watch the full video.
 
@@ -16,13 +16,17 @@ The original creator source remains the canonical place to watch the full video.
 
 The local pipeline may use platform captions, local ASR, cleaned transcript text, and manual review notes.
 
-Public pages expose short evidence excerpts and source-backed insight cards. Raw captions, full third-party transcripts, local media, and private review notes stay local by default unless a reviewed opt-in, gated, or noindex policy changes that.
+Raw captions, raw ASR, downloaded media, extraction logs, and private review notes stay local/private.
+
+Public pages may expose reviewed polished public source text when policy allows. That text is normalized for readability, split into useful paragraphs, and surrounded by attribution, original-source links, Base2026-authored summaries, topics, source-backed insight cards, methodology, and correction/removal paths.
+
+The distinction is important: Base2026 does not publish raw caption dumps or unreviewed transcript files as standalone content. It publishes reviewed source records that help people search what experts said and understand the context.
 
 ## Public extraction rules
 
 Insight cards should be tied to source evidence. Topic and comparison pages should help a reader understand patterns across creators without inventing claims or declaring a winner.
 
-AI can help classify, summarize, and review records, but public output must remain source-backed and correction-friendly.
+AI can help classify, summarize, and review records, but public output must remain source-backed, attributed, and correction-friendly.
 
 ## Review and correction
 

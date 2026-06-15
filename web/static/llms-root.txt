@@ -1,0 +1,27 @@
+# Alex Yarosh
+
+Alex Yarosh helps local service businesses improve visibility across Google, ChatGPT, Gemini, Perplexity, Bing, and AI-powered search through SEO, GEO, AEO, content, schema, local trust signals, and answer-ready pages.
+
+## Site Areas
+
+- Home: https://aggressorbulkit.online/
+- Services: https://aggressorbulkit.online/services/
+- Pricing: https://aggressorbulkit.online/pricing/
+- AI Visibility Audit: https://aggressorbulkit.online/ai-visibility-audit/
+- About: https://aggressorbulkit.online/about/
+- Base2026 knowledge library: https://aggressorbulkit.online/knowledge/
+
+## Base2026
+
+Base2026 is an independent public pilot project: a searchable source-text library and signal map built from public short-form expert videos about SEO, GEO, AEO, AI search visibility, schema, content strategy, local SEO, and related topics.
+
+Key Base2026 files:
+
+- Base2026 llms file: https://aggressorbulkit.online/knowledge/llms.txt
+- Base2026 API and AI access: https://aggressorbulkit.online/knowledge/api.html
+- Base2026 data dictionary: https://aggressorbulkit.online/knowledge/data-dictionary.json
+- Base2026 API index: https://aggressorbulkit.online/knowledge/api-index.json
+
+## Public Boundary
+
+The public site does not publish private notes, credentials, raw source vaults, raw captions, raw ASR, audio, video, local databases, or unreviewed pipeline artifacts.

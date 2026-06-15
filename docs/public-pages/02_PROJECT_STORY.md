@@ -42,13 +42,15 @@ A record can include:
 - platform;
 - publication date if available;
 - topic tags;
-- public post caption if available;
-- transcript or extracted spoken text;
-- cleaned readable version;
+- reviewed public source text;
+- cleaned readable transcript/source text;
+- short Base2026-authored explanation;
+- fuller Base2026-authored explanation;
+- source-backed insight cards;
 - source/provenance information;
 - quality and review flags.
 
-The goal is not to replace the original creator. The goal is to make public spoken knowledge easier to search, reference, compare, and revisit.
+The goal is not to replace the original creator or re-host the video. The goal is to make public spoken knowledge easier to search, reference, compare, and revisit.
 
 ---
 
@@ -97,25 +99,24 @@ Base2026 is being designed around:
 - correction requests;
 - removal requests;
 - transparent processing notes;
-- separation between raw transcript and cleaned text.
+- separation between raw/private capture artifacts and reviewed public source text.
 
 ---
 
 ## Where the project is going
 
-The current version is a searchable public MVP.
+The current version is a searchable public source library with reviewed source text, topic pages, source intelligence cards, creator pages, analytics, and static SEO/share pages.
 
 The next versions should add:
 
-- reliable local transcription;
-- better Instagram/TikTok ingestion;
-- creator pages;
-- topic pages;
+- more reliable TikTok/Instagram intake;
+- tighter review handoff for new sources;
+- better creator filtering and profile controls;
 - semantic search;
 - AI-assisted answers with citations;
-- opt-out and correction workflows;
-- public documentation;
-- open-source tooling.
+- creator claim workflows;
+- public changelog and stronger support paths;
+- open-source tooling and API/MCP access.
 
 Long term, Base2026 can become a research engine for short-form expert knowledge: a way to search, compare, and understand what creators are actually saying across platforms.
 

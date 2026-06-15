@@ -323,6 +323,7 @@ time {
 
 .roadmap-page .status-badge {
   display: inline-flex;
+  flex: 0 0 auto;
   min-height: 17px;
   align-items: center;
   width: fit-content;
@@ -411,8 +412,15 @@ time {
   background: rgba(255, 255, 255, 0.58);
 }
 
+.roadmap-page .milestone-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .roadmap-page .milestone-card h3 {
-  margin: 9px 0 0;
+  margin: 0;
   color: var(--ay-text);
   font-size: 16px;
   font-weight: 760;
@@ -969,7 +977,7 @@ h1 {
 .ay-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
 .hero-card,
@@ -2508,12 +2516,143 @@ body.source-detail-open .source-detail-back {
   color: #ffffff;
 }
 
+.site-footer .ay-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  max-width: none;
+}
+
+.site-footer .ay-actions .ay-button,
+.site-footer .ay-actions .ay-button-secondary {
+  flex: 0 0 auto;
+  justify-content: center;
+  width: auto;
+  min-height: 38px;
+  padding: 8px 14px;
+  font-size: 13px;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.site-footer .ay-button-base2026 {
+  border-color: #a6d953;
+  background: #a6d953;
+  color: #121a1f;
+}
+
 .site-footer .ay-button:hover,
 .site-footer .ay-button:focus-visible {
   border-color: var(--ay-orange-on-dark);
   background: var(--ay-orange-on-dark);
   color: #121a1f;
   text-decoration: none;
+}
+
+.base-contact-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(18px, 3vw, 32px);
+  margin: 22px 0 0;
+  padding: clamp(18px, 3vw, 30px);
+  border: 1px solid rgba(18, 26, 31, 0.11);
+  border-radius: var(--ay-radius-lg);
+  background: rgba(255, 250, 240, 0.84);
+  box-shadow: var(--ay-shadow);
+}
+
+.base-contact-copy {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: clamp(18px, 3vw, 28px);
+  border-radius: var(--ay-radius);
+  background: linear-gradient(135deg, var(--ay-orange) 0%, var(--ay-orange-on-dark) 100%);
+  color: #fffaf0;
+  box-shadow: 0 18px 36px rgba(200, 79, 7, 0.2);
+}
+
+.base-contact-copy .eyebrow {
+  color: #fff4e7;
+}
+
+.base-contact-copy h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.02;
+}
+
+.base-contact-copy p {
+  max-width: 520px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.contact-email-link {
+  width: fit-content;
+  color: #ffffff;
+  font-weight: 760;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.base-contact-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.base-contact-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--ay-muted);
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.base-contact-form__full {
+  grid-column: 1 / -1;
+}
+
+.base-contact-form input,
+.base-contact-form textarea {
+  width: 100%;
+  border: 1px solid rgba(18, 26, 31, 0.16);
+  border-radius: var(--ay-radius);
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--ay-text);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.35;
+  text-transform: none;
+}
+
+.base-contact-form input {
+  min-height: 46px;
+  padding: 10px 12px;
+}
+
+.base-contact-form textarea {
+  min-height: 132px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.base-contact-form input:focus,
+.base-contact-form textarea:focus {
+  border-color: rgba(200, 79, 7, 0.55);
+  outline: 3px solid var(--ay-focus);
+}
+
+.base-contact-form button {
+  width: fit-content;
 }
 
 .site-footer .ay-button-secondary {
@@ -3942,6 +4081,10 @@ body.source-detail-open .source-detail-back {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .base-contact-section {
+    grid-template-columns: 1fr;
+  }
+
   .source-page-hero,
   .topic-page-hero {
     grid-template-columns: 1fr;
@@ -3967,6 +4110,32 @@ body.source-detail-open .source-detail-back {
   .source-meta-strip__topics {
     grid-column: 1 / -1;
     border-top: 1px solid var(--ay-line);
+  }
+}
+
+@media (max-width: 640px) {
+  .base-contact-section {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .base-contact-form {
+    grid-template-columns: 1fr;
+  }
+
+  .base-contact-form button,
+  .contact-email-link {
+    width: 100%;
+  }
+
+  .site-footer .ay-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .site-footer .ay-actions .ay-button,
+  .site-footer .ay-actions .ay-button-secondary {
+    width: 100%;
   }
 }
 

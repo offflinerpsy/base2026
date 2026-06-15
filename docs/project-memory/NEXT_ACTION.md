@@ -1,5 +1,27 @@
 # Next Action
 
+## Latest deployed info-page / roadmap / footer pass
+
+- `base2026-info-pages-polish-20260615` is live under `/knowledge/`.
+- Public Methodology, Source & Content Policy, Creator Correction/Removal, Project Story, and Roadmap copy now match the corrected product passport:
+  - raw captions, raw ASR, media, logs, private QA, and unreviewed transcripts stay private;
+  - reviewed public source text can appear on source records when policy allows;
+  - Base2026-authored summaries, source intelligence, topics, attribution, methodology, and correction/removal paths are the public value layer.
+- `/knowledge/roadmap.html` now reflects current reality:
+  - public search/source pages, Source Intelligence, analytics, topic/source pages, and public database counters are live;
+  - TikTok intake handoff, evidence-gated review, historical transcript QA/source-review debt, creator claims, visitor/search analytics, API/MCP access, and monetization remain in progress/planned/research.
+- Roadmap milestone cards now render compact status labels in the same row as the milestone title.
+- `/knowledge/support.html` and `/knowledge/roadmap.html` now include a static contact form using `offflinerpsy@gmail.com`.
+- Info pages and generated source/topic/creator pages now share the same three-button footer CTA set: `Get My Free Roadmap`, `View Pricing`, `Base2026`.
+- Live smoke confirmed the release marker, forms, footer Base2026 CTA, updated policy text, roadmap JS status strings, and 200 responses for roadmap/support/source URLs.
+- Playwright/browser screenshot QA was not run because this repo currently has no local `node_modules` and no Playwright package installed.
+
+Next safe action:
+
+1. Keep the current Base2026 public UI steady unless a concrete bug appears.
+2. Open a separate GitHub presentation/workflow task: polish `offflinerpsy/base2026` README/repo metadata, GitHub Pages or project page plan, GitHub Project board, pinned links, screenshots, roadmap links, and public validation instructions. Use the GitHub skill/tooling for that pass and keep generated/private artifacts out of commits.
+3. Continue TikTok intake only through the dedicated pipeline handoff with content-readiness gates.
+
 ## Latest deployed analytics / IA / typography pass
 
 - `base2026-analytics-geist-20260614` is live under `/knowledge/`.
@@ -623,5 +645,7 @@ Verification:
 
 Next safe action:
 
-- Monitor live `base2026-source-page-polish-20260615`.
+- Monitor live `base2026-footer-api-pricing-context-r2-20260615`.
+- GitHub presentation cleanup is now the active handoff: publish the public-safe source update, enable/verify GitHub Pages from `docs/`, and create a lightweight GitHub Project if token permissions allow.
+- Coordinate with the separate GSC/indexing audit before making further changes to sitemap, robots, canonical, noindex, or static page generation. The latest deploy added `/knowledge/api.html` to the sitemap and did not change robots/noindex/canonical logic.
 - If the next UX pass changes source records, keep source identity, metadata, hero actions, Source Text, and Source Intelligence as separate responsibilities; do not add another general-purpose evidence block unless it contains distinct content not already present in Source Text.

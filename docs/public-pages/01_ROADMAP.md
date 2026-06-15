@@ -24,15 +24,19 @@ Base2026 turns that stream of public spoken knowledge into structured source rec
 - Creator/source attribution model.
 - Creator, source, topic, and comparison pages.
 - Public roadmap, project story, privacy, source/content policy, support, methodology, and creator correction/removal pages.
-- Excerpt-first public source payload; full third-party transcripts are not shipped by default.
+- Reviewed public source text on source records where policy allows.
+- Base2026-authored short and fuller source explanations.
+- Source-backed public insight cards.
+- Public analytics page with database coverage and topic/source signals.
 
 ### Current limitations
 
 - Transcription is local-first and working, but historical QA still requires source/audio verification for some rows.
 - TikTok and Instagram extraction are unstable by nature.
 - Small VPS is not suitable for heavy ASR/transcription workloads.
-- AI-powered answer generation is not yet a public feature.
+- AI-powered open-ended answer generation is not yet a public feature.
 - Creator claim workflow and public change log are planned.
+- Visitor-level usage analytics and search-demand analytics are planned.
 
 # Development sequence
 
@@ -40,9 +44,9 @@ Base2026 turns that stream of public spoken knowledge into structured source rec
 
 **Status:** Live
 
-**Purpose:** Make the project understandable and accountable before scaling.
+**Purpose:** Keep the public project understandable and accountable while the database grows.
 
-Before scaling the database, we publish the rules: what the project is, how content is sourced, how privacy is handled, and how creators can request corrections or opt out.
+The public layer has a live search workspace, source records, creator/topic pages, methodology, source policy, privacy notes, and correction/removal paths.
 
 ### Milestones
 
@@ -59,30 +63,34 @@ Before scaling the database, we publish the rules: what the project is, how cont
 
 **Status:** In progress
 
-**Purpose:** Turn raw public materials into structured, searchable knowledge entries.
+**Purpose:** Turn public creator videos into reviewed source text, searchable passages, and source-backed intelligence.
+
+The pipeline is live for reviewed public exports, but historical transcript QA, source-review debt, and automated handoff hardening are still active work.
 
 ### Milestones
 
-- Local transcription pipeline.
+- Local transcription and source-text pipeline.
 - Data cleanup and review workflow.
-- Backups.
-- Content submission / intake workflow.
+- Backups and reproducible export rebuilds.
+- TikTok intake handoff workflow.
 - Source metadata model.
-- Media/audio/video ingestion logic.
-- Transcription workflow.
+- Media/audio/video fallback logic.
+- Reviewed public source-text export.
 - Evidence-gated insight-card extraction.
 - Entity/topic cleanup.
-- Moderation/review queue.
+- Historical transcript QA and source-review queue.
 
 ## Phase 3 - AI Knowledge Layer
 
-**Status:** Next
+**Status:** Live
 
-**Purpose:** Convert stored materials into usable answers, summaries, relationships, and discovery paths.
+**Purpose:** Convert reviewed source text into summaries, topics, insight cards, and discovery paths.
+
+The public intelligence layer is live, with search, topic pages, analytics, public insight cards, and source-backed explanations. The remaining work is dedupe, QA, and better answer/compare surfaces.
 
 ### Milestones
 
-- AI-generated summaries.
+- Base2026 source summaries.
 - Entity and topic clustering.
 - Search and filtering.
 - Source-backed answer blocks.
@@ -92,9 +100,11 @@ Before scaling the database, we publish the rules: what the project is, how cont
 
 ## Phase 4 - Creator & Rights Controls
 
-**Status:** Planned
+**Status:** In progress
 
 **Purpose:** Give creators and source owners a clear way to correct, update, remove, or claim materials.
+
+The public correction/removal page is live. Creator claims, automated request processing, and a public changelog are still planned.
 
 ### Milestones
 
@@ -106,13 +116,15 @@ Before scaling the database, we publish the rules: what the project is, how cont
 
 ## Phase 5 - Analytics & Public Signals
 
-**Status:** Planned
+**Status:** Live
 
-**Purpose:** Show what is growing, what is being used, and where the platform has traction.
+**Purpose:** Show what is in the database, what topics are visible, and where the source graph is growing.
+
+The public analytics page is live for database coverage and topic/source signals. Visitor-level analytics, search-demand signals, and most-viewed entries remain planned.
 
 ### Milestones
 
-- Public usage counters.
+- Public database counters.
 - Most viewed knowledge entries.
 - Source coverage metrics.
 - Content growth chart.
@@ -140,27 +152,22 @@ Before scaling the database, we publish the rules: what the project is, how cont
 - Public Trust Foundation.
 - Public VPS deployment.
 - Searchable knowledge base interface.
-- Public roadmap live.
-- Project story and mission published.
-- Privacy policy published.
-- Source and content policy published.
-- Creator correction/removal page published.
+- Reviewed public source-text pages.
+- Public analytics and topic signals.
 
 ## Next
 
 - Content Ingestion Pipeline.
-- Local transcription pipeline.
-- Source metadata model.
-- Transcription workflow.
+- TikTok intake handoff workflow.
 - Evidence-gated insight-card review.
-- Moderation/review queue.
+- Historical transcript QA and source-review queue.
 
 ## Later
 
-- AI Knowledge Layer.
-- Creator & Rights Controls.
-- Analytics & Public Signals.
+- Creator claim workflow.
+- Visitor/search analytics.
 - Monetization Layer.
+- API / MCP data access.
 
 # What this roadmap proves
 

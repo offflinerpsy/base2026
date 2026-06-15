@@ -8,6 +8,8 @@ The project started as a personal SEO/SMM research notebook. It is now becoming 
 
 Short-form platforms contain useful knowledge, but they are difficult to search. Base2026 makes that knowledge easier to find, compare, and revisit.
 
+The current public product is a searchable source library: reviewed source text, Base2026-authored explanations, topic signals, creator/source attribution, analytics, and correction/removal paths.
+
 ---
 
 ## Why support is needed
@@ -136,6 +138,8 @@ You can support the project by:
 - sharing the project;
 - helping test the search experience;
 - providing transcription/compute credits.
+
+Use the contact form below or email [offflinerpsy@gmail.com](mailto:offflinerpsy@gmail.com) for support, sponsorship, source suggestions, corrections, or partnership ideas.
 
 ---
 
