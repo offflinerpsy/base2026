@@ -21,7 +21,7 @@ const ROUTES = [
     path: "/knowledge/?q=AI%20Overviews",
     group: "base2026",
     expectHits: true,
-    expectSourceModal: true,
+    expectSourceWorkspace: true,
   },
   { id: "base-roadmap", label: "Base2026 roadmap", path: "/knowledge/roadmap.html", group: "base2026" },
   { id: "base-support", label: "Base2026 support", path: "/knowledge/support.html", group: "base2026" },
@@ -350,42 +350,68 @@ async function collectDiagnostics(page) {
   });
 }
 
-async function exerciseSourceModal(page, route, viewport, outputDir, options) {
-  if (!route.expectSourceModal) return null;
+async function exerciseSourceWorkspace(page, route, viewport, outputDir, options) {
+  if (!route.expectSourceWorkspace) return null;
   const result = {
     attempted: true,
     open: false,
+    legacyDialogOpen: false,
+    resultsVisible: false,
     overflowX: false,
+    hasSourceText: false,
+    oldMarkers: [],
     screenshot: "",
     failure: "",
   };
 
   try {
-    const buttons = page.locator(".read-transcript");
+    const buttons = page.locator(".view-source-detail");
     if ((await buttons.count()) === 0) {
-      result.failure = "No source-record buttons found.";
+      result.failure = "No source-detail buttons found.";
       return result;
     }
     await buttons.first().click({ timeout: 5000 });
-    const dialog = page.locator("#transcript-dialog[open]");
-    await dialog.waitFor({ state: "visible", timeout: 10000 });
+    const detail = page.locator("#source-detail-panel.is-active");
+    await detail.waitFor({ state: "visible", timeout: 10000 });
+    await page.waitForFunction(() => document.querySelector("#source-detail-panel")?.innerText.includes("Source Text"), null, { timeout: 10000 });
     result.open = true;
-    result.overflowX = await page.evaluate(() => {
-      const dialogEl = document.querySelector("#transcript-dialog[open]");
-      if (!dialogEl) return false;
-      return dialogEl.scrollWidth > dialogEl.clientWidth + 2;
+    const detailState = await page.evaluate(() => {
+      const detailEl = document.querySelector("#source-detail-panel.is-active");
+      const resultsEl = document.querySelector(".results-panel");
+      const dialogEl = document.querySelector("#transcript-dialog");
+      const detailStyle = detailEl ? getComputedStyle(detailEl) : null;
+      const resultsStyle = resultsEl ? getComputedStyle(resultsEl) : null;
+      const detailText = detailEl?.innerText || "";
+      const oldMarkers = ["Source Provenance", "Caption Metadata Snippet", "Related Passages", "Matched Passage", "Public Insight Cards"]
+        .filter((marker) => detailText.includes(marker));
+      return {
+        legacyDialogOpen: !!dialogEl?.open,
+        hasSourceText: detailText.includes("Source Text"),
+        oldMarkers,
+        detailOverflowX: detailEl ? detailEl.scrollWidth > detailEl.clientWidth + 2 : false,
+        pageOverflowX: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
+        resultsVisible: !!resultsEl && resultsStyle.display !== "none",
+        detailVisible: !!detailEl && detailStyle.display !== "none",
+      };
     });
+    result.legacyDialogOpen = detailState.legacyDialogOpen;
+    result.hasSourceText = detailState.hasSourceText;
+    result.oldMarkers = detailState.oldMarkers;
+    result.resultsVisible = detailState.resultsVisible;
+    result.overflowX = detailState.pageOverflowX || detailState.detailOverflowX || detailState.legacyDialogOpen || !detailState.detailVisible;
+    if (!result.hasSourceText) {
+      result.failure = "Source workspace did not show Source Text.";
+    } else if (result.oldMarkers.length > 0) {
+      result.failure = `Legacy source labels still visible: ${result.oldMarkers.join(", ")}`;
+    } else if (result.legacyDialogOpen) {
+      result.failure = "Legacy transcript dialog opened.";
+    }
 
     if (options.screenshots) {
-      const file = `${sanitizeFilePart(route.id)}--${viewport.id}--modal.png`;
+      const file = `${sanitizeFilePart(route.id)}--${viewport.id}--source-detail.png`;
       const path = join(outputDir, file);
       await page.screenshot({ path, fullPage: false });
       result.screenshot = file;
-    }
-
-    const close = page.locator("#transcript-close");
-    if ((await close.count()) > 0) {
-      await close.first().click({ timeout: 3000 });
     }
   } catch (error) {
     result.failure = error.message;
@@ -526,7 +552,7 @@ async function exerciseRoadmapCta(page, route, viewport) {
   return result;
 }
 
-function buildFailures({ status, route, readiness, diagnostics, consoleMessages, pageErrors, modal, mobileMenu, roadmapCta }) {
+function buildFailures({ status, route, readiness, diagnostics, consoleMessages, pageErrors, sourceWorkspace, mobileMenu, roadmapCta }) {
   const failures = [];
   const consoleErrors = relevantConsole(consoleMessages);
 
@@ -554,8 +580,8 @@ function buildFailures({ status, route, readiness, diagnostics, consoleMessages,
   if (route.expectForm && readiness.formControlCount === 0) {
     failures.push("Expected form controls, found 0");
   }
-  if (modal?.attempted && (!modal.open || modal.overflowX || modal.failure)) {
-    failures.push(`Source modal failed: ${modal.failure || (modal.overflowX ? "horizontal overflow" : "not open")}`);
+  if (sourceWorkspace?.attempted && (!sourceWorkspace.open || sourceWorkspace.overflowX || sourceWorkspace.failure)) {
+    failures.push(`Source workspace failed: ${sourceWorkspace.failure || (sourceWorkspace.overflowX ? "horizontal overflow" : "not open")}`);
   }
   if (mobileMenu?.attempted && (!mobileMenu.open || mobileMenu.overflowX || mobileMenu.failure)) {
     failures.push(`Mobile menu failed: ${mobileMenu.failure || (mobileMenu.overflowX ? "horizontal overflow" : "not open")}`);
@@ -686,7 +712,7 @@ async function run() {
         let status = null;
         let readiness = {};
         let diagnostics = null;
-        let modal = null;
+        let sourceWorkspace = null;
         let mobileMenu = null;
         let roadmapCta = null;
         let screenshot = "";
@@ -710,7 +736,7 @@ async function run() {
 
           mobileMenu = await exerciseMobileMenu(page, route, viewport);
           roadmapCta = await exerciseRoadmapCta(page, route, viewport);
-          modal = await exerciseSourceModal(page, route, viewport, outputDir, options);
+          sourceWorkspace = await exerciseSourceWorkspace(page, route, viewport, outputDir, options);
         } catch (error) {
           navigationError = error.message;
           diagnostics = diagnostics || {
@@ -727,7 +753,7 @@ async function run() {
           };
         }
 
-        const failures = buildFailures({ status, route, readiness, diagnostics, consoleMessages, pageErrors, modal, mobileMenu, roadmapCta });
+        const failures = buildFailures({ status, route, readiness, diagnostics, consoleMessages, pageErrors, sourceWorkspace, mobileMenu, roadmapCta });
         if (navigationError) failures.push(`Navigation/check failed: ${navigationError}`);
 
         const item = {
@@ -741,7 +767,7 @@ async function run() {
           diagnostics,
           consoleMessages: relevantConsole(consoleMessages),
           pageErrors,
-          modal,
+          sourceWorkspace,
           mobileMenu,
           roadmapCta,
           screenshot,

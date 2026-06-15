@@ -740,7 +740,8 @@ def main() -> None:
         clean_path = TIKTOK / "transcripts" / "clean" / f"{video_id}.txt"
         polished_path = TIKTOK / "transcripts" / "polished" / f"{video_id}.txt"
         polished_qa_path = TIKTOK / "transcripts" / "polished-qa" / f"{video_id}.json"
-        if clean_path.exists():
+        transcript_status = row.get("transcript_status") or ""
+        if clean_path.exists() and transcript_status == "transcribed":
             transcribed += 1
             transcript_id = f"transcript-{video_id}"
             conn.execute(

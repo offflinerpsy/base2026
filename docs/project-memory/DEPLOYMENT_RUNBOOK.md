@@ -7,8 +7,10 @@ Current public path:
 - WordPress root: `/var/www/alex-yarosh`
 - server current symlink: `/var/www/base2026-knowledge/current`
 - server releases: `/var/www/base2026-knowledge/releases/`
-- latest deployed release: `base2026-modal-caption-tooltip-ay82-20260613`
+- latest deployed release: `base2026-source-page-polish-20260615`
 - SSL certificate: Let's Encrypt `aggressorbulkit.online`, domains `aggressorbulkit.online` and `www.aggressorbulkit.online`, auto-renewed by `certbot.timer`
+
+Latest WordPress root homepage design-system pass: `alex-yarosh` child theme `style.css?ver=1.5.43`, applied directly through Novamira on 2026-06-14. Cache Enabler generated cache for `aggressorbulkit.online` was cleared after the direct update.
 
 ## Domain and SSL
 
@@ -46,13 +48,15 @@ nginx -t
 
 ## Local package
 
-Current live release checkpoint: `base2026-modal-caption-tooltip-ay82-20260613`. The latest data/reindex checkpoint remains `base2026-clean-replay-pipeline-ay81-20260613`.
+Current live release: `base2026-source-page-polish-20260615`.
+
+Latest data/reindex checkpoint: `base2026-source-page-polish-20260615`.
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package-public-release.ps1 -ReleaseName <release-name>
 ```
 
-Public packages are excerpt-only by default. Public package/deploy scripts must not expose `-IncludeFullTranscripts` and must not call `--auto-promote-insights`. Private/gated review exports should use `scripts/export-public-tiktok.py --out <ignored-private-dir>` directly and must not be deployed as the public `/knowledge/` release.
+Current public packages use reviewed public source text where policy allows. Public package/deploy scripts must not expose `-IncludeFullTranscripts` as a public shortcut and must not call `--auto-promote-insights`. Raw captions, raw ASR, media, private QA, and unreviewed transcripts stay private. Private/gated review exports should use `scripts/export-public-tiktok.py --out <ignored-private-dir>` directly and must not be deployed as the public `/knowledge/` release.
 
 For explicitly approved data-preserving hotfixes where the current ignored `public-data/tiktok` membership/counts must be preserved while static UI/page rendering is repaired, use:
 
@@ -61,7 +65,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package-public-hot
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy-public-vps.ps1 -ReleaseName <release-name> -SkipPackage -SkipReindex
 ```
 
-This hotfix path copies the existing export, repairs public excerpt fields from already-public passages, validates excerpt-only policy and text-boundary safety, verifies JSONL counts are preserved, rebuilds generated pages/static assets, and skips Meilisearch reindex unless passages or index settings changed.
+This hotfix path copies the existing export, repairs public excerpt fields from already-public passages, validates the current safe public policy and text-boundary safety, verifies JSONL counts are preserved, rebuilds generated pages/static assets, and skips Meilisearch reindex unless passages or index settings changed.
 
 ## One-command deploy
 

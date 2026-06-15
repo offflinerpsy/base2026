@@ -1,5 +1,17 @@
 # Decisions
 
+## 2026-06-14 — Add public analytics as a compact search signal layer, not another navigation mode
+
+Decision: Base2026 should expose deterministic public analytics generated from public JSONL during normal release packaging. Analytics may appear as a compact strip, topic/creator counts, and a dedicated `/knowledge/analytics.html` page. It should not create another modal, third column, or extra per-result button layer. Typography for the Base2026 product surface should use Geist / Geist Mono for a denser search-product feel.
+
+Reason: the project is a searchable creator-video source database, so counts and signal rankings make the database more useful for users and future API/MCP consumers. But the UI was already suffering from repeated buttons and competing page states. Analytics should clarify ranking and signal strength while preserving the accepted `filters | workspace` model and familiar search-result flow.
+
+## 2026-06-14 — Treat WordPress visual work as design-system work
+
+Decision: WordPress public-site changes must be handled as design-system work, not isolated selector tweaks. Before reporting a WordPress UI task as done, inspect the live structure, normalize shared component rules, deploy/clear cache, verify live desktop/mobile, verify SEO title/description, and update project memory.
+
+Reason: the homepage had inconsistent section grids, type scales, list treatments, and CTA sizing. The site is small and public-facing, so inconsistent page sections make the business look improvised.
+
 ## 2026-06-06 — Use file-based project memory
 
 Decision: use `docs/project-memory/` as the operational source of truth for Base2026 planning, status, handoffs, public/private boundaries, deploy notes, and Hermes automation notes.
@@ -56,15 +68,15 @@ Reason: public docs should sound like engineering notes, not generated marketing
 
 ## 2026-06-07 — Public product is an attributed intelligence layer
 
-Decision: Base2026 public launch should not be framed or implemented as a mass dump of full third-party TikTok/Instagram transcripts. The public layer should prioritize attributed excerpts, source records, topic pages, insight cards, comparison views, methodology, and opt-out/correction flow. Full transcripts stay private/local by default unless a reviewed opt-in, gated, or noindex policy is selected.
+Decision: Base2026 public launch should not be framed or implemented as a mass dump of full third-party TikTok/Instagram transcripts. The public layer should prioritize attributed excerpts, source records, topic pages, insight cards, comparison views, methodology, and opt-out/correction flow. This 2026-06-07 safety mode is superseded by the 2026-06-14 product passport where it conflicts: raw/unreviewed transcripts stay private, but reviewed polished public source text/transcript may be exposed as the source-record reading surface when policy allows.
 
 Reason: this reduces platform, SEO, creator-trust, and product-quality risk while increasing the actual value of the project.
 
 ## 2026-06-07 — Public exports are excerpt-only by default
 
-Decision: public export scripts must not include full third-party transcripts by default. Full transcript export requires an explicit flag and must be treated as private, gated, noindex, reviewed, or opt-in depending on the release context.
+Decision: public export scripts must not include raw/unreviewed full third-party transcripts by default. The old `-IncludeFullTranscripts` flag remains unsafe for public deploys because it is a blunt raw-export path. The target public implementation is a reviewed public source-text field with policy/QA support, not a shortcut through raw transcript export.
 
-Reason: default public artifacts should match the source-record/insight architecture and avoid accidental transcript dumping.
+Reason: default public artifacts should match the source-record/insight architecture and avoid accidental transcript dumping while still allowing the database product to expose reviewed source text intentionally.
 
 ## 2026-06-08 — Index only aggregate topic and comparison pages
 
@@ -221,3 +233,93 @@ Reason: the ay80 pipeline showed that a clean SQLite rebuild can erase DB-only r
 Decision: do not ship `.github/workflows` or GitHub Actions Dependabot config in the public Base2026 repository. Local scripts (`validate-github-metadata.py`, publication boundary audit, public release contract, export policy checks, and visual QA) are the required validation lane before push/deploy.
 
 Reason: the current GitHub account/repo setup should not depend on GitHub Actions. Keeping the repository Actions-free prevents GitHub from creating failing/unavailable checks while preserving the public/private boundary through local deterministic gates.
+
+## 2026-06-13 — Replace source modal primary UX with a source-detail workspace
+
+Decision: the main `/knowledge/` search experience should keep search and filters visible while opening source detail in the main results workspace, not in a modal. Static source pages remain for canonical URLs, SEO, sharing, and direct indexing, but they should use the same source-detail structure as the live search workspace. Search results should expose one primary action, `View source`; original source, creator, correction/removal, and share actions belong inside source detail.
+
+Reason: the modal/source-page split makes users guess where the complete record lives and breaks the search flow. Base2026 is growing toward API/MCP consumption, so UI, static SEO pages, and future public API responses need one shared source-detail model instead of separate modal and page logic.
+
+## 2026-06-13 — Make `/knowledge/` the primary navigation workspace
+
+Decision: `/knowledge/` is the primary interactive Base2026 workspace. Generated source, creator, topic, and compare pages remain for SEO, canonical URLs, sitemap inclusion, sharing, and direct entry, but internal exploration from the search workspace should stay in the search workspace through route state such as `?source=`, `?creator=`, `?topic=`, and `?compare=`. Static generated pages should provide an `Open in Search Workspace` action back into `/knowledge/`.
+
+Reason: the public product should feel like one searchable knowledge workspace, not a set of disconnected generated pages. This preserves programmatic SEO value while keeping user navigation, filters, and search context coherent.
+
+## 2026-06-13 — Keep the `/knowledge/` workspace two-column on desktop
+
+Decision: desktop `/knowledge/` must not show filters, results, and source detail as three simultaneous columns. The accepted workspace contract is `filters | workspace`: the left column keeps filtering/search context, and the right column shows one active state at a time. Default state shows wide results; `?source=` state replaces results with a wide source detail view.
+
+Reason: the three-column attempt made the product feel like several narrow admin panes and squeezed the main evidence reading surface. Base2026 should behave like a search workspace: filters stay available, but results/detail/creator/topic states occupy one readable main workspace instead of competing for horizontal space.
+
+## 2026-06-14 — Do not render platform caption metadata snippets in public source UI
+
+Decision: runtime source detail and generated source pages must not render the platform title/caption metadata snippet block. Public source UI should use the reviewed public excerpt/passages plus stable provenance fields such as platform, policy, language, and original source link.
+
+Reason: truncated platform metadata looks like a broken transcript and confuses users. The public evidence surface should show readable public evidence text, not cropped platform metadata that Base2026 did not author or verify as transcript content.
+
+## 2026-06-14 — Exclude no-public-text source records from public export
+
+Decision: `export-public-tiktok.py` must skip source records that have neither public transcript text nor public chunks. Held rows such as `needs_source_review` may remain in local inventory, but they must not become empty public source JSONL rows, static source pages, or sitemap entries.
+
+Reason: an empty source record is not useful to readers or search engines and can leak unreviewed/truncated platform metadata. Public source pages need usable public evidence before publication.
+
+## 2026-06-14 — Keep source provenance as compact metadata, not bottom cards
+
+Decision: public source detail UI must not render a separate bottom `Source Provenance` card stack or empty `Public Insight Cards` sections. Source-level platform, public policy, language, and linked insight count belong in compact top metadata chips. Source detail should render only meaningful content blocks: source excerpt, matched passage when selected, related passages when present/loading, and insight cards only when linked.
+
+Reason: the bottom provenance cards duplicate information already visible in the source header and make mobile navigation feel like several disconnected pages. Empty sections add noise and make users hunt through repeated labels instead of reading the evidence.
+
+## 2026-06-14 — Treat reviewed public source text as the database surface
+
+Decision: the long-term public product contract is not `excerpt-only` source detail. Base2026 should expose reviewed polished public source text/transcript as the readable source-record surface when policy and QA allow, while keeping raw captions, raw ASR, media, logs, private QA notes, and unreviewed transcripts private. Public source pages and `/knowledge/?source=` should pair that source text with Base2026-authored summaries, topics, insight cards, attribution, original links, methodology, and correction/removal paths.
+
+Reason: Base2026 was conceived as a searchable text database for creator videos. The previous excerpt-only contract reduced scraping risk but became product architecture by accident, causing selected source records to feel cropped, repetitive, and less useful than the underlying database. The corrected boundary is no raw/unreviewed transcript dumps, not no readable transcript/source text.
+
+## 2026-06-14 — Make public source detail intelligence-led without duplicating source text
+
+Decision: public source pages and runtime `/knowledge/?source=` detail should pair reviewed public source text with Base2026-authored source intelligence. Reviewed `Source Intelligence` cards, summaries, topics, and comparisons should explain the source; the readable public source text/transcript should provide the database context when policy allows. The same source text must not be repeated as the hero lead, heading, source excerpt, matched passage, and related/additional passage. Search-match and additional-evidence blocks should render only when they add distinct context. Raw/unreviewed transcripts remain private/local.
+
+Reason: repeating a TikTok transcript across several public sections makes Base2026 look like a raw transcription dump and destroys the product value. Hiding the reviewed source text entirely also weakens the database. The public product should feel like an annotated source-backed knowledge base: readable source text plus a claim/insight layer for verification, SEO, sharing, API/MCP consumption, and creator correction/removal workflows.
+
+## 2026-06-14 — Use a search-engine result model for Base2026 UX
+
+Decision: `/knowledge/` should behave like a familiar search engine over creator-video source records. Results are a simple vertical list of matching videos/authors/topics with short previews. Selecting a result opens the full source record: short explanation, fuller explanation, normalized transcript/source text, and related topics/insights. Creator exploration should behave like applying a creator filter in the same search workspace. Avoid button proliferation and competing page/modal variants.
+
+Reason: users already understand Google-style search: query, scan result previews, open the full result, return/filter/refine. Base2026 should not invent an admin-like navigation model with many buttons and duplicated source surfaces when the core product is a searchable knowledge database.
+
+## 2026-06-14 — Generate public topic signal briefs only for strong topics
+
+Decision: Base2026 topic signal briefs are deterministic public-release artifacts generated from public JSONL only. They render only for topics with at least 5 source records, 2 creators, and 3 public insight cards. Weak or thin topics remain ordinary topic/search pages and must not receive inflated signal UI.
+
+Reason: the signal layer should make Base2026 more useful as a source-backed market intelligence library without creating thin SEO pages, unsupported claims, or another transcript dump. Keeping the generator deterministic and public-data-only preserves the publication boundary and makes future API/MCP exposure safer.
+
+## 2026-06-14 — Add deterministic public analytics and Geist search-product typography
+
+Decision: Base2026 now ships a deterministic `analytics_summary.json` generated from public release JSONL only. `/knowledge/` uses it for the compact analytics strip, topic/source-count chips, and creator/source-count chips. `/knowledge/analytics.html` is the public analytics page for source records, passages, topics, creators, and signal rankings. Base2026 product UI uses Vercel Geist/Geist Mono for the search workspace while keeping the warm Alex Yarosh visual system and WordPress ecosystem header/footer.
+
+Reason: the database should expose useful aggregate intelligence without adding another private runtime dependency or publishing raw captions. Build-time public analytics updates automatically whenever a new public TikTok release is packaged. Geist reduces the heavy, oversized feel of the previous UI and makes the product read more like a compact search/research tool.
+
+## 2026-06-15 — Do not publish newest source-only records silently
+
+Decision: the public export/package lane now includes a readiness check for the newest source record. If the latest public source has readable public source text but no topic assignment and no public reviewed insight, `scripts/check-public-content-readiness.py --latest 1 --fail` blocks release packaging. `export-public-tiktok.py` also honors reviewed `claim_evidence.quote_or_span` when building public insight cards instead of re-deriving evidence only from the claim text.
+
+Reason: a source-only record with just normalized transcript text does not express the Base2026 product value. The database needs both readable source text and an intelligence layer: reviewed topics, source-backed claims, and suggested actions. Ignoring reviewed evidence caused approved candidate rows to create topics without visible public insight cards, which made new TikToks look empty even after review.
+
+## 2026-06-15 — Keep analytics and legacy generated routes inside `/knowledge/`
+
+Decision: generated Base2026 analytics links must stay inside the `/knowledge/` app. From `/knowledge/analytics.html`, topic links use `./topics/...` and workspace links use `./index.html?...`. Legacy/root paths for generated entities (`/topics/...`, `/sources/...`, `/creators/...`, and `/compare/...`) should 301 redirect into `/knowledge/...` rather than falling through to WordPress.
+
+Reason: Base2026 generated pages are SEO/share support for the knowledge product, not WordPress root pages. Root-escaping links made populated topic pages appear empty/404 and split navigation between WordPress and Base2026. Redirects preserve existing or accidental public links while keeping canonical pages under `/knowledge/`.
+
+## 2026-06-15 — Group near-duplicate Source Intelligence in source detail
+
+Decision: runtime source detail and generated static source pages should group closely related reviewed insight rows from the same source into one Source Intelligence card. Topic navigation belongs in compact topic chips; repeated large `Search this topic` buttons should not appear under every insight card.
+
+Reason: multiple reviewed rows can be valid data while still looking like duplicated product value when they describe the same event or argument from adjacent topic angles. Grouping preserves the evidence and topic coverage without making the user read the same source claim several times or guess which identical-looking button matters.
+
+## 2026-06-15 — Keep source page hero actions and evidence blocks minimal
+
+Decision: generated source pages and runtime source detail should show the platform icon only in compact metadata, not beside the creator identity. Source hero primary actions should stay limited to `Open in Search Workspace`, `Open original`, and `Creator`; correction/removal remains a trust/support/footer path, not a hero CTA. Supporting passage blocks should render only for genuinely distinct public passages, not same-source chunks already contained in the visible Source Text.
+
+Reason: duplicated platform badges, second-row trust buttons, and tail passage fragments make source records feel unstructured and non-production. Source detail should read as one clear record: identity, metadata, primary actions, Source Text, Source Intelligence, and only meaningful supporting context.

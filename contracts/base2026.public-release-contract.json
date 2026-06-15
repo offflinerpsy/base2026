@@ -5,6 +5,7 @@
     "include_full_transcripts": false,
     "allow_package_include_full_transcripts_switch": false,
     "allow_deploy_include_full_transcripts_switch": false,
+    "allow_reviewed_public_source_text": true,
     "allow_implicit_auto_promote_insights": false,
     "allowed_public_insight_review_statuses": [
       "approved",
@@ -37,8 +38,9 @@
     "public_release_contract"
   ],
   "notes": [
-    "Public releases publish attributed excerpts, source records, topic pages, and explicitly reviewed public insight cards.",
-    "Full third-party transcripts remain private/local by default.",
+    "Public releases publish attributed source records, reviewed public source text, source previews, topic pages, and explicitly reviewed public insight cards.",
+    "Raw captions, raw ASR, media, private QA, and unreviewed transcripts remain private/local.",
+    "The old full-transcript export flag remains blocked for public deploys; reviewed public source text is a separate public field.",
     "Implicit auto-promotion is disabled in the public release lane; promotion must be an explicit reviewed artifact."
   ]
 }

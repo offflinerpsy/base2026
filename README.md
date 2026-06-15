@@ -8,14 +8,15 @@ Live demo: <https://aggressorbulkit.online/knowledge/>
 
 ## What It Does
 
-- converts public creator videos into searchable English evidence passages;
-- keeps raw captions, ASR output, media, and full transcripts local/private by default;
+- converts public creator videos into searchable English source text and evidence passages;
+- keeps raw captions, raw ASR output, media, private QA notes, and unreviewed transcripts local/private;
+- can expose reviewed polished public source text/transcript as a source-record reading surface where policy allows;
 - exports public-safe source records, passages, insight cards, topics, and creator metadata;
 - indexes searchable passages with Meilisearch;
 - serves a static read-only web UI under `/knowledge/`;
 - generates creator, source, topic, and comparison pages from public JSONL.
 
-The public site is excerpt-first. It is designed for source discovery, attribution, comparison, and citation. It is not a video re-hosting platform and not a mass transcript dump.
+The public site is designed for source discovery, attribution, comparison, citation, and searchable source reading. It is not a video re-hosting platform and not a raw transcript dump.
 
 ## Current Status
 
@@ -33,7 +34,7 @@ Current public export:
 
 Recent readiness checks:
 
-- public export policy: passing, excerpt-only, no full transcripts in public payload;
+- public export policy: current live release is excerpt-only; product contract now allows reviewed public source text where policy allows and continues to forbid raw/unreviewed transcript dumps;
 - publication boundary audit: passing for current changed public-safe files;
 - GitHub metadata validation: passing;
 - static SEO metadata audit: passing for 3,294 HTML files with title, description, canonical URL, H1, and JSON-LD schema present.
@@ -86,7 +87,7 @@ Do not commit or publish:
 - local Meilisearch data;
 - logs.
 
-The public app is excerpt-first. Full third-party transcripts are private/local by default. Public source pages and the source dialog show attribution, original links, short evidence context, methodology, and correction/opt-out paths.
+Raw captions, raw ASR, media, private QA notes, and unreviewed transcripts are private/local. Reviewed polished public source text may be shown where policy allows. Public source pages and source detail must show attribution, original links, source context, methodology, and correction/opt-out paths.
 
 ## What This Repository Is For
 
@@ -137,7 +138,7 @@ Package a public release:
 pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/package-public-release.ps1 -ReleaseName <release-name>
 ```
 
-Public packages are excerpt-only by default. Use `-IncludeFullTranscripts` only for private or gated review exports.
+Current public packages are excerpt-only until the reviewed public source-text contract is implemented in code. Do not use `-IncludeFullTranscripts` for public deploys as a shortcut; the target is a reviewed public source-text field, not raw transcript export.
 
 Deploy to the VPS:
 
@@ -187,7 +188,7 @@ Useful contributions include:
 - creator correction/removal workflow improvements;
 - documentation that makes local operation easier.
 
-Please do not submit raw third-party captions, full transcripts, media files, cookies, credentials, or private research exports.
+Please do not submit raw third-party captions, unreviewed transcripts, media files, cookies, credentials, or private research exports.
 
 ## License
 

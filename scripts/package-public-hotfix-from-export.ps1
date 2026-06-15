@@ -61,6 +61,8 @@ python3 ./scripts/check-public-export-policy.py $ExportRoot | Write-Output
 Assert-NativeSuccess "check-public-export-policy"
 python3 ./scripts/validate-public-text-excerpts.py --data $ExportRoot | Write-Output
 Assert-NativeSuccess "validate-public-text-excerpts"
+python3 ./scripts/check-public-content-readiness.py --data-root $ExportRoot --latest 1 --fail | Write-Output
+Assert-NativeSuccess "check-public-content-readiness"
 
 foreach ($File in $SourceCounts.Keys) {
   $Path = Join-Path $ExportRoot $File
@@ -139,7 +141,9 @@ foreach ($DocPage in $DocPages) {
   $DocHtml | Set-Content -Path (Join-Path $WebRoot $DocPage) -Encoding UTF8
 }
 
-Copy-Item (Join-Path $ExportRoot "documents.jsonl") (Join-Path $StaticRoot "documents.jsonl") -Force
+foreach ($StaticDataFile in @("documents.jsonl", "passages.jsonl", "insight_cards.jsonl")) {
+  Copy-Item (Join-Path $ExportRoot $StaticDataFile) (Join-Path $StaticRoot $StaticDataFile) -Force
+}
 Copy-Item "./scripts/meili-index-public.py" (Join-Path $ScriptsRoot "meili-index-public.py") -Force
 Copy-Item (Join-Path $ExportRoot "*") $DataRoot -Recurse -Force
 python3 ./scripts/generate-public-pages.py --data $ExportRoot --out $WebRoot | Write-Output

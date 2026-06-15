@@ -3,11 +3,15 @@
     return window.location.href.split("#")[0];
   }
 
-  function pageTitle() {
+  function pageTitle(root) {
+    const localTitle = root?.getAttribute?.("data-share-title");
+    if (localTitle) return localTitle;
     return document.querySelector("h1")?.textContent?.trim() || document.title || "Base2026";
   }
 
-  function pageDescription() {
+  function pageDescription(root) {
+    const localDescription = root?.getAttribute?.("data-share-description");
+    if (localDescription) return localDescription;
     return document.querySelector('meta[name="description"]')?.getAttribute("content") || "";
   }
 
@@ -42,9 +46,9 @@
     if (!button) return;
     const root = button.closest("[data-share-root]") || document;
     const action = button.getAttribute("data-share-action");
-    const title = pageTitle();
+    const title = pageTitle(root);
     const url = pageUrl();
-    const description = pageDescription();
+    const description = pageDescription(root);
 
     try {
       if (action === "share" && navigator.share) {

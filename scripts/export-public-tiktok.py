@@ -97,6 +97,21 @@ def compact_text(value: str, limit: int = 420) -> str:
     return candidate.rstrip(" ,;:.") + "..."
 
 
+def normalize_public_source_text(transcript: str, chunk_rows: list[sqlite3.Row]) -> str:
+    text = (transcript or "").strip()
+    if not text:
+        text = "\n\n".join((chunk["text"] or "").strip() for chunk in chunk_rows if (chunk["text"] or "").strip())
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    paragraphs = []
+    for paragraph in re.split(r"\n{2,}", text):
+        clean = re.sub(r"[ \t]+", " ", paragraph).strip()
+        if clean:
+            paragraphs.append(clean)
+    if paragraphs:
+        return "\n\n".join(paragraphs)
+    return re.sub(r"\s+", " ", text).strip()
+
+
 def public_excerpt_text(transcript: str, chunk_rows: list[sqlite3.Row], limit: int = 1600) -> str:
     public_text = ""
     for chunk in chunk_rows:
@@ -108,12 +123,69 @@ def public_excerpt_text(transcript: str, chunk_rows: list[sqlite3.Row], limit: i
     return compact_text(public_text, limit)
 
 
+def first_sentence(value: str, limit: int = 180) -> str:
+    text = compact_text(value, 0)
+    if not text:
+        return ""
+    match = re.match(r"(.{24,220}?[.!?])(?:\s|$)", text)
+    return compact_text(match.group(1) if match else text, limit)
+
+
+def reviewed_claims(claim_rows: list[dict]) -> list[dict]:
+    public_statuses = {"approved", "reviewed", "public"}
+    return [
+        claim
+        for claim in claim_rows
+        if (claim.get("review_status") or "").lower() in public_statuses
+        and (claim.get("claim_text") or "").strip()
+    ]
+
+
+def source_summary_short(title: str, title_status: str, topic_labels: list[str], source_text: str, claim_rows: list[dict]) -> str:
+    title_text = compact_text(title, 180)
+    if title_text and (title_status or "").lower() != "truncated":
+        return title_text
+    claims = reviewed_claims(claim_rows)
+    if claims:
+        return compact_text(claims[0].get("claim_text") or "", 180)
+    if topic_labels:
+        return compact_text(f"This video discusses {', '.join(topic_labels[:3])}.", 180)
+    return first_sentence(source_text, 180)
+
+
+def source_summary_long(short_summary: str, topic_labels: list[str], source_text: str, claim_rows: list[dict]) -> str:
+    claims = [compact_text(claim.get("claim_text") or "", 180) for claim in reviewed_claims(claim_rows)[:3]]
+    claims = [claim for claim in claims if claim]
+    if claims:
+        detail = " ".join(claims)
+    elif topic_labels:
+        detail = f"This source is indexed under {', '.join(topic_labels[:5])}."
+    else:
+        return ""
+    topic_note = f" Main topics: {', '.join(topic_labels[:5])}." if topic_labels else ""
+    if short_summary and detail and not detail.lower().startswith(short_summary.lower()):
+        return compact_text(f"{short_summary} {detail}{topic_note}", 700)
+    return compact_text(f"{detail or short_summary}{topic_note}", 700)
+
+
 def tokenize(value: str) -> set[str]:
     return {
         token
         for token in re.findall(r"[a-z0-9]+", (value or "").lower())
         if len(token) > 2 and token not in STOPWORDS
     }
+
+
+def evidence_is_in_chunks(evidence: str, chunk_rows: list[sqlite3.Row]) -> bool:
+    normalized_evidence = re.sub(r"\s+", " ", (evidence or "").strip()).lower()
+    if not normalized_evidence:
+        return False
+    normalized_text = re.sub(
+        r"\s+",
+        " ",
+        " ".join((chunk["text"] or "") for chunk in chunk_rows).strip(),
+    ).lower()
+    return normalized_evidence in normalized_text
 
 
 def slugify(value: str) -> str:
@@ -293,7 +365,7 @@ def main() -> int:
                 dict(row)
                 for row in con.execute(
                     """
-                    SELECT c.claim_id, c.topic, c.claim_text, c.claim_type, c.suggested_action, c.review_status
+                    SELECT c.claim_id, c.topic, c.claim_text, c.claim_type, c.suggested_action, c.review_status, e.quote_or_span
                     FROM claim_evidence e
                     JOIN claims c ON c.claim_id = e.claim_id
                     WHERE e.video_id = ?
@@ -358,13 +430,28 @@ def main() -> int:
                 """,
                 (item_id,),
             ).fetchall()
+            if not transcript.strip() and not item_chunks:
+                continue
+            public_source_text = normalize_public_source_text(transcript, item_chunks)
+            summary_short = source_summary_short(
+                item["title"] or "",
+                item["title_status"] or "",
+                topic_labels,
+                public_source_text,
+                claim_rows,
+            )
+            summary_long = source_summary_long(summary_short, topic_labels, public_source_text, claim_rows)
             documents.append(
                 {
                     **base,
                     "transcript_type": doc_row["document_type"] if doc_row else "",
                     "language": doc_row["language"] if doc_row else "en",
                     "transcript": transcript if args.include_full_transcripts else "",
-                    "excerpt": public_excerpt_text(transcript, item_chunks),
+                    "public_source_text": public_source_text,
+                    "public_source_text_available": bool(public_source_text),
+                    "source_summary_short": summary_short,
+                    "source_summary_long": summary_long,
+                    "excerpt": public_excerpt_text(public_source_text, item_chunks),
                 }
             )
             for chunk in item_chunks:
@@ -385,7 +472,11 @@ def main() -> int:
                 claim_type = claim["claim_type"] or "claim"
                 if claim_type == "insight_card_candidate" and review_status not in {"approved", "reviewed", "public"}:
                     continue
-                evidence_excerpt, evidence_score = best_evidence_excerpt(claim["claim_text"], item_chunks)
+                reviewed_evidence = compact_text(claim.get("quote_or_span") or "", 900)
+                if reviewed_evidence and evidence_is_in_chunks(reviewed_evidence, item_chunks):
+                    evidence_excerpt, evidence_score = reviewed_evidence, 1.0
+                else:
+                    evidence_excerpt, evidence_score = best_evidence_excerpt(claim["claim_text"], item_chunks)
                 is_reviewed_public = review_status in {"approved", "reviewed", "public"} and evidence_score >= 0.25
                 is_auto_public = (
                     args.auto_promote_insights

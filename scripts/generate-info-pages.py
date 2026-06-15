@@ -69,15 +69,14 @@ PAGE_MAP = {
 
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
 STYLE_VERSION = "20260611-creatorcta1"
+FONT_LINK = "https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&display=swap"
 
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
+    ("analytics", "Analytics", "analytics.html"),
     ("topics", "Topics", "topics/"),
     ("creators", "Creators", "creators/"),
-    ("sources", "Sources", "sources/"),
-    ("roadmap", "Roadmap", "roadmap.html"),
     ("methodology", "Methodology", "methodology.html"),
-    ("support", "Support", "support.html"),
 ]
 
 
@@ -145,11 +144,16 @@ def base2026_dropdown(relative_root: str = ".", current: str = "") -> str:
 
 
 def header_nav_links(relative_root: str = ".", current: str = "") -> str:
+    project_links = []
+    for key, label, target in PROJECT_NAV_LINKS:
+        active = ' aria-current="page"' if key == current else ""
+        project_links.append(f'<a class="site-header__link" href="{html.escape(root_href(relative_root, target))}"{active}>{html.escape(label)}</a>')
     return (
-        '<a class="site-header__link" href="/services/">Services</a>'
-        '<a class="site-header__link" href="/pricing/">Pricing</a>'
-        f'{base2026_dropdown(relative_root, current)}'
-        '<a class="site-header__link" href="/about/">About</a>'
+        "".join(project_links)
+        + '<span class="site-header__nav-divider" aria-hidden="true"></span>'
+        + '<a class="site-header__link site-header__link--site" href="/services/">Services</a>'
+        + '<a class="site-header__link site-header__link--site" href="/pricing/">Pricing</a>'
+        + '<a class="site-header__link site-header__link--site" href="/about/">About</a>'
     )
 
 
@@ -166,7 +170,7 @@ def site_header(relative_root: str = ".", current: str = "") -> str:
     <header class="site-header">
       <div class="site-header__bar">
         <a class="site-header__brand" href="/"><span class="site-header__avatar" aria-hidden="true"></span><span>Alex Yarosh</span></a>
-        <nav class="site-header__nav" aria-label="Main navigation">
+        <nav class="site-header__nav" aria-label="Base2026 navigation">
           {header_nav_links(relative_root, current)}
         </nav>
         <a class="site-header__cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
@@ -174,12 +178,13 @@ def site_header(relative_root: str = ".", current: str = "") -> str:
           <summary aria-label="Open navigation"><span></span><span></span><span></span></summary>
           <div class="site-header__mobile-panel">
             <nav aria-label="Mobile navigation">
-              <a href="/services/">Services</a>
-              <a href="/pricing/">Pricing</a>
-              <details class="site-header__mobile-base">
+              <details class="site-header__mobile-base" open>
                 <summary>Base2026</summary>
                 <div>{mobile_base2026_links(relative_root, current)}</div>
               </details>
+              <strong class="mobile-menu-label">Alex Yarosh</strong>
+              <a href="/services/">Services</a>
+              <a href="/pricing/">Pricing</a>
               <a href="/about/">About</a>
               <a class="site-header__mobile-cta" href="/ai-visibility-audit/">Check My AI Visibility</a>
             </nav>
@@ -520,7 +525,7 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
     <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+    <link href="{FONT_LINK}" rel="stylesheet" />
     <link rel="stylesheet" href="./static/styles.css?v={STYLE_VERSION}" />
   </head>
   <body>

@@ -1,12 +1,23 @@
 # Public Intelligence Implementation Plan
 
-Last updated: 2026-06-08
+Last updated: 2026-06-14
+
+## 2026-06-14 product-passport correction
+
+The original implementation plan was right about avoiding mass raw transcript dumps, but too strict when it made selected source pages excerpt-only by default. The corrected contract is in `docs/project-memory/BASE2026_PRODUCT_PASSPORT_2026_06_14.md`.
+
+Updated rule:
+
+- raw captions, raw ASR, media, private QA, and unreviewed transcripts stay private;
+- reviewed polished public source text/transcript may be shown in source detail and static source pages where policy allows;
+- search results use short highlighted previews;
+- selected source records provide the readable database entry plus Base2026-authored summary, topics, insights, attribution, methodology, and correction/removal paths.
 
 ## Goal
 
 Turn Base2026 from a useful transcript-search demo into a public, open-source, source-backed intelligence product.
 
-The public product must show attribution, provenance, excerpts, topics, reviewed insights, creator controls, and comparison pages. It must not become a mass public dump of third-party transcripts.
+The public product must show attribution, provenance, reviewed public source text where policy allows, short search previews, topics, reviewed insights, creator controls, and comparison pages. It must not become a mass public dump of raw or unreviewed third-party transcripts.
 
 ## Research anchors
 
@@ -28,8 +39,9 @@ Upgrade the product in layers:
 2. separate public data files for sources, passages, insights, topics, and creators;
 3. Meilisearch indexes for search/facets;
 4. no live LLM calls during search;
-5. local/private full transcript storage;
-6. reviewed/cached insight and comparison layer.
+5. local/private raw transcript and media storage;
+6. reviewed public source text for source-record reading surfaces where policy allows;
+7. reviewed/cached insight and comparison layer.
 
 ## Public data contract
 
@@ -55,7 +67,7 @@ Forbidden in GitHub:
 - logs;
 - cookies/tokens;
 - generated release zips;
-- full third-party transcript dumps.
+- raw/unreviewed third-party transcript dumps.
 
 ## UI/pages to build
 
@@ -90,17 +102,18 @@ Each page shows:
 
 - original post link;
 - creator/date/platform;
-- short public excerpt;
+- reviewed public source text/transcript where policy allows;
+- short evidence preview for page summaries/search previews;
 - related passages;
 - reviewed insights if available;
 - transcript method/provenance;
-- no public full transcript by default.
+- no raw/unreviewed transcript dump.
 
 Full transcript handling:
 
-- private/local by default;
-- public only if explicit reviewed policy allows it;
-- otherwise keep transcript drawer as admin/private or noindex.
+- raw captions, raw ASR, media, private QA, and unreviewed transcripts stay private/local;
+- reviewed polished public source text may render in source detail/static pages when policy allows;
+- long source text may use a disclosure/long-read control on mobile, but it should not be arbitrarily cropped as the only public source surface.
 
 ### Phase 3 — Topic Pages
 
@@ -198,12 +211,12 @@ Build Phase 1 + Phase 2 first:
 
 - creator pages;
 - source pages;
-- excerpt-only public page content;
+- reviewed public source-text page content where policy allows;
 - links from search results to generated pages;
 - `VideoObject`/`Person` JSON-LD where safe;
-- noindex guard for any full transcript view.
+- noindex or block guard for any raw/unreviewed transcript view.
 
-This gives immediate product value without risky transcript-dump behavior.
+This gives product value without risky raw transcript-dump behavior.
 
 ## Current implementation status
 
@@ -221,7 +234,12 @@ Indexing policy:
 
 - aggregate topics with at least two public insight cards are `index,follow`;
 - singleton topic/compare pages are generated for user navigation but marked `noindex,follow`;
-- full third-party transcripts remain private/local by default.
+- raw captions, raw ASR, media, private QA, and unreviewed transcripts remain private/local.
+
+Supersession note:
+
+- the shipped ay6 excerpt-first implementation is historical state, not the final product contract;
+- the corrected 2026-06-14 target is reviewed public source text plus Base2026-authored intelligence/context.
 
 Remaining:
 

@@ -33,14 +33,14 @@ The project is not GitHub-ready yet because production-grade TikTok/Instagram tr
    - Full transcripts require explicit private/gated/noindex policy.
    - Current release export produces `source_records.jsonl`, `passages.jsonl`, and `insight_cards.jsonl`.
    - Local/live release smoke: 957 source records, 1392 passages, 1538 insight cards, 1097 public insight cards.
-   - Full transcripts are included in deploy packages by explicit package script behavior, but generated data remains uncommitted.
+   - Historical note: older package behavior and docs were excerpt/full-transcript-flag oriented. The corrected target is reviewed public source text, not raw transcript export.
 
 4. Public UI model
    - Use `Platform` for social network: TikTok now, Instagram planned.
    - Use `Topic` or `Category` for content meaning: SEO, GEO, AEO, Schema, Local SEO, Google, Bing, Reviews, AI Overviews, Content Strategy.
    - Do not mix platform and topic naming.
-   - Treat public pages as attributed source/insight pages, not a full transcript dump.
-   - Keep full third-party transcripts private/local by default until a reviewed opt-in/gated/noindex policy exists.
+   - Treat public pages as attributed source/insight pages, not a raw transcript dump.
+   - Keep raw captions, raw ASR, media, private QA, and unreviewed transcripts private/local. Reviewed public source text can appear in source records when policy allows.
 
 5. Public UI visual pass
    - Previous dark visual system was rejected as not matching the main WordPress site.

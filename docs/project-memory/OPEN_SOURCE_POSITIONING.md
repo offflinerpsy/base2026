@@ -1,6 +1,19 @@
 # Open Source Positioning
 
-Last updated: 2026-06-07
+Last updated: 2026-06-14
+
+## 2026-06-14 product-passport correction
+
+This file originally used `not a transcript dump` to mean `excerpt-only public source pages`. That is no longer the product contract.
+
+Correct meaning:
+
+- raw captions, raw ASR, media, private QA, and unreviewed transcripts stay private;
+- reviewed polished public source text/transcript may be exposed as the source-record reading surface when policy allows;
+- public pages must add Base2026-authored context, topics, insight cards, attribution, methodology, and correction/removal paths;
+- search result cards should stay short, but selected source records should not be arbitrarily truncated.
+
+Source of truth: `docs/project-memory/BASE2026_PRODUCT_PASSPORT_2026_06_14.md`.
 
 ## Honest public framing
 
@@ -13,7 +26,7 @@ Current focus:
 - Instagram planned;
 - transcript provenance;
 - creator attribution and original source links;
-- public insight/search layer, not a transcript dump;
+- public insight/search layer with reviewed public source text, not raw transcript dumps;
 - Meilisearch-powered search UI;
 - modular extractors.
 
@@ -50,7 +63,8 @@ Public Base2026 should be presented as an attributed research/search layer.
 
 Prefer:
 
-- short source-backed excerpts;
+- reviewed polished public source text on selected source records where policy allows;
+- short source-backed excerpts for search previews;
 - creator/source pages;
 - topic pages;
 - insight cards;
@@ -59,12 +73,12 @@ Prefer:
 
 Avoid:
 
-- full transcript pages as the main public product;
+- raw/unreviewed transcript pages as the main public product;
 - SEO pages that exist only because transcripts contain keywords;
 - AI-generated conclusions without source evidence;
 - implying creator endorsement.
 
-Full transcripts are private/local by default unless a creator opts in, the content is owned/demo content, or a reviewed access/noindex policy is selected.
+Raw captions, raw ASR, media, private QA notes, and unreviewed transcripts are private/local. Reviewed public source text/transcript is allowed when it is contextualized as a Base2026 source record rather than published as a scraped standalone transcript.
 
 ## GitHub contribution hooks
 
@@ -123,7 +137,7 @@ Before public GitHub:
 - decide whether local server code is public or internal;
 - add sample creator registry only, no real cookies;
 - add methodology and opt-out docs/pages;
-- decide whether public demo uses excerpt-only or noindexed full transcript views;
+- decide the public source-text implementation contract: reviewed public source text in source records, with raw/unreviewed transcripts blocked;
 - run publication audit;
 - run secret scan;
 - update README with honest ingestion status.

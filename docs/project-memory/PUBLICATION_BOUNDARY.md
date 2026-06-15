@@ -50,17 +50,18 @@ Reason: these are generated artifacts. They can be uploaded to VPS, but should n
 
 ## Public demo content rule
 
-The public demo should not default to a full third-party transcript dump.
+The public demo must not publish raw scraped caption dumps or unreviewed third-party transcripts.
 
 Preferred public layer:
 
 - attributed source records;
-- short excerpts for search context;
+- reviewed polished public source text/transcript where policy allows;
+- short highlighted snippets for search-result previews;
 - topic and insight cards;
 - creator/source links;
 - methodology and opt-out/correction path.
 
-Full third-party transcripts should remain private/local by default, or be gated/noindexed/reviewed before broader public launch.
+Raw captions, raw ASR, media, logs, private QA notes, and unreviewed transcripts remain private/local. A selected public source record may expose readable reviewed source text as the database surface when it is contextualized by Base2026-authored summaries, topics, insight cards, attribution, original source links, and correction/removal controls.
 
 ## Pre-stage rule
 

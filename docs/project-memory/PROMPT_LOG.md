@@ -1,5 +1,63 @@
 # Prompt Log
 
+## 2026-06-14 — Base2026 analytics, Geist typography, compact IA, live deploy
+
+User asked to reduce Base2026 navigation/button chaos, switch to Vercel Geist-style typography, add compact cross-library analytics, keep creators/results/source actions understandable, and deploy live after tests.
+
+Actions taken:
+
+- added public analytics generation from public JSONL artifacts only;
+- added `/knowledge/analytics.html` and analytics JSON to package/deploy;
+- switched Base2026 runtime and generated pages to Geist / Geist Mono;
+- added compact product nav and analytics strip to `/knowledge/`;
+- added compact result-level topic/creator counts without adding extra result CTAs;
+- changed result CTA copy to `Open source`;
+- kept source detail in the route-driven workspace, not a modal;
+- fixed Source Intelligence evidence expansion so clipped public insight evidence can expand from related passages/source text;
+- restored mobile `site-header__mobile-base` submenu compatibility and wrapped product nav on mobile;
+- packaged and deployed `base2026-analytics-geist-20260614`.
+
+Verification:
+
+- syntax checks, `git diff --check`, publication boundary audit, GitHub metadata validation, public export policy, public text excerpt validation, and public release contract passed;
+- release package generated 1,305 sitemap URLs and analytics artifacts;
+- live smoke confirmed release marker, Geist, analytics page, analytics JSON, and mobile submenu;
+- Base2026-only live mobile visual QA passed with 30 checks and 0 failures;
+- targeted live browser check confirmed analytics strip visible, no legacy modal, full source text, and non-clipped Source Intelligence evidence.
+
+Not done:
+
+- no TikTok intake was run;
+- no Meilisearch reindex was run because passage/index data did not change;
+- no git staging, commit, or push was performed.
+
+## 2026-06-14 — WordPress homepage design-system pass
+
+User clarified that the homepage still looked inconsistent: `Why free`, `After the call`, `Fit`, and `Quick request` used different x-offsets, type sizes, list treatments, and dividers. User also asked to document the workflow: inspect first, plan, implement, deploy live, verify, and only then report done.
+
+Outcome:
+
+- audited live homepage metrics with Playwright before editing
+- confirmed the mismatch: roadmap section labels started at different x-positions, normal lists used mixed `18px`/`14.5px` text, and `Why free`/`Fit` had horizontal list dividers
+- updated live WordPress child-theme CSS to `style.css?ver=1.5.43`
+- replaced the previous homepage override with a design-system pass: one panel grid, one internal padding/alignment, one list type scale, no normal-list dividers, consistent section CTAs, equal footer CTAs
+- cleared Cache Enabler generated cache for `aggressorbulkit.online`
+- verified live Home/Services/Pricing/About/AI Visibility Audit on desktop and mobile: HTTP 200, `style.css?ver=1.5.43`, Rank Math title/description present, no horizontal overflow
+- verified homepage metrics: section labels align at `x=293` desktop and `x=29` mobile; normal list dividers are `0px`; list text is `16px` desktop and `14px` mobile
+- documented the durable workflow in `WORDPRESS_DESIGN_SYSTEM_WORKFLOW_2026_06_14.md` and added a design-system decision
+
+## 2026-06-14 — WordPress homepage polish
+
+User asked to polish the live WordPress homepage: remove the framed hero contract plaque, simplify the `Why free`/`After the call`/`Fit` sections, replace weak `All good.` copy, make the Base2026 promo use the acid-green block treatment, align footer CTA buttons, deploy immediately, and confirm Rank Math remained healthy.
+
+Outcome:
+
+- edited live WordPress page `Home` through Novamira, replacing `All good.` with `Send the basics.`
+- updated live child-theme `style.css` from version `1.5.41` to `1.5.42`
+- added homepage polish CSS for transparent white italic hero terms, cleaner roadmap list rhythm, tighter quick-request copy spacing, green Base2026 block emphasis, and equal footer CTA sizing
+- cleared Cache Enabler generated cache for `aggressorbulkit.online`
+- verified live desktop/mobile with Playwright: HTTP 200, `style.css?ver=1.5.42`, Rank Math title/description present, requested copy/style changes visible, and no horizontal overflow
+
 ## 2026-06-06 — Project control system
 
 User asked to adapt a separate project-control pattern for Base2026, create a durable todo/control system, and use a strict reviewer role.
@@ -3353,3 +3411,677 @@ Verification:
 Next step:
 
 - stage, commit, and push public-safe code/docs/tooling changes only.
+
+## 2026-06-13 — Source-detail search workspace redesign captured
+
+User reported that the Base2026 search/source UX is conceptually broken: search keeps filters, the source modal is incomplete, source pages have more context but lose search, and duplicated actions (`Open source record` / `Source page`) force users to guess the correct path. User asked to restructure the work without a long token-heavy run, preserve SEO value, plan for future API/MCP consumption, and avoid publishing accidental full transcript dumps.
+
+Actions taken:
+
+- created `docs/project-memory/SOURCE_DETAIL_SEARCH_REDESIGN_2026_06_13.md` as the compact implementation contract;
+- captured the product decision: one shared source-detail model, one `View source` action, no source modal as the primary reading path, persistent search/filter pane, and static source pages retained for SEO/sharing;
+- separated `Source Excerpt` from `Platform Caption Metadata` and documented that full transcript/caption publication requires an explicit public data/policy change before UI exposure;
+- added `UI-02` to `ACTIVE_QUEUE.md`;
+- moved Public web UI back to `in_progress` in `STATUS_BOARD.csv` for this redesign pass;
+- updated `NEXT_ACTION.md` so the next bounded pass starts with source-detail assembler/workspace work;
+- recorded the durable decision in `DECISIONS.md`.
+
+Verification:
+
+- no code, deploy, intake, or git staging was performed;
+- public/private boundary unchanged;
+- generated public export artifacts were not touched.
+
+Next step:
+
+- implement `UI-02` in a bounded pass: shared source-detail assembler first, then search result action cleanup, desktop right-pane rendering, mobile no-modal detail state, static source-page SEO alignment, and visual/export QA before any deploy.
+
+## 2026-06-13 — UI-02 local implementation pass
+
+User told Codex to work from the captured source-detail plan.
+
+Actions taken:
+
+- added `#source-detail-panel` to the `/knowledge/` search workspace;
+- changed search result actions to one primary `View source` action;
+- added a client-side source-detail renderer in `web/static/meili.js`;
+- source detail now loads the selected source record from `documents.jsonl`, then lazily loads related public passages and public insight cards from public JSONL data;
+- source detail renders identity, actions, source excerpt, matched passage, related passages, public insight cards, topics, and source provenance without opening the old modal;
+- mobile source detail uses `source-detail-open` with `Back to results` instead of a modal;
+- static generated source pages now get a more explicit SEO title/description, `CreativeWork` plus `VideoObject` schema, and aligned sections: Source Excerpt, Related Passages, Public Insight Cards, Topics, and Source Provenance;
+- kept full transcript publication blocked by existing public export policy. Platform caption metadata remains provenance, not a transcript.
+
+Verification:
+
+- `node --check web/static/meili.js` passed;
+- `python3 -m py_compile scripts/generate-public-pages.py` passed;
+- `git diff --check` passed;
+- `python3 scripts/generate-public-pages.py --data public-data/tiktok --out output/tmp-ui02-pages` generated 1218 sources, 987 topics, 987 compare pages, and 4 creators;
+- targeted generated source page check confirmed one H1, source-detail H2 sections, `Source Provenance`, `Platform Caption Metadata`, and `VideoObject` JSON-LD;
+- local Playwright smoke on desktop 1360x900 and mobile 390x844 confirmed source detail opens in-page, `dialogOpen=false`, desktop keeps results visible, mobile hides results in detail state, and horizontal overflow is false;
+- `python3 scripts/check-public-export-policy.py public-data/tiktok` passed with `include_full_transcripts=false`;
+- `python3 scripts/audit-publication-boundary.py` passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`.
+
+Next step:
+
+- package a UI-02 release and run full mixed visual QA before any deploy. Do not deploy, commit, or push unless explicitly requested.
+
+## 2026-06-13 — ay83 source-detail workspace deployed after live modal mismatch
+
+User reported that the live `/knowledge/` page still showed the old source modal and `Open source record` button after hard refresh. Root cause: UI-02 had been implemented locally but not deployed.
+
+Actions taken:
+
+- packaged data-preserving hotfix `base2026-source-detail-workspace-ay83-20260613` from current `public-data/tiktok`;
+- preserved current public export membership/counts: 1218 source records, 1713 passages, 1607 insight cards, and 1034 public insight cards;
+- deployed ay83 to VPS with `-SkipPackage -SkipReindex`;
+- updated `scripts/mobile-visual-qa.mjs` so the source interaction gate checks `.view-source-detail` and `#source-detail-panel` instead of the removed primary modal path;
+- updated project memory/runbook to make ay83 the current live release checkpoint.
+
+Verification:
+
+- package checks passed: public export policy, text excerpt validation, generated pages, sitemap generation;
+- `python3 scripts/validate-public-release-contract.py --export-dir output/releases/base2026-source-detail-workspace-ay83-20260613/public-data/tiktok --baseline-export-dir public-data/tiktok --enforce-count-floor --max-violations 20` passed;
+- `python3 scripts/audit-publication-boundary.py` passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- `node --check output/releases/base2026-source-detail-workspace-ay83-20260613/web/static/meili.js` passed;
+- deploy script confirmed nginx config OK and current symlink switched to `/var/www/base2026-knowledge/releases/base2026-source-detail-workspace-ay83-20260613`;
+- live browser QA on desktop 1360x900 and mobile 390x844 confirmed asset version `base2026-source-detail-workspace-ay83-20260613`, `Open source record` buttons 0, result-level `Source page` buttons 0, `View source` buttons 20, source detail opens in-page, `dialogOpen=false`, desktop keeps results visible, mobile hides results in detail state, and horizontal overflow is false;
+- targeted live visual QA passed: `node scripts/mobile-visual-qa.mjs --base-url https://aggressorbulkit.online --viewports full --only base-search-query --no-screenshots` produced 6 checks and 0 failures.
+
+Next step:
+
+- continue launch monitoring and pipeline hardening. For future full mixed visual QA, the source-detail gate now expects `.view-source-detail`/`#source-detail-panel`, not `.read-transcript`/`#transcript-dialog`.
+
+## 2026-06-13 — Navigation architecture snapshot for external audit
+
+User reviewed the ay83 live UI and rejected the current navigation architecture: desktop search looks like three narrow columns, matched passages are squeezed in the middle, source detail repeats identity and actions, creator/topic/source links eject users to standalone pages without search/filters, and the remaining modal-era code suggests the system still lacks a coherent IA. User asked for a complete `.md` snapshot of the project navigation, logic, dependencies, pipeline, page generation, desktop/mobile behavior, and current problems so another AI can audit the architecture before more UI work.
+
+Actions taken:
+
+- created `docs/project-memory/NAVIGATION_ARCHITECTURE_SNAPSHOT_2026_06_13.md`;
+- documented the current live checkpoint, public data counts, public/private constraints, intake/export/static generation/search/deploy pipeline, JSONL model, Meilisearch runtime, generated page types, desktop/mobile layout behavior, route graph, duplicated renderers, legacy `#transcript-dialog` debt, and user-visible navigation failures;
+- updated `NEXT_ACTION.md` so the next UI move is an architecture audit from the snapshot, not another narrow source-detail hotfix;
+- corrected stale project-memory references that still treated ay82 as the live deploy in `DATA_SOURCES.md` and `STATUS_BOARD.csv`.
+
+Verification:
+
+- no deploy, reindex, intake automation, git staging, commit, or push was performed;
+- no generated public data or private raw source files were edited;
+- snapshot stays at architecture level and does not include raw private transcripts or credentials.
+
+Next step:
+
+- use `docs/project-memory/NAVIGATION_ARCHITECTURE_SNAPSHOT_2026_06_13.md` as the handoff input for an independent IA/navigation audit before changing the search/source/creator/topic UI again.
+
+## 2026-06-13 — One-shot navigation recovery implemented locally
+
+User supplied `/Users/alexyarosh/Downloads/BASE2026_ONESHOT_NAVIGATION_RECOVERY_PLAN_2026_06_13.md`, based on the navigation snapshot, and asked to use it as the recovery plan. The plan's core decision is that `/knowledge/` is the primary interactive search workspace, while generated static source/creator/topic/compare pages remain for SEO, canonical URLs, sitemap, sharing, and direct entry.
+
+Actions taken:
+
+- removed the legacy `dialog#transcript-dialog` DOM from both `web/static/meili.html` and `web/static/index.html`;
+- removed the active `openTranscript()` runtime path and modal event listeners from `web/static/meili.js`;
+- removed old `.transcript-dialog*`, scroll-lock, and orphan modal CSS rules from `web/static/styles.css`;
+- added a lightweight query-param route-state layer in `web/static/meili.js` for `q`, `source`, `creator`, `topic`, `compare`, `year`, and `source_type`;
+- changed direct `/knowledge/?source=...` hydration to open source detail in `#source-detail-panel`;
+- changed `Back to results` to remove `source` from the URL and restore results on mobile;
+- changed source-detail and result-card creator/topic links to stay inside the search workspace through `?creator=` and `?topic=` instead of ejecting users to static pages;
+- changed source-detail action labels/hierarchy: `Search this creator`, `Open original`, `Source page`, `Correction / removal`; removed the user-facing `Canonical URL` action label;
+- changed search result action label to `View source detail`;
+- changed desktop layout from permanent three-column compression to two-column default, with third-column source detail only when `body.source-detail-open` is active on wide desktop;
+- kept medium/mobile layouts from forcing three columns; mobile retains result/detail state switching;
+- added `Open in Search Workspace` CTAs to generated source, creator, topic, and compare pages via `scripts/generate-public-pages.py`.
+
+Verification:
+
+- `node --check web/static/meili.js` passed;
+- `python3 -m py_compile scripts/generate-public-pages.py` passed;
+- `git diff --check` passed;
+- `python3 scripts/check-public-export-policy.py public-data/tiktok` passed with `include_full_transcripts=false`;
+- `python3 scripts/validate-public-text-excerpts.py --data public-data/tiktok` passed with `checked=1217`;
+- `python3 scripts/validate-public-release-contract.py --export-dir public-data/tiktok --baseline-export-dir public-data/tiktok --enforce-count-floor --max-violations 20` passed with 0 violations;
+- `python3 scripts/audit-publication-boundary.py` passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- `python3 scripts/generate-public-pages.py --data public-data/tiktok --out output/tmp-navigation-recovery-pages` generated 1218 source pages, 987 topic pages, 987 compare pages, and 4 creator pages;
+- generated sample pages confirmed `Open in Search Workspace` CTAs while preserving canonical and robots metadata;
+- local Playwright smoke in a temporary static `/knowledge/` sandbox confirmed direct `?source=tiktok-video-7650601606215372046` opens source detail, no `#transcript-dialog` exists, Source Excerpt/Related Passages/Public Insight Cards render, default desktop layout is two columns with detail hidden, selected-source desktop layout shows detail only while active, mobile `Back to results` removes `source` from the URL, restores results, hides detail, and has no horizontal overflow.
+
+Not done:
+
+- no deploy, reindex, intake automation, git staging, commit, or push was performed;
+- full mixed live visual QA was not run because this pass stayed local and production deploy was not requested.
+
+Next step:
+
+- package this navigation recovery as a data-preserving UI release only after full mixed visual QA is run against the packaged artifact; keep Meilisearch reindex skipped unless public data changes.
+
+## 2026-06-13 — Two-column workspace recovery implemented locally
+
+User supplied `/Users/alexyarosh/Downloads/BASE2026_TWO_COLUMN_WORKSPACE_RECOVERY_2026_06_13.md` and clarified that the previous three-column recovery was wrong. The accepted contract is `filters | workspace`, where the right workspace shows either results or source detail, never both side by side.
+
+Actions taken:
+
+- removed the desktop `body.source-detail-open .meili-grid` three-column rule from `web/static/styles.css`;
+- made `.meili-grid` a strict two-column layout: left filters and right active workspace;
+- made `.source-detail-panel` hidden by default, grid-column 2, non-sticky, full-width, and visible only in `source-detail-open`;
+- made `.results-panel` hidden whenever `source-detail-open` is active, including desktop/tablet;
+- kept mobile one-column result/detail switching;
+- added `knowledge-workspace-active` UI state for compact active search/source mode;
+- fixed route-state cleanup so `Back to results` clears compact/source state when no query/filter remains;
+- changed source-detail headings to use a readable public excerpt headline when platform title/caption metadata is truncated;
+- changed result CTA label to `Open source record`;
+- kept static SEO/share pages and `Open in Search Workspace` CTAs intact.
+
+Verification:
+
+- `node --check web/static/meili.js` passed;
+- `python3 -m py_compile scripts/generate-public-pages.py` passed;
+- `git diff --check` passed;
+- targeted grep found no runtime `#transcript-dialog`, `openTranscript()`, `View source detail`, `Canonical URL`, or three-column source-detail grid rule;
+- local Playwright smoke at `http://127.0.0.1:8788/` confirmed default desktop has two columns with results visible/detail hidden; `?source=tiktok-video-7650601606215372046` has two columns with results hidden/detail width 878px/Back visible; Back restores results and clears body class; mobile source detail is one column with no horizontal overflow;
+- public export policy, text excerpt validation, public release contract, and publication boundary audit passed.
+
+Not done:
+
+- no deploy, reindex, intake automation, git staging, commit, or push was performed.
+
+Next step:
+
+- package and run full mixed visual QA for this two-column UI-only/data-preserving recovery before live deploy; skip Meilisearch reindex unless public data changes.
+
+## 2026-06-14 — ay84 two-column workspace deployed
+
+User asked to deploy the two-column `/knowledge/` workspace fix after confirming live ay83 still showed `filters | results | source detail` and the old placeholder panel.
+
+Actions taken:
+
+- confirmed live ay83 still loaded `base2026-source-detail-workspace-ay83-20260613`, contained the old `#transcript-dialog` / `openTranscript()` runtime path, and used a three-column CSS rule;
+- fixed runtime source-detail JSONL hydration so related passages and public insight cards load from versioned `/knowledge/static/*.jsonl` instead of the `/knowledge/public-data/` route that returns HTML fallback on nginx;
+- updated both public package paths to copy `documents.jsonl`, `passages.jsonl`, and `insight_cards.jsonl` into `web/static/`;
+- packaged data-preserving hotfix `base2026-two-column-workspace-ay84-20260614` from the current public export;
+- deployed ay84 to VPS with `-SkipPackage -SkipReindex`;
+- updated project memory/runbook/status files so ay84 is the current live UI checkpoint and ay81 remains the data/reindex checkpoint.
+
+Verification:
+
+- preflight passed: `node --check web/static/meili.js`, PowerShell parser checks for package scripts, `git diff --check`, public export policy, public text excerpt validation, public release contract, and publication boundary audit;
+- packaged artifact passed release contract, export policy, text excerpt validation, and local Playwright smoke;
+- packaged smoke confirmed default desktop grid `280px 878px`, source-state grid `280px 878px`, results hidden/detail width 878px, `#transcript-dialog=false`, no horizontal overflow, and related passages loaded from static JSONL with no JSONL 404s;
+- deploy script confirmed nginx config OK, nginx active, and current symlink switched to `/var/www/base2026-knowledge/releases/base2026-two-column-workspace-ay84-20260614`;
+- live browser QA confirmed asset version `base2026-two-column-workspace-ay84-20260614`, default desktop results visible/detail hidden, `?source=tiktok-video-7650601606215372046` source detail replaces results, mobile source detail is one column, related passages load, JSONL failures are 0, and horizontal overflow is false;
+- live HTTP checks confirmed `/knowledge/`, versioned `styles.css`, `meili.js`, `passages.jsonl`, `insight_cards.jsonl`, and `/knowledge-search/multi-search` return 200;
+- targeted live visual QA passed: `node scripts/mobile-visual-qa.mjs --base-url https://aggressorbulkit.online --viewports full --only base-search-query --no-screenshots` produced 6 checks and 0 failures.
+
+Not done:
+
+- no Meilisearch reindex, intake automation, git staging, commit, or push was performed.
+
+Next step:
+
+- monitor live ay84 and continue pipeline hardening. Do not reintroduce a permanent third desktop column.
+
+## 2026-06-14 — ay87 removed caption metadata snippet UI and processed current TikTok queue
+
+User asked to remove the caption metadata snippet everywhere on desktop/mobile, deploy immediately, then check/process/upload new TikToks if available.
+
+Actions taken:
+
+- removed caption/platform metadata snippet rendering from runtime source detail, generated source pages, and CSS;
+- fixed the leftover `isTruncatedCaption` reference that caused source-detail fallback in the first ay85 attempt;
+- packaged and deployed clean UI hotfix ay86, then processed current TikTok intake and deployed final data release `base2026-public-hermes-ay87-20260614`;
+- processed 2 queued 2026-06-13 caption-backed TikToks from `config/tiktok-intake-queue.local.json`;
+- published/indexed `tiktok-video-7650935514643614998` from `@build_in_public`;
+- held `tiktok-video-7650940529575775501` from `@tjrobertson52` as `needs_source_review` because transcript polish QA requires audio/source verification;
+- updated builder/exporter guards so held/no-public-text rows do not publish empty source records.
+
+Verification:
+
+- public export policy, text excerpt validation, release contract, `kb-audit.py`, JS/Python syntax checks, and `git diff --check` passed;
+- live symlink points to `/var/www/base2026-knowledge/releases/base2026-public-hermes-ay87-20260614`;
+- Meilisearch reindexed 1714 passages;
+- live DOM smoke confirmed asset version ay87, no `Caption metadata`, no `.caption-preview`, new source text visible, held source text absent, and no horizontal overflow on desktop/mobile;
+- targeted live visual QA passed with 6 checks and 0 failures.
+
+Not done:
+
+- no git staging, commit, or push was performed.
+
+## 2026-06-14 — ay88 local source-detail navigation simplification
+
+User clarified that the remaining problem is not only the newest TikTok record: the current Base2026 source navigation is generally overloaded, duplicated, and confusing across desktop/mobile. They asked to structure the work, research, and continue without turning this into another disconnected page/modal system.
+
+Actions taken:
+
+- simplified runtime `/knowledge/?source=` source detail so provenance lives in compact top metadata chips instead of bottom cards;
+- removed runtime empty public insight-card rendering when a source has no linked insight cards;
+- simplified generated static source pages by removing bottom `Source Provenance`, duplicate `Topics`, source-policy note cards, and empty related/insight fallback sections;
+- changed generated static source `Creator page` navigation to workspace route-state (`../index.html?creator=...`) and kept SEO pages as direct-entry/support pages;
+- decoded HTML entities before rendering source excerpts/passages so `don&#39;t`/`It&#39;s` no longer appears as raw entity text;
+- adjusted mobile source-state layout so the hero/stat block is hidden and the mobile filter bar is not sticky over source detail text;
+- removed unused `source-provenance-list` CSS so the old provenance-card UI is not preserved as dormant styling.
+
+Verification:
+
+- `node --check web/static/meili.js` passed;
+- `python3 -m py_compile scripts/generate-public-pages.py` passed;
+- `git diff --check -- scripts/generate-public-pages.py web/static/meili.js web/static/styles.css` passed;
+- packaged local data-preserving hotfix `base2026-nav-simplify-ay88-20260614`;
+- packaging checks passed: public export policy, public text excerpt validation, and sitemap generation;
+- targeted grep on the packaged release found no `Source Provenance`, `source-provenance-list`, caption metadata, empty source insight fallback, or raw `&#39;` strings in source HTML/JS;
+- local Playwright DOM QA passed for workspace mobile source, static mobile source, and workspace desktop source: no source provenance, no caption metadata, no empty insight fallback, no raw HTML entities, decoded apostrophes visible, no horizontal overflow, and mobile source-state filter bar is static.
+- publication boundary audit passed: 21 changed files, 0 forbidden files, 0 secret findings, and all changed files reported as public-safe candidates.
+
+Not done:
+
+- no deploy, Meilisearch reindex, intake automation, git staging, commit, or push was performed.
+
+## 2026-06-14 — ay88 source-detail simplification deployed
+
+User asked to continue instead of stopping at the local ay88 package.
+
+Actions taken:
+
+- deployed `base2026-nav-simplify-ay88-20260614` with `scripts/deploy-public-vps.ps1 -SkipPackage -SkipReindex`;
+- switched `/var/www/base2026-knowledge/current` to `/var/www/base2026-knowledge/releases/base2026-nav-simplify-ay88-20260614`;
+- kept Meilisearch on the ay87 1714-passage data/reindex checkpoint because ay88 is a data-preserving UI/static-page hotfix;
+- verified live `/knowledge/` and the static source page load ay88 asset cache-busts;
+- verified live source detail on mobile and desktop with Playwright DOM QA.
+
+Verification:
+
+- deploy script passed nginx config test, nginx reload, symlink verify, and remote file checks;
+- live curl confirmed `/knowledge/` and `/knowledge/sources/tiktok-video-7650935514643614998.html` reference `base2026-nav-simplify-ay88-20260614`;
+- live Playwright DOM QA passed for workspace mobile source, workspace desktop source, and static mobile source: no `Source Provenance`, no caption metadata, no empty source insight fallback, no raw `&#39;`, decoded apostrophes visible, source detail replaces results in workspace state, filter bar is static on mobile, and horizontal overflow is false;
+- targeted live visual QA passed: `node scripts/mobile-visual-qa.mjs --base-url https://aggressorbulkit.online --viewports full --only base-search-query --no-screenshots` returned 6 checks and 0 failures.
+
+Not done:
+
+- no Meilisearch reindex, intake automation, git staging, commit, or push was performed.
+
+## 2026-06-14 — ay89 insight-first source detail deployed
+
+User clarified that the deeper problem is product architecture/value: Base2026 should not become a raw TikTok transcription mirror where the same video text appears as title, hero, excerpt, matched passage, related passage, and provenance. They asked to rethink the product as source-backed intelligence and deploy after tests.
+
+Actions taken:
+
+- changed runtime `/knowledge/?source=` source detail to render `Source Intelligence` first when linked public insight cards exist;
+- changed runtime source detail to render one short `Evidence Excerpt` and dedupe matched/additional evidence against the primary source text;
+- changed no-insight runtime source detail headings to neutral `Source record from @handle` instead of transcript-derived headings;
+- shortened search result snippets so result cards do not display long transcript-like blocks;
+- changed generated static source pages to use the same insight-first/evidence-once contract;
+- kept static pages for SEO/sharing and `/knowledge/` as the interactive source workspace;
+- updated `scripts/mobile-visual-qa.mjs` so `base-search-query` validates the current source-workspace flow instead of expecting the removed legacy modal;
+- packaged and deployed `base2026-insight-first-ay89-20260614` with `-SkipPackage -SkipReindex` after local packaging.
+
+Verification:
+
+- `node --check web/static/meili.js` passed;
+- `python3 -m py_compile scripts/generate-public-pages.py` passed;
+- `git diff --check -- scripts/generate-public-pages.py web/static/meili.js web/static/styles.css` passed;
+- local package checks passed: public export policy, public text excerpt validation, generated pages, and sitemap generation;
+- local Playwright QA passed for static no-insight mobile source, workspace no-insight mobile source, and static insight desktop source: old labels absent, `Evidence Excerpt` present, repeated problematic source phrase count is 1, and no mobile overflow;
+- deploy script passed nginx config test, symlink switch, and active release verification;
+- live curl confirmed `/knowledge/` loads `base2026-insight-first-ay89-20260614` assets and the checked source page contains `Evidence Excerpt` with none of the old labels;
+- live Playwright QA passed for static no-insight mobile source, workspace no-insight mobile source, and static insight desktop source: no `Source Provenance`, no `Caption Metadata Snippet`, no `Related Passages`, no `Matched Passage`, no `Public Insight Cards`, no mobile overflow, and repeated problematic source phrase count is 1;
+- first targeted visual QA failed because the test still expected the removed source modal; after updating the script to source-workspace expectations, targeted live visual QA passed with 6 checks and 0 failures.
+
+Not done:
+
+- no Meilisearch reindex, intake automation, git staging, commit, or push was performed.
+
+## 2026-06-14 — ay89 post-deploy TikTok intake check
+
+User had also asked to check for new TikToks and process/upload them if safe.
+
+Actions taken:
+
+- ran `scripts/hermes-tiktok-refresh.ps1 -CheckOnly -PlaylistEnd 50`;
+- found 1 new 2026-06-14 `@joshuamaraney` source: `tiktok-video-7651218412475059464`;
+- ran the small caption-first intake path with `-TranscriptLimit 5 -SkipAsr -PolishLimit 5 -BatchSize 5 -BatchSet ay89-josh-new-20260614`;
+- caption extraction succeeded for the new source and created one polish batch;
+- created faithful local polish/QA artifacts for the new source;
+- marked the source as `needs_source_review` in local `videos.csv` instead of public release.
+
+Verification:
+
+- after the intake pass, check-only summary is `total=3020`, `active=1221`, `queued_transcript=0`, `needs_asr=0`, `transcribed=1218`, `needs_polish=0`;
+- batch-scoped polish status no longer reports the held source as publishable/transcribed because it is now `needs_source_review`.
+
+Not done:
+
+- the new source was not packaged, indexed, deployed, or promoted to public export because the captions contain high-risk current-event/entity claims about Anthropic/Claude/Fable/security intervention that need audio/source verification.
+- no git staging, commit, or push was performed.
+
+## 2026-06-14 — operator-approved new Josh source deployed
+
+User confirmed the new `@joshuamaraney` source information is verified and asked to deploy it.
+
+Actions taken:
+
+- treated the user confirmation as source-review approval for `tiktok-video-7651218412475059464`;
+- changed the local video row from `needs_source_review` to `transcribed`;
+- changed the polish QA JSON from `needs_review` to `pass`;
+- reran the batch-scoped `AfterPolish` pipeline with `-Package`;
+- rebuilt SQLite and exported public TikTok data;
+- packaged `base2026-public-hermes-20260614-060556`;
+- deployed with `scripts/deploy-public-vps.ps1 -ReleaseName base2026-public-hermes-20260614-060556 -SkipPackage`;
+- reindexed Meilisearch with 1715 passages.
+
+Verification:
+
+- batch polish status passed with `needs_review=0`;
+- `kb-audit.py` passed;
+- public export policy passed: 1219 source records, 1715 passages, 1607 insight cards, 1034 public insight cards, 987 public topics;
+- public release contract passed with 0 violations;
+- deploy script passed nginx config checks and switched current symlink to `/var/www/base2026-knowledge/releases/base2026-public-hermes-20260614-060556`;
+- live source page `/knowledge/sources/tiktok-video-7651218412475059464.html` returns 200 and contains `Evidence Excerpt`;
+- live search for `Claude Fable` includes `tiktok-video-7651218412475059464`;
+- live browser QA passed on mobile/desktop static source and mobile workspace source: no legacy source-detail markers, checked phrase repeats once, mobile overflow false;
+- targeted live visual QA passed with 6 checks and 0 failures.
+
+Not done:
+
+- no insight cards were generated/promoted for this source in this pass;
+- no git staging, commit, or push was performed.
+
+## 2026-06-14 — product passport correction for source-text database
+
+User clarified the original Base2026 product idea: the pipeline is good, and the core value is a searchable text database built from creator-video transcripts. Public pages should not be raw scraped caption dumps, but selected source records should expose reviewed polished public source text/transcript with Base2026-authored explanations, topics, insight cards, attribution, original links, methodology, and correction/removal controls. Arbitrary truncation and repeated excerpt/matched/related blocks break the product.
+
+Actions taken:
+
+- added `docs/project-memory/BASE2026_PRODUCT_PASSPORT_2026_06_14.md` with the corrected product contract;
+- updated `DECISIONS.md` to supersede strict excerpt-only as final architecture and allow reviewed public source text where policy allows;
+- updated `PUBLICATION_BOUNDARY.md` to distinguish raw/unreviewed transcript dumps from reviewed public source text;
+- updated `PROJECT_STATE.md`, `ACTIVE_PHASE.md`, `NEXT_ACTION.md`, `DATA_SOURCES.md`, and `STATUS_BOARD.csv` so future implementation starts from the database/source-text contract instead of optimizing cropped Evidence Excerpt pages.
+- updated `README.md`, `OPEN_SOURCE_POSITIONING.md`, `PUBLIC_INTELLIGENCE_IMPLEMENTATION_PLAN_2026_06_08.md`, `ATTRIBUTED_INTELLIGENCE_ARCHITECTURE.md`, `DEPLOYMENT_RUNBOOK.md`, `CURRENT_ROADMAP.md`, and `NAVIGATION_ARCHITECTURE_SNAPSHOT_2026_06_13.md` so old excerpt-only language is marked as historical safety state rather than final product direction.
+- refined the product passport after the operator clarified the original UX: Base2026 should behave like a Google-style search engine over creator-video source records. Result previews stay short; a selected result opens the full normalized public transcript/source text plus short and fuller Base2026-authored explanations and related topics.
+
+Not done:
+
+- no runtime/export code was changed in this documentation pass;
+- no deploy, git staging, commit, or push was performed.
+
+## 2026-06-14 — local source-text implementation pass
+
+User asked to bring the project to the newly clarified model: Google-like search results, selected result opens a full source record, normalized transcript/source text is present as the database layer, and short/full Base2026-authored explanations explain the video without turning the product into a raw transcript dump.
+
+Actions taken:
+
+- changed `scripts/export-public-tiktok.py` to add `public_source_text`, `public_source_text_available`, `source_summary_short`, and `source_summary_long` to every public source record;
+- kept legacy `transcript` empty and `include_full_transcripts=false`, so the old raw/full-transcript release path remains blocked;
+- changed `scripts/generate-public-pages.py` so static source pages render `Source Text` from reviewed public source text instead of a cropped `Evidence Excerpt`;
+- changed `web/static/meili.js` so runtime `/knowledge/?source=` renders the same `Source Text` contract, highlights query terms in the full source text, and keeps search result cards as short previews with one `View source` action;
+- changed `web/static/styles.css` for readable source text and source summary spacing;
+- changed `scripts/mobile-visual-qa.mjs` so QA expects `Source Text` instead of the removed `Evidence Excerpt`;
+- updated `contracts/base2026.public-release-contract.json` to allow reviewed public source text while keeping `-IncludeFullTranscripts` blocked for public deploys;
+- rebuilt local public export and static pages;
+- packaged local release `base2026-source-text-local-20260614` without deploying.
+
+Verification:
+
+- `python3 -m py_compile scripts/export-public-tiktok.py scripts/generate-public-pages.py scripts/check-public-export-policy.py scripts/validate-public-release-contract.py` passed;
+- `node --check web/static/meili.js` and `node --check scripts/mobile-visual-qa.mjs` passed;
+- `git diff --check` passed for changed export/page/runtime/CSS/QA/contract files;
+- `python3 scripts/export-public-tiktok.py` exported 1219 source records, 1715 passages, 1607 insight cards, 1034 public insight cards;
+- `python3 scripts/check-public-export-policy.py public-data/tiktok` passed with `include_full_transcripts=false`;
+- all 1219 source records have `public_source_text`; 0 source records have non-empty legacy `transcript`;
+- checked source `tiktok-video-7651218412475059464` has `public_source_text_len=1058`, `transcript_len=0`, and summary fields;
+- `python3 scripts/generate-public-pages.py --data public-data/tiktok --out web/static` generated 1219 source pages and 987 topic pages;
+- `pwsh ./scripts/package-public-release.ps1 -ReleaseName base2026-source-text-local-20260614` passed export policy, text excerpt validation, release contract, page generation, and sitemap generation;
+- local packaged source page and runtime `/index.html?source=tiktok-video-7651218412475059464` were checked with Playwright on desktop and mobile: `Source Text` present, `Evidence Excerpt` absent, `Caption Metadata` absent, `Source Provenance` absent, horizontal overflow false, legacy dialog false.
+
+Not done:
+
+- no VPS deploy, Meilisearch reindex, git staging, commit, or push was performed.
+
+## 2026-06-14 — deployed source-text record UX
+
+User asked to deploy the source-text implementation live and verify it on production.
+
+Actions taken:
+
+- deployed existing package `base2026-source-text-local-20260614` with `scripts/deploy-public-vps.ps1 -ReleaseName base2026-source-text-local-20260614 -SkipPackage -SkipReindex`;
+- nginx config test passed before and after symlink switch;
+- current symlink now points to `/var/www/base2026-knowledge/releases/base2026-source-text-local-20260614`;
+- skipped Meilisearch reindex because passage bodies/index settings did not change; source detail reads the new source text from versioned static `documents.jsonl`.
+
+Verification:
+
+- live static source page `/knowledge/sources/tiktok-video-7651218412475059464.html` contains `Source Text`, does not contain `Evidence Excerpt`, `Caption Metadata Snippet`, or `Source Provenance`, and loads `base2026-source-text-local-20260614` assets;
+- live `/knowledge/static/documents.jsonl?v=base2026-source-text-local-20260614` has 1219 records, 0 missing `public_source_text`, and 0 non-empty legacy `transcript` fields;
+- live static asset headers for `meili.js` and `styles.css` return 200 with gzip, `Vary: Accept-Encoding`, and immutable cache headers;
+- live Playwright checks passed on desktop/mobile static source page: `Source Text=true`, `Evidence Excerpt=false`, caption/provenance false, overflow false;
+- live Playwright checks passed on desktop/mobile runtime `/knowledge/?source=tiktok-video-7651218412475059464`: `Source Text=true`, `Evidence Excerpt=false`, legacy dialog false, overflow false;
+- live mobile search-click flow for `?q=Claude Fable` shows `View source`, opens source detail with `Source Text`, no legacy modal, and no horizontal overflow;
+- targeted live visual QA passed: `node scripts/mobile-visual-qa.mjs --base-url https://aggressorbulkit.online --viewports mobile --only base-search-query --no-screenshots` returned 4 results and 0 failures.
+
+Not done:
+
+- no git staging, commit, or push was performed.
+
+## 2026-06-14 — Source Intelligence full-text hotfix
+
+User reported that after searching by keyword and opening `View source`, the `Source Intelligence` card still showed clipped text ending in `...`.
+
+Root cause:
+
+- the visible cut was not CSS clipping;
+- many public `insight_cards.jsonl` rows store `evidence_excerpt` as an intentionally shortened excerpt;
+- the full reviewed public passage is already available in `passages.jsonl` for the same source.
+
+Actions taken:
+
+- changed runtime `web/static/meili.js` so source-detail `Source Intelligence` expands clipped insight evidence from the same-source public passage before rendering;
+- changed `scripts/generate-public-pages.py` so generated static source pages use a source-specific insight-card renderer instead of the generic compact card path;
+- packaged data-preserving release `base2026-source-intel-fulltext-20260614`;
+- deployed the release with `scripts/deploy-public-vps.ps1 -SkipPackage -SkipReindex`.
+
+Verification:
+
+- `node --check web/static/meili.js` passed;
+- `python3 -m py_compile scripts/generate-public-pages.py` passed;
+- local generated page for `tiktok-video-7644200324382625026` contains the continuation after `I am gonna show you now.` and no `I am gonna show you now...`;
+- public release contract passed with 0 violations;
+- live static source page and live `/knowledge/?q=keyword&source=tiktok-video-7644200324382625026` both load `base2026-source-intel-fulltext-20260614` assets, contain `Source Intelligence`, do not contain the bad `now...` truncation, and include the full passage ending;
+- live mobile workspace source state has no horizontal overflow and no console/page errors.
+
+Not done:
+
+- no Meilisearch reindex was run because passage bodies and index settings did not change;
+- no git staging, commit, or push was performed.
+
+## 2026-06-14 — WordPress + Base2026 SEO/GEO architecture docs
+
+User asked for a strategic plan to maximize SEO/GEO/AI visibility for both the WordPress commercial site and the Base2026 knowledge product, plus a separate Base2026 project passport file for commercial brief/audit use.
+
+Actions taken:
+
+- reviewed the current Base2026 product passport, project memory, public JSONL counts, and SEO/schema/search architecture references;
+- used the SEO, AI SEO, GEO command-center, programmatic SEO, schema, and site architecture skill frameworks;
+- created `docs/project-memory/BASE2026_COMMERCIAL_PROJECT_PASSPORT_2026_06_14.md`;
+- created `docs/project-memory/SEO_GEO_GROWTH_PLAN_2026_06_14.md`;
+- updated `docs/project-memory/NEXT_ACTION.md` so the new docs become the current operating context for the next SEO/GEO implementation pass.
+
+Key conclusions:
+
+- WordPress should be treated as the commercial/entity/conversion layer;
+- Base2026 should be treated as the public evidence/source-intelligence layer;
+- new Base2026 content needs an automatic SEO/GEO enrichment step before static generation and deploy;
+- static pages remain valuable for canonical URLs, sitemap, sharing, and crawlable records, but `/knowledge/` remains the primary interactive search workspace;
+- avoid raw transcript dumps and thin programmatic SEO pages; the public value must be reviewed source text plus Base2026-authored summaries, topics, insight cards, attribution, and correction/removal paths.
+
+Verification:
+
+- confirmed current local public export counts: 1,219 source records, 1,715 passages, 1,607 insight cards, 1,034 public insight cards, 1,504 topics, and 4 creators;
+- docs only, no code/package/deploy changes;
+- no private raw captions, ASR, media, local DBs, logs, credentials, or generated release archives were added.
+
+Not done:
+
+- no implementation of `llms.txt`, SEO fields, topic scoring, schema changes, deploy, git staging, commit, or push was performed.
+
+## 2026-06-14 — Signal Maps / visual SEO one-shot implementation and deploy
+
+User provided `BASE2026_CODEX_55_ONESHOT_SIGNAL_VISUAL_SEO_PROMPT_2026_06_14.md` requesting a coordinated production pass: compact visual polish, deterministic Signal Maps / Topic Signal Briefs, Base2026 SEO/GEO/readability groundwork, API/MCP public contract planning, full QA, and live deploy without changing the ingestion pipeline or public/private boundary.
+
+Actions taken:
+
+- created ignored planning note `.planning/base2026-signal-visual-seo-consilium-20260614.md`;
+- added deterministic `scripts/generate-topic-signal-briefs.py`;
+- generated current public `topic_signal_briefs.jsonl` with 2 strong topics: `internal-linking` and `on-page-seo`;
+- added compact Signal Maps strip and manifest-derived counters to `/knowledge/`;
+- added runtime search-signal hint when a real query/filter has enough visible source/creator support;
+- added compact `Topic Signal Brief` rendering to static strong topic pages only;
+- added `/knowledge/llms.txt`, root `/llms.txt` packaging support, `/knowledge/data-dictionary.json`, and `/knowledge/api-index.json`;
+- added `docs/project-memory/BASE2026_API_MCP_PUBLIC_CONTRACT_PLAN.md`;
+- updated `docs/schemas/PUBLIC_JSONL_SCHEMA.md`, `docs/project-memory/DECISIONS.md`, `scripts/package-public-release.ps1`, `scripts/deploy-public-vps.ps1`, and `scripts/audit-publication-boundary.py`;
+- packaged and deployed `base2026-signal-visual-seo-20260614`;
+- skipped Meilisearch reindex because passage/index data did not change.
+
+Verification:
+
+- `python3 -m py_compile` passed for the changed/gated Python scripts;
+- `node --check web/static/meili.js` and `node --check scripts/mobile-visual-qa.mjs` passed;
+- `git diff --check` passed;
+- `check-public-export-policy`, `validate-public-text-excerpts`, `validate-public-release-contract`, `audit-publication-boundary`, and `validate-github-metadata` passed;
+- package release produced 1,219 documents, 1,715 chunks, 987 public topics, 1,304 sitemap URLs, and 2 signal briefs;
+- live smoke confirmed the release marker, signal strip, strong topic signal pages, no signal brief on a weak topic, `/llms.txt`, `/knowledge/llms.txt`, `/knowledge/data-dictionary.json`, and `/knowledge/api-index.json`;
+- live mobile visual QA for `base-search-query` passed with 4 checks and 0 failures;
+- live targeted DOM checks passed with 16 checks and 0 failures.
+
+Not done:
+
+- no TikTok intake was run;
+- no Meilisearch reindex was run;
+- no git staging, commit, or push was performed.
+
+## 2026-06-14 — Base2026 analytics / Geist / compact navigation deploy
+
+User asked to make the Base2026 search workspace more compact and understandable, use Vercel Geist, avoid button proliferation, add a public analytics layer/counts, and keep the TikTok intake pipeline in a separate dedicated thread.
+
+Actions taken:
+
+- created a separate Codex intake thread for TikTok URL pipeline work: `019ec83b-e8d1-74e0-bfa4-f5949edd63c6`;
+- added `scripts/generate-public-analytics.py`, a deterministic public JSONL-only analytics summary generator;
+- wired normal package/deploy checks to generate and verify `analytics_summary.json`;
+- switched `/knowledge/` runtime analytics loading to `analytics_summary.json` with `base2026_analytics.json` as fallback;
+- added compact analytics strip/result-card count support from public topic/creator aggregates;
+- changed Base2026 generated headers to permanent product nav: Search, Analytics, Topics, Creators, Methodology, then separated WordPress links;
+- removed the duplicate workspace product-nav strip from search HTML;
+- tightened Geist/Geist Mono typography and compact dataset stat styling in `web/static/styles.css`;
+- fixed `/knowledge/analytics.html` root-level asset paths so it loads `/knowledge/static/styles.css`;
+- packaged and deployed `base2026-analytics-geist-20260614`;
+- skipped Meilisearch reindex because passage bodies/index settings did not change.
+
+Verification:
+
+- `python3 -m py_compile` passed for changed generator/audit scripts;
+- `node --check` passed for the release `meili.js`;
+- public export policy, text excerpt validation, public release contract, and publication-boundary audit passed;
+- package release produced 1,219 documents, 1,715 chunks, 987 public topics, 1,305 sitemap URLs, 2 signal briefs, and analytics JSON;
+- live `/knowledge/` smoke confirmed release CSS/JS markers, Geist, `analytics_summary.json`, no duplicate product-nav HTML, and `/knowledge/analytics.html`;
+- live Playwright search/source QA passed on desktop and mobile with no overflow, analytics strip visible, result-card analytics chips present, only `Open source` CTAs, no legacy modal, source detail open in workspace, `Source Text` visible, and no `Caption Metadata` or `Source Provenance`;
+- live Playwright analytics-page QA passed on desktop and mobile with Geist loaded from `/knowledge/static/styles.css`, 4 stat cards, 24 topic ranking rows, 4 creator cards, no overflow, and no console errors.
+
+Not done:
+
+- no new TikTok intake was run in this thread;
+- no Meilisearch reindex was run;
+- no git staging, commit, or push was performed.
+
+## 2026-06-15 — Base2026 content-pipeline/source-detail fix
+
+User reported that new TikToks were publishing as plain text without Source Intelligence and older source records repeated the same transcript/source text in several blocks. User asked for investigation, root cause, fix, deploy, and live verification.
+
+Actions taken:
+
+- confirmed root causes in data and UI:
+  - source detail expanded clipped insight evidence back into the full source text, duplicating the visible Source Text;
+  - static source pages rendered the same expanded evidence inside insight cards;
+  - new source records could pass public export with source text but no topics/public insight cards;
+  - `export-public-tiktok.py` ignored reviewed `claim_evidence.quote_or_span`, so approved manual candidates could fail public insight promotion;
+- changed runtime `/knowledge/?source=` to show full source text once, collapse source evidence in Source Intelligence by default, show claim/action as the value layer, and restore source share/copy/print actions;
+- changed generated source pages to use the same source-detail contract;
+- changed `export-public-tiktok.py` to respect reviewed evidence spans when present in chunks;
+- added `scripts/check-public-content-readiness.py` and wired normal/hotfix package paths to block the newest source-only record with no topic/public insight layer;
+- added 7 approved reviewed candidate rows to the ignored local replay archive for the latest source-only problem records;
+- rebuilt SQLite, exported public data, regenerated public pages/analytics/topic signal briefs, packaged, deployed, and reindexed Meilisearch as `base2026-content-pipeline-fix-20260615`.
+
+Verification:
+
+- JSONL replay archive validated;
+- `build-kb-sqlite.py` completed with 92 reviewed candidate rows;
+- public export produced 1219 source records, 1715 passages, 1614 insight cards, 1043 public insight cards, 1510 topics, and 995 public topics;
+- public policy, public text excerpt validation, public release contract, and content-readiness checks passed;
+- live static JSONL confirmed public insights/topics for `tiktok-video-7651218412475059464`, `tiktok-video-7650481268206931222`, and `tiktok-video-7650601606215372046`;
+- live static source page confirmed Source Intelligence and share actions are present, while Caption Metadata and Source Provenance are absent;
+- live Playwright desktop/mobile QA passed on three source-state URLs with no console/page errors, no modal, no horizontal overflow, Source Text and Source Intelligence present, 4 share actions, and collapsed evidence details.
+
+Not done:
+
+- no git staging, commit, or push was performed;
+- historical source-only/low-value backlog was not bulk auto-approved; future pipeline work should run extraction/review before deploy rather than manually recovering after publication.
+
+## 2026-06-15 — Base2026 analytics/topic routing and Source Intelligence grouping fix
+
+User reported that `/topics/on-page-seo.html` was empty/404 from analytics navigation, `/knowledge/analytics.html` looked good but linked into missing pages, result-card analytics chips visually collided with `Open source`, and Source Intelligence showed near-duplicate blocks for the same TikTok. User asked to fix the project to production level, deploy, and verify live.
+
+Actions taken:
+
+- confirmed `/topics/on-page-seo.html` returned WordPress 404 while `/knowledge/topics/on-page-seo.html` was a populated generated topic page;
+- fixed `scripts/generate-public-pages.py` so `/knowledge/analytics.html` uses same-directory links (`./topics/...`, `./index.html?...`) instead of root-escaping `../...` links;
+- added nginx canonical redirects for legacy/root Base2026 generated paths: `/topics/`, `/sources/`, `/creators/`, and `/compare/` now redirect under `/knowledge/`;
+- changed runtime source detail and generated static source pages to group closely related Source Intelligence rows from the same source into one card with compact related-topic chips, compact action text, and collapsed evidence;
+- removed the repeated large `Search this topic` CTA from Source Intelligence cards; topic navigation now lives in the topic chips;
+- added result-card spacing between analytics chips and the `Open source` action;
+- regenerated static public pages, packaged, deployed, and reindexed Meilisearch as `base2026-topic-analytics-intel-fix-20260615`;
+- applied and reloaded the nginx redirect patch on the VPS after deploy.
+
+Verification:
+
+- `python3 -m py_compile scripts/generate-public-pages.py scripts/server-patch-nginx-base2026.py` passed;
+- `node --check web/static/meili.js` passed;
+- `git diff --check` passed;
+- public export policy, public text excerpt validation, and public release contract passed;
+- deploy completed with 1219 source records, 1715 passages, 1614 insight cards, 1043 public insight cards, 1510 topics, 995 public topics, and Meilisearch reindexed 1715 passages;
+- live curl confirmed `/topics/on-page-seo.html` returns 301 to `/knowledge/topics/on-page-seo.html` and then 200;
+- live analytics HTML confirmed topic links resolve as `/knowledge/topics/...`;
+- live static source page confirmed `tiktok-video-7651218412475059464` renders one grouped `2 related signals · AI Model Governance / AI Security Risk` block;
+- live Playwright desktop/mobile checks passed with no console/page errors, no horizontal overflow on mobile, 1 Source Intelligence card, 2 topic chips, 4 share actions, no `Search this topic` text, and 12px result-card spacing.
+
+Not done:
+
+- no new TikTok intake was run;
+- no git staging, commit, or push was performed.
+
+## 2026-06-15 — Base2026 source page hero/evidence polish
+
+User reported that the generated source page for `tiktok-video-7640117982898752790` had two TikTok icons, a wrapped `Correction or opt-out` hero button, and a confusing `Additional Evidence` block that was only a tail fragment of the same Source Text.
+
+Actions taken:
+
+- confirmed the data shape: the source has full reviewed public source text plus two passage chunks, where the second chunk is a substring/tail of the same Source Text;
+- changed `scripts/generate-public-pages.py` so source identity does not render the platform icon for source pages;
+- removed source-record hero `Correction or opt-out` from generated source pages;
+- added a fragment-containment guard so passage chunks already contained in Source Text do not render as separate evidence blocks;
+- changed `web/static/meili.js` to apply the same runtime source-detail rules;
+- removed the runtime source-detail `Correction / removal` hero action;
+- renamed the distinct-context fallback from `Additional Evidence` to `Supporting Passages`;
+- adjusted mobile source hero action CSS so the remaining actions are not hidden by the previous third-button suppression rule;
+- regenerated static pages, deployed, and reindexed as `base2026-source-page-polish-20260615`.
+
+Verification:
+
+- `python3 -m py_compile scripts/generate-public-pages.py` passed;
+- `node --check web/static/meili.js` passed;
+- `git diff --check` passed for changed source files;
+- `check-public-export-policy`, `validate-public-text-excerpts`, and `validate-public-release-contract` passed;
+- local generated source page smoke confirmed 0 platform icons in source identity, 1 platform icon in compact metadata, hero buttons `Open in Search Workspace`, `Open original`, `Creator`, no hero correction action, and no `Additional Evidence`/tail fragment;
+- deploy completed with 1219 source records, 1715 passages, 1614 insight cards, 1043 public insight cards, 1510 topics, 995 public topics, and Meilisearch reindexed 1715 passages;
+- live source page smoke confirmed the same checks on `https://aggressorbulkit.online/knowledge/sources/tiktok-video-7640117982898752790.html`;
+- live runtime asset smoke confirmed `static/meili.js?v=base2026-source-page-polish-20260615` contains the fragment guard and no runtime `Additional Evidence` label or source-detail correction action.
+
+Not done:
+
+- Playwright was not run in this repo because the local project does not currently have Playwright installed in `node_modules`;
+- no new TikTok intake was run.

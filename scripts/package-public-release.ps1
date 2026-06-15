@@ -37,6 +37,17 @@ python3 ./scripts/validate-public-text-excerpts.py --data $ExportRoot | Write-Ou
 Assert-NativeSuccess "validate-public-text-excerpts"
 python3 ./scripts/validate-public-release-contract.py --export-dir $ExportRoot --baseline-export-dir ./public-data/tiktok --enforce-count-floor | Write-Output
 Assert-NativeSuccess "validate-public-release-contract"
+python3 ./scripts/check-public-content-readiness.py --data-root $ExportRoot --latest 1 --fail | Write-Output
+Assert-NativeSuccess "check-public-content-readiness"
+$SignalBriefPath = Join-Path $ExportRoot "topic_signal_briefs.jsonl"
+python3 ./scripts/generate-topic-signal-briefs.py --data $ExportRoot --out $SignalBriefPath --max-topics 50 | Write-Output
+Assert-NativeSuccess "generate-topic-signal-briefs"
+$AnalyticsPath = Join-Path $ExportRoot "base2026_analytics.json"
+python3 ./scripts/generate-base2026-analytics.py --data $ExportRoot --out $AnalyticsPath | Write-Output
+Assert-NativeSuccess "generate-base2026-analytics"
+$AnalyticsSummaryPath = Join-Path $ExportRoot "analytics_summary.json"
+python3 ./scripts/generate-public-analytics.py --data $ExportRoot --out $AnalyticsSummaryPath | Write-Output
+Assert-NativeSuccess "generate-public-analytics"
 python3 ./scripts/generate-info-pages.py --source ./docs/public-pages --out ./web/static | Write-Output
 Assert-NativeSuccess "generate-info-pages"
 
@@ -79,6 +90,16 @@ if (Test-Path "./web/static/roadmap.js") {
 if (Test-Path "./web/static/assets") {
   Copy-Item "./web/static/assets" (Join-Path $StaticRoot "assets") -Recurse -Force
 }
+foreach ($ReadabilityAsset in @(
+  @{ Source = "./web/static/llms.txt"; Target = (Join-Path $WebRoot "llms.txt") },
+  @{ Source = "./web/static/data-dictionary.json"; Target = (Join-Path $WebRoot "data-dictionary.json") },
+  @{ Source = "./web/static/api-index.json"; Target = (Join-Path $WebRoot "api-index.json") },
+  @{ Source = "./web/static/llms-root.txt"; Target = (Join-Path $WebRoot "root-llms.txt") }
+)) {
+  if (Test-Path $ReadabilityAsset.Source) {
+    Copy-Item $ReadabilityAsset.Source $ReadabilityAsset.Target -Force
+  }
+}
 foreach ($TestPageAsset in @("roadmap-dataviz-test.html", "roadmap-dataviz-test.css", "roadmap-dataviz-test.js")) {
   if (Test-Path "./web/static/$TestPageAsset") {
     Copy-Item "./web/static/$TestPageAsset" (Join-Path $WebRoot $TestPageAsset) -Force
@@ -100,7 +121,9 @@ foreach ($DocPage in $DocPages) {
   $DocHtml = $DocHtml -replace 'src="(?:\./|/)static/cookie-consent\.js\?v=[^"]+"', "src=`"./static/cookie-consent.js?v=$CacheBust`""
   $DocHtml | Set-Content -Path (Join-Path $WebRoot $DocPage) -Encoding UTF8
 }
-Copy-Item (Join-Path $ExportRoot "documents.jsonl") (Join-Path $StaticRoot "documents.jsonl") -Force
+foreach ($StaticDataFile in @("documents.jsonl", "passages.jsonl", "insight_cards.jsonl", "manifest.json", "topic_signal_briefs.jsonl", "base2026_analytics.json", "analytics_summary.json")) {
+  Copy-Item (Join-Path $ExportRoot $StaticDataFile) (Join-Path $StaticRoot $StaticDataFile) -Force
+}
 Copy-Item "./scripts/meili-index-public.py" (Join-Path $ScriptsRoot "meili-index-public.py") -Force
 Copy-Item (Join-Path $ExportRoot "*") $DataRoot -Recurse -Force
 python3 ./scripts/generate-public-pages.py --data $ExportRoot --out $WebRoot | Write-Output

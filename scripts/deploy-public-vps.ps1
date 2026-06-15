@@ -67,12 +67,23 @@ mkdir -p "`$base/releases/`$release"
 unzip -q "`$zip_path" -d "`$base/releases/`$release"
 test -f "`$base/releases/`$release/web/index.html"
 test -f "`$base/releases/`$release/web/static/documents.jsonl"
+test -f "`$base/releases/`$release/web/static/manifest.json"
+test -f "`$base/releases/`$release/web/static/topic_signal_briefs.jsonl"
+test -f "`$base/releases/`$release/web/static/base2026_analytics.json"
+test -f "`$base/releases/`$release/web/static/analytics_summary.json"
+test -f "`$base/releases/`$release/web/llms.txt"
+test -f "`$base/releases/`$release/web/data-dictionary.json"
+test -f "`$base/releases/`$release/web/api-index.json"
 test -f "`$base/releases/`$release/web/topics/index.html"
 test -f "`$base/releases/`$release/web/compare/index.html"
+test -f "`$base/releases/`$release/web/analytics.html"
 test -f "`$base/releases/`$release/web/roadmap.html"
 test -f "`$base/releases/`$release/web/privacy.html"
 test -f "`$base/releases/`$release/web/source-policy.html"
 test -f "`$base/releases/`$release/web/support.html"
+if test -f "`$base/releases/`$release/web/root-llms.txt"; then
+  cp "`$base/releases/`$release/web/root-llms.txt" /var/www/alex-yarosh/llms.txt
+fi
 ln -sfnT "`$base/releases/`$release" "`$base/current"
 nginx -t
 systemctl reload nginx
@@ -105,10 +116,19 @@ test -d /var/www/alex-yarosh
 test -L "`$base/current"
 test -f "`$base/current/web/index.html"
 test -f "`$base/current/web/static/documents.jsonl"
+test -f "`$base/current/web/static/manifest.json"
+test -f "`$base/current/web/static/topic_signal_briefs.jsonl"
+test -f "`$base/current/web/static/base2026_analytics.json"
+test -f "`$base/current/web/static/analytics_summary.json"
+test -f "`$base/current/web/llms.txt"
+test -f "`$base/current/web/data-dictionary.json"
+test -f "`$base/current/web/api-index.json"
+test -f "`$base/current/web/analytics.html"
 test -f "`$base/current/web/roadmap.html"
 test -f "`$base/current/web/privacy.html"
 test -f "`$base/current/web/source-policy.html"
 test -f "`$base/current/web/support.html"
+test -f /var/www/alex-yarosh/llms.txt
 nginx -t >/dev/null
 systemctl is-active nginx
 readlink -f "`$base/current"

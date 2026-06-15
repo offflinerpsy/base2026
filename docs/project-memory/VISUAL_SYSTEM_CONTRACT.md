@@ -7,6 +7,7 @@ The public knowledge UI must look like part of the main Alex Yarosh WordPress si
 ## Main-Site Tokens
 
 - Font: `Source Sans 3`
+- Base2026 product/search UI font: `Geist` with `Geist Mono` for counts and compact analytics
 - Page background: warm off-white `#f7f4ee`
 - Paper/card background: `#fffaf0` or soft white
 - Main text: `#111820`
@@ -19,6 +20,15 @@ The public knowledge UI must look like part of the main Alex Yarosh WordPress si
 - Header: white or near-white sticky bar
 - Shadows: soft warm shadows, not dark dashboard glows
 
+## WordPress Root Site Contract
+
+- Treat WordPress pages as one design system, not separate one-off layouts.
+- Panels use one internal grid and one internal left alignment.
+- Normal marketing lists use dot markers only; do not add horizontal dividers between normal sentence bullets.
+- Eyebrows, headings, body/list copy, and CTAs must use consistent sizing across comparable sections.
+- Footer CTA buttons must be equal-size on desktop and equal-width stacked on mobile.
+- A WordPress UI task is not complete until the live site has been checked on desktop and mobile, cache is cleared if needed, and SEO title/description still render.
+
 ## Required UI Feel
 
 - calm consulting/product interface;
@@ -28,6 +38,7 @@ The public knowledge UI must look like part of the main Alex Yarosh WordPress si
 - filters that look like real form controls;
 - compact but readable passages;
 - source record dialog with full text readability.
+- Base2026 should feel like a compact search/research product: permanent product nav in the header, no duplicate workspace nav strip, no permanent third column, and analytics counters that clarify the database instead of becoming extra buttons.
 
 ## Forbidden UI Drift
 
