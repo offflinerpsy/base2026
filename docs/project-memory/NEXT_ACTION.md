@@ -1,5 +1,13 @@
 # Next Action
 
+## GitHub API surface pass — 2026-06-16
+
+- Clean worktree/branch: `codex/base2026-github-api-surface`.
+- Purpose: make the existing public Base2026 API/AI access surface obvious on GitHub without carrying generated release artifacts or the dirty UI/export worktree.
+- Changed public-safe files: `README.md` and `docs/index.html`.
+- Scope: documentation/presentation only. No deploy, no intake, no generated `web/static/**`, no private data.
+- Next safe action: validate publication boundary and GitHub metadata, then commit/push this clean branch if the operator wants the GitHub public surface updated immediately.
+
 ## Latest deployed info-page / roadmap / footer pass
 
 - `base2026-info-pages-polish-20260615` is live under `/knowledge/`.
