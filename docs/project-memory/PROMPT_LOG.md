@@ -4145,3 +4145,19 @@ Not done:
 
 - no fake form submission was sent to avoid generating a test lead email;
 - Playwright screenshot QA was not run because this repo does not currently have Playwright installed locally.
+
+## 2026-06-16 — GitHub API visibility surface
+
+User asked whether GitHub is current with local changes and noted that GitHub did not clearly show that Base2026 has a public API.
+
+Actions taken:
+
+- confirmed `origin/main` already contains the live API links, but the README and GitHub Pages copy made the API too easy to miss;
+- created a clean worktree from `origin/main` on `codex/base2026-github-api-surface` so generated `web/static/**` and unrelated dirty UI/deploy files are not included;
+- promoted the public read-only API/AI access surface near the top of `README.md`;
+- expanded `docs/index.html` with API/agent/public dataset quick links.
+
+Not done:
+
+- no deploy, intake, generated release update, or private data movement;
+- no commit/push until validation finishes and the final GitHub action is confirmed for this clean branch.

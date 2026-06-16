@@ -6,7 +6,27 @@ The current public demo focuses on TikTok creators talking about SEO, GEO, AEO, 
 
 Live demo: <https://aggressorbulkit.online/knowledge/>
 
-AI/API entry point: <https://aggressorbulkit.online/knowledge/api.html>
+Public API and AI access: <https://aggressorbulkit.online/knowledge/api.html>
+
+## Public API & AI Access
+
+Base2026 is built to be useful to humans and agents. The public site exposes a
+read-only, public-safe API surface so AI tools, scripts, researchers, and search
+systems can inspect the library without scraping the visual UI.
+
+Start here:
+
+- API overview: <https://aggressorbulkit.online/knowledge/api.html>
+- Machine-readable API index: <https://aggressorbulkit.online/knowledge/api-index.json>
+- Agent context file: <https://aggressorbulkit.online/knowledge/llms.txt>
+- Data dictionary: <https://aggressorbulkit.online/knowledge/data-dictionary.json>
+- Public documents JSONL: <https://aggressorbulkit.online/knowledge/static/documents.jsonl>
+- Public passages JSONL: <https://aggressorbulkit.online/knowledge/static/passages.jsonl>
+- Public insight cards JSONL: <https://aggressorbulkit.online/knowledge/static/insight_cards.jsonl>
+
+The API surface is intentionally public-only. It does not expose raw captions,
+raw ASR, media files, private QA notes, local databases, credentials, logs, or
+unreviewed pipeline artifacts.
 
 ## What It Does
 
