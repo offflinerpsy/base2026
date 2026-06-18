@@ -18,7 +18,7 @@ Base2026 has two layers:
 - `scripts/`
 - `contracts/`
 - public-safe test fixtures under `tests/fixtures/public-export-*`
-- `web/static/`
+- `web/static/` source shell files, shared assets, public info pages, API metadata, and runtime JS/CSS
 - `10_agent-instructions/`
 - reviewed public-safe documentation under `12_knowledge-base/`
 - `config/creator-profiles.json`
@@ -36,6 +36,7 @@ Base2026 has two layers:
 - release zips
 - imported roadmap/support source ZIPs such as `docs/*_roadmap_pack.zip`
 - generated public export folders
+- generated `web/static/sources/`, `web/static/topics/`, `web/static/compare/`, `web/static/creators/`, `web/static/sitemaps/`, and generated sitemap/analytics JSON artifacts
 - TikTok intake queues and release target configs under `config/`
 - Meilisearch local data
 - private client workspaces
@@ -45,6 +46,8 @@ Base2026 has two layers:
 - `public-data/tiktok`
 - release folder under `output/releases`
 - `web/static/documents.jsonl` inside release package
+- generated source/topic/compare/creator HTML pages under `web/static/`
+- generated public sitemap files and public analytics JSON/JSONL under `web/static/`
 
 Reason: these are generated artifacts. They can be uploaded to VPS, but should not become GitHub source unless intentionally sampled.
 

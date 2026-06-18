@@ -43,24 +43,24 @@ The public site is designed for source discovery, attribution, comparison, citat
 
 ## Current Status
 
-Latest deployed release: `base2026-footer-api-pricing-context-r2-20260615`.
+Latest deployed release: `base2026-social-metadata-h1-ay39-20260618`.
 
 Current public export:
 
-- 1,219 source records;
-- 1,715 searchable passages;
-- 1,614 insight cards;
-- 1,043 public insight cards;
-- 1,510 topics;
-- 995 public topics;
-- 1,308 sitemap URLs in the live release.
+- 1,388 source records;
+- 1,906 searchable passages;
+- 1,623 insight cards;
+- 1,052 public insight cards;
+- 1,516 topics;
+- 1,001 public topics;
+- 1,482 sitemap URLs across the latest generated public sitemap files.
 
 Recent readiness checks:
 
 - public export policy: current live release uses reviewed public source text where policy allows and continues to forbid raw/unreviewed transcript dumps;
 - publication boundary audit: passing for current changed public-safe files;
 - GitHub metadata validation: passing;
-- static SEO metadata audit: passing for 3,294 HTML files with title, description, canonical URL, H1, and JSON-LD schema present.
+- static SEO/social metadata audit: passing for 1,483 indexable HTML files with title, description, canonical URL, H1, JSON-LD schema, and OG/X metadata present; 1,929 noindex utility/detail-state files were intentionally skipped.
 
 ## Current Public Shape
 
@@ -172,7 +172,7 @@ Package a public release:
 pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/package-public-release.ps1 -ReleaseName <release-name>
 ```
 
-Current public packages are excerpt-only until the reviewed public source-text contract is implemented in code. Do not use `-IncludeFullTranscripts` for public deploys as a shortcut; the target is a reviewed public source-text field, not raw transcript export.
+Current public packages can include reviewed public source text where policy allows. Do not use `-IncludeFullTranscripts` or `--auto-promote-insights` for public deploys; raw captions, raw ASR, media, private QA, and unreviewed transcripts stay private.
 
 Deploy to the VPS:
 

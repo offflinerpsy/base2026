@@ -12,7 +12,7 @@ Date: 2026-06-06
 - `docs/`
 - `scripts/`
 - `scripts/tiktok-source-review-audit.py`
-- `web/static/`
+- `web/static/` source shell files, shared assets, public info pages, API metadata, and runtime JS/CSS
 - `10_agent-instructions/`
 - `config/creator-profiles.json`
 - `config/creators.example.json`
@@ -41,6 +41,7 @@ Date: 2026-06-06
 - `12_knowledge-base/indexes/`
 - `12_knowledge-base/sources/`
 - generated canonical claims/methods/risks/topic maps
+- generated `web/static/sources/`, `web/static/topics/`, `web/static/compare/`, `web/static/creators/`, `web/static/sitemaps/`, sitemap XML, and public analytics JSON/JSONL artifacts
 - any `.env`, raw captions, ASR audio, screenshots, logs, release zips
 - imported roadmap/support source ZIPs such as `docs/*_roadmap_pack.zip`
 - `config/tiktok-intake-queue*.json`

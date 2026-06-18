@@ -23,6 +23,22 @@ const ROUTES = [
     expectHits: true,
     expectSourceWorkspace: true,
   },
+  {
+    id: "base-source-intelligence-reviewed",
+    label: "Base2026 source intelligence with cards",
+    path: "/knowledge/?source=tiktok-video-7651937569034341640",
+    group: "base2026",
+    expectSourceWorkspace: true,
+    expectSourceIntelligence: "cards",
+  },
+  {
+    id: "base-source-intelligence-empty",
+    label: "Base2026 source intelligence empty state",
+    path: "/knowledge/?topic=on-page-seo&q=On-Page%20SEO&source=tiktok-video-7621472877765823766",
+    group: "base2026",
+    expectSourceWorkspace: true,
+    expectSourceIntelligence: "empty",
+  },
   { id: "base-roadmap", label: "Base2026 roadmap", path: "/knowledge/roadmap.html", group: "base2026" },
   { id: "base-support", label: "Base2026 support", path: "/knowledge/support.html", group: "base2026" },
   {
@@ -359,21 +375,44 @@ async function exerciseSourceWorkspace(page, route, viewport, outputDir, options
     resultsVisible: false,
     overflowX: false,
     hasSourceText: false,
+    hasSourceIntelligence: false,
+    sourceIntelligenceHasCards: false,
+    sourceIntelligenceHasEmptyState: false,
     oldMarkers: [],
     screenshot: "",
     failure: "",
   };
 
   try {
-    const buttons = page.locator(".view-source-detail");
-    if ((await buttons.count()) === 0) {
-      result.failure = "No source-detail buttons found.";
-      return result;
+    let detail = page.locator("#source-detail-panel.is-active");
+    let detailAlreadyOpen = false;
+    try {
+      await detail.waitFor({ state: "visible", timeout: 2500 });
+      detailAlreadyOpen = true;
+    } catch {
+      detailAlreadyOpen = false;
     }
-    await buttons.first().click({ timeout: 5000 });
-    const detail = page.locator("#source-detail-panel.is-active");
-    await detail.waitFor({ state: "visible", timeout: 10000 });
+    if (!detailAlreadyOpen) {
+      const buttons = page.locator(".view-source-detail");
+      if ((await buttons.count()) === 0) {
+        result.failure = "No source-detail buttons found.";
+        return result;
+      }
+      await buttons.first().click({ timeout: 5000 });
+      detail = page.locator("#source-detail-panel.is-active");
+      await detail.waitFor({ state: "visible", timeout: 10000 });
+    }
     await page.waitForFunction(() => document.querySelector("#source-detail-panel")?.innerText.includes("Source Text"), null, { timeout: 10000 });
+    if (route.expectSourceIntelligence) {
+      await page.waitForFunction((expected) => {
+        const detailEl = document.querySelector("#source-detail-panel.is-active");
+        const text = detailEl?.innerText || "";
+        if (!text.includes("Source Intelligence")) return false;
+        if (expected === "cards") return !!detailEl?.querySelector(".source-detail-insight");
+        if (expected === "empty") return !!detailEl?.querySelector(".source-intelligence-empty") && text.includes("No reviewed Source Intelligence cards are published");
+        return true;
+      }, route.expectSourceIntelligence, { timeout: 15000 });
+    }
     result.open = true;
     const detailState = await page.evaluate(() => {
       const detailEl = document.querySelector("#source-detail-panel.is-active");
@@ -387,6 +426,9 @@ async function exerciseSourceWorkspace(page, route, viewport, outputDir, options
       return {
         legacyDialogOpen: !!dialogEl?.open,
         hasSourceText: detailText.includes("Source Text"),
+        hasSourceIntelligence: detailText.includes("Source Intelligence"),
+        sourceIntelligenceHasCards: !!detailEl?.querySelector(".source-detail-insight"),
+        sourceIntelligenceHasEmptyState: !!detailEl?.querySelector(".source-intelligence-empty") && detailText.includes("No reviewed Source Intelligence cards are published"),
         oldMarkers,
         detailOverflowX: detailEl ? detailEl.scrollWidth > detailEl.clientWidth + 2 : false,
         pageOverflowX: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
@@ -396,6 +438,9 @@ async function exerciseSourceWorkspace(page, route, viewport, outputDir, options
     });
     result.legacyDialogOpen = detailState.legacyDialogOpen;
     result.hasSourceText = detailState.hasSourceText;
+    result.hasSourceIntelligence = detailState.hasSourceIntelligence;
+    result.sourceIntelligenceHasCards = detailState.sourceIntelligenceHasCards;
+    result.sourceIntelligenceHasEmptyState = detailState.sourceIntelligenceHasEmptyState;
     result.oldMarkers = detailState.oldMarkers;
     result.resultsVisible = detailState.resultsVisible;
     result.overflowX = detailState.pageOverflowX || detailState.detailOverflowX || detailState.legacyDialogOpen || !detailState.detailVisible;
@@ -403,6 +448,12 @@ async function exerciseSourceWorkspace(page, route, viewport, outputDir, options
       result.failure = "Source workspace did not show Source Text.";
     } else if (result.oldMarkers.length > 0) {
       result.failure = `Legacy source labels still visible: ${result.oldMarkers.join(", ")}`;
+    } else if (route.expectSourceIntelligence && !result.hasSourceIntelligence) {
+      result.failure = "Source workspace did not show Source Intelligence.";
+    } else if (route.expectSourceIntelligence === "cards" && !result.sourceIntelligenceHasCards) {
+      result.failure = "Source Intelligence did not show reviewed insight cards.";
+    } else if (route.expectSourceIntelligence === "empty" && !result.sourceIntelligenceHasEmptyState) {
+      result.failure = "Source Intelligence did not show the reviewed-card empty state.";
     } else if (result.legacyDialogOpen) {
       result.failure = "Legacy transcript dialog opened.";
     }

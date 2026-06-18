@@ -7,6 +7,7 @@ venv/
 # Local app state
 .planning/
 .playwright-mcp/
+.seo-cache/
 output/
 meili_data/
 *.log
@@ -32,6 +33,15 @@ docs/*_roadmap_pack.zip
 99_original_research/
 manifest.json
 public-data/
+web/static/analytics_summary.json
+web/static/base2026_analytics.json
+web/static/topic_signal_briefs.jsonl
+web/static/sitemap.xml
+web/static/sitemaps/
+web/static/compare/
+web/static/creators/
+web/static/sources/
+web/static/topics/
 12_knowledge-base/indexes/
 12_knowledge-base/sources/
 12_knowledge-base/canonical/

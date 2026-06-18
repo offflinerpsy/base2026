@@ -1,5 +1,188 @@
 # Prompt Log
 
+## 2026-06-18 — AHREFS-P1-06 social metadata deploy and source-detail H1 fix
+
+User authorized the next safe deploy/cleanup step after the local-reviewed social metadata pass.
+
+Actions taken:
+
+- confirmed the current branch, dirty worktree, active phase, and deployment/publication boundaries before deploy;
+- ran local publication-boundary, public export policy, GitHub metadata, Python syntax, diff whitespace, and OG/X metadata checks;
+- packaged and deployed `base2026-social-metadata-ay38-20260618` as a data-preserving hotfix, then treated visual QA failures as a real release blocker instead of accepting the deploy;
+- fixed the root cause: hydrated runtime source-detail pages now render the source-detail title as the single visible H1 and hide the search shell H1 only while source detail is open;
+- packaged and deployed the corrected final release `base2026-social-metadata-h1-ay39-20260618`;
+- kept Meilisearch reindex skipped because public data/index fields did not change.
+
+Verification:
+
+- package gates preserved counts: 1,388 source records, 1,906 passages, 1,623 insight cards, 1,052 public insight cards, 1,516 topics, 1,001 public topics, 5 creators, and 1,482 sitemap URLs across 4 sitemap files;
+- publication-boundary audit passed with `forbidden=0`, `needs_review=0`, `secret_findings=0`;
+- public export policy passed with `include_full_transcripts=false`;
+- live HTTP/asset smoke passed for `/knowledge/`, `/knowledge/api.html`, a source page, and sitemap;
+- targeted live OG/X checks passed for representative root, API, analytics, topic, compare, creator, and source pages;
+- targeted source-intelligence visual QA passed after the H1 fix;
+- full live mobile visual QA passed: 78 checks, 0 failures;
+- live SEO crawl gate passed: 500 crawled pages, 1,482 sitemap URLs, 0 P0 bad links, 0 crawled error pages.
+
+Not done:
+
+- no commit, push, TikTok intake, GSC submission, IndexNow submission, Ahrefs recrawl, or Meilisearch reindex.
+
+## 2026-06-17 — Command-center agent workflow and parallel SEO/growth workers
+
+User asked to stop losing tasks between long sessions, use Base2026 as a local public intelligence source for growth, and operate through scoped subagents/workers.
+
+Actions taken:
+
+- used the SEO/content/programmatic SEO/memory-management workflow guidance already installed in the Codex skills set;
+- confirmed the worktree is dirty and no commit/deploy/intake action is authorized by this coordination task;
+- added `docs/project-memory/AGENT_WORKFLOW.md` as the durable command-center/subagent operating model;
+- updated `ACTIVE_QUEUE.md` with current worker lanes, current live release state, and the next execution order;
+- started two scoped workers:
+  - `Russell` for `SEO-02`, a local live SEO crawl gate to replace Ahrefs recrawl while quota is unavailable;
+  - `Faraday` for `GROWTH-01`, a Base2026 public-dataset intelligence and growth plan.
+
+Current rule:
+
+- workers may produce local evidence and tracked docs/scripts inside their allowed scopes;
+- command center must review before deploy, commit, push, GSC submission, IndexNow submission, or public promotion.
+
+Follow-up review:
+
+- reviewed Russell's `SEO-02` output;
+- accepted `scripts/live-seo-crawl-gate.mjs` as public-safe tooling and added it to `scripts/audit-publication-boundary.py`;
+- confirmed a 40-page command-center control crawl passes with 0 P0 bad links and 0 crawled error pages;
+- confirmed the full worker crawl report shows 500 live pages, 1482 sitemap URLs, 0 P0 bad links, 0 crawled 4xx/5xx/fetch failures, and the next SEO issue class is incomplete OG/X-card metadata on 499 checked indexable pages;
+- reran `python3 scripts/audit-publication-boundary.py`: `forbidden=0`, `needs_review=0`, `secret_findings=0`.
+
+## 2026-06-17 — Ahrefs P0 SEO deploy pass
+
+User asked to continue according to SEO skills and close the Ahrefs audit items as an experienced SEO operator, then approved the safe deploy path.
+
+Actions taken:
+
+- used the `seo-audit` skill and the existing Ahrefs backlog/cache;
+- fixed the analytics link generator so `/knowledge/analytics.html` links to static source and creator pages instead of root-level 404 paths;
+- changed generated Base2026 footer/contact links to point directly to `/ai-visibility-audit/` instead of redirecting `/contact/`;
+- added WordPress author archive handling: `/author/` redirects to `/about/`, and WordPress author links are filtered to `/about/`;
+- regenerated Base2026 info pages and generated public pages locally;
+- packaged and deployed Base2026 as `base2026-ahrefs-p0-link-contracts-ay37-20260617`;
+- deployed the WordPress `functions.php` author redirect with a server backup at `/root/alex-yarosh-file-backups/20260617-ahrefs-p0-author-redirect/`;
+- updated the Ahrefs task CSV so P0 items are `deployed-pending-recrawl`, not prematurely marked closed.
+
+Verification:
+
+- Python compile passed for `scripts/generate-public-pages.py` and `scripts/generate-info-pages.py`;
+- local generation passed for `scripts/generate-info-pages.py` and `scripts/generate-public-pages.py`;
+- targeted `rg` checks found no root-level analytics source/topic query links and no generated/static Base2026 `/contact/` links;
+- public release contract, public export policy, and publication-boundary audit passed;
+- live HTTP smoke passed for root pages, `/knowledge/`, `/knowledge/analytics.html`, `/knowledge/api.html`, sitemap, source index, and creator index;
+- live `/author/` returns 301 to `/about/`;
+- live link smoke found no known Ahrefs P0 bad links in checked Base2026 and WordPress pages;
+- sitemap exposes 1,482 URLs across 4 sitemap files and does not include `/contact/`;
+- targeted `git diff --check` and `python3 scripts/validate-github-metadata.py` passed.
+
+Not done:
+
+- no commit, push, GSC submission, IndexNow submission, Ahrefs recrawl, or TikTok intake;
+- Meilisearch reindex was intentionally skipped because public data/index fields did not change.
+
+## 2026-06-17 — Source Intelligence empty-state investigation and full review
+
+User reported that two `@webhivedigital` On-Page SEO source-detail workspace URLs showed Source Text but no Source Intelligence.
+
+Actions taken:
+
+- investigated both reported sources and confirmed they have public source text plus pending/private legacy insight rows, but no reviewed/public Source Intelligence cards;
+- confirmed the issue was not creator-wide: `@webhivedigital` has public reviewed cards on other records;
+- kept the six linked pending cards private because the on-page SEO claims depend partly on visual context and should pass the evidence-gated review path before publication;
+- changed runtime and generated source-detail rendering so the `Source Intelligence` section is always present;
+- added an honest empty state for sources with zero reviewed/public cards;
+- added mobile visual QA coverage for both the empty-state and reviewed-card cases;
+- ran a full review pass and recorded findings in `docs/project-memory/FULL_PROJECT_REVIEW_2026_06_17.md`.
+
+Verification:
+
+- syntax checks passed for `web/static/meili.js`, `scripts/mobile-visual-qa.mjs`, and `scripts/generate-public-pages.py`;
+- temporary static generation passed;
+- generated source pages for both reported URLs show the empty state;
+- a control source with reviewed cards still shows Source Intelligence cards;
+- intercepted-live Playwright runtime check passed on mobile and desktop using live HTML/JSONL plus local `meili.js`;
+- public export policy, newest-source content readiness, release contract, GitHub metadata validation, KB audit, publication-boundary audit, and `git diff --check` passed.
+
+Not done:
+
+- no deploy, commit, push, reindex, or TikTok intake;
+- full historical content-readiness remains red because 540 older source-only records lack topics/public insights; package-level newest-source readiness passes.
+
+## 2026-06-16 — GSC daily quota reached
+
+User reported the GSC response: `Sorry--we couldn't process this request because you've exceeded your daily quota. Please try submitting this again tomorrow.`
+
+Actions taken:
+
+- recorded the quota stop in `LAUNCH_COMMAND_CENTER.md`, `CURRENT_HANDOFF.md`, and `NEXT_ACTION.md`;
+- kept the already confirmed clean submissions as:
+  - `https://aggressorbulkit.online/knowledge/topics/ai-citations.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/ai-citation-tracking.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/ai-content-quality.html`;
+- kept the remaining manual-after-reset candidates as:
+  - `https://aggressorbulkit.online/knowledge/topics/ai-retrieval-behavior.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/backlink-quality.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/content-freshness.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/core-update-analysis.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/local-seo.html`.
+
+Rule:
+
+- do not keep retrying GSC today;
+- continue tomorrow after GSC resets the daily `Request indexing` quota;
+- browser automation for GSC input/clicking remains forbidden.
+
+## 2026-06-15 — GSC automation stopped after unsafe live-browser behavior
+
+User caught that browser automation was still targeting the wrong area in the live Chrome/GSC session.
+
+Actions taken:
+
+- stopped all GSC input/click automation;
+- checked that no separate `osascript` GSC automation process was still running;
+- updated `LAUNCH_COMMAND_CENTER.md`, `CURRENT_HANDOFF.md`, and `NEXT_ACTION.md` with a hard rule: Codex must not type or click in GSC through browser automation in this workflow;
+- recorded confirmed clean URL submissions:
+  - `https://aggressorbulkit.online/knowledge/topics/ai-citations.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/ai-citation-tracking.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/ai-content-quality.html`;
+- recorded remaining manual-only candidates:
+  - `https://aggressorbulkit.online/knowledge/topics/ai-retrieval-behavior.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/backlink-quality.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/content-freshness.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/core-update-analysis.html`;
+  - `https://aggressorbulkit.online/knowledge/topics/local-seo.html`.
+
+Rule going forward:
+
+- GSC URL entry and `REQUEST INDEXING` clicks are manual-only in the user's live browser;
+- Codex may only read status from an already-open GSC page if explicitly asked;
+- do not retry direct raw GSC inspect links because they are proven invalid for this workflow.
+
+## 2026-06-15 — Context-loop control and command-center plan
+
+User called out the repeated loop where Codex rereads the same long project-memory files after compaction, wastes context, then restarts discovery.
+
+Actions taken:
+
+- added an anti-loop resume protocol to `docs/project-memory/CURRENT_HANDOFF.md`;
+- added a context budget plan to `docs/project-memory/LAUNCH_COMMAND_CENTER.md`;
+- marked the three read-only subagent audits as completed/accepted in the command center;
+- updated `NEXT_ACTION.md` so future resumes read only `AGENTS.md`, `CURRENT_HANDOFF.md`, `LAUNCH_COMMAND_CENTER.md`, bounded git status, and task-specific files unless a real conflict or release gate requires more.
+
+Rule going forward:
+
+- `CURRENT_HANDOFF.md` is the compact current-state file;
+- `LAUNCH_COMMAND_CENTER.md` is the live task board;
+- generated `web/static/**` is inspected only through representative pages or targeted diffs;
+- main Codex continues from the first incomplete command-center row instead of rediscovering the project.
+
 ## 2026-06-14 — Base2026 analytics, Geist typography, compact IA, live deploy
 
 User asked to reduce Base2026 navigation/button chaos, switch to Vercel Geist-style typography, add compact cross-library analytics, keep creators/results/source actions understandable, and deploy live after tests.
@@ -4161,3 +4344,510 @@ Not done:
 
 - no deploy, intake, generated release update, or private data movement;
 - no commit/push until validation finishes and the final GitHub action is confirmed for this clean branch.
+
+## 2026-06-15 — Current handoff for GSC indexing and Evidence Q&A
+
+User called out context churn: Codex was repeatedly rereading the same long project-memory files after compaction instead of preserving a short active plan.
+
+Actions taken:
+
+- added `docs/project-memory/CURRENT_HANDOFF.md` as the compact resume file for the active GSC/indexing plus Evidence Q&A task;
+- updated `NEXT_ACTION.md` to point future resumes at `CURRENT_HANDOFF.md` first;
+- added `SEO-01` to `ACTIVE_QUEUE.md` so GSC/indexing and Evidence Q&A work is tracked as a real workstream;
+- added durable decisions for compact handoff usage, visible Evidence Q&A before FAQ schema, self-canonical sitemap entries, and strict generated-route 404 behavior;
+- preserved the current no-commit/no-deploy constraint.
+
+Verification:
+
+- `python3 -m py_compile scripts/generate-public-pages.py scripts/generate-base2026-sitemap.py scripts/server-patch-nginx-base2026.py` passed;
+- `git diff --check -- scripts/generate-public-pages.py scripts/generate-base2026-sitemap.py scripts/server-patch-nginx-base2026.py web/static/styles.css` passed;
+- local generated output under `output/tmp-evidence-qa-test` contains source/topic Evidence Q&A sections and no `FAQPage` schema;
+- `python3 scripts/audit-publication-boundary.py` passed with forbidden 0, needs_review 0, secret_findings 0.
+
+Not done:
+
+- no commit;
+- no deploy;
+- no GSC indexing request submitted in this pass.
+
+## 2026-06-15 — Evidence Q&A deploy closed, command-center plan corrected
+
+User asked to stop looping over the same memory reads and keep a real working plan.
+
+Actions taken:
+
+- updated `CURRENT_HANDOFF.md`, `LAUNCH_COMMAND_CENTER.md`, `NEXT_ACTION.md`, and `DEPLOYMENT_RUNBOOK.md` so they reflect the live `base2026-gsc-evidence-qa-20260615` release instead of the older no-deploy state;
+- marked Evidence Q&A, package QA, deploy, live smoke, strict generated-route behavior, search smoke, gzip/cache check, and mobile visual QA as closed in the command center;
+- set the next active row to `GSC-01`;
+- kept GitHub/open-source cleanup blocked on closing the stale Dependabot/GitHub Actions PR and replaying work onto a fresh branch from `origin/main`.
+
+Verification:
+
+- release package QA had passed for 1219 source detail pages, 995 topic pages, 995 compare pages, 4 sitemap chunks, 1308 sitemap URLs, self-canonical/indexability checks, and no FAQPage schema;
+- live smoke had passed for representative source/topic/noindex pages, missing generated entity routes returned 404, `/knowledge-search/multi-search` returned hits, static CSS served gzip/immutable cache headers, and mobile visual QA passed with 44 checks / 0 failures.
+
+Next:
+
+- inspect Google Search Console and request indexing only for clean self-canonical evidence pages if GSC reports no page-level errors.
+
+## 2026-06-15 — Anti-loop command center plan updated after GSC/GitHub checks
+
+User called out that repeated rereads were wasting context after compaction.
+
+Actions taken:
+
+- kept `CURRENT_HANDOFF.md` and `LAUNCH_COMMAND_CENTER.md` as the active two-file plan;
+- updated the command center with GSC Page indexing counts, sitemap refresh success, safe indexing candidates, and the macOS UI-automation blocker for individual URL Inspection requests;
+- recorded that stale GitHub PR #1 was closed, open PRs are now 0, and the stale local branch upstream was unset;
+- changed the next action from broad rediscovery to two bounded rows: finish clean GSC URL submission, then verify the remote is Actions-free and use a fresh `origin/main` worktree for GitHub cleanup.
+
+Verification:
+
+- no code or generated output was changed in this planning pass;
+- tracked memory docs now point future resumes at the compact handoff and command center instead of the full project-memory bundle.
+
+## 2026-06-15 — GitHub publication cleanup merged and Project/Page verified
+
+User pushed to stop looping and finish the GitHub side of the launch task.
+
+Actions taken:
+
+- used a fresh worktree from `origin/main`: `/Users/alexyarosh/Projects/base2026-migration/DW/base2026-github-cleanup-20260615`;
+- patched only `README.md`, `.github/ISSUE_TEMPLATE/config.yml`, `.github/ISSUE_TEMPLATE/source_correction.yml`, and `scripts/audit-publication-boundary.py`;
+- removed README guidance that used `--auto-promote-insights` for public export;
+- replaced old IP-based GitHub issue-template links with canonical `https://aggressorbulkit.online/...` URLs;
+- tightened the publication-boundary audit so `.github/workflows/`, `.github/dependabot.yml`, `.github/dependabot.yaml`, and `tests/fixtures/public-export-auto-promote/` are not public-safe candidates;
+- committed `0918c921d Tighten GitHub publication boundary`, pushed `codex/base2026-github-open-source-cleanup`, opened PR #4, marked it ready, merged it into `main`, and deleted the remote branch;
+- verified GitHub Pages is built from `main` `/docs` at `https://offflinerpsy.github.io/base2026/`;
+- created public GitHub Project #3 `Base2026 Launch / Open Source`, linked it to `offflinerpsy/base2026`, and added launch items for GitHub publication, Pages, GSC, and final launch audit.
+
+Verification:
+
+- `git diff --check` passed for the four patched files before commit;
+- `python3 scripts/validate-github-metadata.py` passed;
+- `python3 scripts/audit-publication-boundary.py --json` passed;
+- `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/preflight-github-launch.ps1 -SkipExportPolicy -SkipLiveCheck` passed before and after merge;
+- `gh pr view 4` shows state `MERGED`, merge commit `33745568c2c325887a695c161d69015d566b718f`;
+- `gh pr list --state open` returns no open PRs;
+- `gh api repos/offflinerpsy/base2026/pages` reports status `built`, source `main` `/docs`, public true, HTTPS enforced;
+- `curl -I -L https://offflinerpsy.github.io/base2026/` returns HTTP 200.
+
+Not done:
+
+- GSC individual URL Inspection requests remain unsubmitted because safe automation is blocked by macOS UI permissions and Google Indexing API is not valid for ordinary topic/source pages.
+
+## 2026-06-15 — Parallel launch sidecars accepted; final blocker isolated
+
+User asked whether Codex was looping and requested subagent-backed command-center control instead of repeated rediscovery.
+
+Actions taken:
+
+- spawned and accepted three bounded sidecars:
+  - Nash for GSC/indexing evidence;
+  - Maxwell for live launch smoke;
+  - Kierkegaard for GitHub/open-source hygiene;
+- updated `LAUNCH_COMMAND_CENTER.md`, `CURRENT_HANDOFF.md`, and `NEXT_ACTION.md` so future resumes do not restart discovery;
+- corrected `NEXT_ACTION.md` so `base2026-controller.py status` no longer reports the old `base2026-clean-replay-pipeline-ay81-20260613` checkpoint as the active next action;
+- kept generated `web/static/**` out of context reads and treated it as generated output.
+
+Verification:
+
+- `base2026-controller.py status` now reports the active GSC individual clean-URL submission blocker;
+- GSC sidecar confirmed sitemap refresh and `/pricing/` indexing request are proven, while individual Base2026 URL Inspection requests remain UI/manual-blocked;
+- live smoke sidecar confirmed robots, 4 sitemap chunks with 1308 URLs, sample source/topic/API pages, visible Q&A, search proxy hits, GitHub Pages HTTP 200, and public GitHub Project HTTP 200;
+- GitHub hygiene sidecar confirmed open PRs 0, `origin/main` at `33745568c`, source workflows/dependabot absent, Pages built from `main` `/docs`, metadata/preflight/publication-boundary checks passed, and no forbidden dirty-path matches.
+
+Current blocker:
+
+- `GSC-01` individual clean-URL submission cannot be honestly marked complete until URLs are submitted manually in logged-in GSC or macOS UI automation/screen permissions allow browser automation.
+
+## 2026-06-15 — GSC browser automation blocker verified, loop stopped
+
+User challenged the repeated GSC/indexing loop and asked why Codex was going in circles.
+
+Actions taken:
+
+- resumed from `CURRENT_HANDOFF.md` and `LAUNCH_COMMAND_CENTER.md` only, instead of rereading the full project memory;
+- verified the active Chrome tab was still on an invalid raw GSC URL Inspection route returning Google 404;
+- restored the Chrome tab to the GSC Page indexing URL for `sc-domain:aggressorbulkit.online`;
+- tested macOS UI scripting and confirmed `System Events` is blocked with `Access for assistive devices is disabled. (-1719)`;
+- updated `LAUNCH_COMMAND_CENTER.md`, `CURRENT_HANDOFF.md`, and `NEXT_ACTION.md` with the exact blocker so future resumes do not retry the same invalid paths.
+
+Verification:
+
+- `git diff --check -- docs/project-memory/CURRENT_HANDOFF.md docs/project-memory/LAUNCH_COMMAND_CENTER.md docs/project-memory/NEXT_ACTION.md` passed.
+
+Current blocker:
+
+- Individual GSC URL Inspection requests still require either manual logged-in GSC submission or macOS Accessibility/UI automation permission. Direct raw inspect links are proven invalid; Chrome JavaScript execution and `System Events` UI automation are currently denied.
+
+## 2026-06-16 — Base2026 API navigation made global
+
+User noticed that the public API link appeared in the Base2026 header only on methodology/info pages, not globally.
+
+Actions taken:
+
+- confirmed this was not intentional; it was a template/source mismatch;
+- added API navigation to `scripts/generate-public-pages.py`, `scripts/generate-info-pages.py`, `web/static/index.html`, and the actual release-root source `web/static/meili.html`;
+- fixed `scripts/package-public-hotfix-from-export.ps1` so hotfix packages include `api.html` and the deploy-required metadata/readability files;
+- rebuilt and deployed `base2026-api-nav-footer-r3-20260616` as a data-preserving hotfix with `-SkipReindex`.
+
+Verification:
+
+- local release package contains `api.html`, `llms.txt`, `data-dictionary.json`, `api-index.json`, manifest, topic signal briefs, analytics JSON, generated topics/compare indexes, and the API nav/footer links;
+- publication-boundary audit passed with `forbidden=0`, `secret_findings=0`;
+- public export policy and GitHub metadata validation passed;
+- VPS deploy passed with nginx config test successful and `current` symlink pointing to `base2026-api-nav-footer-r3-20260616`;
+- live smoke returned 200 and confirmed API nav/footer presence on `/knowledge/`, `/knowledge/api.html`, a source page, a topic page, `/knowledge/creators/`, and `/knowledge/methodology.html`.
+
+## 2026-06-16 — Search-result creator and TikTok links fixed
+
+User reported that in `/knowledge/` search results clicking the creator nickname did not open the creator page, and the TikTok icon was not clickable.
+
+Actions taken:
+
+- changed `web/static/meili.js` result-card creator handles from intercepted workspace-route links to generated creator profile links;
+- changed TikTok result badges to render as outbound anchors to the original TikTok source URL when available;
+- added hover/focus styling for linked platform badges in `web/static/styles.css`;
+- packaged and deployed `base2026-result-links-r1-20260616` as a data-preserving hotfix with `-SkipReindex`.
+
+Verification:
+
+- `node --check web/static/meili.js` passed;
+- `git diff --check -- web/static/meili.js web/static/styles.css` passed;
+- `python3 scripts/audit-publication-boundary.py` passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- `python3 scripts/validate-github-metadata.py` passed;
+- `python3 scripts/check-public-export-policy.py output/releases/base2026-result-links-r1-20260616/public-data/tiktok` passed with `include_full_transcripts=false`, `source_records=1219`, and `passages=1715`;
+- VPS deploy passed with nginx config test successful and `current` symlink pointing to `base2026-result-links-r1-20260616`;
+- live smoke confirmed `/knowledge/` loads the new JS/CSS asset version;
+- live Playwright interaction QA confirmed the first search-result creator click navigates to `/knowledge/creators/joshuamaraney.html`, and the TikTok badge is an anchor with a `tiktok.com` href.
+
+## 2026-06-16 — Base2026 favicon aligned with main site avatar
+
+User asked to give Base2026 the same face/avatar favicon used by the main WordPress site.
+
+Actions taken:
+
+- copied the existing WordPress avatar favicon assets into Base2026 static assets:
+  - `web/static/assets/alex-yarosh-favicon-32.png`
+  - `web/static/assets/alex-yarosh-apple-touch.png`
+  - `web/static/assets/alex-yarosh-avatar.png`
+- added favicon/touch-icon links to `scripts/generate-public-pages.py` and `scripts/generate-info-pages.py` so generated source/topic/creator/compare/info pages keep the favicon after rebuilds;
+- added the same links to `web/static/meili.html` and `web/static/index.html` for the search root;
+- packaged and deployed `base2026-favicon-avatar-r1-20260616` as a data-preserving hotfix with `-SkipReindex`.
+
+Verification:
+
+- Python generator syntax checks passed;
+- `git diff --check` passed for touched favicon/code files;
+- publication-boundary audit passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- GitHub metadata validation passed;
+- public export policy passed with `include_full_transcripts=false`, `source_records=1219`, and `passages=1715`;
+- release package contains favicon/touch-icon links in `/knowledge/`, info pages, and generated source pages;
+- live smoke confirmed `/knowledge/`, `/knowledge/methodology.html`, and a generated source page include the favicon links, and the favicon, touch icon, and avatar PNG assets return 200 as `image/png`.
+
+## 2026-06-16 — Footer social links added to WordPress and Base2026
+
+User asked to add a footer social surface with a working X.com profile link and a non-clickable TikTok placeholder.
+
+Actions taken:
+
+- added a compact `Socials` block under the first CTA column in the WordPress global footer;
+- used the working X.com profile URL `https://x.com/AleksejAros`;
+- added a disabled TikTok visual placeholder without an outbound link;
+- applied the same footer social block to Base2026 shared footers in `generate-public-pages.py`, `generate-info-pages.py`, `web/static/meili.html`, and `web/static/index.html`;
+- added shared social-chip CSS in the WordPress child theme and Base2026 `web/static/styles.css`;
+- deployed the WordPress footer from current live theme files, preserving the live `1.5.43` base and bumping the child theme stylesheet to `1.5.44`;
+- packaged and deployed `base2026-footer-socials-r1-20260616` as a data-preserving Base2026 hotfix with `-SkipReindex`.
+
+Verification:
+
+- WordPress server-side `php -l` passed before and after deploy;
+- WordPress cache and Cache Enabler site cache were cleared;
+- Base2026 Python generator syntax checks passed;
+- Base2026 publication-boundary audit passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- GitHub metadata validation passed;
+- public export policy passed with `include_full_transcripts=false`, `source_records=1219`, and `passages=1715`;
+- live smoke confirmed the social block, X href, disabled TikTok marker, and WordPress `style.css?ver=1.5.44` on the homepage/about page plus the social block on `/knowledge/` and a generated source page.
+
+## 2026-06-16 — Footer social icons normalized and GitHub added
+
+User asked to remove the large footer social chips, keep only aligned social logos, and add GitHub beside X and TikTok.
+
+Actions taken:
+
+- converted the WordPress footer `Socials` block from chip buttons to an icon-only row;
+- converted the Base2026 shared footer `Socials` block from chip buttons to the same icon-only row;
+- kept X as a working link to `https://x.com/AleksejAros`;
+- kept TikTok as a disabled visual placeholder without an outbound link;
+- added a working GitHub link to `https://github.com/offflinerpsy`;
+- updated Base2026 footer generators and static search entrypoints so future builds keep the same social row;
+- deployed the WordPress footer from current live theme files and bumped the child theme stylesheet to `1.5.45`;
+- packaged and deployed `base2026-footer-social-icons-r1-20260616` as a data-preserving Base2026 hotfix with `-SkipReindex`.
+
+Verification:
+
+- WordPress server-side `php -l` passed before and after deploy;
+- WordPress cache and Cache Enabler site cache were cleared;
+- Base2026 Python generator syntax checks passed;
+- Base2026 publication-boundary audit passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- GitHub metadata validation passed;
+- public export policy passed with `include_full_transcripts=false`, `source_records=1219`, and `passages=1715`;
+- live smoke confirmed X/GitHub links, disabled TikTok, no old `X.com`/`TikTok` text spans, WordPress `style.css?ver=1.5.45`, Base2026 release marker, and icon-only CSS on the WordPress homepage, WordPress About page, `/knowledge/`, a generated Base2026 source page, and live Base2026 CSS.
+
+## 2026-06-16 — Footer social icons refined to pure logo row
+
+User asked to remove the remaining large social-button feel and keep only equally sized X, TikTok, and GitHub logos in the `Socials` row.
+
+Actions taken:
+
+- tightened `.ay-social-link` in Base2026 and the WordPress child theme to transparent 22x22 icon slots with 20x20 SVG marks, no pill background, no border, and no radius;
+- kept X as a working link to `https://x.com/AleksejAros`;
+- kept TikTok as a disabled visual placeholder without an outbound link;
+- kept GitHub as a working link to `https://github.com/offflinerpsy`;
+- bumped Base2026 generated/static CSS cache version to `20260616-socialicons2`;
+- bumped the WordPress child theme stylesheet to `1.5.46`;
+- regenerated Base2026 public/info pages;
+- packaged and deployed `base2026-footer-social-icons-r2-20260616` as a data-preserving Base2026 hotfix with `-SkipReindex`;
+- deployed the WordPress CSS after creating server backup `/root/alex-yarosh-file-backups/20260616-130416-footer-social-icons-r2/style.css`.
+
+Verification:
+
+- Python generator syntax checks passed;
+- `git diff --check` passed for touched Base2026 UI files before deploy;
+- package gates passed with `include_full_transcripts=false`, `source_records=1219`, `passages=1715`, `insight_cards=1614`, `public_insight_cards=1043`, `topics=1510`, and `public_topics=995`;
+- nginx config test and reload passed;
+- live Playwright smoke on `/`, `/about/`, `/knowledge/`, `/knowledge/source-policy.html`, and a generated source page confirmed 3 social icons, X/GitHub hrefs, disabled TikTok, 22x22 icon slots, 20x20 SVG marks, transparent backgrounds, no text chips, WordPress `style.css?ver=1.5.46`, Base2026 CSS `styles.css?v=base2026-footer-social-icons-r2-20260616`, and no footer icon overflow.
+
+## 2026-06-16 — Darren Shaw intake, latest-card readiness, and avatar fix
+
+User asked to run the current TikTok/source pipeline, use GPT/Codex quality review instead of local LLMs for public card text, keep roadmap/status memory aligned, deploy after checks, and then fix the new creator hero/avatar because it did not match TikTok.
+
+Actions taken:
+
+- polished the current missing transcript text layer locally and rebuilt the KB SQLite database;
+- exported the public TikTok dataset with 5 creators, 1,388 source records, and 1,906 public passages;
+- created 9 exact-evidence GPT/Codex-reviewed public insight cards for latest source-only records that would otherwise block newest-source readiness;
+- evidence-verified, imported, reviewed, promoted, rebuilt, and exported the cards through the existing review/promotion scripts;
+- packaged and deployed `base2026-darrenshawseo-intake-ay90-20260616`;
+- found the public TikTok profile avatar for `@darrenshawseo`, downloaded it as `web/static/assets/creators/darrenshawseo.jpeg`, and added stable aliases in `config/creator-profiles.json`;
+- repackaged and deployed `base2026-darrenshawseo-intake-ay90-r2-20260616`;
+- reindexed Meilisearch with 1,906 public documents.
+
+Verification:
+
+- `python3 scripts/kb-audit.py` passed after rebuild;
+- `python3 scripts/base2026-evidence-verify.py` passed for 9 candidates with exact evidence matches;
+- `python3 scripts/base2026-review-insight-candidates.py` returned 9 promotion candidates with no warnings/failures;
+- `python3 scripts/check-public-export-policy.py` passed with `include_full_transcripts=false`, `source_records=1388`, `passages=1906`, `insight_cards=1623`, and `public_insight_cards=1052`;
+- `python3 scripts/validate-public-release-contract.py` passed with 0 violations;
+- `python3 scripts/check-public-content-readiness.py --latest 10 --fail` passed with 0 blocked newest source-only records;
+- `python3 scripts/audit-publication-boundary.py` passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- `python3 scripts/validate-github-metadata.py` passed;
+- nginx deploy and Meilisearch reindex passed, with deploy task `335`;
+- live smoke confirmed `/knowledge/`, the Darren creator/source pages, `/knowledge/api.html`, `/knowledge/sitemap.xml`, the real Darren avatar image asset, and no `Source record unavailable` state;
+- live mobile Playwright QA confirmed the real `details > summary` hamburger menu opens, Base2026 subnav is visible, API/Search links are visible, horizontal overflow is 0, and browser console errors are 0.
+
+Follow-up consistency check:
+
+- synced canonical `public-data/tiktok` from the Darren export after noticing `base2026-controller.py status` still saw stale 4-creator local data;
+- regenerated public topic signal briefs and analytics artifacts from the updated canonical export;
+- confirmed `base2026-controller.py status` now reports `base2026-darrenshawseo-intake-ay90-r2-20260616`, 5 creators, 1,388 source records, 1,906 passages, 1,623 insight cards, and 1,052 public insight cards;
+- reran canonical export policy, release contract, newest-source readiness, publication-boundary audit, GitHub metadata validation, `git diff --check`, and live smoke after the sync.
+
+## 2026-06-16 — Local source-evidence disclosure cleanup
+
+User asked whether `Show source evidence` was displaying correctly because it felt wrong.
+
+Finding:
+
+- the concern was valid: many generated source pages showed clipped evidence snippets starting mid-word or mid-sentence inside the Source Intelligence disclosure;
+- examples included fragments like `or demographic...`, `ot sure...`, `ure...`, `rand...`, `ur phone...`, and `sionally...`;
+- those snippets were usually already contained in the visible `Source Text`, so exposing them separately was redundant and looked broken.
+
+Actions taken locally:
+
+- updated `scripts/generate-public-pages.py` so source insight evidence disclosures treat fragmentary evidence already present in `Source Text` as duplicate evidence;
+- regenerated `web/static` from `public-data/tiktok`;
+- confirmed the bad sample pages now show `Evidence is in Source Text` instead of opening clipped fragments.
+
+Verification:
+
+- `python3 -m py_compile scripts/generate-public-pages.py` passed;
+- `python3 scripts/generate-public-pages.py --data public-data/tiktok --out web/static` generated 1,388 source pages;
+- local scan found 1 remaining readable standalone `Show source evidence` disclosure, 658 `Evidence is in Source Text` disclosures, and 0 remaining disclosure bodies starting with a lowercase/mid-word fragment;
+- `git diff --check`, public export policy, and GitHub metadata validation passed;
+- Playwright snapshot against local `web/static` confirmed a previously broken source page now renders the insight card with `Evidence is in Source Text`.
+
+Deployment status: not deployed yet. Package/deploy as a data-preserving UI hotfix only after a separate live-deploy instruction.
+
+## 2026-06-16 — Source-evidence disclosure cleanup deployed
+
+User confirmed the source-evidence disclosure cleanup should be deployed after noticing the local fix had not reached live.
+
+Actions taken:
+
+- corrected `scripts/generate-public-pages.py` so duplicate-only insight evidence does not render a placeholder disclosure;
+- corrected `web/static/meili.js` so runtime source workspace uses the same fragment/duplicate evidence rule as generated source pages;
+- regenerated `web/static`;
+- removed temporary `.playwright-cli` browser snapshots before publication-boundary validation;
+- packaged and deployed `base2026-source-evidence-disclosure-r2-20260616` as a data-preserving hotfix with `-SkipReindex`.
+
+Verification:
+
+- `python3 -m py_compile scripts/generate-public-pages.py` passed;
+- `python3 scripts/generate-public-pages.py --data public-data/tiktok --out web/static` generated 1,388 source pages;
+- local scan confirmed `Evidence is in Source Text` and `Evidence is already included in the Source Text above.` are absent from generated source pages and runtime JS;
+- `git diff --check`, public export policy, GitHub metadata validation, and publication-boundary audit passed;
+- package gates passed with `include_full_transcripts=false`, `source_records=1388`, `passages=1906`, `insight_cards=1623`, and `public_insight_cards=1052`;
+- nginx deploy succeeded and `/var/www/base2026-knowledge/current` now points to `base2026-source-evidence-disclosure-r2-20260616`;
+- live HTTP smoke confirmed the release marker and no old evidence placeholder strings on `/knowledge/`, the reported Darren Shaw runtime URL, the matching static source page, and live `meili.js`;
+- live Playwright DOM checks confirmed the reported Darren Shaw runtime URL and static source page contain `Source Text` and `Source Intelligence`, do not show `Source record unavailable`, and no longer contain the old evidence placeholder strings.
+
+Meilisearch reindex was intentionally skipped because public data and index fields did not change.
+
+## 2026-06-17 — Source Intelligence missing-block investigation
+
+User asked to investigate missing `Source Intelligence` blocks on two live source-detail/search URLs:
+
+- `tiktok-video-7621472877765823766`;
+- `tiktok-video-7631848100860103958`.
+
+Finding:
+
+- both sources are public `@webhivedigital` source records with reviewed public source text;
+- both have insight-card rows in the public export, but all six linked rows are `public=false`, `review_status=pending`, and `public_policy=needs_review`;
+- `@webhivedigital` is not globally broken: the public export currently has 259 `@webhivedigital` insight rows, including 113 public cards;
+- the two reported sources are therefore a source-specific reviewed-card gap, not a creator-wide data failure;
+- there was also a product-level rendering gap: source detail hid the entire `Source Intelligence` section when a source had no reviewed/public cards, leaving no honest empty state.
+
+Actions taken locally:
+
+- updated `web/static/meili.js` so runtime source detail always renders `Source Intelligence`; reviewed/public cards render as before, while no-card sources show an empty state instead of disappearing;
+- updated `scripts/generate-public-pages.py` so generated source pages use the same Source Intelligence empty-state contract;
+- updated `scripts/mobile-visual-qa.mjs` with two regression routes:
+  - `base-source-intelligence-reviewed` expects a selected source with reviewed public cards to render Source Intelligence cards;
+  - `base-source-intelligence-empty` expects a selected no-reviewed-card source to render the empty state.
+
+Verification:
+
+- `node --check web/static/meili.js` passed;
+- `node --check scripts/mobile-visual-qa.mjs` passed;
+- `python3 -m py_compile scripts/generate-public-pages.py` passed;
+- temporary static generation to `/tmp/base2026-source-intel-test` generated 1,388 source pages, 1,001 topic pages, 1,001 compare pages, and 5 creator pages;
+- generated checks confirmed both reported source pages contain `Source Intelligence` plus the empty state, while `tiktok-video-7651937569034341640` still renders a real insight card;
+- live Playwright confirmed the current live reported URLs have `Source Text` but no `Source Intelligence` before deploy;
+- live Playwright confirmed the reviewed-card route has Source Intelligence cards after async card load;
+- intercepted-live Playwright using local `meili.js` plus live JSONL confirmed the no-card source renders the empty state and the reviewed-card source still renders one card;
+- public export policy, latest-source content-readiness, `git diff --check`, and publication-boundary audit passed.
+
+Deployment status: not deployed. Do not promote the six pending cards or invent public insight content; use `scripts/base2026-review-insight-candidates.py` and `scripts/base2026-promote-insight-candidates.py` only through the normal evidence-gated review path if content promotion is requested.
+
+## 2026-06-17 — Source-detail readability/layout hotfix deployed
+
+User reported that `/knowledge/index.html?source=tiktok-video-7651937569034341640` still rendered source text as one unreadable wall of text and that source-detail share/meta controls were visually scattered.
+
+Actions taken:
+
+- fixed `web/static/meili.js` readable text handling so runtime source detail preserves existing paragraph breaks, splits normal sentence text, and chunks poorly punctuated ASR/TikTok text into readable paragraphs;
+- added the same readable text contract to `scripts/generate-public-pages.py` so generated source pages and runtime source detail do not diverge;
+- suppressed duplicated source-title/summary lead copy when it repeats the visible source text;
+- compacted the source-detail toolbar so author identity, share icons, and meta chips sit in a more coherent top block;
+- added share/copy/print controls beside `Source Intelligence`;
+- regenerated public pages and info pages;
+- packaged and deployed `base2026-source-detail-readability-ay36-20260617` as a data-preserving UI hotfix with `-SkipReindex`.
+
+Verification:
+
+- `node --check web/static/meili.js` passed;
+- `python3 -m py_compile scripts/generate-public-pages.py scripts/generate-info-pages.py` passed;
+- `python3 scripts/generate-public-pages.py --data public-data/tiktok --out web/static` generated 1,388 source pages, 1,001 topic pages, 1,001 compare pages, and 5 creator pages;
+- `python3 scripts/generate-info-pages.py --out web/static` generated 9 info pages;
+- local Playwright desktop/mobile checks on the reported source URL passed with readable source paragraphs, no duplicate lead, 4 header share actions, 4 Source Intelligence share actions, no horizontal overflow, and no `Source record unavailable`;
+- `git diff --check`, publication-boundary audit, and public export policy passed with `include_full_transcripts=false`;
+- package gates passed for 1,388 source records, 1,906 passages, 1,623 insight cards, 1,052 public insight cards, 1,516 topics, 1,001 public topics, and 5 creators;
+- nginx deploy succeeded and `/var/www/base2026-knowledge/current` now points to `base2026-source-detail-readability-ay36-20260617`;
+- live HTTP smoke confirmed `/knowledge/` serves `styles.css` and `meili.js` with release cache-bust `base2026-source-detail-readability-ay36-20260617`;
+- live Playwright desktop/mobile checks confirmed the reported source detail has 6 readable source paragraphs, no duplicate lead, 4 header share actions, 4 Source Intelligence share actions, no horizontal overflow, no visible cookie banner, and no unavailable source state.
+
+Meilisearch reindex was intentionally skipped because public data and index fields did not change.
+## 2026-06-17 — Ahrefs Site Audit export and backlog creation
+
+User asked to open Ahrefs Site Audit export for `https://app.ahrefs.com/site-audit/9961307/export`, download the full report, break it into parts, and turn all issues into a task plan for later review/code-audit work.
+
+Actions:
+
+- opened the Ahrefs Bulk Export page in the logged-in Chrome session;
+- confirmed the project page loaded as `Bulk export - Aggressorbulkit`;
+- found the bulk ZIP button disabled and exported the enabled CSV sections individually;
+- copied 19 CSV exports into ignored local storage at `output/ahrefs/site-audit-9961307-20260617/raw/`;
+- parsed the CSV exports into local analysis files under `output/ahrefs/site-audit-9961307-20260617/analysis/`;
+- captured the high-level Ahrefs Issues screen counts;
+- created tracked backlog docs:
+  - `docs/project-memory/AHREFS_SITE_AUDIT_BACKLOG_2026_06_17.md`;
+  - `docs/project-memory/AHREFS_SITE_AUDIT_TASKS_2026_06_17.csv`;
+- added `.seo-cache/` to `.gitignore` and wrote local reusable SEO cache summaries there.
+
+Findings:
+
+- P0 work is broken URL and redirect cleanup: analytics root-relative Base2026 links, `/author/` 404 links, and 5,765 links to redirecting `/contact/`.
+- P1 work is crawl architecture and metadata contract: orphan source pages, query-state duplicate paths, OG/Twitter tags, schema validation, and sitemap canonical hygiene.
+- P2/P3 work is title/meta tuning, noindex link policy, crawl-budget retest, image/CSS optimization, and IndexNow/GSC only after the structural fixes are live.
+
+No site fixes, deploy, commit, push, or intake automation were performed in this pass.
+
+## 2026-06-17 — AHREFS-P1-06 social metadata local review
+
+User approved continuing with the next recommended SEO step: evidence-led indexation and shared social metadata, without committing or deploying first.
+
+Actions:
+
+- confirmed current project contract from `AGENTS.md` and project memory;
+- used local SEO/programmatic/content/AI SEO skills and repo files as source of truth;
+- added shared OG/X metadata helpers to `scripts/generate-public-pages.py` and `scripts/generate-info-pages.py`;
+- added complete OG/X metadata to `web/static/index.html` and `web/static/meili.html`;
+- regenerated `web/static` public pages and info pages locally;
+- regenerated `web/static/sitemap.xml` from indexable self-canonical pages;
+- marked `AHREFS-P1-06` as `local-reviewed` in `docs/project-memory/AHREFS_SITE_AUDIT_TASKS_2026_06_17.csv`;
+- documented the local-reviewed status in `docs/project-memory/AHREFS_SITE_AUDIT_BACKLOG_2026_06_17.md` and `docs/project-memory/NEXT_ACTION.md`.
+
+Verification:
+
+- Python compile passed for `scripts/generate-public-pages.py`, `scripts/generate-info-pages.py`, and `scripts/generate-base2026-sitemap.py`;
+- temporary public/info generation passed;
+- representative real `web/static` page checks passed for source, topic, compare, creator, analytics, roadmap, API, and search entrypoints;
+- full local indexable HTML social metadata scan passed for 1,483 indexable pages; 1,929 noindex pages were skipped;
+- sitemap generation produced 1,482 URLs;
+- public export policy passed with `include_full_transcripts=false`;
+- publication-boundary audit passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- GitHub metadata validation and targeted `git diff --check` passed.
+
+No deploy, commit, push, GSC submission, IndexNow submission, or TikTok intake was performed.
+
+## 2026-06-18 — GitHub source-tree cleanup and API documentation pass
+
+User asked to proceed with the recommended GitHub/publication cleanup so Base2026 is clean, credible, and ready for startup submissions.
+
+Actions:
+
+- updated `README.md` to the current live release `base2026-social-metadata-h1-ay39-20260618` and current public export counts;
+- fixed `scripts/generate-info-pages.py` inline Markdown rendering so code spans are protected before emphasis conversion;
+- regenerated public info pages so `/knowledge/api.html` renders file names such as `topic_signal_briefs.jsonl` correctly;
+- expanded `web/static/api-index.json` with public entry points and route templates in addition to static public data endpoints;
+- added API/AI access as a GitHub feature-request area;
+- updated `.gitignore`, `docs/GIT_PUBLICATION_AUDIT.md`, and `docs/project-memory/PUBLICATION_BOUNDARY.md` so generated source/topic/compare/creator pages, generated sitemap files, and generated analytics JSON/JSONL are release artifacts rather than GitHub source;
+- removed generated public pages and generated sitemap/analytics artifacts from the Git index with `git rm --cached` while leaving the files on disk for local generation, QA, packaging, and deploy;
+- tightened `scripts/audit-publication-boundary.py` so generated `web/static` artifacts are blocked if added/modified, while staged index-cleanup deletions are allowed.
+
+Verification:
+
+- Python compile passed for publication audit, public page/info/sitemap generators, export policy, and GitHub metadata scripts;
+- Node syntax passed for `scripts/mobile-visual-qa.mjs` and `web/static/meili.js`;
+- `git diff --check` passed;
+- publication-boundary audit passed with `forbidden=0`, `needs_review=0`, and `secret_findings=0`;
+- public export policy passed with `include_full_transcripts=false`, 1,388 source records, 1,906 passages, and 1,052 public insight cards;
+- GitHub metadata validation passed;
+- API-index JSON validation passed;
+- GitHub preflight passed with live/export checks skipped to avoid side effects.
+
+No deploy, reindex, GSC submission, IndexNow submission, or TikTok intake was performed in this GitHub-only cleanup pass.

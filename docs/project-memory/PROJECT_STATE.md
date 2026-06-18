@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-06-15
+Last updated: 2026-06-18
 
 Base2026 is being split into a public open-source source-intelligence product and private local research assets.
 
@@ -9,17 +9,23 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-footer-api-pricing-context-r2-20260615`
+- latest deployed release: `base2026-social-metadata-h1-ay39-20260618`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape today: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, excerpt-only source payload, and in-page source-detail workspace
 - corrected product contract as of 2026-06-15: Base2026 behaves as a searchable video-source text database with one visible source text surface plus a separate Source Intelligence layer. Raw captions/ASR/media remain private; reviewed polished public source text/transcript is the source-record reading surface when policy allows, paired with Base2026-authored summaries, topics, insight cards, attribution, methodology, sharing actions, and correction/removal paths. Insight evidence should be collapsed by default instead of repeating the full source text.
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
 
+Latest live release:
+
+- `base2026-social-metadata-h1-ay39-20260618` is live under `/knowledge/`. This data-preserving SEO/UI hotfix deploys the local-reviewed AHREFS-P1-06 social metadata contract across generated source/topic/compare/creator/index/info pages, keeps the Source Intelligence empty state honest for sources with no reviewed public cards, and fixes the runtime source-detail mobile H1 contract so hydrated source-detail pages expose exactly one visible H1. Public data and Meilisearch index fields did not change, so reindex was intentionally skipped. Verification passed: publication-boundary audit `forbidden=0`, `needs_review=0`, `secret_findings=0`; public export policy `include_full_transcripts=false`; GitHub metadata validation; local OG/X scan for 1,483 indexable HTML files; live HTTP/asset smoke; targeted live OG/X checks; full live mobile visual QA `78` checks with `0` failures; and live SEO crawl gate over `500` pages with `0` P0 bad links and `0` crawled error pages.
+
+- `base2026-ahrefs-p0-link-contracts-ay37-20260617` remains the deployed Ahrefs P0 link-contract baseline beneath the ay39 social metadata layer. It closed the Ahrefs P0 link-contract defects without changing public data: `/knowledge/analytics.html` source/creator links resolve to generated static Base2026 pages, Base2026 footer/contact links point directly to `/ai-visibility-audit/`, and WordPress `/author/` 301-redirects to `/about/` with author links filtered to `/about/`. P0 status remains `deployed-pending-recrawl` until a fresh Ahrefs/GSC crawl confirms the counts.
+
 Current local repo state:
 
-- branch: `main`
-- GitHub public repository: `https://github.com/offflinerpsy/base2026`
+- current checked-out branch on this MacBook: `codex/base2026-public-api-github-polish`
 - GitHub default branch: `main`
+- GitHub public repository: `https://github.com/offflinerpsy/base2026`
 - working branch `codex/github-publication-staging` also exists on GitHub as the original publication staging branch
 - first public-safe commit exists
 - Hermes reliability pass completed: WebUI scheduled task repaired, GPT-5.4 worker script added, false ASR backlog closed
@@ -33,6 +39,20 @@ Current local repo state:
 - generated/private folders ignored in `.gitignore`
 
 Latest verification:
+
+- `base2026-source-detail-readability-ay36-20260617` is live under `/knowledge/`. This data-preserving UI hotfix fixes the repeated source-detail readability/layout regression on `/knowledge/index.html?source=tiktok-video-7651937569034341640`: runtime and generated source text now preserve real paragraph breaks, split long ASR/TikTok text into readable chunks, suppress duplicate lead/summary text, keep source identity/share/meta controls in one compact toolbar, and add share/copy/print controls to `Source Intelligence`. Live HTTP smoke confirmed `/knowledge/` serves `styles.css` and `meili.js` with this release cache-bust. Live Playwright desktop/mobile QA confirmed 6 source-text paragraphs, no duplicate lead, 4 header share actions, 4 Source Intelligence share actions, no `Source record unavailable`, no horizontal overflow, and no visible cookie banner. Meilisearch reindex was intentionally skipped because public data/index fields did not change.
+
+- `base2026-source-evidence-disclosure-r2-20260616` is live under `/knowledge/`. This data-preserving UI hotfix removes duplicate-only Source Intelligence evidence disclosures from generated source pages and the runtime `/knowledge/?source=...` workspace. Fragmentary or duplicate public insight evidence that is already present in visible `Source Text` is suppressed, while a `Show source evidence` disclosure remains available only for standalone readable evidence. Live HTTP smoke and Playwright DOM checks confirmed the reported Darren Shaw runtime URL and static source page contain `Source Text` and `Source Intelligence`, do not show `Source record unavailable`, and no longer contain `Evidence is in Source Text` or `Evidence is already included in the Source Text above.` Meilisearch reindex was intentionally skipped because public data/index fields did not change.
+
+- `base2026-darrenshawseo-intake-ay90-r2-20260616` is live under `/knowledge/`. This full data release adds the `@darrenshawseo` public creator slice, with 5 creators, 1,388 source records, 1,906 public passages, 1,623 insight cards, and 1,052 public insight cards in the current export. Nine newest source-only records were closed with exact-evidence GPT/Codex-reviewed public insight cards before packaging. Darren's creator/source pages now use the stable local TikTok-profile avatar at `/knowledge/static/assets/creators/darrenshawseo.jpeg`. Meilisearch reindexed 1,906 public documents with deploy task `335`. Live smoke confirmed `/knowledge/`, Darren creator/source pages, `/knowledge/api.html`, `/knowledge/sitemap.xml`, the avatar image asset, no `Source record unavailable` on checked pages, and mobile menu open/API/Search visibility with 0 horizontal overflow and 0 browser console errors.
+
+- `base2026-footer-social-icons-r2-20260616` is live under `/knowledge/`. This data-preserving footer hotfix refines the shared footer `Socials` block into three pure icon links/placeholders: working X (`https://x.com/AleksejAros`), disabled TikTok placeholder, and working GitHub (`https://github.com/offflinerpsy`). The same compact icon row is live in the main WordPress site footer as theme stylesheet `1.5.46`. Live smoke confirmed WordPress `style.css?ver=1.5.46`, Base2026 CSS `styles.css?v=base2026-footer-social-icons-r2-20260616`, three 22x22 transparent icon slots with 20x20 SVG marks, no old text chips, no mobile overflow, X/GitHub links, disabled TikTok, and the Base2026 release marker on the WordPress homepage, WordPress About page, `/knowledge/`, `/knowledge/source-policy.html`, and a generated Base2026 source page. Meilisearch reindex was intentionally skipped because public data/index fields did not change.
+
+- `base2026-favicon-avatar-r1-20260616` is live under `/knowledge/`. This data-preserving hotfix adds the same Alex Yarosh avatar favicon/touch-icon assets used by the main WordPress site to the Base2026 static search entrypoint, generated info pages, and generated source/topic/creator/compare pages. Live smoke confirmed `/knowledge/`, `/knowledge/methodology.html`, and a generated source page include `alex-yarosh-favicon-32.png` and `alex-yarosh-apple-touch.png`; the favicon, touch icon, and full avatar assets return 200 as `image/png`. Meilisearch reindex was intentionally skipped because public data/index fields did not change.
+
+- `base2026-result-links-r1-20260616` is live under `/knowledge/`. This data-preserving hotfix fixes search-result interaction drift: clicking a creator handle in result cards now navigates to the generated creator profile page instead of being intercepted as an in-workspace filter route, and the TikTok platform icon in result cards is now an outbound link to the original TikTok source when a source URL exists. Live asset smoke confirmed `/knowledge/` loads `meili.js?v=base2026-result-links-r1-20260616` and `styles.css?v=base2026-result-links-r1-20260616`; Playwright live interaction QA confirmed result creator click navigates to `/knowledge/creators/joshuamaraney.html`, the TikTok badge is an anchor, and the TikTok href points to `tiktok.com`. Meilisearch reindex was intentionally skipped because public data/index fields did not change.
+
+- `base2026-api-nav-footer-r3-20260616` is live under `/knowledge/`. This data-preserving hotfix makes the public API/AI access page globally reachable from Base2026 search, generated source/topic/creator/info page headers, mobile Base2026 navigation, and the Base2026 footer instead of appearing only on methodology/info pages. The root `/knowledge/` release path was corrected by updating `web/static/meili.html`, and the hotfix packager now includes `api.html` plus the deploy-required release metadata/readability files (`manifest.json`, topic signal briefs, analytics JSON, `llms.txt`, `data-dictionary.json`, and `api-index.json`). Live smoke confirmed 200 responses and API nav/footer presence for `/knowledge/`, `/knowledge/api.html`, a source page, a topic page, `/knowledge/creators/`, and `/knowledge/methodology.html`. Meilisearch reindex was intentionally skipped because public data/index fields did not change.
 
 - `base2026-footer-api-pricing-context-r2-20260615` is live under `/knowledge/`. The release adds the public read-only API/AI access page at `/knowledge/api.html`, updates `api-index.json`, `llms.txt`, README/GitHub Pages source, compact footer CTA styling, and the orange support/roadmap contact block. WordPress pricing buttons now preserve package context on `/ai-visibility-audit/?plan=...` through the Novamira sandbox snippet and the existing WordPress handler sends lead email to `offflinerpsy@gmail.com`. Live smoke confirmed `/knowledge/api.html`, `/knowledge/api-index.json`, `/knowledge/llms.txt`, `/knowledge/roadmap.html`, and `/knowledge-search/multi-search`; Meilisearch reindexed 1715 passages. The generated sitemap now includes `/knowledge/api.html` and has 1308 URLs; robots/noindex/canonical logic was not changed.
 
@@ -205,3 +225,12 @@ Current product mismatch:
 Current pipeline risk:
 
 - local extraction and GPT/Codex source-only card extraction work, but full automation is not complete until ASR smoke tests, batch timeout/latency controls, claim promotion review gates, and scheduled controller mode are implemented.
+
+Latest 2026-06-16 checkpoint:
+
+- `base2026-darrenshawseo-intake-ay90-r2-20260616` is live under `/knowledge/`.
+- Current live public data: 5 creators, 1,388 source records, 1,906 passages, 1,623 insight cards, 1,052 public insight cards, 1,516 topics, and 1,001 public topics.
+- The new `@darrenshawseo` creator slice is public with 161 transcribed source records and a stable local TikTok-profile avatar asset at `/knowledge/static/assets/creators/darrenshawseo.jpeg`.
+- Nine latest source-only records were closed with exact-evidence GPT/Codex-reviewed public insight cards before deploy.
+- Meilisearch was reindexed with 1,906 public documents; deploy task `335`.
+- Release gates passed: KB audit, evidence verification, insight review/promotion, export policy, release contract, newest-source content readiness, publication-boundary audit, GitHub metadata validation, nginx deploy, live smoke, and mobile menu QA.

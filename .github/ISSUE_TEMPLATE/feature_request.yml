@@ -24,6 +24,7 @@ body:
       options:
         - Public search UI
         - Creator/source/topic pages
+        - API/AI access and public data contracts
         - Intake/transcription pipeline
         - Meilisearch/indexing
         - Deployment/operations

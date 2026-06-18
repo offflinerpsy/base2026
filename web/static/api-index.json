@@ -1,6 +1,6 @@
 {
   "name": "Base2026 public API index",
-  "version": "2026-06-15",
+  "version": "2026-06-18",
   "status": "static_public_index",
   "base_url": "https://aggressorbulkit.online/knowledge/",
   "policy": {
@@ -10,6 +10,54 @@
     "raw_asr": "not exposed",
     "media_files": "not exposed"
   },
+  "entry_points": [
+    {
+      "id": "human_search_workspace",
+      "url": "https://aggressorbulkit.online/knowledge/",
+      "format": "html",
+      "description": "Public search workspace for human review of sources, topics, creators, and source-backed intelligence."
+    },
+    {
+      "id": "api_access_page",
+      "url": "https://aggressorbulkit.online/knowledge/api.html",
+      "format": "html",
+      "description": "Human-readable API and AI access documentation."
+    },
+    {
+      "id": "llms_context",
+      "url": "https://aggressorbulkit.online/knowledge/llms.txt",
+      "format": "text",
+      "description": "Agent-readable project context, public boundaries, and recommended entry points."
+    },
+    {
+      "id": "sitemap",
+      "url": "https://aggressorbulkit.online/knowledge/sitemap.xml",
+      "format": "xml",
+      "description": "Public sitemap index for generated source, topic, comparison, creator, and info pages."
+    }
+  ],
+  "route_templates": [
+    {
+      "id": "source_page",
+      "template": "https://aggressorbulkit.online/knowledge/sources/{item_id}.html",
+      "description": "Canonical public source record page with attribution, reviewed public source text when policy allows, and source-backed intelligence."
+    },
+    {
+      "id": "topic_page",
+      "template": "https://aggressorbulkit.online/knowledge/topics/{topic_id}.html",
+      "description": "Canonical topic evidence page."
+    },
+    {
+      "id": "creator_page",
+      "template": "https://aggressorbulkit.online/knowledge/creators/{handle}.html",
+      "description": "Canonical creator attribution page."
+    },
+    {
+      "id": "compare_page",
+      "template": "https://aggressorbulkit.online/knowledge/compare/{topic_id}.html",
+      "description": "Canonical topic comparison page for repeated source-backed viewpoints."
+    }
+  ],
   "endpoints": [
     {
       "id": "manifest",

@@ -9,12 +9,18 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 
-STYLE_VERSION = "20260611-creatorcta1"
+STYLE_VERSION = "20260617-source-readability1"
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
 FONT_LINK = "https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&display=swap"
+FAVICON_ASSET_PATH = "static/assets/alex-yarosh-favicon-32.png"
+APPLE_TOUCH_ASSET_PATH = "static/assets/alex-yarosh-apple-touch.png"
+SOCIAL_IMAGE_URL = "https://aggressorbulkit.online/knowledge/static/assets/alex-yarosh-avatar.png"
+SOCIAL_IMAGE_ALT = "Alex Yarosh profile photo"
+TWITTER_SITE = "@AleksejAros"
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
     ("analytics", "Analytics", "analytics.html"),
+    ("api", "API", "api.html"),
     ("topics", "Topics", "topics/"),
     ("creators", "Creators", "creators/"),
     ("methodology", "Methodology", "methodology.html"),
@@ -27,6 +33,36 @@ FOOTER_LINKS = [
     ("Support", "../support.html"),
     ("Creator Correction / Removal", "../opt-out.html"),
 ]
+
+
+def favicon_links(relative_root: str) -> str:
+    return "\n".join(
+        [
+            f'    <link rel="icon" type="image/png" sizes="32x32" href="{relative_root}/{FAVICON_ASSET_PATH}" />',
+            f'    <link rel="apple-touch-icon" sizes="180x180" href="{relative_root}/{APPLE_TOUCH_ASSET_PATH}" />',
+        ]
+    )
+
+
+def social_meta_tags(title: str, description: str, canonical: str, og_type: str = "website") -> str:
+    url = canonical or "https://aggressorbulkit.online/knowledge/"
+    return "\n".join(
+        [
+            f'    <meta property="og:type" content="{escape(og_type)}" />',
+            '    <meta property="og:site_name" content="Base2026" />',
+            '    <meta property="og:locale" content="en_US" />',
+            f'    <meta property="og:title" content="{escape(title)}" />',
+            f'    <meta property="og:description" content="{escape(description)}" />',
+            f'    <meta property="og:url" content="{escape(url)}" />',
+            f'    <meta property="og:image" content="{escape(SOCIAL_IMAGE_URL)}" />',
+            f'    <meta property="og:image:alt" content="{escape(SOCIAL_IMAGE_ALT)}" />',
+            '    <meta name="twitter:card" content="summary_large_image" />',
+            f'    <meta name="twitter:site" content="{escape(TWITTER_SITE)}" />',
+            f'    <meta name="twitter:title" content="{escape(title)}" />',
+            f'    <meta name="twitter:description" content="{escape(description)}" />',
+            f'    <meta name="twitter:image" content="{escape(SOCIAL_IMAGE_URL)}" />',
+        ]
+    )
 INSIGHT_STOPWORDS = {
     "about",
     "above",
@@ -171,20 +207,65 @@ def paragraphize(value: str, limit: int = 900, sentences_per_paragraph: int = 2)
     return "".join(paragraphs) or f"<p>{escape(text)}</p>"
 
 
-def paragraphize_full(value: str, sentences_per_paragraph: int = 3) -> str:
+def readable_text_blocks(
+    value: str,
+    sentences_per_paragraph: int = 3,
+    max_chars: int = 520,
+    max_words: int = 74,
+) -> list[str]:
     text = unescape(value or "").replace("\r\n", "\n").replace("\r", "\n").strip()
     if not text:
+        return []
+    source_blocks = [re.sub(r"[ \t]+", " ", block).strip() for block in re.split(r"\n{2,}", text)]
+    source_blocks = [block for block in source_blocks if block]
+    blocks: list[str] = []
+
+    def push_word_chunks(text_value: str) -> None:
+        words = compact(text_value, 0).split()
+        for index in range(0, len(words), max_words):
+            chunk = " ".join(words[index : index + max_words]).strip()
+            if chunk:
+                blocks.append(chunk)
+
+    for source_block in source_blocks:
+        block = compact(source_block, 0)
+        if not block:
+            continue
+        sentences = re.findall(r"[^.!?…]+[.!?…]+(?=\s|$)|[^.!?…]+$", block) or [block]
+        if len(sentences) <= 1 and len(block) > max_chars:
+            push_word_chunks(block)
+            continue
+        current = ""
+        sentence_count = 0
+        for sentence in sentences:
+            clean = compact(sentence, 0)
+            if not clean:
+                continue
+            if len(clean) > max_chars:
+                if current:
+                    blocks.append(current)
+                current = ""
+                sentence_count = 0
+                push_word_chunks(clean)
+                continue
+            next_value = compact(f"{current} {clean}", 0)
+            if current and (len(next_value) > max_chars or sentence_count >= sentences_per_paragraph):
+                blocks.append(current)
+                current = clean
+                sentence_count = 1
+                continue
+            current = next_value
+            sentence_count += 1
+        if current:
+            blocks.append(current)
+    return blocks
+
+
+def paragraphize_full(value: str, sentences_per_paragraph: int = 3) -> str:
+    blocks = readable_text_blocks(value, sentences_per_paragraph)
+    if not blocks:
         return '<p class="empty-state">No public source text is available for this source yet.</p>'
-    raw_blocks = [re.sub(r"[ \t]+", " ", block).strip() for block in re.split(r"\n{2,}", text)]
-    raw_blocks = [block for block in raw_blocks if block]
-    if len(raw_blocks) <= 1:
-        sentences = re.split(r"(?<=[.!?])\s+(?=[\"'“‘(]?[A-Z0-9])", raw_blocks[0] if raw_blocks else text)
-        raw_blocks = [
-            " ".join(sentence for sentence in sentences[index : index + sentences_per_paragraph] if sentence).strip()
-            for index in range(0, len(sentences), sentences_per_paragraph)
-        ]
-    paragraphs = [block for block in raw_blocks if block]
-    return "".join(f"<p>{escape(block)}</p>" for block in paragraphs) or f"<p>{escape(text)}</p>"
+    return "".join(f"<p>{escape(block)}</p>" for block in blocks)
 
 
 def strip_evidence_markup(value: str) -> str:
@@ -207,6 +288,14 @@ def same_evidence(first_value: str, second_value: str) -> bool:
     return long.startswith(short[:240]) or short.startswith(long[:240])
 
 
+def evidence_starts_with(value: str, prefix: str) -> bool:
+    text = evidence_fingerprint(value)
+    lead = evidence_fingerprint(prefix)
+    if not text or not lead or len(lead) < 40:
+        return False
+    return text.startswith(lead) or lead.startswith(text)
+
+
 def evidence_contains_fragment(fragment_value: str, full_value: str) -> bool:
     fragment = evidence_fingerprint(fragment_value)
     full = evidence_fingerprint(full_value)
@@ -215,6 +304,18 @@ def evidence_contains_fragment(fragment_value: str, full_value: str) -> bool:
     if len(fragment) < 80:
         return fragment == full
     return fragment in full or full in fragment
+
+
+def is_fragmentary_evidence(value: str) -> bool:
+    text = compact(strip_evidence_markup(value), 0)
+    if not text:
+        return False
+    if is_clipped_evidence(text):
+        return True
+    first_word = re.sub(r"^[^A-Za-z0-9]+", "", text).split(" ", 1)[0]
+    if first_word and first_word[0].islower():
+        return True
+    return bool(re.match(r"^(?:and|or|but|so|then|because|when|while|that|this|it|they|you|we)\b", text, re.I))
 
 
 def insight_token_set(*values: str) -> set[str]:
@@ -356,9 +457,149 @@ def should_show_summary_long(summary_long: str, summary_short: str, public_text:
         return False
     if same_evidence(summary_long, public_text):
         return False
-    if summary_short and same_evidence(summary_long, summary_short):
+    if summary_short and (same_evidence(summary_long, summary_short) or evidence_starts_with(summary_long, summary_short)):
         return False
     return True
+
+
+def evidence_qa_item(question: str, answer: str) -> str:
+    question = compact(question, 160)
+    answer = compact(answer, 640)
+    if not question or len(answer) < 45:
+        return ""
+    return f"""
+        <article class="evidence-qa-card">
+          <h3>{escape(question)}</h3>
+          <p>{escape(answer)}</p>
+        </article>
+    """
+
+
+def evidence_qa_section(title: str, helper: str, rows: list[tuple[str, str]]) -> str:
+    cards = [evidence_qa_item(question, answer) for question, answer in rows]
+    cards = [card_html for card_html in cards if card_html]
+    if len(cards) < 2:
+        return ""
+    return f"""
+      <section class="content-section evidence-qa-section">
+        {section_title(title, helper)}
+        <div class="evidence-qa-grid">{"".join(cards[:4])}</div>
+      </section>
+    """
+
+
+def source_answer_section(
+    source: dict,
+    public_insights: list[dict],
+    public_text: str,
+    summary_short: str,
+    summary_long: str,
+) -> str:
+    handle = display_handle(source.get("creator_handle") or source.get("handle") or "creator")
+    topic = source_seo_topic(source)
+    date = source.get("published_date") or source.get("published_at") or "undated"
+    topic_labels = [label for label in (source.get("topic_labels") or []) if label]
+    if not topic_labels:
+        topic_labels = [topic] if topic else []
+    primary_claims = [
+        compact(row.get("claim_text") or "", 220)
+        for row in public_insights
+        if row.get("claim_text")
+    ]
+    primary_actions = [
+        compact(row.get("suggested_action") or "", 220)
+        for row in public_insights
+        if row.get("suggested_action")
+    ]
+    rows = [
+        (
+            "What is this source mainly about?",
+            summary_long or summary_short or f"This source is an attributed Base2026 record from {handle} about {topic}.",
+        ),
+        (
+            "What should an operator take from it?",
+            primary_actions[0] if primary_actions else (primary_claims[0] if primary_claims else summary_short),
+        ),
+        (
+            "What public evidence supports the record?",
+            sentence_excerpt(public_text, 520, 4),
+        ),
+        (
+            "How is this source attributed?",
+            f"Base2026 attributes this public source record to {handle}, published {date}, with the original platform link and correction/removal path kept on the page.",
+        ),
+    ]
+    if topic_labels:
+        rows.insert(
+            2,
+            (
+                "Which topics does it connect to?",
+                "This source is connected to " + ", ".join(topic_labels[:5]) + ".",
+            ),
+        )
+    return evidence_qa_section(
+        "Questions this source answers",
+        "Short Base2026 answers generated only from reviewed public source text, public insight cards, and attribution metadata.",
+        rows,
+    )
+
+
+def topic_answer_section(
+    topic: dict,
+    public_insights: list[dict],
+    related_sources: list[dict],
+    creator_rows: list[dict],
+    signal_brief: dict | None,
+) -> str:
+    topic_id = topic.get("topic_id") or slug(topic.get("topic") or "uncategorized")
+    label = topic.get("topic") or topic_id.replace("-", " ").title()
+    definition = topic.get("definition") or f"Source-backed creator evidence related to {label}."
+    repeated_tactics = (signal_brief or {}).get("repeated_tactics") or []
+    source_actions = (signal_brief or {}).get("source_backed_actions") or []
+    creator_angles = (signal_brief or {}).get("creator_angles") or []
+    top_claims = [compact(row.get("claim_text") or "", 220) for row in public_insights if row.get("claim_text")]
+    tactic_answer = "; ".join(
+        compact(row.get("label") or "", 170)
+        for row in repeated_tactics[:3]
+        if row.get("label")
+    )
+    if not tactic_answer and top_claims:
+        tactic_answer = "; ".join(top_claims[:3])
+    action_answer = "; ".join(
+        compact(row.get("action") or "", 180)
+        for row in source_actions[:3]
+        if row.get("action")
+    )
+    creator_answer = "; ".join(
+        f"{display_handle(row.get('creator_handle'))}: {compact(row.get('main_angle') or '', 150)}"
+        for row in creator_angles[:3]
+        if row.get("main_angle")
+    )
+    source_count = topic.get("source_count") or len(related_sources)
+    creator_count = topic.get("creator_count") or len(creator_rows)
+    insight_count = topic.get("public_insight_count") or len(public_insights)
+    rows = [
+        (f"What does {label} mean in this evidence set?", definition),
+        (
+            f"What do creators repeatedly say about {label}?",
+            tactic_answer or f"Base2026 has public source records and insight cards connected to {label}, but repeated tactics are still being reviewed.",
+        ),
+        (
+            "What should an SEO or AI visibility operator inspect first?",
+            action_answer or (top_claims[0] if top_claims else definition),
+        ),
+        (
+            "How strong is the public evidence?",
+            f"This topic currently has {source_count} source records, {insight_count} public insight cards, and {creator_count} creators in the public Base2026 export.",
+        ),
+    ]
+    if creator_answer:
+        rows.insert(2, ("Which creator viewpoints are visible?", creator_answer))
+    return evidence_qa_section(
+        "Questions this topic answers",
+        "Compact answers derived from public topic metadata, reviewed insight cards, and deterministic topic signal briefs.",
+        rows,
+    )
 
 
 def icon_svg(name: str) -> str:
@@ -611,12 +852,10 @@ def page_shell(
     <meta name="description" content="{escape(description)}" />
     <meta name="robots" content="{escape(robots)}" />
     {f'<link rel="canonical" href="{escape(canonical)}" />' if canonical else ''}
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="{escape(title)}" />
-    <meta property="og:description" content="{escape(description)}" />
-    {f'<meta property="og:url" content="{escape(canonical)}" />' if canonical else ''}
+{social_meta_tags(title, description, canonical)}
     <title>{escape(title)}</title>
     <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
+{favicon_links(relative_root)}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="{FONT_LINK}" rel="stylesheet" />
@@ -640,6 +879,20 @@ def page_shell(
             <a class="ay-button-secondary" href="/pricing/">View Pricing</a>
             <a class="ay-button ay-button-base2026" href="/knowledge/">Base2026</a>
           </div>
+          <div class="ay-footer-socials" aria-label="Social profiles">
+            <p class="ay-footer-socials__label">Socials</p>
+            <div class="ay-footer-socials__links">
+              <a class="ay-social-link" href="https://x.com/AleksejAros" target="_blank" rel="me noopener noreferrer" aria-label="Alex Yarosh on X" title="X">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18.9 2h3.3l-7.2 8.2L23.5 22h-6.7l-5.2-6.8L5.6 22H2.3l7.7-8.8L1.9 2h6.8l4.7 6.2L18.9 2Zm-1.2 17.9h1.8L7.7 4H5.8l11.9 15.9Z"/></svg>
+              </a>
+              <span class="ay-social-link ay-social-link--disabled" aria-label="TikTok profile coming soon" title="TikTok profile coming soon">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.5 2c1.2 0 2.4 0 3.6-.1.1 1.5.6 2.9 1.7 4 1.1 1 2.5 1.5 4 1.7v3.8c-1.4 0-2.7-.3-4-.9-.5-.2-1-.5-1.5-.9v7.7c-.1 1.3-.5 2.6-1.3 3.7-1.2 1.8-3.3 3-5.5 3-1.3.1-2.7-.3-3.8-1-1.9-1.1-3.2-3.2-3.4-5.4v-1.4c.2-1.8 1-3.5 2.4-4.7 1.5-1.4 3.7-2 5.8-1.6v4.2c-.9-.3-2-.2-2.8.3-.6.4-1 1-1.3 1.7-.2.5-.1 1-.1 1.5.2 1.5 1.7 2.8 3.3 2.7 1 0 2-.6 2.6-1.5.2-.3.4-.6.4-1 .1-1.7.1-3.4.1-5.1V2Z"/></svg>
+              </span>
+              <a class="ay-social-link" href="https://github.com/offflinerpsy" target="_blank" rel="me noopener noreferrer" aria-label="Alex Yarosh on GitHub" title="GitHub">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .5A11.5 11.5 0 0 0 8.36 22.9c.58.11.8-.25.8-.56v-2.02c-3.25.71-3.94-1.38-3.94-1.38-.53-1.35-1.3-1.71-1.3-1.71-1.06-.73.08-.72.08-.72 1.18.08 1.8 1.21 1.8 1.21 1.04 1.79 2.74 1.27 3.41.97.11-.76.41-1.27.74-1.56-2.59-.29-5.31-1.3-5.31-5.76 0-1.27.45-2.31 1.2-3.13-.12-.29-.52-1.48.12-3.09 0 0 .98-.31 3.21 1.19A11.08 11.08 0 0 1 12 5.96c.99 0 1.98.13 2.91.39 2.22-1.5 3.2-1.19 3.2-1.19.64 1.61.24 2.8.12 3.09.75.82 1.2 1.86 1.2 3.13 0 4.47-2.73 5.46-5.33 5.75.42.36.79 1.08.79 2.17v3.04c0 .31.21.68.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+              </a>
+            </div>
+          </div>
         </section>
         <nav aria-label="Footer services">
           <h3>Services</h3>
@@ -658,7 +911,7 @@ def page_shell(
             <li><a href="/services/">Services</a></li>
             <li><a href="/pricing/">Pricing</a></li>
             <li><a href="/#how-it-works">Process / How It Works</a></li>
-            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/ai-visibility-audit/">Free AI Visibility Snapshot</a></li>
           </ul>
         </nav>
         <nav aria-label="Footer Base2026">
@@ -667,6 +920,7 @@ def page_shell(
           <ul class="ay-footer-menu">
             <li><a href="{relative_root}/index.html">Search Base2026</a></li>
             <li><a href="{relative_root}/analytics.html">Analytics</a></li>
+            <li><a href="{relative_root}/api.html">API &amp; AI access</a></li>
             <li><a href="{relative_root}/roadmap.html">Roadmap</a></li>
             <li><a href="{relative_root}/topics/">Topics</a></li>
             <li><a href="{relative_root}/creators/">Creators</a></li>
@@ -753,8 +1007,19 @@ def source_insight_card(row_or_rows: dict | list[dict], passages: list[dict], pu
         evidence_body = evidence or expanded_evidence
         if not evidence_body:
             continue
-        evidence_is_duplicate = same_evidence(evidence_body, public_text) or same_evidence(evidence_body, row_claim)
+        evidence_is_source_fragment = (
+            evidence_contains_fragment(evidence_body, public_text)
+            or evidence_contains_fragment(evidence_body, row_claim)
+        )
+        evidence_is_duplicate = (
+            same_evidence(evidence_body, public_text)
+            or same_evidence(evidence_body, row_claim)
+            or evidence_is_source_fragment
+        )
         if evidence_is_duplicate:
+            evidence_duplicate_count += 1
+            continue
+        if is_fragmentary_evidence(evidence_body):
             evidence_duplicate_count += 1
             continue
         if any(same_evidence(evidence_body, existing) for existing in seen_evidence):
@@ -765,17 +1030,11 @@ def source_insight_card(row_or_rows: dict | list[dict], passages: list[dict], pu
 
     action_html = f'<ul class="source-detail-insight__actions">{"".join(actions)}</ul>' if actions else ""
     evidence_html = ""
-    if evidence_blocks or evidence_duplicate_count:
-        summary = "Show source evidence" if evidence_blocks else "Evidence is in Source Text"
-        evidence_body = (
-            f'<ul class="source-detail-evidence-list">{"".join(evidence_blocks)}</ul>'
-            if evidence_blocks
-            else '<p>Evidence is already included in the Source Text above.</p>'
-        )
+    if evidence_blocks:
         evidence_html = f"""
         <details class="source-detail-evidence">
-          <summary>{escape(summary)}</summary>
-          <div>{evidence_body}</div>
+          <summary>Show source evidence</summary>
+          <div><ul class="source-detail-evidence-list">{"".join(evidence_blocks)}</ul></div>
         </details>
         """
     topics_html = (
@@ -796,6 +1055,15 @@ def source_insight_card(row_or_rows: dict | list[dict], passages: list[dict], pu
 
 def source_insight_cards(rows: list[dict], passages: list[dict], public_text: str = "") -> str:
     return "".join(source_insight_card(group, passages, public_text) for group in group_insight_rows(rows))
+
+
+def source_intelligence_empty_state() -> str:
+    return (
+        '<p class="empty-state source-intelligence-empty">'
+        "No reviewed Source Intelligence cards are published for this source yet. "
+        "Base2026 only shows reviewed source-backed cards here; unreviewed candidates stay out of the public UI until evidence review."
+        "</p>"
+    )
 
 
 def creator_index_card(handle: str, creator: dict, source_count: int, public_insight_count: int) -> str:
@@ -1086,6 +1354,11 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
     )
     show_summary_long = should_show_summary_long(summary_long, summary_short, public_text)
     insight_html = source_insight_cards(public_insights[:6], passages, public_text)
+    source_intelligence_body = (
+        f'<div class="card-grid">{insight_html}</div>'
+        if insight_html
+        else source_intelligence_empty_state()
+    )
     schema = {
         "@context": "https://schema.org",
         "@graph": [
@@ -1140,12 +1413,11 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
         {section_title("Source Text", "Reviewed polished transcript/source text normalized for reading and search. Raw captions and private QA stay local.")}
         <div class="source-excerpt-text source-full-text">{paragraphize_full(public_text)}</div>
       </section>
-      {f'''
       <section class="content-section">
         {section_title("Source Intelligence", "Reviewed source-backed claims promoted from this evidence.")}
-        <div class="card-grid">{insight_html}</div>
+        {source_intelligence_body}
       </section>
-      ''' if insight_html else ''}
+      {source_answer_section(source, public_insights, public_text, summary_short, summary_long)}
       {f'''
       <section class="content-section">
         {section_title("Supporting Passages", "Distinct public passages that add context beyond the Source Text.")}
@@ -1386,6 +1658,7 @@ def topic_page(topic: dict, sources: list[dict], passages: list[dict], insights:
         </aside>
       </section>
       {topic_signal_brief_section(signal_brief, topic_id, label)}
+      {topic_answer_section(topic, public_insights, related_sources, creator_rows, signal_brief)}
       <section class="content-section">
         <h2>Top Creators</h2>
         <div class="topic-chip-list">{creator_html or '<p class="meta">No creator distribution available yet.</p>'}</div>
@@ -1473,7 +1746,19 @@ def compare_page(topic: dict, insights: list[dict]) -> str:
     )
 
 
-def index_page(title: str, intro: str, cards: str, current: str = "") -> str:
+def index_page(
+    title: str,
+    intro: str,
+    cards: str,
+    current: str = "",
+    canonical_path: str | None = None,
+) -> str:
+    if canonical_path is None:
+        canonical_path = {
+            "creators": "creators/",
+            "sources": "sources/",
+            "topics": "topics/",
+        }.get(current, "")
     return page_shell(
         title,
         f"""
@@ -1491,11 +1776,7 @@ def index_page(title: str, intro: str, cards: str, current: str = "") -> str:
         """,
         current=current,
         description=intro,
-        canonical_path={
-            "creators": "creators/",
-            "sources": "sources/",
-            "topics": "topics/",
-        }.get(current, ""),
+        canonical_path=canonical_path,
     )
 
 
@@ -1543,7 +1824,7 @@ def analytics_page(analytics: dict) -> str:
               <div>
                 <h3>{escape(handle)}</h3>
                 <p>{escape(format_count(row.get("source_count")))} sources · {escape(format_count(row.get("public_insight_count")))} insights · {escape(format_count(row.get("topic_count")))} topics</p>
-                <a class="button-link" href="{escape(workspace_href(base='./index.html', creator=clean_handle(handle)))}">Search creator</a>
+                <a class="button-link" href="{escape(creator_href(handle, prefix='./creators'))}">Creator profile</a>
               </div>
             </article>
             """
@@ -1556,7 +1837,7 @@ def analytics_page(analytics: dict) -> str:
     latest_items = "".join(
         f"""
         <li>
-          <a href="{escape(workspace_href(base='./index.html', source=row.get('item_id') or ''))}">{escape(compact(row.get('title') or 'Source record', 96))}</a>
+          <a href="{escape(source_href(row, prefix='./sources'))}">{escape(compact(row.get('title') or 'Source record', 96))}</a>
           <span>{escape(row.get('creator_handle') or '')} · {escape(row.get('published_date') or '')}</span>
         </li>
         """
@@ -1723,7 +2004,13 @@ def main() -> int:
     )
     write_text(
         out / "compare" / "index.html",
-        index_page("Creator Viewpoint Comparisons", "Deterministic creator viewpoint groupings by topic. Every row links back to source evidence.", "".join(topic_cards[:80]), current="topics"),
+        index_page(
+            "Creator Viewpoint Comparisons",
+            "Deterministic creator viewpoint groupings by topic. Every row links back to source evidence.",
+            "".join(topic_cards[:80]),
+            current="topics",
+            canonical_path="compare/",
+        ),
     )
     write_text(out / "analytics.html", analytics_page(analytics))
 
