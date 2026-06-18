@@ -118,6 +118,16 @@ if (Test-Path "./web/static/roadmap.js") {
 if (Test-Path "./web/static/assets") {
   Copy-Item "./web/static/assets" (Join-Path $StaticRoot "assets") -Recurse -Force
 }
+foreach ($ReadabilityAsset in @(
+  @{ Source = "./web/static/llms.txt"; Target = (Join-Path $WebRoot "llms.txt") },
+  @{ Source = "./web/static/data-dictionary.json"; Target = (Join-Path $WebRoot "data-dictionary.json") },
+  @{ Source = "./web/static/api-index.json"; Target = (Join-Path $WebRoot "api-index.json") },
+  @{ Source = "./web/static/llms-root.txt"; Target = (Join-Path $WebRoot "root-llms.txt") }
+)) {
+  if (Test-Path $ReadabilityAsset.Source) {
+    Copy-Item $ReadabilityAsset.Source $ReadabilityAsset.Target -Force
+  }
+}
 foreach ($TestPageAsset in @("roadmap-dataviz-test.html", "roadmap-dataviz-test.css", "roadmap-dataviz-test.js")) {
   if (Test-Path "./web/static/$TestPageAsset") {
     Copy-Item "./web/static/$TestPageAsset" (Join-Path $WebRoot $TestPageAsset) -Force
@@ -126,6 +136,7 @@ foreach ($TestPageAsset in @("roadmap-dataviz-test.html", "roadmap-dataviz-test.
 
 $DocPages = @(
   "methodology.html",
+  "api.html",
   "opt-out.html",
   "roadmap.html",
   "story.html",
@@ -141,7 +152,7 @@ foreach ($DocPage in $DocPages) {
   $DocHtml | Set-Content -Path (Join-Path $WebRoot $DocPage) -Encoding UTF8
 }
 
-foreach ($StaticDataFile in @("documents.jsonl", "passages.jsonl", "insight_cards.jsonl")) {
+foreach ($StaticDataFile in @("documents.jsonl", "passages.jsonl", "insight_cards.jsonl", "manifest.json", "topic_signal_briefs.jsonl", "base2026_analytics.json", "analytics_summary.json")) {
   Copy-Item (Join-Path $ExportRoot $StaticDataFile) (Join-Path $StaticRoot $StaticDataFile) -Force
 }
 Copy-Item "./scripts/meili-index-public.py" (Join-Path $ScriptsRoot "meili-index-public.py") -Force

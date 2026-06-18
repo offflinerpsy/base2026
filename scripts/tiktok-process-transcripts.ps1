@@ -84,7 +84,8 @@ foreach ($row in $targets) {
       $worker = $null
       try { $worker = $workerJson | ConvertFrom-Json } catch { $worker = $null }
       if ($worker -and $worker.ok -and $worker.output -and (Test-Path -LiteralPath $worker.output)) {
-        $asrText = (Get-Content -LiteralPath $worker.output -Raw -Encoding UTF8).Trim()
+        $asrRaw = Get-Content -LiteralPath $worker.output -Raw -Encoding UTF8
+        $asrText = if ($null -eq $asrRaw) { "" } else { $asrRaw.Trim() }
         if ($asrText) {
           $txt = Join-Path $AsrDir "$id.txt"
           Set-Content -LiteralPath $txt -Value $asrText -Encoding UTF8

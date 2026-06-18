@@ -7,15 +7,26 @@
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://aggressorbulkit.online/knowledge/api.html" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Base2026" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="Base2026 API &amp; AI Access | Base2026" />
     <meta property="og:description" content="Public read-only files and agent-readable entry points for using Base2026 as an attributed source intelligence library." />
     <meta property="og:url" content="https://aggressorbulkit.online/knowledge/api.html" />
+    <meta property="og:image" content="https://aggressorbulkit.online/knowledge/static/assets/alex-yarosh-avatar.png" />
+    <meta property="og:image:alt" content="Alex Yarosh profile photo" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@AleksejAros" />
+    <meta name="twitter:title" content="Base2026 API &amp; AI Access | Base2026" />
+    <meta name="twitter:description" content="Public read-only files and agent-readable entry points for using Base2026 as an attributed source intelligence library." />
+    <meta name="twitter:image" content="https://aggressorbulkit.online/knowledge/static/assets/alex-yarosh-avatar.png" />
     <title>Base2026 API &amp; AI Access | Base2026</title>
     <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Base2026 API & AI Access | Base2026", "description": "Public read-only files and agent-readable entry points for using Base2026 as an attributed source intelligence library.", "url": "https://aggressorbulkit.online/knowledge/api.html", "isPartOf": {"@type": "WebSite", "name": "Base2026", "url": "https://aggressorbulkit.online/knowledge/"}}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="./static/assets/alex-yarosh-favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./static/assets/alex-yarosh-apple-touch.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./static/styles.css?v=20260611-creatorcta1" />
+    <link rel="stylesheet" href="./static/styles.css?v=20260617-source-readability1" />
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
@@ -68,7 +79,7 @@
 
       <section class="content-section"><p>Base2026 is built to be useful to humans and AI agents without forcing either one to scrape the visual interface. The public site exposes a small read-only data layer with the same public boundary as the website: reviewed source records, public passages, creator/topic metadata, and source-backed intelligence only.</p><p>Private research vaults, raw captions, raw ASR, media files, credentials, logs, and unreviewed pipeline artifacts are not part of the public API surface.</p></section>
 <section class="content-section"><h2>Public entry points</h2><ul><li>Human search workspace: <code>/knowledge/</code></li><li>Agent-readable context file: <code>/knowledge/llms.txt</code></li><li>Public data dictionary: <code>/knowledge/data-dictionary.json</code></li><li>Public API index: <code>/knowledge/api-index.json</code></li><li>Public sitemap: <code>/knowledge/sitemap.xml</code></li></ul></section>
-<section class="content-section"><h2>Static public data</h2><p>These files are safe read-only exports for external tools, notebooks, audits, and AI workflows.</p><ul><li><code>/knowledge/static/manifest.json</code> - release counts and public export metadata.</li><li><code>/knowledge/static/documents.jsonl</code> - source-level search documents and public source records.</li><li><code>/knowledge/static/passages.jsonl</code> - searchable public evidence passages linked to source records.</li><li><code>/knowledge/static/insight_cards.jsonl</code> - reviewed public source-backed insight cards.</li><li><code>/knowledge/static/topic<em>signal</em>briefs.jsonl</code> - deterministic summaries for strong topics.</li><li><code>/knowledge/data-dictionary.json</code> - field descriptions and public/private boundary notes.</li></ul></section>
+<section class="content-section"><h2>Static public data</h2><p>These files are safe read-only exports for external tools, notebooks, audits, and AI workflows.</p><ul><li><code>/knowledge/static/manifest.json</code> - release counts and public export metadata.</li><li><code>/knowledge/static/documents.jsonl</code> - source-level search documents and public source records.</li><li><code>/knowledge/static/passages.jsonl</code> - searchable public evidence passages linked to source records.</li><li><code>/knowledge/static/insight_cards.jsonl</code> - reviewed public source-backed insight cards.</li><li><code>/knowledge/static/topic_signal_briefs.jsonl</code> - deterministic summaries for strong topics.</li><li><code>/knowledge/data-dictionary.json</code> - field descriptions and public/private boundary notes.</li></ul></section>
 <section class="content-section"><h2>Search endpoint</h2><p>The public UI searches through a server-side Meilisearch proxy:</p><p><code>POST /knowledge-search/multi-search</code></p><p>The proxy injects the public search key server-side. Do not call Meilisearch directly and do not expect private data, raw captions, or write access. External integrations should prefer the static JSONL files unless they need live search ranking.</p></section>
 <section class="content-section"><h2>AI usage</h2><p>AI agents can use Base2026 as a source-backed research layer by reading <code>/knowledge/llms.txt</code>, then using the data dictionary and public JSONL files. When citing Base2026, prefer canonical source, topic, creator, or comparison pages rather than copying raw rows.</p><p>Good use cases:</p><ul><li>find creators who discuss a topic;</li><li>compare repeated tactics across creators;</li><li>inspect source-backed SEO/GEO/AEO claims;</li><li>build internal research notebooks from public records;</li><li>cite a canonical Base2026 source page with original creator attribution.</li></ul><p>Not supported:</p><ul><li>raw transcript harvesting;</li><li>creator impersonation;</li><li>private lead or admin data access;</li><li>writes, corrections, or moderation through public endpoints;</li><li>replacing the original creator channel.</li></ul></section>
 <section class="content-section"><h2>Future MCP contract</h2><p>The planned MCP layer should remain read-only at first:</p><ul><li>search sources by query and filters;</li><li>get one source by item ID;</li><li>get one topic by topic ID;</li><li>list creators with filters;</li><li>compare creator viewpoints for one topic.</li></ul><p>Every tool response must preserve attribution, canonical URLs, original source links, and public/private policy flags.</p></section>
@@ -84,6 +95,20 @@
             <a class="ay-button" href="/ai-visibility-audit/">Get My Free Roadmap</a>
             <a class="ay-button-secondary" href="/pricing/">View Pricing</a>
             <a class="ay-button ay-button-base2026" href="/knowledge/">Base2026</a>
+          </div>
+          <div class="ay-footer-socials" aria-label="Social profiles">
+            <p class="ay-footer-socials__label">Socials</p>
+            <div class="ay-footer-socials__links">
+              <a class="ay-social-link" href="https://x.com/AleksejAros" target="_blank" rel="me noopener noreferrer" aria-label="Alex Yarosh on X" title="X">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18.9 2h3.3l-7.2 8.2L23.5 22h-6.7l-5.2-6.8L5.6 22H2.3l7.7-8.8L1.9 2h6.8l4.7 6.2L18.9 2Zm-1.2 17.9h1.8L7.7 4H5.8l11.9 15.9Z"/></svg>
+              </a>
+              <span class="ay-social-link ay-social-link--disabled" aria-label="TikTok profile coming soon" title="TikTok profile coming soon">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.5 2c1.2 0 2.4 0 3.6-.1.1 1.5.6 2.9 1.7 4 1.1 1 2.5 1.5 4 1.7v3.8c-1.4 0-2.7-.3-4-.9-.5-.2-1-.5-1.5-.9v7.7c-.1 1.3-.5 2.6-1.3 3.7-1.2 1.8-3.3 3-5.5 3-1.3.1-2.7-.3-3.8-1-1.9-1.1-3.2-3.2-3.4-5.4v-1.4c.2-1.8 1-3.5 2.4-4.7 1.5-1.4 3.7-2 5.8-1.6v4.2c-.9-.3-2-.2-2.8.3-.6.4-1 1-1.3 1.7-.2.5-.1 1-.1 1.5.2 1.5 1.7 2.8 3.3 2.7 1 0 2-.6 2.6-1.5.2-.3.4-.6.4-1 .1-1.7.1-3.4.1-5.1V2Z"/></svg>
+              </span>
+              <a class="ay-social-link" href="https://github.com/offflinerpsy" target="_blank" rel="me noopener noreferrer" aria-label="Alex Yarosh on GitHub" title="GitHub">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .5A11.5 11.5 0 0 0 8.36 22.9c.58.11.8-.25.8-.56v-2.02c-3.25.71-3.94-1.38-3.94-1.38-.53-1.35-1.3-1.71-1.3-1.71-1.06-.73.08-.72.08-.72 1.18.08 1.8 1.21 1.8 1.21 1.04 1.79 2.74 1.27 3.41.97.11-.76.41-1.27.74-1.56-2.59-.29-5.31-1.3-5.31-5.76 0-1.27.45-2.31 1.2-3.13-.12-.29-.52-1.48.12-3.09 0 0 .98-.31 3.21 1.19A11.08 11.08 0 0 1 12 5.96c.99 0 1.98.13 2.91.39 2.22-1.5 3.2-1.19 3.2-1.19.64 1.61.24 2.8.12 3.09.75.82 1.2 1.86 1.2 3.13 0 4.47-2.73 5.46-5.33 5.75.42.36.79 1.08.79 2.17v3.04c0 .31.21.68.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+              </a>
+            </div>
           </div>
         </section>
         <nav aria-label="Footer services">
@@ -103,7 +128,7 @@
             <li><a href="/services/">Services</a></li>
             <li><a href="/pricing/">Pricing</a></li>
             <li><a href="/#how-it-works">Process / How It Works</a></li>
-            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/ai-visibility-audit/">Free AI Visibility Snapshot</a></li>
           </ul>
         </nav>
         <nav aria-label="Footer Base2026">
@@ -111,6 +136,7 @@
           <p>Independent pilot project: a searchable knowledge base for short-form expert video.</p>
           <ul class="ay-footer-menu">
             <li><a href="./">Search Base2026</a></li>
+            <li><a href="./api.html">API &amp; AI access</a></li>
             <li><a href="./roadmap.html">Roadmap</a></li>
             <li><a href="./topics/">Topics</a></li>
             <li><a href="./creators/">Creators</a></li>
@@ -164,7 +190,7 @@
         </div>
       </form>
     </dialog>
-    <script src="./static/cookie-consent.js?v=20260611-creatorcta1" defer></script>
+    <script src="./static/cookie-consent.js?v=20260617-source-readability1" defer></script>
 
 
   </body>

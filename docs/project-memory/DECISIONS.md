@@ -1,5 +1,29 @@
 # Decisions
 
+## 2026-06-15 — Use a compact current handoff to prevent context rot
+
+Decision: keep `docs/project-memory/CURRENT_HANDOFF.md` as the first resume file for the active task. It should summarize the current goal, dirty source files, done work, verification, open loops, and exact next action. Full project-memory rereads should be targeted, not automatic.
+
+Reason: the Base2026 thread is long and `git status` contains thousands of generated-page changes. Repeated full-context rehydration wastes attention and increases the chance of stale or contradictory action.
+
+## 2026-06-15 — Add visible Evidence Q&A before any FAQ schema
+
+Decision: source/topic pages may get visible Evidence Q&A sections generated from public-safe data, but do not add FAQPage schema in this pass.
+
+Reason: Q&A can make source and topic pages more useful for readers, Google, and LLM retrieval. FAQ schema is no longer a general SEO shortcut and should only be added later if it matches visible content, passes validation, and has a clear user value.
+
+## 2026-06-15 — Keep sitemap URLs self-canonical
+
+Decision: the Base2026 sitemap should include only indexable HTML pages whose canonical URL matches the page URL.
+
+Reason: Google Search Console already surfaced canonical/indexing confusion. Submitting alternate-canonical URLs wastes crawl budget and muddies diagnostics.
+
+## 2026-06-15 — Generated entity routes must fail closed
+
+Decision: missing generated source/topic/creator/compare URLs should return 404 instead of falling back to a generic Base2026 page.
+
+Reason: ghost URLs with 200 responses create soft-404/indexing problems and make GSC diagnostics noisy.
+
 ## 2026-06-15 — Use static mailto forms on Base2026 until a backend form endpoint exists
 
 Decision: `/knowledge/support.html` and `/knowledge/roadmap.html` may render a styled contact form, but for now it submits through `mailto:offflinerpsy@gmail.com` instead of copying the WordPress `admin-post.php` form.
@@ -335,3 +359,9 @@ Reason: duplicated platform badges, second-row trust buttons, and tail passage f
 Decision: Base2026 exposes a public `API & AI Access` page, `api-index.json`, `llms.txt`, and static JSONL entry points for reviewed public data. The live search proxy at `/knowledge-search/multi-search` is documented as read-only and ranking-oriented; bulk/agent analysis should prefer the static public JSONL files. Raw captions, raw ASR, media, private QA, local databases, and unreviewed transcript material remain excluded.
 
 Reason: Base2026 is meant to be useful to humans and AI tools as a source-backed knowledge base. Publishing a clear read-only access contract makes integrations possible without encouraging scraping of the visual UI or leaking private pipeline material.
+
+## 2026-06-17 — Show Source Intelligence state even when no public cards exist
+
+Decision: runtime source-detail pages and generated static source pages must always render the `Source Intelligence` section for a selected source. If a source has no reviewed/public Source Intelligence cards, show an explicit empty state instead of hiding the section. Do not promote pending/private cards just to remove the empty state.
+
+Reason: hiding the section makes a valid source record look broken and leaves users unsure whether the pipeline failed. An explicit empty state preserves the public/private boundary, explains that unreviewed candidates are withheld, and keeps the UI contract stable while visual/evidence-dependent cards wait for review.

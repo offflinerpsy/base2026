@@ -60,11 +60,14 @@ function tiktokLogoSvg() {
   `;
 }
 
-function platformBadge(type) {
+function platformBadge(type, sourceUrl = "") {
   const label = sourceLabel(type);
   const css = type === "tiktok_video" ? " platform-badge--tiktok" : "";
   const logo = type === "tiktok_video" ? tiktokLogoSvg() : "";
   if (type === "tiktok_video") {
+    if (sourceUrl) {
+      return `<a class="platform-badge${css} platform-badge--icon-only" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noreferrer" title="Open TikTok source" aria-label="Open TikTok source">${logo}</a>`;
+    }
     return `<span class="platform-badge${css} platform-badge--icon-only" title="${escapeHtml(label)} source" aria-label="${escapeHtml(label)} source">${logo}</span>`;
   }
   return `<span class="platform-badge${css}">${logo}${escapeHtml(label)}</span>`;
@@ -205,20 +208,61 @@ function paragraphizeHtml(value) {
   return sentences.map((sentence) => `<p>${sentence}</p>`).join("");
 }
 
-function paragraphizePlainText(value, terms = []) {
-  const text = compactText(value);
-  if (!text) return "";
-  const paragraphs = text
+function splitReadableText(value, options = {}) {
+  const maxSentences = options.maxSentences || 3;
+  const maxChars = options.maxChars || 520;
+  const maxWords = options.maxWords || 74;
+  const raw = decodeHtmlEntities(value || "").replace(/\r\n?/g, "\n").trim();
+  if (!raw) return [];
+  const sourceBlocks = raw
     .split(/\n{2,}/)
-    .map((part) => compactText(part))
+    .map((part) => part.replace(/[ \t]+/g, " ").trim())
     .filter(Boolean);
-  const blocks = paragraphs.length > 1
-    ? paragraphs
-    : text.split(/(?<=[.!?])\s+(?=["'“‘(]?[A-Z0-9])/).reduce((acc, sentence, index) => {
-        const bucket = Math.floor(index / 3);
-        acc[bucket] = compactText(`${acc[bucket] || ""} ${sentence}`);
-        return acc;
-      }, []);
+  const blocks = [];
+  const pushWordChunks = (text) => {
+    const words = compactText(text).split(/\s+/).filter(Boolean);
+    for (let index = 0; index < words.length; index += maxWords) {
+      const chunk = words.slice(index, index + maxWords).join(" ").trim();
+      if (chunk) blocks.push(chunk);
+    }
+  };
+  sourceBlocks.forEach((sourceBlock) => {
+    const block = compactText(sourceBlock);
+    if (!block) return;
+    const sentences = block.match(/[^.!?…]+[.!?…]+(?=\s|$)|[^.!?…]+$/g) || [block];
+    if (sentences.length <= 1 && block.length > maxChars) {
+      pushWordChunks(block);
+      return;
+    }
+    let current = "";
+    let sentenceCount = 0;
+    sentences.forEach((sentence) => {
+      const clean = compactText(sentence);
+      if (!clean) return;
+      if (clean.length > maxChars) {
+        if (current) blocks.push(current);
+        current = "";
+        sentenceCount = 0;
+        pushWordChunks(clean);
+        return;
+      }
+      const next = compactText(`${current} ${clean}`);
+      if (current && (next.length > maxChars || sentenceCount >= maxSentences)) {
+        blocks.push(current);
+        current = clean;
+        sentenceCount = 1;
+        return;
+      }
+      current = next;
+      sentenceCount += 1;
+    });
+    if (current) blocks.push(current);
+  });
+  return blocks.filter(Boolean);
+}
+
+function paragraphizePlainText(value, terms = []) {
+  const blocks = splitReadableText(value);
   return blocks.map((part) => `<p>${highlightPlainText(part, terms)}</p>`).join("");
 }
 
@@ -570,6 +614,13 @@ function sameEvidence(a, b) {
   return long.startsWith(short.slice(0, 240)) || short.startsWith(long.slice(0, 240));
 }
 
+function evidenceStartsWith(value, prefix) {
+  const text = evidenceFingerprint(value);
+  const lead = evidenceFingerprint(prefix);
+  if (!text || !lead || lead.length < 40) return false;
+  return text.startsWith(lead) || lead.startsWith(text);
+}
+
 function evidenceContainsFragment(fragmentValue, fullValue) {
   const fragment = evidenceFingerprint(fragmentValue);
   const full = evidenceFingerprint(fullValue);
@@ -678,6 +729,15 @@ function isClippedEvidence(value) {
   return /(?:\.{3}|\u2026)\s*$/.test(compactText(value));
 }
 
+function isFragmentaryEvidence(value) {
+  const text = stripEvidenceMarkup(value);
+  if (!text) return false;
+  if (isClippedEvidence(text)) return true;
+  const firstWord = text.replace(/^[^A-Za-z0-9]+/, "").split(/\s+/, 1)[0] || "";
+  if (firstWord && /^[a-z]/.test(firstWord)) return true;
+  return /^(and|or|but|so|then|because|when|while|that|this|it|they|you|we)\b/i.test(text);
+}
+
 function expandedInsightEvidence(row, relatedPassages = [], doc = null) {
   const evidence = stripEvidenceMarkup(row.evidence_excerpt || "");
   if (!evidence) return "";
@@ -749,10 +809,26 @@ function sourceShareActionBar(title, description) {
   `;
 }
 
+function sourceIntelligenceEmptyState(loading = false) {
+  const text = loading
+    ? "Loading reviewed Source Intelligence for this source."
+    : "No reviewed Source Intelligence cards are published for this source yet. Base2026 only shows reviewed source-backed cards here; unreviewed candidates stay out of the public UI until evidence review.";
+  return `<p class="empty-state source-intelligence-empty">${escapeHtml(text)}</p>`;
+}
+
 function shouldShowSummaryLong(summaryLong, summaryShort, publicText) {
   if (!summaryLong || summaryLong === summaryShort) return false;
   if (sameEvidence(summaryLong, publicText)) return false;
-  if (summaryShort && sameEvidence(summaryLong, summaryShort)) return false;
+  if (summaryShort && (sameEvidence(summaryLong, summaryShort) || evidenceStartsWith(summaryLong, summaryShort))) return false;
+  return true;
+}
+
+function shouldShowDetailCopy(value, title, publicText, previous = "") {
+  const text = compactText(value);
+  if (!text) return false;
+  if (sameEvidence(text, title) || sameEvidence(text, previous)) return false;
+  if (evidenceStartsWith(text, title) || evidenceStartsWith(text, previous)) return false;
+  if (sameEvidence(text, publicText) || evidenceContainsFragment(text, publicText)) return false;
   return true;
 }
 
@@ -804,8 +880,12 @@ function renderInsightCard(rowOrRows, relatedPassages = [], activeTerms = [], do
     const expandedEvidence = expandedInsightEvidence(row, relatedPassages, doc);
     const evidenceBody = evidence || expandedEvidence;
     if (!evidenceBody) return;
-    const evidenceIsDuplicate = sameEvidence(evidenceBody, sourceText) || sameEvidence(evidenceBody, claim);
-    if (evidenceIsDuplicate) {
+    const evidenceIsSourceFragment = (
+      evidenceContainsFragment(evidenceBody, sourceText) ||
+      evidenceContainsFragment(evidenceBody, claim)
+    );
+    const evidenceIsDuplicate = sameEvidence(evidenceBody, sourceText) || sameEvidence(evidenceBody, claim) || evidenceIsSourceFragment;
+    if (evidenceIsDuplicate || isFragmentaryEvidence(evidenceBody)) {
       evidenceDuplicateCount += 1;
       return;
     }
@@ -819,11 +899,11 @@ function renderInsightCard(rowOrRows, relatedPassages = [], activeTerms = [], do
     ? `${rows.length} related signals · ${topicLabels.slice(0, 3).join(" / ")}`
     : `${topicLabels[0] || "Topic"} · ${primary.stance || "asserts"}`;
   const actionHtml = actions.length ? `<ul class="source-detail-insight__actions">${actions.join("")}</ul>` : "";
-  const evidenceDetails = evidenceBlocks.length || evidenceDuplicateCount
+  const evidenceDetails = evidenceBlocks.length
     ? `
       <details class="source-detail-evidence">
-        <summary>${evidenceBlocks.length ? "Show source evidence" : "Evidence is in Source Text"}</summary>
-        <div>${evidenceBlocks.length ? `<ul class="source-detail-evidence-list">${evidenceBlocks.join("")}</ul>` : "<p>Evidence is already included in the Source Text above.</p>"}</div>
+        <summary>Show source evidence</summary>
+        <div><ul class="source-detail-evidence-list">${evidenceBlocks.join("")}</ul></div>
       </details>
     `
     : "";
@@ -911,6 +991,10 @@ function renderSourceDetailShell(doc, matchedHit, relatedPassages = [], insights
   const summaryShort = compactText(doc.source_summary_short || sourceDetailLead(doc));
   const summaryLong = compactText(doc.source_summary_long || sourceIntelligenceLead(doc, insights, loading));
   const detailTitle = sourceIntelligenceHeading(doc, insights);
+  const displayLead = shouldShowDetailCopy(summaryShort, detailTitle, publicText) ? summaryShort : "";
+  const displaySummary = shouldShowSummaryLong(summaryLong, summaryShort, publicText) && shouldShowDetailCopy(summaryLong, detailTitle, publicText, displayLead)
+    ? summaryLong
+    : "";
   const handle = doc.handle || doc.author || doc.creator_handle || "";
   const matchedBody = matchedHit?._formatted?.body || matchedHit?._highlightResult?.body?.value || matchedHit?.body || "";
   const showMatchedPassage = Boolean(
@@ -949,32 +1033,42 @@ function renderSourceDetailShell(doc, matchedHit, relatedPassages = [], insights
       </section>
     `
     : "";
-  const insightSection = insights.length
-    ? `
+  const insightBody = insights.length
+    ? `<div class="source-detail-card-grid">${insightHtml}</div>`
+    : sourceIntelligenceEmptyState(loading);
+  const insightSection = `
       <section class="source-detail-section">
-        ${detailSectionTitle("Source Intelligence", "Reviewed source-backed claims promoted from this evidence.")}
-        <div class="source-detail-card-grid">${insightHtml}</div>
+        <div class="source-detail-section-heading">
+          ${detailSectionTitle("Source Intelligence", "Reviewed source-backed claims promoted from this evidence.")}
+          ${insights.length ? sourceShareActionBar(`Source Intelligence: ${detailTitle}`, sourceIntelligenceLead(doc, insights, loading)) : ""}
+        </div>
+        ${insightBody}
       </section>
-    `
-    : "";
+    `;
   return `
     <div class="source-detail-head">
-      <button type="button" class="button-link source-detail-back" data-source-detail-back>Back to results</button>
-      <p class="source-kicker">Public source</p>
-      ${sourceIdentityMarkup(doc)}
-      ${sourceShareActionBar(detailTitle, summaryShort)}
-      <h2>${escapeHtml(detailTitle)}</h2>
-      <p class="source-detail-lead">${escapeHtml(summaryShort)}</p>
-      ${shouldShowSummaryLong(summaryLong, summaryShort, publicText) ? `<p class="source-detail-summary">${escapeHtml(summaryLong)}</p>` : ""}
+      <div class="source-detail-nav-row">
+        <button type="button" class="button-link source-detail-back" data-source-detail-back>Back to results</button>
+        <p class="source-kicker">Public source</p>
+      </div>
+      <div class="source-detail-toolbar">
+        ${sourceIdentityMarkup(doc)}
+        <div class="source-detail-toolbar__tools">
+          ${sourceShareActionBar(detailTitle, displayLead || summaryShort || detailTitle)}
+          <div class="source-hero-meta source-detail-meta" aria-label="Source metadata">
+            <span class="source-meta-chip source-meta-chip--platform">${platformValue(doc.source_type, doc.platform)}${infoHint("Platform", "Original platform where this public source was collected.", "left")}</span>
+            <span class="source-meta-chip"><span>${escapeHtml(publicPolicyLabel(doc.public_policy))}</span>${infoHint("Public policy", "Base2026 publishes attributed excerpts, source links, passages, and reviewed annotations by default.", "left")}</span>
+            <span class="source-meta-chip"><span>${escapeHtml(doc.language || "en")}</span>${infoHint("Language", "Detected or stored language for the public source text.", "left")}</span>
+            ${insights.length ? `<span class="source-meta-chip"><span>${escapeHtml(String(insights.length))} insights</span>${infoHint("Insights", "Reviewed insight cards linked to this source.", "left")}</span>` : ""}
+          </div>
+        </div>
+      </div>
+      <h1>${escapeHtml(detailTitle)}</h1>
+      ${displayLead ? `<p class="source-detail-lead">${escapeHtml(displayLead)}</p>` : ""}
+      ${displaySummary ? `<p class="source-detail-summary">${escapeHtml(displaySummary)}</p>` : ""}
       <div class="source-detail-actions">
         <a class="button-link button-link--accent" href="${escapeHtml(doc.source_url || "#")}" target="_blank" rel="noreferrer">Open original</a>
         <a class="button-link" href="${creatorRouteHref(doc)}" data-workspace-route data-route-creator="${escapeHtml(stripHandle(handle))}">Creator</a>
-      </div>
-      <div class="source-hero-meta source-detail-meta" aria-label="Source metadata">
-        <span class="source-meta-chip source-meta-chip--platform">${platformValue(doc.source_type, doc.platform)}${infoHint("Platform", "Original platform where this public source was collected.")}</span>
-        <span class="source-meta-chip"><span>${escapeHtml(publicPolicyLabel(doc.public_policy))}</span>${infoHint("Public policy", "Base2026 publishes attributed excerpts, source links, passages, and reviewed annotations by default.")}</span>
-        <span class="source-meta-chip"><span>${escapeHtml(doc.language || "en")}</span>${infoHint("Language", "Detected or stored language for the public source text.")}</span>
-        ${insights.length ? `<span class="source-meta-chip"><span>${escapeHtml(String(insights.length))} insights</span>${infoHint("Insights", "Reviewed insight cards linked to this source.")}</span>` : ""}
       </div>
       ${renderRecordTopics(doc)}
     </div>
@@ -1098,16 +1192,16 @@ function hitTemplate(hit) {
   const bodySnippet = sentenceExcerpt(body, 420, 3);
   const handle = hit._formatted?.handle || hit._highlightResult?.handle?.value || hit.handle || hit.author || "Base2026";
   const date = hit.published_date || "No date";
-  const creatorSearchHref = creatorRouteHref(hit);
+  const creatorProfileHref = creatorPageHref(hit);
   return `
     <article class="result">
       <div class="result-top">
         ${creatorAvatar(hit.handle || hit.author, hit.avatar_url || hit.creator_avatar_url)}
         <div>
           <div class="creator-line">
-            <a class="creator-name" href="${creatorSearchHref}" data-workspace-route data-route-creator="${escapeHtml(stripHandle(hit.handle || hit.author || ""))}">${handle}</a>
+            <a class="creator-name" href="${creatorProfileHref}">${handle}</a>
             <span class="meta">${date}</span>
-            ${platformBadge(hit.source_type)}
+            ${platformBadge(hit.source_type, hit.source_url || hit.url || "")}
           </div>
           ${renderTopicLinks(hit)}
         </div>

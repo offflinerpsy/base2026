@@ -75,8 +75,13 @@ PAGE_MAP = {
 
 
 CONTACT_EMAIL = "offflinerpsy@gmail.com"
-STYLE_VERSION = "20260611-creatorcta1"
+STYLE_VERSION = "20260617-source-readability1"
 FONT_LINK = "https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&display=swap"
+FAVICON_ASSET_PATH = "static/assets/alex-yarosh-favicon-32.png"
+APPLE_TOUCH_ASSET_PATH = "static/assets/alex-yarosh-apple-touch.png"
+SOCIAL_IMAGE_URL = "https://aggressorbulkit.online/knowledge/static/assets/alex-yarosh-avatar.png"
+SOCIAL_IMAGE_ALT = "Alex Yarosh profile photo"
+TWITTER_SITE = "@AleksejAros"
 
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
@@ -103,6 +108,35 @@ FOOTER_LINKS = [
     ("Support", "./support.html"),
     ("Creator Correction / Removal", "./opt-out.html"),
 ]
+
+
+def favicon_links(relative_root: str = ".") -> str:
+    return "\n".join(
+        [
+            f'    <link rel="icon" type="image/png" sizes="32x32" href="{relative_root}/{FAVICON_ASSET_PATH}" />',
+            f'    <link rel="apple-touch-icon" sizes="180x180" href="{relative_root}/{APPLE_TOUCH_ASSET_PATH}" />',
+        ]
+    )
+
+
+def social_meta_tags(title: str, description: str, canonical: str, og_type: str = "website") -> str:
+    return "\n".join(
+        [
+            f'    <meta property="og:type" content="{html.escape(og_type)}" />',
+            '    <meta property="og:site_name" content="Base2026" />',
+            '    <meta property="og:locale" content="en_US" />',
+            f'    <meta property="og:title" content="{html.escape(title)}" />',
+            f'    <meta property="og:description" content="{html.escape(description)}" />',
+            f'    <meta property="og:url" content="{html.escape(canonical)}" />',
+            f'    <meta property="og:image" content="{html.escape(SOCIAL_IMAGE_URL)}" />',
+            f'    <meta property="og:image:alt" content="{html.escape(SOCIAL_IMAGE_ALT)}" />',
+            '    <meta name="twitter:card" content="summary_large_image" />',
+            f'    <meta name="twitter:site" content="{html.escape(TWITTER_SITE)}" />',
+            f'    <meta name="twitter:title" content="{html.escape(title)}" />',
+            f'    <meta name="twitter:description" content="{html.escape(description)}" />',
+            f'    <meta name="twitter:image" content="{html.escape(SOCIAL_IMAGE_URL)}" />',
+        ]
+    )
 
 
 def normalize_copy(value: str) -> str:
@@ -218,13 +252,21 @@ def base2026_breadcrumbs(title: str) -> str:
 
 
 def inline_md(value: str) -> str:
-    text = html.escape(normalize_copy(value.strip()))
+    code_spans: list[str] = []
+
+    def stash_code_span(match: re.Match[str]) -> str:
+        code_spans.append(f"<code>{html.escape(match.group(1))}</code>")
+        return f"@@CODESPAN{len(code_spans) - 1}@@"
+
+    text = re.sub(r"`([^`]+)`", stash_code_span, normalize_copy(value.strip()))
+    text = html.escape(text)
     text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
     text = re.sub(r"__(.+?)__", r"<strong>\1</strong>", text)
     text = re.sub(r"\*(.+?)\*", r"<em>\1</em>", text)
     text = re.sub(r"_(.+?)_", r"<em>\1</em>", text)
-    text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
     text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', text)
+    for index, code_html in enumerate(code_spans):
+        text = text.replace(f"@@CODESPAN{index}@@", code_html)
     return text
 
 
@@ -414,6 +456,7 @@ def contact_form_markup(kind: str) -> str:
 
 def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
     title = normalize_copy(meta["title"])
+    page_title = f"{title} | Base2026"
     eyebrow = normalize_copy(meta["eyebrow"])
     lead = normalize_copy(meta["lead"])
     page_class = meta["body_class"]
@@ -423,7 +466,7 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
     schema = {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        "name": f"{title} | Base2026",
+        "name": page_title,
         "description": lead,
         "url": canonical,
         "isPartOf": {
@@ -569,12 +612,10 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
     <meta name="description" content="{html.escape(lead)}" />
     <meta name="robots" content="{html.escape(robots)}" />
     <link rel="canonical" href="{html.escape(canonical)}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="{html.escape(title)} | Base2026" />
-    <meta property="og:description" content="{html.escape(lead)}" />
-    <meta property="og:url" content="{html.escape(canonical)}" />
-    <title>{html.escape(title)} | Base2026</title>
+{social_meta_tags(page_title, lead, canonical)}
+    <title>{html.escape(page_title)}</title>
     <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
+{favicon_links(".")}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="{FONT_LINK}" rel="stylesheet" />
@@ -611,6 +652,20 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
             <a class="ay-button-secondary" href="/pricing/">View Pricing</a>
             <a class="ay-button ay-button-base2026" href="/knowledge/">Base2026</a>
           </div>
+          <div class="ay-footer-socials" aria-label="Social profiles">
+            <p class="ay-footer-socials__label">Socials</p>
+            <div class="ay-footer-socials__links">
+              <a class="ay-social-link" href="https://x.com/AleksejAros" target="_blank" rel="me noopener noreferrer" aria-label="Alex Yarosh on X" title="X">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18.9 2h3.3l-7.2 8.2L23.5 22h-6.7l-5.2-6.8L5.6 22H2.3l7.7-8.8L1.9 2h6.8l4.7 6.2L18.9 2Zm-1.2 17.9h1.8L7.7 4H5.8l11.9 15.9Z"/></svg>
+              </a>
+              <span class="ay-social-link ay-social-link--disabled" aria-label="TikTok profile coming soon" title="TikTok profile coming soon">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.5 2c1.2 0 2.4 0 3.6-.1.1 1.5.6 2.9 1.7 4 1.1 1 2.5 1.5 4 1.7v3.8c-1.4 0-2.7-.3-4-.9-.5-.2-1-.5-1.5-.9v7.7c-.1 1.3-.5 2.6-1.3 3.7-1.2 1.8-3.3 3-5.5 3-1.3.1-2.7-.3-3.8-1-1.9-1.1-3.2-3.2-3.4-5.4v-1.4c.2-1.8 1-3.5 2.4-4.7 1.5-1.4 3.7-2 5.8-1.6v4.2c-.9-.3-2-.2-2.8.3-.6.4-1 1-1.3 1.7-.2.5-.1 1-.1 1.5.2 1.5 1.7 2.8 3.3 2.7 1 0 2-.6 2.6-1.5.2-.3.4-.6.4-1 .1-1.7.1-3.4.1-5.1V2Z"/></svg>
+              </span>
+              <a class="ay-social-link" href="https://github.com/offflinerpsy" target="_blank" rel="me noopener noreferrer" aria-label="Alex Yarosh on GitHub" title="GitHub">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .5A11.5 11.5 0 0 0 8.36 22.9c.58.11.8-.25.8-.56v-2.02c-3.25.71-3.94-1.38-3.94-1.38-.53-1.35-1.3-1.71-1.3-1.71-1.06-.73.08-.72.08-.72 1.18.08 1.8 1.21 1.8 1.21 1.04 1.79 2.74 1.27 3.41.97.11-.76.41-1.27.74-1.56-2.59-.29-5.31-1.3-5.31-5.76 0-1.27.45-2.31 1.2-3.13-.12-.29-.52-1.48.12-3.09 0 0 .98-.31 3.21 1.19A11.08 11.08 0 0 1 12 5.96c.99 0 1.98.13 2.91.39 2.22-1.5 3.2-1.19 3.2-1.19.64 1.61.24 2.8.12 3.09.75.82 1.2 1.86 1.2 3.13 0 4.47-2.73 5.46-5.33 5.75.42.36.79 1.08.79 2.17v3.04c0 .31.21.68.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+              </a>
+            </div>
+          </div>
         </section>
         <nav aria-label="Footer services">
           <h3>Services</h3>
@@ -629,7 +684,7 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
             <li><a href="/services/">Services</a></li>
             <li><a href="/pricing/">Pricing</a></li>
             <li><a href="/#how-it-works">Process / How It Works</a></li>
-            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/ai-visibility-audit/">Free AI Visibility Snapshot</a></li>
           </ul>
         </nav>
         <nav aria-label="Footer Base2026">
@@ -637,6 +692,7 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
           <p>Independent pilot project: a searchable knowledge base for short-form expert video.</p>
           <ul class="ay-footer-menu">
             <li><a href="./">Search Base2026</a></li>
+            <li><a href="./api.html">API &amp; AI access</a></li>
             <li><a href="./roadmap.html">Roadmap</a></li>
             <li><a href="./topics/">Topics</a></li>
             <li><a href="./creators/">Creators</a></li>

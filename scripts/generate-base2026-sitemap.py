@@ -14,6 +14,12 @@ def is_indexable(path: Path) -> bool:
     return not (robots and "noindex" in robots.group(1).lower())
 
 
+def canonical_url(path: Path) -> str | None:
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    canonical = re.search(r'<link\s+rel="canonical"\s+href="([^"]+)"', text, re.IGNORECASE)
+    return html.unescape(canonical.group(1)) if canonical else None
+
+
 def url_for(web_root: Path, path: Path, base_url: str) -> str:
     rel = path.relative_to(web_root).as_posix()
     if rel == "index.html":
@@ -34,11 +40,15 @@ def main() -> int:
     web_root = args.web_root.resolve()
     out = args.out or (web_root / "sitemap.xml")
     chunk_size = max(1, args.chunk_size)
-    urls = [
-        url_for(web_root, path, args.base_url)
-        for path in sorted(web_root.rglob("*.html"))
-        if not path.name.startswith("roadmap-dataviz-test") and is_indexable(path)
-    ]
+    urls = []
+    for path in sorted(web_root.rglob("*.html")):
+        if path.name.startswith("roadmap-dataviz-test") or not is_indexable(path):
+            continue
+        url = url_for(web_root, path, args.base_url)
+        canonical = canonical_url(path)
+        if canonical and canonical.rstrip("/") != url.rstrip("/"):
+            continue
+        urls.append(url)
     today = date.today().isoformat()
     out.parent.mkdir(parents=True, exist_ok=True)
     sitemap_dir = out.parent / "sitemaps"

@@ -15,6 +15,7 @@ FORBIDDEN_PREFIXES = {
     ".github/workflows/",
     ".planning/",
     ".playwright-mcp/",
+    ".github/workflows/",
     "00_sources/",
     "01_core-methodology/",
     "02_factor-maps/",
@@ -37,7 +38,22 @@ FORBIDDEN_PREFIXES = {
     "tests/fixtures/public-export-auto-promote/",
 }
 
-FORBIDDEN_EXACT = {"manifest.json"}
+GENERATED_STATIC_PREFIXES = {
+    "web/static/compare/",
+    "web/static/creators/",
+    "web/static/sitemaps/",
+    "web/static/sources/",
+    "web/static/topics/",
+}
+
+GENERATED_STATIC_EXACT = {
+    "web/static/analytics_summary.json",
+    "web/static/base2026_analytics.json",
+    "web/static/sitemap.xml",
+    "web/static/topic_signal_briefs.jsonl",
+}
+
+FORBIDDEN_EXACT = {"manifest.json", ".github/dependabot.yml", *GENERATED_STATIC_EXACT}
 
 FORBIDDEN_PATTERNS = [
     re.compile(r"^\.env(?:\.|$)"),
@@ -55,7 +71,6 @@ PUBLIC_SAFE_PREFIXES = {
     "docs/",
     "tests/fixtures/public-export-leaky/",
     "tests/fixtures/public-export-valid/",
-    "web/static/",
 }
 
 PUBLIC_SAFE_EXACT = {
@@ -98,6 +113,7 @@ PUBLIC_SAFE_EXACT = {
     "scripts/generate-public-pages.py",
     "scripts/generate-info-pages.py",
     "scripts/hermes-tiktok-refresh.ps1",
+    "scripts/live-seo-crawl-gate.mjs",
     "scripts/meili-index-public.py",
     "scripts/mobile-visual-qa.mjs",
     "scripts/package-public-hotfix-from-export.ps1",
@@ -173,6 +189,19 @@ def changed_files() -> list[str]:
     return sorted({normalize(path) for path in [*staged, *modified, *untracked]})
 
 
+def staged_deletions() -> set[str]:
+    deleted: set[str] = set()
+    for line in run_git(["diff", "--cached", "--name-status"]):
+        if not line.startswith("D\t"):
+            continue
+        deleted.add(normalize(line.split("\t", 1)[1]))
+    return deleted
+
+
+def is_generated_static_artifact(path: str) -> bool:
+    return path in GENERATED_STATIC_EXACT or any(path.startswith(prefix) for prefix in GENERATED_STATIC_PREFIXES)
+
+
 def is_forbidden(path: str) -> str | None:
     if path == ".env.example":
         return None
@@ -180,6 +209,8 @@ def is_forbidden(path: str) -> str | None:
         return "forbidden exact path"
     if any(path.startswith(prefix) for prefix in FORBIDDEN_PREFIXES):
         return "forbidden private/generated directory"
+    if any(path.startswith(prefix) for prefix in GENERATED_STATIC_PREFIXES):
+        return "forbidden generated static artifact"
     for pattern in FORBIDDEN_PATTERNS:
         if pattern.match(path):
             return "forbidden private/generated pattern"
@@ -188,6 +219,8 @@ def is_forbidden(path: str) -> str | None:
 
 def is_public_safe_candidate(path: str) -> bool:
     if path in PUBLIC_SAFE_EXACT:
+        return True
+    if path.startswith("web/static/") and not is_generated_static_artifact(path):
         return True
     return any(path.startswith(prefix) for prefix in PUBLIC_SAFE_PREFIXES)
 
@@ -218,15 +251,21 @@ def main() -> int:
     needs_review: list[str] = []
     public_safe: list[str] = []
     secret_findings: list[Finding] = []
+    index_cleanup = staged_deletions()
 
     for path in files:
+        generated_index_cleanup = path in index_cleanup and is_generated_static_artifact(path)
         reason = is_forbidden(path)
         if reason:
+            if generated_index_cleanup:
+                public_safe.append(path)
+                continue
             forbidden.append(Finding(path, reason))
             continue
         if is_public_safe_candidate(path):
             public_safe.append(path)
-            secret_findings.extend(scan_file(path))
+            if not generated_index_cleanup:
+                secret_findings.extend(scan_file(path))
         else:
             needs_review.append(path)
 
