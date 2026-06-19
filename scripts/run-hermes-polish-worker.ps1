@@ -1,7 +1,7 @@
 param(
   [string]$BatchSet = "",
   [string]$BatchDir = "",
-  [string]$Model = "gpt-5.4",
+  [string]$Model = "gpt-5.5",
   [string]$CodexPath = "",
   [switch]$DryRun
 )
@@ -20,6 +20,7 @@ if (-not $CodexPath) {
     $CodexPath = $env:HERMES_CODEX_PATH
   } else {
     $cmd = Get-Command codex.exe -ErrorAction SilentlyContinue
+    if (-not $cmd) { $cmd = Get-Command codex -ErrorAction SilentlyContinue }
     if ($cmd) { $CodexPath = $cmd.Source }
   }
 }
@@ -49,7 +50,7 @@ $Root
 
 Model policy:
 - Use the requested model tier: $Model.
-- Do not escalate to GPT-5.5.
+- Do not switch to a lower/local model for this quality lane.
 - Do not read the whole repository.
 - Read only the batch files listed below and the exact output files you create/update.
 

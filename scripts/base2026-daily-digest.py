@@ -42,7 +42,11 @@ def first_next_action() -> str:
     lines = NEXT_ACTION.read_text(encoding="utf-8").splitlines()
     in_exact_next = False
     for line in lines:
-        if line.strip() == "## Exact next steps":
+        normalized = line.strip().lower()
+        if normalized in {"## exact next steps", "## exact next safe action"}:
+            in_exact_next = True
+            continue
+        if normalized in {"next safe action:", "## next safe action"}:
             in_exact_next = True
             continue
         if in_exact_next and line.startswith("## "):

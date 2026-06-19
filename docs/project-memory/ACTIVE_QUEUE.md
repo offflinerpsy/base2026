@@ -1,6 +1,6 @@
 # Base2026 / Geo Command Center Queue
 
-Last updated: 2026-06-17
+Last updated: 2026-06-18
 
 This file is the working queue. Chat is not the source of truth for tasks.
 
@@ -34,9 +34,9 @@ No task is considered done because a worker reports done. Codex must review, int
 
 ## Current Deployed State
 
-- Base2026 UI release live: `base2026-social-metadata-h1-ay39-20260618`.
-- Base2026 latest data/reindex checkpoint: `base2026-darrenshawseo-intake-ay90-r2-20260616`.
-- Base2026 public export live: 1388 source records, 1906 passages, 1623 insight cards, 1052 public insight cards, 1516 topics, 1001 public topics, 5 creators.
+- Base2026 UI/data release live: `base2026-ai-recommends-creators-ay42-20260618`.
+- Base2026 latest data/reindex checkpoint: `base2026-ai-recommends-creators-ay42-20260618`.
+- Base2026 public export live: 1425 source records, 1953 passages, 1626 insight cards, 1055 public insight cards, 1518 topics, 1003 public topics, 10 creators.
 - WordPress child-theme CSS live: at least `1.5.46`; verify the exact live `style.css?ver=` before the next WordPress UI deploy.
 - VPS SSH works through `~/.ssh/geo_contabo_ed25519` and aliases `geo` / `geo-contabo`.
 
@@ -45,7 +45,7 @@ No task is considered done because a worker reports done. Codex must review, int
 1. Review `GROWTH-01` Base2026 intelligence plan and convert it into executable SEO/content/product tasks.
 2. Start the next SEO execution block from the crawl-gate findings: shared OG/X-card metadata, source archive/internal links, query-state canonical/noindex policy, schema validation, and sitemap canonical hygiene.
 3. Do not mass-submit URLs to GSC/IndexNow until the local crawl gate remains clean for P0 status/link failures and core duplicate/canonical risks are controlled.
-4. Keep `PIPE-01` running through reviewed slices only; do not promote cards or transcripts without exact-evidence gates.
+4. Keep `PIPE-01` running through reviewed slices only; do not promote cards or transcripts without exact-evidence gates. The ay42 gated debt is 47 QA-needs-review rows plus 23 `needs_asr` rows.
 5. Add a shadow/reindex verification step to the deploy path before the next data-changing public release.
 6. Work historical transcript QA and source-access review debt separately from public deploy unless fixes change public source text.
 7. Keep `scripts/tiktok-source-review-audit.py` as the repeatable reason gate before retrying parked rows.

@@ -42,6 +42,14 @@ def tool_path(name: str) -> str | None:
     return shutil.which(name)
 
 
+def first_tool_path(names: list[str]) -> str | None:
+    for name in names:
+        found = tool_path(name)
+        if found:
+            return found
+    return None
+
+
 def module_available(name: str) -> bool:
     try:
         __import__(name)
@@ -78,7 +86,70 @@ def creators_file(path_arg: str | None) -> Path:
 def cmd_doctor(_: argparse.Namespace) -> int:
     required_tools = ["yt-dlp", "ffmpeg"]
     python_tools = ["python3", "python"]
-    optional_tools = ["whisper.cpp", "instaloader", "gallery-dl", "ollama"]
+    optional_tool_specs = {
+        "gallery-dl": {
+            "commands": ["gallery-dl"],
+            "purpose": "TikTok fallback discovery and Instagram profile/reels discovery.",
+        },
+        "instaloader": {
+            "commands": ["instaloader"],
+            "purpose": "Instagram session/profile fallback after gallery-dl.",
+        },
+        "whisper.cpp": {
+            "commands": ["whisper.cpp", "whisper-cpp"],
+            "purpose": "Optional CPU ASR fallback; faster-whisper remains primary.",
+        },
+        "ollama": {
+            "commands": ["ollama"],
+            "purpose": "Optional local LLM endpoint for non-authoritative cleanup experiments.",
+        },
+    }
+    required_available = {name: tool_path(name) for name in required_tools}
+    python_modules = {
+        "faster_whisper": module_available("faster_whisper"),
+        "ctranslate2": module_available("ctranslate2"),
+        "requests": module_available("requests"),
+    }
+    optional_tools = {
+        name: {
+            "available": bool(first_tool_path(spec["commands"])),
+            "path": first_tool_path(spec["commands"]),
+            "commands_checked": spec["commands"],
+            "purpose": spec["purpose"],
+            "required": False,
+        }
+        for name, spec in optional_tool_specs.items()
+    }
+    capabilities = {
+        "tiktok_discovery_primary": {
+            "status": "available" if required_available["yt-dlp"] else "missing_required_yt_dlp",
+            "adapter": "yt-dlp --flat-playlist",
+        },
+        "tiktok_discovery_fallback": {
+            "status": "available" if optional_tools["gallery-dl"]["available"] else "disabled_missing_gallery_dl",
+            "adapter": "gallery-dl",
+        },
+        "instagram_discovery": {
+            "status": (
+                "available_gallery_dl"
+                if optional_tools["gallery-dl"]["available"]
+                else (
+                    "degraded_instaloader_only"
+                    if optional_tools["instaloader"]["available"]
+                    else "disabled_missing_gallery_dl_or_instaloader"
+                )
+            ),
+            "adapter": "gallery-dl primary, instaloader fallback later",
+        },
+        "asr_primary": {
+            "status": "available" if required_available["ffmpeg"] and python_modules["faster_whisper"] else "missing_ffmpeg_or_faster_whisper",
+            "adapter": "ffmpeg + faster-whisper",
+        },
+        "asr_cpu_fallback": {
+            "status": "available" if optional_tools["whisper.cpp"]["available"] else "disabled_missing_whisper_cpp",
+            "adapter": "whisper.cpp",
+        },
+    }
     local_llm = {
         "BASE2026_LOCAL_LLM_BASE_URL": os.environ.get("BASE2026_LOCAL_LLM_BASE_URL", ""),
         "BASE2026_LOCAL_LLM_MODEL": os.environ.get("BASE2026_LOCAL_LLM_MODEL", ""),
@@ -87,23 +158,25 @@ def cmd_doctor(_: argparse.Namespace) -> int:
     }
     print_json(
         {
-            "ok": all(tool_path(name) for name in required_tools),
+            "ok": all(required_available.values()),
             "python_executable": sys.executable,
-            "required_tools": {name: tool_path(name) for name in required_tools},
+            "required_tools": required_available,
             "python_tools": {name: tool_path(name) for name in python_tools},
-            "optional_tools": {name: tool_path(name) for name in optional_tools},
-            "python_modules": {
-                "faster_whisper": module_available("faster_whisper"),
-                "ctranslate2": module_available("ctranslate2"),
-                "requests": module_available("requests"),
-            },
+            "optional_tools": optional_tools,
+            "python_modules": python_modules,
+            "capabilities": capabilities,
+            "notes": [
+                "Optional tools do not make doctor fail when missing.",
+                "Instagram discovery is disabled or degraded unless gallery-dl or instaloader is available.",
+                "TikTok discovery remains yt-dlp-first; gallery-dl is a fallback only.",
+            ],
             "local_llm_env": local_llm,
             "spool": str(SPOOL),
             "creators_default": str(DEFAULT_CREATORS),
             "creators_example": str(EXAMPLE_CREATORS),
         }
     )
-    return 0 if all(tool_path(name) for name in required_tools) else 1
+    return 0 if all(required_available.values()) else 1
 
 
 def cmd_creators_list(args: argparse.Namespace) -> int:

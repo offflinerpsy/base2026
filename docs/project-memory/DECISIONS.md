@@ -365,3 +365,39 @@ Reason: Base2026 is meant to be useful to humans and AI tools as a source-backed
 Decision: runtime source-detail pages and generated static source pages must always render the `Source Intelligence` section for a selected source. If a source has no reviewed/public Source Intelligence cards, show an explicit empty state instead of hiding the section. Do not promote pending/private cards just to remove the empty state.
 
 Reason: hiding the section makes a valid source record look broken and leaves users unsure whether the pipeline failed. An explicit empty state preserves the public/private boundary, explains that unreviewed candidates are withheld, and keeps the UI contract stable while visual/evidence-dependent cards wait for review.
+
+## 2026-06-18 — Route data-changing releases through one canonical gate
+
+Decision: TikTok/source data-changing releases must use `scripts/base2026-release-gate.ps1` as the command center. The gate owns polish status, optional `AfterPolish`, newest-source readiness, publication boundary, metadata validation, export policy, release contract, packaging, optional deploy/reindex, live SEO crawl, and mobile visual QA. Direct deploy is reserved for explicit reviewed hotfixes or releases that have already passed the gate.
+
+Reason: repeated regressions came from treating intake, public export, deploy, reindex, and QA as separate chat-driven steps. A single reproducible release gate gives future agents one route through the same checks and makes the previous failure modes visible in `PIPELINE_ERROR_LEDGER.md`.
+
+## 2026-06-18 — Keep platform-neutral social discovery private and non-mutating first
+
+Decision: Phase 1/2 of the free social intake plan adds capability reporting and `scripts/social-discover.py`, but discovery output remains private JSONL under ignored `.planning/`. The script must not write `videos.csv`, public export, Meilisearch, or deploy. TikTok discovery stays `yt-dlp --flat-playlist` first; `gallery-dl` and `instaloader` are optional adapters surfaced by doctor and failure records.
+
+Reason: Base2026 needs a repeatable adapter/spool layer before expanding beyond TikTok. Mutating the proven TikTok CSV or public release path before the adapter contract is verified would recreate the same ad hoc pipeline failures the release gate is meant to prevent.
+
+## 2026-06-18 — Bridge social discovery into TikTok queue only through a dry-run importer
+
+Decision: `scripts/import-social-discovery-to-tiktok-csv.py` is the only supported bridge from ignored `.planning/social-discovered.jsonl` into private local `12_knowledge-base/sources/tiktok/videos.csv`. The importer is dry-run by default, imports only TikTok source rows, dedupes by `video_id`, fills only missing safe metadata on existing rows, preserves old-source cutoff semantics, and creates an ignored backup before `--apply`. It must not trigger public export, Meilisearch, deploy, or Git staging.
+
+Reason: the user needs a pipeline that can accept new creators without chat improvisation, but the proven TikTok CSV remains a private compatibility layer. A dry-run-first bridge lets new discovery feed the current refresh/release gate while preventing non-TikTok leakage, duplicate rows, and accidental public publication.
+
+## 2026-06-18 — Check-only TikTok refresh must be read-only
+
+Decision: `scripts/hermes-tiktok-refresh.ps1 -CheckOnly` and `-DryRun` must never run legacy mutating inventory before exiting. They now run social discovery into ignored `.planning/`, run the discovery importer without `--apply`, print current queue state, and preserve the exact `videos.csv` hash.
+
+Reason: a command named check-only must be safe to run repeatedly while diagnosing the queue. If it mutates `videos.csv`, agents cannot tell whether new rows came from an intentional import or from a supposedly read-only check.
+
+## 2026-06-18 — Treat social discovery as production-proven only through the release gate
+
+Decision: the social-discovery bridge is accepted as the path for adding new TikTok creators only when the full route is used: ignored local creator/intake config, private discovery JSONL, importer dry-run, explicit apply with ignored backup, current-batch polish gate, newest-source readiness, public export policy, release contract, deploy/reindex, live SEO crawl, and mobile visual QA. The ay41 and ay42 releases are the proof cases for this route.
+
+Reason: discovery and queue import are not enough. The user needs a traffic/content pipeline, but Base2026 can only scale safely if new creator videos become live public records through the same review and publication gates that protect source quality, public/private boundaries, and search index consistency.
+
+## 2026-06-18 — AfterPolish must not run discovery or inventory
+
+Decision: `scripts/hermes-tiktok-refresh.ps1 -AfterPolish` is a rebuild/export lane only. It must skip inventory, caption intake, social discovery, and importer work, then rebuild from existing reviewed polish outputs. New discovery belongs before the polish batch; release packaging must not silently expand `videos.csv`.
+
+Reason: the ay42 release attempt proved that running inventory inside `AfterPolish` can expand the private queue with default limits after the operator has already selected a batch. That makes release results non-deterministic and can introduce unreviewed rows. Keeping `AfterPolish` rebuild-only makes the pipeline predictable.

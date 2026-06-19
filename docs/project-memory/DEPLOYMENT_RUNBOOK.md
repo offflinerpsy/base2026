@@ -7,7 +7,7 @@ Current public path:
 - WordPress root: `/var/www/alex-yarosh`
 - server current symlink: `/var/www/base2026-knowledge/current`
 - server releases: `/var/www/base2026-knowledge/releases/`
-- latest deployed release: `base2026-social-metadata-h1-ay39-20260618`
+- latest deployed release: `base2026-ai-recommends-creators-ay42-20260618`
 - SSL certificate: Let's Encrypt `aggressorbulkit.online`, domains `aggressorbulkit.online` and `www.aggressorbulkit.online`, auto-renewed by `certbot.timer`
 
 Latest WordPress root homepage design-system pass: `alex-yarosh` child theme `style.css?ver=1.5.43`, applied directly through Novamira on 2026-06-14. Cache Enabler generated cache for `aggressorbulkit.online` was cleared after the direct update.
@@ -48,9 +48,11 @@ nginx -t
 
 ## Local package
 
-Current live release: `base2026-social-metadata-h1-ay39-20260618`.
+Current live release: `base2026-ai-recommends-creators-ay42-20260618`.
 
-Latest data/reindex checkpoint: `base2026-darrenshawseo-intake-ay90-r2-20260616`.
+Latest data/reindex checkpoint: `base2026-ai-recommends-creators-ay42-20260618`.
+
+This checkpoint processed the five-creator AI Recommends Solutions pass through the canonical release gate, deployed 1,425 public source records and 1,953 public passages, and reindexed Meilisearch.
 
 The `base2026-api-nav-footer-r3-20260616` deploy changed generated HTML/navigation and the hotfix packaging contract only. It intentionally skipped Meilisearch reindex because public data and index fields did not change. The deploy fixed global `/knowledge/api.html` navigation in the search root, generated pages, mobile Base2026 nav, and footer.
 
@@ -78,6 +80,18 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy-public-vps.
 ```
 
 The script packages the release, uploads the zip, unpacks to a new release folder, switches the `current` symlink, reloads nginx after `nginx -t`, reindexes Meilisearch, and verifies the deployed path.
+
+For data-changing TikTok/source refreshes, prefer the canonical release gate instead of calling deploy directly:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\base2026-release-gate.ps1 `
+  -ReleaseName <release-name> `
+  -BatchSet <batch-set> `
+  -RunAfterPolish `
+  -Deploy
+```
+
+This runner prevents the common out-of-order failure: public text is exported before a reviewed topic/insight layer exists for the newest source. It also keeps the current-batch polish gate, publication boundary, metadata, export policy, package, deploy/reindex, live crawl, and mobile visual QA in one audited sequence.
 
 ## Server deploy shape
 

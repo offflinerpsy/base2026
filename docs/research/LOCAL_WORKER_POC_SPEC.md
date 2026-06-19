@@ -45,6 +45,26 @@ Optional:
 - `gallery-dl`
 - local LLM endpoint for Phase B cleanup only
 
+Optional intake adapters are capability-only dependencies. Missing optional tools should not fail the local worker doctor. Install them into the project virtualenv when testing platform-neutral discovery:
+
+```bash
+.venv/bin/python -m pip install gallery-dl instaloader
+```
+
+Optional CPU ASR fallback can be installed separately when needed:
+
+```bash
+brew install whisper-cpp
+```
+
+Verify capabilities with:
+
+```bash
+.venv/bin/python scripts/base2026-worker.py doctor
+```
+
+The doctor is the source of truth for whether TikTok fallback discovery, Instagram discovery, and optional CPU ASR fallback are available.
+
 ## Phase A: no LLM
 
 Run:
@@ -160,3 +180,50 @@ Next missing piece:
 - create the 40-video URL matrix file;
 - wire processed records into `export-jsonl`;
 - add optional local LLM cleanup only after Phase A baseline.
+
+## Platform-neutral discovery adapter smoke
+
+Phase 2 discovery adds a private JSONL spool without changing the current TikTok runner or `videos.csv`:
+
+```bash
+.venv/bin/python scripts/social-discover.py \
+  --config config/tiktok-intake-queue.local.json \
+  --creator build_in_public \
+  --out .planning/social-discovered-smoke.jsonl \
+  --limit-per-creator 3
+```
+
+Rules:
+
+- TikTok uses `yt-dlp --flat-playlist` first.
+- TikTok may use `gallery-dl` only as a fallback if installed.
+- Instagram discovery is disabled/degraded unless `gallery-dl` or `instaloader` is installed.
+- The script writes normalized private JSONL only and must not modify `12_knowledge-base/sources/tiktok/videos.csv`.
+
+## Discovery-to-TikTok queue bridge
+
+Phase 3 bridges the private discovery spool into the existing TikTok queue, but only after a dry run:
+
+```bash
+.venv/bin/python scripts/import-social-discovery-to-tiktok-csv.py \
+  --input .planning/social-discovered.jsonl \
+  --report .planning/social-discovery-import-dry-run.json
+```
+
+If the report is clean, apply the local queue update:
+
+```bash
+.venv/bin/python scripts/import-social-discovery-to-tiktok-csv.py \
+  --input .planning/social-discovered.jsonl \
+  --apply \
+  --report .planning/social-discovery-import-report.json
+```
+
+Rules:
+
+- Only `platform == "tiktok"` source records are imported.
+- Discovery failures and Instagram rows are skipped.
+- Existing `video_id` rows are not duplicated; only missing safe metadata fields are filled.
+- New recent rows become `queued`; rows older than the cutoff become `out_of_scope_old`.
+- Every apply creates an ignored local backup under `.planning/backups/`.
+- This bridge must not trigger public export, Meilisearch, deploy, or Git staging.

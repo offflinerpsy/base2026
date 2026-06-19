@@ -47,13 +47,68 @@ Build dry-run mode:
 - do not write database
 - do not deploy
 
+## Platform-neutral discovery preview
+
+Use `scripts/social-discover.py` for private discovery smoke tests before expanding beyond TikTok:
+
+```bash
+.venv/bin/python scripts/social-discover.py \
+  --config config/tiktok-intake-queue.local.json \
+  --creator build_in_public \
+  --out .planning/social-discovered-smoke.jsonl \
+  --limit-per-creator 3
+```
+
+This script writes normalized JSONL under ignored `.planning/`, reports adapter/count/failure status per creator, and does not write `videos.csv`, public export, deploy, or Meilisearch.
+
+Bridge the private discovery spool into the TikTok queue only through a dry-run-first import:
+
+```bash
+.venv/bin/python scripts/import-social-discovery-to-tiktok-csv.py \
+  --input .planning/social-discovered.jsonl \
+  --report .planning/social-discovery-import-dry-run.json
+```
+
+Apply only after the report shows clean TikTok-only candidates:
+
+```bash
+.venv/bin/python scripts/import-social-discovery-to-tiktok-csv.py \
+  --input .planning/social-discovered.jsonl \
+  --apply \
+  --report .planning/social-discovery-import-report.json
+```
+
+The importer dedupes by `video_id`, writes an ignored backup before changing `12_knowledge-base/sources/tiktok/videos.csv`, keeps old rows `out_of_scope_old`, and never triggers export, Meilisearch, deploy, or Git staging.
+
+Capability source of truth:
+
+```bash
+.venv/bin/python scripts/base2026-worker.py doctor
+```
+
+Optional `gallery-dl`, `instaloader`, and `whisper.cpp`/`whisper-cpp` are reported as capabilities. Missing optional tools must not fail doctor; Instagram discovery is disabled/degraded until `gallery-dl` or `instaloader` is available.
+
 ## Current safe execution policy
+
+`scripts/hermes-tiktok-refresh.ps1 -CheckOnly` is read-only. It runs `scripts/social-discover.py`, runs `scripts/import-social-discovery-to-tiktok-csv.py` without `--apply`, prints the current pending summary, and must preserve the exact `videos.csv` hash before/after.
 
 Run local refresh without deploy first. If new caption transcripts are produced, create a small polish batch and hand only that batch to the Codex/GPT quality lane. For current launch work, prefer ChatGPT 5.5 Medium over local LLMs.
 
 Use `scripts/run-hermes-polish-worker.ps1 -BatchSet <batch-set>` only when a dedicated GPT/Codex handoff is needed. The script writes the worker prompt and result under ignored `.planning/` paths and uses `codex exec --ignore-user-config --ignore-rules` to avoid loading the full project context.
 
 Use `scripts/register-hermes-webui-task.ps1 -Start` to repair/start the local `Hermes WebUI` scheduled task. The task must execute PowerShell by absolute path and use the local Hermes WebUI launcher directory as working directory. Override defaults with `HERMES_PWSH_PATH`, `HERMES_WEBUI_LAUNCHER`, or `HERMES_WEBUI_WORKDIR` when needed.
+
+For data-changing public releases, do not jump from Hermes directly to deployment. Use the canonical gate runner:
+
+```powershell
+pwsh ./scripts/base2026-release-gate.ps1 `
+  -ReleaseName <release-name> `
+  -BatchSet <batch-set> `
+  -RunAfterPolish `
+  -Deploy
+```
+
+The gate runner owns current-batch polish status, `AfterPolish`, newest-source content readiness, publication boundary, metadata, export policy, package, deploy, reindex, and live QA. See `docs/project-memory/PIPELINE_ERROR_LEDGER.md`.
 
 ## AfterPolish rule
 

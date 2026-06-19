@@ -1,8 +1,12 @@
 param(
   [string]$CreatorId = "",
+  [string]$VideoId = "",
   [int]$Limit = 50,
   [switch]$AsrFallback,
-  [switch]$IncludeSourceReview
+  [switch]$IncludeSourceReview,
+  [switch]$RefreshAudioFallback,
+  [ValidateSet("", "local_caption_exists", "audio_available_retry_asr", "no_local_caption_or_audio")]
+  [string]$SourceReviewReason = ""
 )
 
 $ErrorActionPreference = "Continue"
@@ -27,6 +31,40 @@ $WorkerScript = Join-Path $Root "scripts\base2026-worker.py"
 
 New-Item -ItemType Directory -Force -Path $RawDir, $CleanDir, $AudioDir, $AsrDir | Out-Null
 
+function Test-LocalCaptionExists {
+  param([string]$Id)
+  if (-not $Id) { return $false }
+  return [bool](Get-ChildItem $RawDir -Recurse -File -Filter "$Id*.vtt" -ErrorAction SilentlyContinue | Select-Object -First 1)
+}
+
+function Test-AudioFallbackExists {
+  param([string]$Id)
+  if (-not $Id) { return $false }
+  return [bool](Get-ChildItem $AudioDir -File -ErrorAction SilentlyContinue |
+    Where-Object { $_.BaseName -eq $Id -and $_.Extension.ToLowerInvariant() -in @(".mp3", ".mp4", ".m4a", ".webm", ".wav") } |
+    Select-Object -First 1)
+}
+
+function Test-SourceReviewReason {
+  param(
+    [object]$Row,
+    [string]$Reason
+  )
+  if (-not $Reason) { return $true }
+  if ($Row.transcript_status -ne "needs_source_review") { return $true }
+
+  $id = $Row.video_id
+  $hasCaption = Test-LocalCaptionExists -Id $id
+  $hasAudio = Test-AudioFallbackExists -Id $id
+
+  switch ($Reason) {
+    "local_caption_exists" { return $hasCaption }
+    "audio_available_retry_asr" { return (-not $hasCaption) -and $hasAudio }
+    "no_local_caption_or_audio" { return (-not $hasCaption) -and (-not $hasAudio) }
+    default { return $true }
+  }
+}
+
 $rows = @(Import-Csv $VideosCsv)
 $targetStatuses = if ($AsrFallback) { @("queued", "pending", "", "needs_asr") } else { @("queued", "pending", "") }
 if ($AsrFallback -and $IncludeSourceReview) {
@@ -34,7 +72,9 @@ if ($AsrFallback -and $IncludeSourceReview) {
 }
 $targets = $rows | Where-Object {
   $_.transcript_status -in $targetStatuses -and
-  ($CreatorId -eq "" -or $_.creator_id -eq $CreatorId)
+  ($CreatorId -eq "" -or $_.creator_id -eq $CreatorId) -and
+  ($VideoId -eq "" -or $_.video_id -eq $VideoId) -and
+  (Test-SourceReviewReason -Row $_ -Reason $SourceReviewReason)
 } | Select-Object -First $Limit
 
 $done = 0
@@ -69,16 +109,22 @@ foreach ($row in $targets) {
   }
 
   if ($AsrFallback) {
-    if ($IncludeSourceReview -and $row.transcript_status -eq "needs_source_review") {
+    if ($RefreshAudioFallback -and $IncludeSourceReview -and $row.transcript_status -eq "needs_source_review") {
       Get-ChildItem $AudioDir -File -ErrorAction SilentlyContinue |
         Where-Object { $_.BaseName -eq $id } |
         Remove-Item -Force -ErrorAction SilentlyContinue
     }
-    & yt-dlp --quiet --no-warnings --force-overwrites -f "bv*[ext=mp4][vcodec^=h264]+ba/b[ext=mp4][vcodec^=h264]/download/best[ext=mp4]/best" -x --audio-format mp3 --audio-quality 5 --output $AudioOutputTemplate $url 2>$null
     $media = Get-ChildItem $AudioDir -File -ErrorAction SilentlyContinue |
       Where-Object { $_.BaseName -eq $id -and $_.Extension.ToLowerInvariant() -in @(".mp3", ".mp4", ".m4a", ".webm", ".wav") } |
       Sort-Object LastWriteTime -Descending |
       Select-Object -First 1
+    if (-not $media -or $RefreshAudioFallback) {
+      & yt-dlp --quiet --no-warnings --force-overwrites -f "bv*[ext=mp4][vcodec^=h264]+ba/b[ext=mp4][vcodec^=h264]/download/best[ext=mp4]/best" -x --audio-format mp3 --audio-quality 5 --output $AudioOutputTemplate $url 2>$null
+      $media = Get-ChildItem $AudioDir -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.BaseName -eq $id -and $_.Extension.ToLowerInvariant() -in @(".mp3", ".mp4", ".m4a", ".webm", ".wav") } |
+        Sort-Object LastWriteTime -Descending |
+        Select-Object -First 1
+    }
     if ($media) {
       $workerJson = & $WorkerPython $WorkerScript transcribe $media.FullName --model small.en --language en --device cpu --compute-type int8 --vad-filter 2>$null
       $worker = $null

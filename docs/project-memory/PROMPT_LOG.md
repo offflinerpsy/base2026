@@ -1,5 +1,99 @@
 # Prompt Log
 
+## 2026-06-18 — About hero geometry hotfix and TikTok review queue recount
+
+User reported that the `/about/` first hero still rendered as an oversized poster on a laptop viewport and asked for a clear status on Hermes/TikTok processing.
+
+Actions:
+
+- deployed a focused WordPress CSS geometry hotfix in `geo/wp-theme/alex-yarosh/style.css` version `1.5.53`;
+- bounded the about hero height and portrait figure height so the portrait can no longer drive the hero to poster scale;
+- verified live `/about/` at 1440x900, 1280x800, and 390x844 with Playwright screenshots and metrics;
+- reran the TikTok source-review audit and updated current gated queue counts.
+
+Result:
+
+- live `/about/` loads the child theme stylesheet with a file-timestamp cache-bust, currently `style.css?ver=1781829722`;
+- live hero measurements: 1440x900 `1120x405`, 1280x800 `1120x371`, 390x844 `366x404`;
+- current TikTok source-review backlog is 64 private rows: 48 local-caption review rows, 14 audio-backed ASR-retry rows, and 2 rows without usable local caption/audio.
+
+## 2026-06-18 — Public TikTok transcript polish audio-retry batch 001
+
+User asked to process `hermes-polish-20260618-audio-retry/batch-001.md` using the GPT-5.5 quality lane and create/update one polished transcript plus one QA JSON per video.
+
+Actions taken:
+
+- checked worktree state and confirmed active Phase 2 transcript-polish/publication rules;
+- read only the required project-memory files, the named batch file, and the exact output files created for this task;
+- processed 1 TikTok video from `batch-001.md`;
+- wrote 1 polished transcript file under `12_knowledge-base/sources/tiktok/transcripts/polished/`;
+- wrote 1 QA JSON file under `12_knowledge-base/sources/tiktok/transcripts/polished-qa/`;
+- preserved the repeated raw `Lizard!` caption text and marked the row `needs_review` because it appears to be a caption/audio artifact requiring source/audio verification.
+
+Verification:
+
+- validated the QA JSON parses as JSON;
+- validated `model_tier` is `gpt-5.5`;
+- validated `meaning_added=false`;
+- validated polished word count and paragraph count against the written `.txt` file;
+- final QA totals: 0 `pass`, 1 `needs_review`, 0 `failed`.
+
+Not done:
+
+- no source-audio verification, public export, deploy, Meilisearch reindex, commit, push, or release-gate run.
+
+## 2026-06-18 — Public TikTok transcript polish ASR-review batches 001-003
+
+User asked to process three ASR-review transcript polish batches under `hermes-polish-20260618-asr-review` using the GPT-5.5 quality lane.
+
+Actions taken:
+
+- checked worktree state and confirmed active Phase 2 transcript-polish/publication rules;
+- read only the required project-memory files, the three named batch files, and the exact output files created/validated for this task;
+- processed 21 TikTok videos from `batch-001.md`, `batch-002.md`, and `batch-003.md`;
+- wrote 21 polished transcript files under `12_knowledge-base/sources/tiktok/transcripts/polished/`;
+- wrote 21 QA JSON files under `12_knowledge-base/sources/tiktok/transcripts/polished-qa/`;
+- used faithful polish only: punctuation, capitalization, sentence boundaries, paragraph breaks, and obvious duplicate caption-artifact cleanup;
+- preserved uncertain ASR/source wording and marked those rows `needs_review`.
+
+Verification:
+
+- validated every QA JSON file parses as JSON;
+- validated `model_tier` is `gpt-5.5` for all 21 rows;
+- validated `meaning_added=false` for all 21 rows;
+- validated polished word counts and paragraph counts against the written `.txt` files;
+- final QA totals: 10 `pass`, 11 `needs_review`, 0 `failed`.
+
+Not done:
+
+- no source-audio verification, public export, deploy, Meilisearch reindex, commit, push, or release-gate run.
+
+## 2026-06-18 — Public TikTok transcript polish batch 001
+
+User asked to process `hermes-polish-20260618-034106/batch-001.md` using the GPT-5.5 quality lane and create/update one polished transcript plus one QA JSON per video.
+
+Actions taken:
+
+- read the required project-memory contract files, confirmed active Phase 2 transcript-polish rules, and checked the worktree before editing;
+- processed 4 TikTok videos from the batch;
+- wrote polished transcript files under `12_knowledge-base/sources/tiktok/transcripts/polished/`;
+- wrote QA JSON files under `12_knowledge-base/sources/tiktok/transcripts/polished-qa/`;
+- used faithful polish only: punctuation, capitalization, sentence boundaries, and paragraph breaks, with uncertain caption wording preserved.
+
+Follow-up verification:
+
+- downloaded temporary ignored audio for the 3 `needs_review` rows under `.planning/audio-review/`;
+- ran local `faster-whisper` ASR from the project `.venv`;
+- source-audio reviewed and corrected the uncertain caption phrases;
+- `python3 scripts/tiktok-polish-status.py --batch-dir 12_knowledge-base/sources/tiktok/transcript-polish-batches/hermes-polish-20260618-034106 --json` passed with `needs_review=0`;
+- `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/hermes-tiktok-refresh.ps1 -AfterPolish -BatchSet hermes-polish-20260618-034106` completed;
+- public export now has 1,392 source records and 1,911 passages with `include_full_transcripts=false`;
+- public export policy and release contract passed.
+
+Not done yet:
+
+- deploy, Meilisearch reindex, live QA, commit, push, GSC submission, and IndexNow submission.
+
 ## 2026-06-18 — AHREFS-P1-06 social metadata deploy and source-detail H1 fix
 
 User authorized the next safe deploy/cleanup step after the local-reviewed social metadata pass.
@@ -4851,3 +4945,152 @@ Verification:
 - GitHub preflight passed with live/export checks skipped to avoid side effects.
 
 No deploy, reindex, GSC submission, IndexNow submission, or TikTok intake was performed in this GitHub-only cleanup pass.
+
+## 2026-06-18 — Canonical TikTok release gate and ay40 data deploy
+
+User asked to stop improvising the pipeline and make Base2026 releases run like a clock, using prior mistakes as durable engineering constraints.
+
+Actions:
+
+- added `scripts/base2026-release-gate.ps1` as the canonical TikTok/data release command center;
+- added safe `-Help` behavior to `scripts/hermes-tiktok-refresh.ps1` so help cannot accidentally run inventory/intake work;
+- documented repeated pipeline mistakes and fixed rules in `docs/project-memory/PIPELINE_ERROR_LEDGER.md`;
+- updated `HERMES_RUNBOOK.md` and `DEPLOYMENT_RUNBOOK.md` to route data-changing releases through the release gate;
+- ran the 2026-06-18 TikTok batch `hermes-polish-20260618-034106` through the polish gate and `AfterPolish`;
+- fixed the newest-source readiness blocker for `@webhivedigital` / `tiktok-video-7652365345709231382` by adding one exact-evidence reviewed public insight for `WordPress SEO / plugin capabilities`;
+- packaged and deployed `base2026-tiktok-refresh-ay40-20260618`;
+- reindexed Meilisearch with 1,911 public passages.
+
+Verification:
+
+- current live export: 1,392 source records, 1,911 passages, 1,624 insight cards, 1,053 public insight cards, 1,516 topics, 1,001 public topics, 5 creators;
+- `include_full_transcripts=false`;
+- live fresh source page returns 200;
+- Meilisearch smoke query finds the fresh `@webhivedigital` source;
+- live SEO crawl gate passed 500 crawled pages with 0 P0 bad links and 0 crawled error pages;
+- full mobile visual QA passed on rerun with 78 checks and 0 failures after one transient connection reset on the first run.
+
+No commit or push was performed.
+
+## 2026-06-18 — Free social intake recommendations Phase 1/2
+
+User asked to read `docs/research/FREE_SOCIAL_VIDEO_INTAKE_RECOMMENDATIONS_2026_06_18.md` and implement Phase 1 and Phase 2 only.
+
+Actions:
+
+- hardened `scripts/base2026-worker.py doctor` so required tools, optional adapters, and intake capabilities are reported explicitly;
+- added `scripts/social-discover.py` as a platform-neutral private discovery adapter;
+- kept TikTok discovery `yt-dlp --flat-playlist` first and `gallery-dl` fallback-only;
+- made Instagram discovery report `missing_adapter_gallery_dl` instead of pretending to work when optional adapters are absent;
+- documented optional `gallery-dl`, `instaloader`, and `whisper.cpp` install/capability behavior in local worker and Hermes runbooks;
+- updated command-center memory so Phase 1/2 is a real pipeline step, not chat memory.
+
+Verification:
+
+- Python compile passed for `scripts/base2026-worker.py`, `scripts/social-discover.py`, and `scripts/audit-publication-boundary.py`;
+- `.venv/bin/python scripts/base2026-worker.py doctor` passed and reported TikTok primary discovery available, TikTok fallback disabled without `gallery-dl`, Instagram disabled without `gallery-dl`/`instaloader`, ASR primary available, and optional CPU ASR disabled without `whisper.cpp`;
+- TikTok discovery smoke over the 5 current creators wrote 15 private source rows to `.planning/social-discovered.jsonl` using `tiktok_yt_dlp_flat_playlist`;
+- Instagram capability smoke wrote one private failure row with `missing_adapter_gallery_dl`;
+- `.planning/` outputs are ignored by Git;
+- `12_knowledge-base/sources/tiktok/videos.csv` hash stayed `2c79f3841c925f4f2c9b4a510160bcd3e403f355724547acd8ad8161c902beab`.
+
+No deploy, reindex, public export, intake import, commit, push, GSC submission, or `public-data/tiktok` modification was performed.
+
+## 2026-06-18 — Social discovery Phase 3 bridge into private TikTok queue
+
+User asked to stop pausing at phase boundaries and make the new-creator/social intake pipeline usable instead of theoretical.
+
+Actions:
+
+- added `scripts/import-social-discovery-to-tiktok-csv.py` as the dry-run-first bridge from `.planning/social-discovered.jsonl` into private local `12_knowledge-base/sources/tiktok/videos.csv`;
+- kept the bridge TikTok-only, skipped discovery failures and non-TikTok rows, deduped by `video_id`, and preserved current `queued` / `out_of_scope_old` status semantics;
+- made the bridge fill only missing safe metadata on existing rows;
+- made every `--apply` create an ignored backup under `.planning/backups/`;
+- added the importer to the publication-boundary allowlist and documented the bridge in the local worker spec, Hermes runbook, launch command center, error ledger, data sources, decisions, handoff, and next action.
+
+Verification:
+
+- Python compile passed for `scripts/import-social-discovery-to-tiktok-csv.py`, `scripts/social-discover.py`, `scripts/base2026-worker.py`, and `scripts/audit-publication-boundary.py`;
+- dry-run over `.planning/social-discovered.jsonl` found 15 TikTok candidates, 14 existing rows, and 1 new recent queued row;
+- apply created `.planning/backups/videos-before-social-import-20260618-081415.csv`, added `tiktok-video-7652732487843581206`, and filled safe missing metadata on 14 existing rows;
+- post-apply dry-run was idempotent with 15 duplicate existing rows, 0 added rows, and 0 updated rows;
+- found and fixed a runner bug where `hermes-tiktok-refresh.ps1 -CheckOnly` still ran the mutating inventory stage before checking the flag;
+- verified the fixed `-CheckOnly -PlaylistEnd 3` preserved the exact `videos.csv` hash before/after while reporting one additional unapplied candidate;
+- intentionally applied that additional `@darrenshawseo` candidate through the bridge, with a second ignored backup;
+- private CSV now has 3348 rows: 1392 transcribed, 1937 out-of-scope-old, 16 needs-source-review, and 3 queued.
+
+No public export, deploy, reindex, commit, push, GSC submission, or generated public data modification was performed.
+
+## 2026-06-18 — Pipeline 3-source ay41 deploy
+
+User pushed to stop pausing at phase boundaries and prove the pipeline can actually move new sources to live content.
+
+Actions:
+
+- created polished transcript files and QA JSON for the 3 queued social-bridge sources in `hermes-polish-20260618-social-bridge`;
+- ran the current-batch transcript polish gate and fixed QA note wording/word-count metadata until it passed cleanly;
+- ran `pwsh ./scripts/hermes-tiktok-refresh.ps1 -AfterPolish -BatchSet hermes-polish-20260618-social-bridge`;
+- let newest-source readiness block the fresh `@build_in_public` source because it had public text but no public topic/insight layer;
+- added one strict exact-evidence reviewed public insight for `tiktok-video-7652732487843581206` under `Search Console / high-intent queries`;
+- reran `AfterPolish`, packaged with `scripts/base2026-release-gate.ps1 -PackageOnly`, then deployed with `scripts/base2026-release-gate.ps1 -Deploy`;
+- updated project memory so the next run sees ay41 live and queue closed.
+
+Result:
+
+- live release: `base2026-pipeline-3sources-ay41-20260618`;
+- public export: 1395 source records, 1915 passages, 1625 insight cards, 1054 public insight cards, 1517 topics, 1002 public topics, 5 creators;
+- Meilisearch: 1915 public passages, task `343`;
+- live QA: SEO crawl gate 500 pages with 0 P0 bad links and 0 crawled error pages; mobile visual QA 78 checks / 0 failures.
+
+No commit or push was performed.
+
+## 2026-06-18 — ay41 source-of-truth/controller fix
+
+After deploy, controller status still read the stale ay39 release from `PROJECT_STATE.md`. Codex updated `PROJECT_STATE.md`, `DEPLOYMENT_RUNBOOK.md`, `ACTIVE_QUEUE.md`, and `LAUNCH_COMMAND_CENTER.md` to point at `base2026-pipeline-3sources-ay41-20260618`, made `scripts/base2026-daily-digest.py` understand the current `Next safe action` heading, and verified `base2026-controller.py status` reports ay41 with `deployment_blocked=false`. Final public/private gates passed after the memory update.
+
+## 2026-06-18 — AI Recommends Solutions ay42 creator pass
+
+User provided five new TikTok creators: `@heytonyagency`, `@iamdandavies`, `@harrysandersseo`, `@ray_fu`, and `@gobigsystems`, and asked to process/deploy through the pipeline instead of stopping at planning.
+
+Actions:
+
+- added the five creator feeds to ignored local intake config;
+- ran private social discovery into `.planning/`: 200 source records across 10 configured creators, 0 failures;
+- ran importer dry-run/apply into private local `videos.csv`: 100 new candidate rows added, safe missing metadata updated, ignored backup created;
+- ran Hermes refresh as `hermes-polish-20260618-ai-recommends`: 100 selected captions, 77 transcribed/polished, 23 `needs_asr`, 0 failed;
+- ran GPT polish/QA: 30 passed, 47 `needs_review`, 0 failed;
+- gated the 47 QA-needs-review rows as `needs_source_review` instead of publishing uncertain transcript/source text;
+- fixed `scripts/hermes-tiktok-refresh.ps1 -AfterPolish` so it skips inventory/caption intake and only rebuilds from reviewed polish outputs;
+- added one exact-evidence reviewed public insight for `@iamdandavies` / `tiktok-video-7652708771701067030` under `WordPress static homepage setup`;
+- deployed `base2026-ai-recommends-creators-ay42-20260618` through `scripts/base2026-release-gate.ps1`.
+
+Result:
+
+- live release: `base2026-ai-recommends-creators-ay42-20260618`;
+- public export: 1425 source records, 1953 passages, 1626 insight cards, 1055 public insight cards, 1518 topics, 1003 public topics, 10 creators;
+- Meilisearch: 1953 public passages;
+- live QA: SEO crawl gate 500 pages with 0 P0 bad links and 0 crawled error pages; mobile visual QA 78 checks / 0 failures;
+- public/private gates passed: publication boundary, export policy, GitHub metadata, public release contract, newest-source readiness.
+
+No commit or push was performed.
+
+## 2026-06-18 — ASR-review polish pass and WordPress about hero hotfix
+
+User asked why the new creator videos were not continuing through review and showed that the `/about/` hero was still visually oversized.
+
+Actions:
+
+- created `hermes-polish-20260618-asr-review` batches 001-003 for the remaining ASR-review queue;
+- ran `scripts/run-hermes-polish-worker.ps1` with the GPT-5.5 lane;
+- created 21 polished transcript files and 21 QA JSON files under the private TikTok transcript folders;
+- kept review-gated rows private instead of forcing them into public export;
+- tightened the WordPress `/about/` first hero CSS and deployed theme `style.css` version `1.5.51`.
+
+Verification:
+
+- transcript QA totals: 10 pass, 11 needs_review, 0 failed;
+- current private `videos.csv` inventory has 3448 rows, 0 `needs_asr`, and 64 `needs_source_review` after the later source-review recount: 48 local-caption review rows, 14 audio-backed ASR-retry rows, and 2 rows without usable local caption/audio;
+- live `/about/` loads `style.css?ver=1.5.51`;
+- live Playwright checks at 1440x900, 1280x800, and 390x844 showed no horizontal overflow, the next section visible after the hero, and a compact hero height of 435px at 1280x800.
+
+No Base2026 public export, Base2026 deploy, Meilisearch reindex, commit, or push was performed in this pass.

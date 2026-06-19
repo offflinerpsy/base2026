@@ -12,13 +12,32 @@ param(
   [switch]$SkipAsr,
   [switch]$DryRun,
   [switch]$Package,
-  [switch]$Deploy
+  [switch]$Deploy,
+  [switch]$Help
 )
 
 $ErrorActionPreference = "Stop"
 
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
+
+if ($Help) {
+  Write-Output @"
+Hermes TikTok refresh
+
+Safe entry points:
+  pwsh ./scripts/hermes-tiktok-refresh.ps1 -CheckOnly
+  pwsh ./scripts/hermes-tiktok-refresh.ps1 -BatchSet <batch-set>
+  pwsh ./scripts/hermes-tiktok-refresh.ps1 -AfterPolish -BatchSet <batch-set>
+
+Rules:
+  - -Help prints this message and exits without running inventory/intake.
+  - Run without -AfterPolish only to discover/process captions and create polish batches.
+  - Run -AfterPolish only after the GPT/Codex polish output exists for that exact BatchSet.
+  - Deployment belongs to scripts/base2026-release-gate.ps1, not this runner.
+"@
+  exit 0
+}
 
 $Planning = Join-Path $Root ".planning"
 $Results = Join-Path $Planning "agent-results"
@@ -108,21 +127,46 @@ try {
   Set-Content -LiteralPath $Lock -Value $PID -Encoding ASCII
   Write-State -Status "running" -Stage "start" -Message "Hermes TikTok refresh started."
 
-  Run-Step "inventory" {
-    if ($CreatorsConfig) {
-      & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") -PlaylistEnd $PlaylistEnd -CutoffDate $CutoffDate -CreatorsConfig $CreatorsConfig
+  if ($CheckOnly -or $DryRun) {
+    $DiscoveryOut = Join-Path $Planning "social-discovered-checkonly-$Stamp.jsonl"
+    $ImportReport = Join-Path $Planning "social-discovery-import-checkonly-$Stamp.json"
+
+    Run-Step "discovery-preview" {
+      $discoverArgs = @(
+        "--out", $DiscoveryOut,
+        "--limit-per-creator", $PlaylistEnd
+      )
+      if ($CreatorsConfig) {
+        $discoverArgs = @("--config", $CreatorsConfig) + $discoverArgs
+      }
+      & $PythonExe (Join-Path $Root "scripts\social-discover.py") @discoverArgs
     }
-    else {
-      & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") -PlaylistEnd $PlaylistEnd -CutoffDate $CutoffDate
+
+    Run-Step "import-preview" {
+      & $PythonExe (Join-Path $Root "scripts\import-social-discovery-to-tiktok-csv.py") --input $DiscoveryOut --report $ImportReport
     }
+
+    $summary = Get-PendingSummary
+    $summary | Format-List | Tee-Object -FilePath $Log -Append
+    Write-State -Status "completed" -Stage "check" -Message "Check-only completed without writing videos.csv." -Ok $true
+    exit 0
   }
 
-  $summary = Get-PendingSummary
-  $summary | Format-List | Tee-Object -FilePath $Log -Append
+  if (-not $AfterPolish) {
+    Run-Step "inventory" {
+      if ($CreatorsConfig) {
+        & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") -PlaylistEnd $PlaylistEnd -CutoffDate $CutoffDate -CreatorsConfig $CreatorsConfig
+      }
+      else {
+        & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") -PlaylistEnd $PlaylistEnd -CutoffDate $CutoffDate
+      }
+    }
 
-  if ($CheckOnly -or $DryRun) {
-    Write-State -Status "completed" -Stage "check" -Message "Check-only completed." -Ok $true
-    exit 0
+    $summary = Get-PendingSummary
+    $summary | Format-List | Tee-Object -FilePath $Log -Append
+  }
+  else {
+    "AfterPolish mode: skipping inventory/caption intake; rebuilding from existing reviewed polish outputs only." | Tee-Object -FilePath $Log -Append
   }
 
   if (-not $AfterPolish) {

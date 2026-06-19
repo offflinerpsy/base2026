@@ -915,3 +915,40 @@ nginx -t: pass
 - policy: `include_full_transcripts=false`.
 - QA: `kb-audit.py` passed; public export policy passed; live source page for `tiktok-video-7646800096583044374` contains the new `Robots.txt` card context; live topic page `/knowledge/topics/faq-seo.html` contains the new `FAQ SEO` card context; live topic page `/knowledge/topics/ai-skills.html` contains the new `AI Skills` card context; mixed mobile visual QA passed with 66 checks and 0 failures.
 - note: 15 reviewed exact-evidence cards were promoted; 1 giveaway/engagement source was skipped.
+
+## 2026-06-18 — base2026-tiktok-refresh-ay40-20260618
+
+- release: `base2026-tiktok-refresh-ay40-20260618`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-tiktok-refresh-ay40-20260618`
+- reason: canonical release-gate TikTok refresh after 4 queued sources were polished, reviewed, exported, packaged, deployed, and reindexed.
+- public export: 1392 source records, 1911 passages, 1624 insight cards, 1053 public insight cards, 1516 topics, 1001 public topics, 5 creators.
+- Meilisearch: reindexed 1911 passages into `base2026_public_tiktok`; deploy task `339`.
+- policy: `include_full_transcripts=false`.
+- QA: newest-source readiness passed after one exact-evidence `@webhivedigital` insight was reviewed/promoted; live fresh source page returned 200; live SEO crawl gate passed 500 crawled pages with 0 P0 bad links and 0 crawled error pages; mobile visual QA passed on rerun with 78 checks and 0 failures after one transient connection reset on the first run.
+- note: this release introduced `scripts/base2026-release-gate.ps1` as the required command center for future data-changing releases.
+
+## 2026-06-18 — base2026-pipeline-3sources-ay41-20260618
+
+- release: `base2026-pipeline-3sources-ay41-20260618`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-pipeline-3sources-ay41-20260618`
+- reason: prove the social-discovery bridge can feed the existing TikTok pipeline through the canonical release gate without ad hoc steps.
+- processed sources: `tiktok-video-7652732487843581206` (`@build_in_public`), `tiktok-video-7652742095228210450` (`@joshuamaraney`), and `tiktok-video-7652758207361731847` (`@darrenshawseo`).
+- public export: 1395 source records, 1915 passages, 1625 insight cards, 1054 public insight cards, 1517 topics, 1002 public topics, 5 creators.
+- Meilisearch: reindexed 1915 passages into `base2026_public_tiktok`; deploy task `343`.
+- policy: `include_full_transcripts=false`.
+- QA: newest-source readiness passed after one exact-evidence `@build_in_public` insight was reviewed/promoted; release contract passed; live SEO crawl gate passed 500 crawled pages with 0 P0 bad links and 0 crawled error pages; mobile visual QA passed with 78 checks and 0 failures.
+- note: the 3-source queue created by the social-discovery bridge is closed live. Future creator additions should enter through discovery, importer dry-run/apply, and then `scripts/base2026-release-gate.ps1`.
+
+## 2026-06-18 — base2026-ai-recommends-creators-ay42-20260618
+
+- release: `base2026-ai-recommends-creators-ay42-20260618`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-ai-recommends-creators-ay42-20260618`
+- reason: process the AI Recommends Solutions creator pass through the canonical creator discovery/import/polish/review/release route.
+- creators: `@heytonyagency`, `@iamdandavies`, `@harrysandersseo`, `@ray_fu`, and `@gobigsystems`.
+- private discovery/import: 200 discovered source records across 10 configured creators; 100 new candidate rows imported into private local `videos.csv` with ignored backup.
+- polish gate: 77 polished transcripts; 30 QA-pass rows shipped publicly; 47 QA-needs-review rows and 23 `needs_asr` rows stayed private/gated.
+- public export: 1425 source records, 1953 passages, 1626 insight cards, 1055 public insight cards, 1518 topics, 1003 public topics, 10 creators.
+- Meilisearch: reindexed 1953 passages into `base2026_public_tiktok`.
+- policy: `include_full_transcripts=false`.
+- QA: newest-source readiness passed after one exact-evidence `@iamdandavies` insight was reviewed/promoted for `WordPress static homepage setup`; release contract passed; publication boundary and export policy passed; live SEO crawl gate passed 500 crawled pages with 0 P0 bad links and 0 crawled error pages; mobile visual QA passed with 78 checks and 0 failures.
+- note: `scripts/hermes-tiktok-refresh.ps1 -AfterPolish` was fixed before the successful deploy so release packaging skips inventory/caption intake and cannot silently expand the private queue.

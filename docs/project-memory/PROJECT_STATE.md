@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-social-metadata-h1-ay39-20260618`
+- latest deployed release: `base2026-ai-recommends-creators-ay42-20260618`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape today: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, excerpt-only source payload, and in-page source-detail workspace
 - corrected product contract as of 2026-06-15: Base2026 behaves as a searchable video-source text database with one visible source text surface plus a separate Source Intelligence layer. Raw captions/ASR/media remain private; reviewed polished public source text/transcript is the source-record reading surface when policy allows, paired with Base2026-authored summaries, topics, insight cards, attribution, methodology, sharing actions, and correction/removal paths. Insight evidence should be collapsed by default instead of repeating the full source text.
@@ -17,13 +17,17 @@ Current public product:
 
 Latest live release:
 
-- `base2026-social-metadata-h1-ay39-20260618` is live under `/knowledge/`. This data-preserving SEO/UI hotfix deploys the local-reviewed AHREFS-P1-06 social metadata contract across generated source/topic/compare/creator/index/info pages, keeps the Source Intelligence empty state honest for sources with no reviewed public cards, and fixes the runtime source-detail mobile H1 contract so hydrated source-detail pages expose exactly one visible H1. Public data and Meilisearch index fields did not change, so reindex was intentionally skipped. Verification passed: publication-boundary audit `forbidden=0`, `needs_review=0`, `secret_findings=0`; public export policy `include_full_transcripts=false`; GitHub metadata validation; local OG/X scan for 1,483 indexable HTML files; live HTTP/asset smoke; targeted live OG/X checks; full live mobile visual QA `78` checks with `0` failures; and live SEO crawl gate over `500` pages with `0` P0 bad links and `0` crawled error pages.
+- `base2026-ai-recommends-creators-ay42-20260618` is live under `/knowledge/`. This data-changing canonical-pipeline release processed five new AI Recommends Solutions creator feeds (`@heytonyagency`, `@iamdandavies`, `@harrysandersseo`, `@ray_fu`, and `@gobigsystems`) through private social discovery, dry-run/apply import, GPT polish, source-review gating, public export, deploy, Meilisearch reindex, live crawl, and mobile QA. Discovery found 200 source records across 10 configured creators; the importer added 100 candidate rows; 30 QA-pass polished sources shipped publicly; 47 QA-needs-review rows and 23 `needs_asr` rows stayed private/gated. Current live export has 1,425 source records, 1,953 passages, 1,626 insight cards, 1,055 public insight cards, 1,518 topics, 1,003 public topics, and 10 creators. Meilisearch was reindexed with 1,953 public passages. Verification passed: current-batch polish gate, newest-source readiness after one exact-evidence reviewed insight for `WordPress static homepage setup`, publication-boundary audit `forbidden=0`, `needs_review=0`, `secret_findings=0`, public export policy `include_full_transcripts=false`, GitHub metadata validation, public release contract, live SEO crawl gate over `500` pages with `0` P0 bad links and `0` crawled error pages, and full live mobile visual QA `78` checks with `0` failures.
+
+- `base2026-pipeline-3sources-ay41-20260618` remains the prior data-changing pipeline proof release beneath ay42. It processed the 3-source social-bridge queue (`@build_in_public`, `@joshuamaraney`, and `@darrenshawseo`) through current-batch polish, source-intelligence readiness, public export, deploy, Meilisearch reindex, live crawl, and mobile QA.
+
+- `base2026-social-metadata-h1-ay39-20260618` remains the latest data-preserving SEO/UI social metadata checkpoint beneath the ay41 data release. It deployed the local-reviewed AHREFS-P1-06 social metadata contract across generated source/topic/compare/creator/index/info pages, kept the Source Intelligence empty state honest for sources with no reviewed public cards, and fixed the runtime source-detail mobile H1 contract so hydrated source-detail pages expose exactly one visible H1.
 
 - `base2026-ahrefs-p0-link-contracts-ay37-20260617` remains the deployed Ahrefs P0 link-contract baseline beneath the ay39 social metadata layer. It closed the Ahrefs P0 link-contract defects without changing public data: `/knowledge/analytics.html` source/creator links resolve to generated static Base2026 pages, Base2026 footer/contact links point directly to `/ai-visibility-audit/`, and WordPress `/author/` 301-redirects to `/about/` with author links filtered to `/about/`. P0 status remains `deployed-pending-recrawl` until a fresh Ahrefs/GSC crawl confirms the counts.
 
 Current local repo state:
 
-- current checked-out branch on this MacBook: `codex/base2026-public-api-github-polish`
+- current checked-out branch on this MacBook: `codex/base2026-launch-next`
 - GitHub default branch: `main`
 - GitHub public repository: `https://github.com/offflinerpsy/base2026`
 - working branch `codex/github-publication-staging` also exists on GitHub as the original publication staging branch
