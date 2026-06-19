@@ -9,6 +9,7 @@ param(
   [string]$CreatorsConfig = "",
   [switch]$CheckOnly,
   [switch]$AfterPolish,
+  [switch]$SkipInventory,
   [switch]$SkipAsr,
   [switch]$DryRun,
   [switch]$Package,
@@ -27,11 +28,13 @@ Hermes TikTok refresh
 
 Safe entry points:
   pwsh ./scripts/hermes-tiktok-refresh.ps1 -CheckOnly
+  pwsh ./scripts/hermes-tiktok-refresh.ps1 -SkipInventory -BatchSet <batch-set>
   pwsh ./scripts/hermes-tiktok-refresh.ps1 -BatchSet <batch-set>
   pwsh ./scripts/hermes-tiktok-refresh.ps1 -AfterPolish -BatchSet <batch-set>
 
 Rules:
   - -Help prints this message and exits without running inventory/intake.
+  - Use -SkipInventory after an explicit social-discovery importer apply when only existing queued rows should be processed.
   - Run without -AfterPolish only to discover/process captions and create polish batches.
   - Run -AfterPolish only after the GPT/Codex polish output exists for that exact BatchSet.
   - Deployment belongs to scripts/base2026-release-gate.ps1, not this runner.
@@ -153,17 +156,24 @@ try {
   }
 
   if (-not $AfterPolish) {
-    Run-Step "inventory" {
-      if ($CreatorsConfig) {
-        & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") -PlaylistEnd $PlaylistEnd -CutoffDate $CutoffDate -CreatorsConfig $CreatorsConfig
-      }
-      else {
-        & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") -PlaylistEnd $PlaylistEnd -CutoffDate $CutoffDate
-      }
+    if ($SkipInventory) {
+      "SkipInventory mode: preserving existing videos.csv queue; no inventory/discovery writes." | Tee-Object -FilePath $Log -Append
+      $summary = Get-PendingSummary
+      $summary | Format-List | Tee-Object -FilePath $Log -Append
     }
+    else {
+      Run-Step "inventory" {
+        if ($CreatorsConfig) {
+          & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") -PlaylistEnd $PlaylistEnd -CutoffDate $CutoffDate -CreatorsConfig $CreatorsConfig
+        }
+        else {
+          & (Join-Path $Root "scripts\tiktok-backfill-inventory.ps1") -PlaylistEnd $PlaylistEnd -CutoffDate $CutoffDate
+        }
+      }
 
-    $summary = Get-PendingSummary
-    $summary | Format-List | Tee-Object -FilePath $Log -Append
+      $summary = Get-PendingSummary
+      $summary | Format-List | Tee-Object -FilePath $Log -Append
+    }
   }
   else {
     "AfterPolish mode: skipping inventory/caption intake; rebuilding from existing reviewed polish outputs only." | Tee-Object -FilePath $Log -Append

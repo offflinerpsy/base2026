@@ -41,6 +41,19 @@ The gate order is:
 9. package public release
 10. optional VPS deploy, Meilisearch reindex, live SEO crawl, and mobile visual QA
 
+For a controlled refresh after `social-discover.py` and `import-social-discovery-to-tiktok-csv.py --apply` already added the intended rows to the private queue, use:
+
+```powershell
+pwsh ./scripts/hermes-tiktok-refresh.ps1 `
+  -SkipInventory `
+  -BatchSet <hermes-polish-batch-set> `
+  -TranscriptLimit <expected queued count> `
+  -AsrLimit <expected queued count> `
+  -PolishLimit <expected queued count>
+```
+
+Rule: do not run broad inventory when the intended work is a bounded post-import queue. `-SkipInventory` preserves the existing `videos.csv` queue and processes only already-queued rows.
+
 ## Errors We Already Hit
 
 ### Help flags accidentally ran real work
@@ -120,6 +133,18 @@ Fix:
 - It prints the current pending summary and exits before legacy inventory/caption/ASR/polish stages.
 
 Rule: `-CheckOnly` and `-DryRun` must preserve the exact `videos.csv` hash before/after. Data-changing inventory/import must be explicit.
+
+### Bounded creator refresh accidentally expanded into broad inventory
+
+Observed: running `hermes-tiktok-refresh.ps1 -BatchSet ...` after a controlled one-row social import also ran legacy inventory with `PlaylistEnd=1000` across all configured creators, which expanded the private backlog by thousands of rows.
+
+Fix:
+
+- `scripts/hermes-tiktok-refresh.ps1` now has `-SkipInventory`.
+- For post-import queue processing, run `-SkipInventory` with explicit `-TranscriptLimit`, `-AsrLimit`, and `-PolishLimit` sized to the intended queued slice.
+- If broad inventory is accidentally run, restore the private CSV from the ignored `.planning/backups/` backup and re-apply only the intended social import.
+
+Rule: after `social-discover.py` plus importer `--apply`, never run the normal refresh runner without `-SkipInventory` unless the task is explicitly to expand inventory across all configured creators.
 
 ## Current Policy
 

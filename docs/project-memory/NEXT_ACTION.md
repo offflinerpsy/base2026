@@ -52,11 +52,11 @@ Next safe action:
 
 1. If the user gives new creators, add them to ignored local creator/intake config, run `scripts/social-discover.py`, dry-run `scripts/import-social-discovery-to-tiktok-csv.py`, apply only clean TikTok candidates, then process the resulting queue through `scripts/base2026-release-gate.ps1 -LatestReadiness 3`.
 2. If the user explicitly asks for Git, stage only public-safe source/docs files that passed `audit-publication-boundary.py`; do not stage generated/private artifacts.
-3. If the user asks for product/SEO work first, pick one scoped task from `UI-01`, `SEO-01`, or `GIT-01` in `docs/project-memory/LAUNCH_COMMAND_CENTER.md`.
+3. If the user asks for product/SEO work first, pick one scoped task from `UI-01` or `SEO-01` in `docs/project-memory/LAUNCH_COMMAND_CENTER.md`; handle Git only when a new safe change actually needs staging after gates.
 
 ## Do Not Do
 
-- Do not commit/push until final verification is complete and the user explicitly approves the Git step.
+- Do not commit/push new changes unless final verification is complete and the user explicitly approves or the active goal already requires the Git step.
 - Do not publish raw captions, raw ASR, audio/video, local DB files, `.planning/`, `output/`, `public-data/`, logs, cookies, tokens, credentials, or generated release archives.
 - Do not bypass transcript/source review flags.
 - Do not automate GSC request-indexing clicks in the user's live browser.
