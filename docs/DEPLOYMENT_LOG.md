@@ -1006,3 +1006,14 @@ nginx -t: pass
 - policy: `include_full_transcripts=false`.
 - QA: canonical release gate passed: current-batch polish status, AfterPolish rebuild/export, newest-source readiness, publication boundary, GitHub metadata, public export policy, public release contract, package, VPS deploy/reindex, live SEO crawl gate, and mobile visual QA with 78 checks and 0 failures.
 - note: private source-review backlog is now 54 rows: 39 local-caption rows, 13 audio-backed too-little/no-speech rows, and 2 rows with no usable source/audio.
+
+## 2026-06-19 — base2026-source-review-local-caption-ay49-20260619
+
+- release: `base2026-source-review-local-caption-ay49-20260619`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-source-review-local-caption-ay49-20260619`
+- reason: ship three additional `@ray_fu` local-caption source-review rows after mechanical transcript cleanup, explicit QA pass, and guarded CSV clearance back to `transcribed`.
+- public export: 1461 source records, 1994 passages, 1630 insight cards, 1059 public insight cards, 1521 topics, 1007 public topics, 10 creators.
+- Meilisearch: reindexed 1994 passages into `base2026_public_tiktok`; deploy task `375`.
+- policy: `include_full_transcripts=false`.
+- QA: canonical release gate passed: current-batch polish status, AfterPolish rebuild/export, newest-source readiness `--latest 3`, publication boundary, GitHub metadata, public export policy, public release contract, package, VPS deploy/reindex, live SEO crawl gate, and mobile visual QA with 78 checks and 0 failures.
+- note: private source-review backlog is now 51 rows: 36 local-caption rows, 13 audio-backed too-little/no-speech rows, and 2 rows with no usable source/audio.

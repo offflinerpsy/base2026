@@ -5210,3 +5210,23 @@ Verification:
 - live SEO crawl gate passed with 500 crawled pages, 0 P0 bad links, and 0 crawled error pages;
 - mobile visual QA passed 78 checks with 0 failures;
 - private source-review queue is now 54 rows: 39 local-caption, 13 audio-backed too-little/no-speech, and 2 no-source rows.
+
+## 2026-06-19 — Local-caption source-review clearance batch 003 and ay49 deploy
+
+User asked whether the long run was finished and what remained. Codex resumed from the bounded ay48 state, selected the next three `local_caption_exists` source-review rows, and processed only mechanical caption corrections that could be checked against local raw/clean/polished transcript evidence.
+
+Actions:
+
+- mechanically corrected `Claude Code`/`Claude`, `one-line change`, `AdSense`, `ElevenLabs`, `Pexels`, `TubeBuddy`, `vidIQ`, `Have I Been Pwned`, `Spokeo`, `BeenVerified`, `CCPA opt-out`, `JustDeleteMe.xyz`, and related formatting in the private polished transcripts for `7639236297046969631`, `7639961828809837855`, and `7641436180252216606`;
+- approved those three rows through a private QA manifest and `scripts/tiktok-qa-review-apply.py`;
+- cleared only those explicit QA-pass rows back to `transcribed` with `scripts/tiktok-clear-reviewed-source-rows.py`;
+- deployed `base2026-source-review-local-caption-ay49-20260619` through the canonical release gate.
+
+Verification:
+
+- live symlink points to `base2026-source-review-local-caption-ay49-20260619`;
+- public export now has 1,461 source records and 1,994 passages;
+- Meilisearch reindexed 1,994 public passages;
+- live SEO crawl gate passed with 500 crawled pages, 0 P0 bad links, and 0 crawled error pages;
+- mobile visual QA passed 78 checks with 0 failures;
+- private source-review queue is now 51 rows: 36 local-caption, 13 audio-backed too-little/no-speech, and 2 no-source rows.
