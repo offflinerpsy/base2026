@@ -54,7 +54,7 @@ Do not run direct deploy for data-changing releases unless the release gate has 
 | Public export | live | 1,425 sources; 1,953 passages; 1,626 insights; 1,055 public insights; 10 creators | export policy and release contract before every package |
 | Meilisearch | live | `base2026_public_tiktok`, 1,953 passages | reindex only when data changes |
 | TikTok pipeline | operational | AI Recommends Solutions pass processed in `hermes-polish-20260618-ai-recommends`; 30 QA-pass rows shipped, 47 QA-needs-review rows gated; follow-up `hermes-polish-20260618-asr-review` closed `needs_asr` to 0 and left 64 source-review rows private | use release gate; never bypass newest-source readiness or transcript QA |
-| GitHub | branch pushed | `codex/base2026-launch-next` is pushed at `b10d9e5e5`; branch is fast-forwardable over `origin/main` | final gates, then merge/push `main` when shipping |
+| GitHub | main pushed | `codex/base2026-launch-next` was pushed and fast-forwarded into GitHub `main` on 2026-06-19 | future changes still need boundary audit before staging |
 | GSC | manual-only | sitemap submitted earlier; individual request-indexing quota hit before | no automated GSC clicks |
 | SEO/Ahrefs | active | live crawl gate 0 P0 bad links / 0 crawled error pages | next crawl after substantial UI/SEO deploy |
 
@@ -78,7 +78,7 @@ Do not run direct deploy for data-changing releases unless the release gate has 
 | DATA-01 | Process fresh TikTok batch | Main Codex | completed/live | 4-source ay40, 3-source ay41, and AI Recommends Solutions ay42 batches polished; readiness blockers resolved with reviewed exact-evidence insights; ay42 deployed/reindexed |
 | QA-01 | Verify live ay42 release | Main Codex | completed | SEO crawl 0 P0 / 0 crawled error pages; mobile visual QA 78/0; Meili indexed 1953 passages |
 | MEM-01 | Update project memory after release | Main Codex | completed | handoff, next action, data sources, status board, active phase, prompt log, deployment log, project state, deployment runbook, and active queue now point at ay42 |
-| GIT-01 | Prepare safe Git step | Main Codex | branch pushed | final gates passed for branch; next ship gate is fast-forward merge to `main` |
+| GIT-01 | Prepare safe Git step | Main Codex | completed/main pushed | branch passed final gates and was fast-forwarded into GitHub `main` |
 | SEO-01 | Continue GSC/Ahrefs growth work | Main Codex + SEO worker | pending next pass | do not automate GSC clicks; use clean candidate pages and crawl gates |
 | UI-01 | Continue mobile/product UI polish | Main Codex + frontend worker | pending next pass | every patch needs Playwright/mobile visual QA and no regression against known UI contracts |
 
@@ -100,7 +100,7 @@ If the user asks for Git:
 2. Run the publication/export/release gates again if any source files changed after the last gate.
 3. Stage only safe tracked/untracked source/docs files if new edits exist.
 4. Commit/push any new memory-only updates after gates.
-5. If the branch is fast-forwardable from `origin/main`, merge to `main` and push `main`.
+5. For future Git work, repeat this same boundary-audit-first route.
 
 If the user asks for the next product/SEO task:
 

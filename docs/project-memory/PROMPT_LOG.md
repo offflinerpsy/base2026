@@ -10,11 +10,11 @@ Actions:
 - confirmed the WordPress/geo branch `codex/novamira-plugin-evaluation` is clean and pushed to GitHub at `e1a2510`;
 - corrected launch memory that still claimed commit/push had not happened;
 - verified both branches are fast-forwardable over their `origin/main` branches before considering main-branch shipping.
+- fast-forwarded Base2026 GitHub `main` from `codex/base2026-launch-next` without force-pushing.
 
 Next:
 
-- rerun final gates after this memory update;
-- if still clean, fast-forward merge the Base2026 branch and geo branch into their `main` branches and push.
+- future source/data releases must continue through `scripts/base2026-release-gate.ps1` before deploy/reindex/live QA.
 
 ## 2026-06-18 — About hero geometry hotfix and TikTok review queue recount
 
