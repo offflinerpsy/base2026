@@ -2,7 +2,7 @@
 
 Status: **PASS**
 
-Analyzed at: 2026-06-19T13:29:25.177Z
+Analyzed at: 2026-06-19T14:18:16.723Z
 
 Base URL: https://aggressorbulkit.online
 
@@ -16,10 +16,10 @@ Base URL: https://aggressorbulkit.online
 ## Summary
 
 - Crawled pages: 500
-- Sitemap URLs: 1565
+- Sitemap URLs: 1568
 - Sitemap files: 4
-- Internal links seen: 25830
-- Unique internal links seen: 1299
+- Internal links seen: 25831
+- Unique internal links seen: 1300
 - Redirected crawled pages: 0
 - Status counts: {200:500}
 
@@ -63,7 +63,7 @@ No P0 crawl/link failures found in this bounded live crawl.
 ## Limitations
 
 - This is a bounded live crawl, not an Ahrefs replacement for historical external crawl metrics.
-- The crawl is capped at 500 pages; sitemap contains 1565 URLs.
+- The crawl is capped at 500 pages; sitemap contains 1568 URLs.
 - The gate validates current live HTML/link contracts and metadata basics; it does not submit URLs to GSC, IndexNow, or Ahrefs.
 
 ## Next Safe SEO Action

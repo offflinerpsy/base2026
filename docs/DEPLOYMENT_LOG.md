@@ -1028,3 +1028,14 @@ nginx -t: pass
 - policy: `include_full_transcripts=false`.
 - QA: canonical release gate passed: current-batch polish status, AfterPolish rebuild/export, newest-source readiness `--latest 3`, publication boundary, GitHub metadata, public export policy, public release contract, package, VPS deploy/reindex, live SEO crawl gate, and mobile visual QA with 78 checks and 0 failures.
 - note: private source-review backlog is now 48 rows: 33 local-caption rows, 13 audio-backed too-little/no-speech rows, and 2 rows with no usable source/audio.
+
+## 2026-06-19 — base2026-source-review-local-caption-ay51-20260619
+
+- release: `base2026-source-review-local-caption-ay51-20260619`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-source-review-local-caption-ay51-20260619`
+- reason: ship three more local-caption source-review rows (`@heytonyagency`, `@ray_fu`, and `@harrysandersseo`) after mechanical transcript cleanup, explicit QA pass, and guarded CSV clearance back to `transcribed`; one adjacent `@ray_fu` row stayed private because product/model names were not safe to publish without source verification.
+- public export: 1467 source records, 2001 passages, 1630 insight cards, 1059 public insight cards, 1521 topics, 1007 public topics, 10 creators.
+- Meilisearch: reindexed 2001 passages into `base2026_public_tiktok`; deploy task `383`.
+- policy: `include_full_transcripts=false`.
+- QA: canonical release gate passed: current-batch polish status, AfterPolish rebuild/export, newest-source readiness `--latest 3`, publication boundary, GitHub metadata, public export policy, public release contract, package, VPS deploy/reindex, live SEO crawl gate, and mobile visual QA with 78 checks and 0 failures.
+- note: private source-review backlog is now 45 rows: 30 local-caption rows, 13 audio-backed too-little/no-speech rows, and 2 rows with no usable source/audio.
