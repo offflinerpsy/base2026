@@ -401,3 +401,9 @@ Reason: discovery and queue import are not enough. The user needs a traffic/cont
 Decision: `scripts/hermes-tiktok-refresh.ps1 -AfterPolish` is a rebuild/export lane only. It must skip inventory, caption intake, social discovery, and importer work, then rebuild from existing reviewed polish outputs. New discovery belongs before the polish batch; release packaging must not silently expand `videos.csv`.
 
 Reason: the ay42 release attempt proved that running inventory inside `AfterPolish` can expand the private queue with default limits after the operator has already selected a batch. That makes release results non-deterministic and can introduce unreviewed rows. Keeping `AfterPolish` rebuild-only makes the pipeline predictable.
+
+## 2026-06-19 — Fresh creator releases must use `LatestReadiness 3`
+
+Decision: data-changing releases that add fresh creator/video rows must run `scripts/base2026-release-gate.ps1` with `-LatestReadiness 3` until the readiness gate becomes batch-aware. A single newest-source check is not enough for multi-creator batches.
+
+Reason: the ay43 pass showed that one latest source can pass while two adjacent fresh `@gobigsystems` source pages still lack reviewed public Source Intelligence. ay44 fixed those pages with exact-evidence reviewed cards and proved that `-LatestReadiness 3` catches this class of launch defect before final sign-off.

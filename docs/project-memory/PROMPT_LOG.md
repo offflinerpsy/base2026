@@ -1,5 +1,23 @@
 # Prompt Log
 
+## 2026-06-19 — ay44 readiness fix, about hero finalization, and launch-memory cleanup
+
+User asked why the guide/memory keeps accumulating stale state, requested a clear video-processing status, and pointed out that the `/about/` founder hero still looked oversized from the visible screenshot.
+
+Actions:
+
+- deployed the focused WordPress `/about/` hero geometry fix as theme `style.css` version `1.5.55`, verified live desktop/MacBook/mobile metrics, and pushed the `geo` repo commit `e349ce4`;
+- mechanically cleaned and approved 3 AI Recommends transcript rows through the review-apply gate, increasing the public-ready slice from 30 to 33;
+- fixed two fresh `@gobigsystems` source-only readiness blockers with exact-evidence reviewed Source Intelligence cards;
+- deployed `base2026-ai-recommends-readiness-fix-ay44-20260619` through the canonical release gate with `-LatestReadiness 3`, Meilisearch reindex, live SEO crawl, and mobile visual QA;
+- synced launch memory so the handoff/next-action/runbook no longer points at ay42 as current live state.
+
+Result:
+
+- live Base2026 export is 1450 source records, 1978 passages, 1629 insight cards, 1058 public insight cards, 1521 topics, 1006 public topics, 10 creators;
+- live release is `base2026-ai-recommends-readiness-fix-ay44-20260619`;
+- current private source-review debt is 61 rows and remains gated.
+
 ## 2026-06-19 — GitHub branch push and handoff sync
 
 User asked to keep closing the active launch goal until Git, deploy, and production state are not ambiguous.

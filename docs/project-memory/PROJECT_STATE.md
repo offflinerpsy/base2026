@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-06-18
+Last updated: 2026-06-19
 
 Base2026 is being split into a public open-source source-intelligence product and private local research assets.
 
@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-ai-recommends-creators-ay42-20260618`
+- latest deployed release: `base2026-ai-recommends-readiness-fix-ay44-20260619`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape today: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, excerpt-only source payload, and in-page source-detail workspace
 - corrected product contract as of 2026-06-15: Base2026 behaves as a searchable video-source text database with one visible source text surface plus a separate Source Intelligence layer. Raw captions/ASR/media remain private; reviewed polished public source text/transcript is the source-record reading surface when policy allows, paired with Base2026-authored summaries, topics, insight cards, attribution, methodology, sharing actions, and correction/removal paths. Insight evidence should be collapsed by default instead of repeating the full source text.
@@ -17,7 +17,9 @@ Current public product:
 
 Latest live release:
 
-- `base2026-ai-recommends-creators-ay42-20260618` is live under `/knowledge/`. This data-changing canonical-pipeline release processed five new AI Recommends Solutions creator feeds (`@heytonyagency`, `@iamdandavies`, `@harrysandersseo`, `@ray_fu`, and `@gobigsystems`) through private social discovery, dry-run/apply import, GPT polish, source-review gating, public export, deploy, Meilisearch reindex, live crawl, and mobile QA. Discovery found 200 source records across 10 configured creators; the importer added 100 candidate rows; 30 QA-pass polished sources shipped publicly; 47 QA-needs-review rows and 23 `needs_asr` rows stayed private/gated. Current live export has 1,425 source records, 1,953 passages, 1,626 insight cards, 1,055 public insight cards, 1,518 topics, 1,003 public topics, and 10 creators. Meilisearch was reindexed with 1,953 public passages. Verification passed: current-batch polish gate, newest-source readiness after one exact-evidence reviewed insight for `WordPress static homepage setup`, publication-boundary audit `forbidden=0`, `needs_review=0`, `secret_findings=0`, public export policy `include_full_transcripts=false`, GitHub metadata validation, public release contract, live SEO crawl gate over `500` pages with `0` P0 bad links and `0` crawled error pages, and full live mobile visual QA `78` checks with `0` failures.
+- `base2026-ai-recommends-readiness-fix-ay44-20260619` is live under `/knowledge/`. This data-changing canonical-pipeline release supersedes ay42/ay43 after the extended `--latest 3` readiness check caught two fresh `@gobigsystems` source-only pages. The AI Recommends Solutions pass processed five new creator feeds (`@heytonyagency`, `@iamdandavies`, `@harrysandersseo`, `@ray_fu`, and `@gobigsystems`) through private social discovery, dry-run/apply import, GPT polish, source-review gating, exact-evidence Source Intelligence review, public export, deploy, Meilisearch reindex, live crawl, and mobile QA. Discovery found 200 source records across 10 configured creators; the importer added 100 candidate rows; 77 polished transcripts were reviewed; 33 public-ready rows are live; remaining uncertain rows stayed private/gated. Current live export has 1,450 source records, 1,978 passages, 1,629 insight cards, 1,058 public insight cards, 1,521 topics, 1,006 public topics, and 10 creators. Meilisearch was reindexed with 1,978 public passages. Verification passed: `-LatestReadiness 3`, publication-boundary audit `forbidden=0`, `needs_review=0`, `secret_findings=0`, public export policy `include_full_transcripts=false`, GitHub metadata validation, public release contract, live SEO crawl gate over `500` pages with `0` P0 bad links and `0` crawled error pages, and full live mobile visual QA `78` checks with `0` failures.
+
+- `base2026-ai-recommends-creators-ay42-20260618` remains the earlier AI Recommends creator proof release beneath ay44. ay43 briefly packaged/deployed with the first mechanical review fix but was superseded by ay44 because `--latest 3` readiness found two additional fresh source-only blockers before final sign-off.
 
 - `base2026-pipeline-3sources-ay41-20260618` remains the prior data-changing pipeline proof release beneath ay42. It processed the 3-source social-bridge queue (`@build_in_public`, `@joshuamaraney`, and `@darrenshawseo`) through current-batch polish, source-intelligence readiness, public export, deploy, Meilisearch reindex, live crawl, and mobile QA.
 

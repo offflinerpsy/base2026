@@ -7,7 +7,7 @@ Current public path:
 - WordPress root: `/var/www/alex-yarosh`
 - server current symlink: `/var/www/base2026-knowledge/current`
 - server releases: `/var/www/base2026-knowledge/releases/`
-- latest deployed release: `base2026-ai-recommends-creators-ay42-20260618`
+- latest deployed release: `base2026-ai-recommends-readiness-fix-ay44-20260619`
 - SSL certificate: Let's Encrypt `aggressorbulkit.online`, domains `aggressorbulkit.online` and `www.aggressorbulkit.online`, auto-renewed by `certbot.timer`
 
 Latest WordPress root homepage design-system pass: `alex-yarosh` child theme `style.css?ver=1.5.43`, applied directly through Novamira on 2026-06-14. Cache Enabler generated cache for `aggressorbulkit.online` was cleared after the direct update.
@@ -48,11 +48,11 @@ nginx -t
 
 ## Local package
 
-Current live release: `base2026-ai-recommends-creators-ay42-20260618`.
+Current live release: `base2026-ai-recommends-readiness-fix-ay44-20260619`.
 
-Latest data/reindex checkpoint: `base2026-ai-recommends-creators-ay42-20260618`.
+Latest data/reindex checkpoint: `base2026-ai-recommends-readiness-fix-ay44-20260619`.
 
-This checkpoint processed the five-creator AI Recommends Solutions pass through the canonical release gate, deployed 1,425 public source records and 1,953 public passages, and reindexed Meilisearch.
+This checkpoint processed the five-creator AI Recommends Solutions pass through the canonical release gate, deployed 1,450 public source records and 1,978 public passages, and reindexed Meilisearch. It supersedes ay43 after `-LatestReadiness 3` caught two fresh source-only pages that the narrower newest-source check missed.
 
 The `base2026-api-nav-footer-r3-20260616` deploy changed generated HTML/navigation and the hotfix packaging contract only. It intentionally skipped Meilisearch reindex because public data and index fields did not change. The deploy fixed global `/knowledge/api.html` navigation in the search root, generated pages, mobile Base2026 nav, and footer.
 
@@ -88,6 +88,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\base2026-release-g
   -ReleaseName <release-name> `
   -BatchSet <batch-set> `
   -RunAfterPolish `
+  -LatestReadiness 3 `
   -Deploy
 ```
 

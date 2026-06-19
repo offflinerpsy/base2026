@@ -952,3 +952,14 @@ nginx -t: pass
 - policy: `include_full_transcripts=false`.
 - QA: newest-source readiness passed after one exact-evidence `@iamdandavies` insight was reviewed/promoted for `WordPress static homepage setup`; release contract passed; publication boundary and export policy passed; live SEO crawl gate passed 500 crawled pages with 0 P0 bad links and 0 crawled error pages; mobile visual QA passed with 78 checks and 0 failures.
 - note: `scripts/hermes-tiktok-refresh.ps1 -AfterPolish` was fixed before the successful deploy so release packaging skips inventory/caption intake and cannot silently expand the private queue.
+
+## 2026-06-19 — base2026-ai-recommends-readiness-fix-ay44-20260619
+
+- release: `base2026-ai-recommends-readiness-fix-ay44-20260619`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-ai-recommends-readiness-fix-ay44-20260619`
+- reason: supersede the ay43 intermediate package after `-LatestReadiness 3` caught two fresh `@gobigsystems` source-only pages that needed reviewed public Source Intelligence before launch.
+- private review/import: mechanically cleaned and approved 3 caption-polish rows through `tiktok-qa-review-apply.py`; added 3 exact-evidence reviewed Source Intelligence cards for the latest AI Recommends pass.
+- public export: 1450 source records, 1978 passages, 1629 insight cards, 1058 public insight cards, 1521 topics, 1006 public topics, 10 creators.
+- Meilisearch: reindexed 1978 passages into `base2026_public_tiktok`.
+- policy: `include_full_transcripts=false`.
+- QA: `-LatestReadiness 3` passed with 0 blockers; publication boundary, GitHub metadata, public export policy, and public release contract passed; live SEO crawl gate passed 500 crawled pages with 0 P0 bad links and 0 crawled error pages; mobile visual QA passed with 78 checks and 0 failures; live smoke confirmed the two `@gobigsystems` pages render `Source Intelligence`.
