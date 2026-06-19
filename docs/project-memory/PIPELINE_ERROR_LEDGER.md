@@ -159,6 +159,19 @@ Fix:
 
 Rule: before clearing any `needs_source_review` row, run `python3 scripts/tiktok-source-review-queue.py --limit 25` and work from the generated queue. Do not bulk-pass held rows based on polished text alone.
 
+### QA pass did not clear private CSV source-review status
+
+Observed: three local-caption rows were mechanically cleaned and approved with `scripts/tiktok-qa-review-apply.py`, but the public export still excluded them because private `videos.csv` kept `transcript_status=needs_source_review`.
+
+Fix:
+
+- Added `scripts/tiktok-clear-reviewed-source-rows.py`.
+- The script is dry-run by default and accepts explicit `--video-id` values or a QA manifest.
+- It clears only rows that are still `needs_source_review`, have QA JSON status `pass`, and have both clean and polished transcript files.
+- On `--apply`, it backs up `videos.csv` under ignored `.planning/backups/`, sets `transcript_status=transcribed`, sets `review_status=source_review_pass`, and appends an audit note.
+
+Rule: `tiktok-qa-review-apply.py` updates QA artifacts; `tiktok-clear-reviewed-source-rows.py` is the only allowed transition from reviewed `needs_source_review` back into the public export lane.
+
 ## Current Policy
 
 - Raw captions, raw ASR, audio/video, logs, local DBs, `.planning/`, `output/`, `public-data/`, and private reviewed-candidate archives are never GitHub source.

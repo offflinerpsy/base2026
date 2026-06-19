@@ -7,7 +7,7 @@ Current public path:
 - WordPress root: `/var/www/alex-yarosh`
 - server current symlink: `/var/www/base2026-knowledge/current`
 - server releases: `/var/www/base2026-knowledge/releases/`
-- latest deployed release: `base2026-gobig-readiness-card-ay46-20260619`
+- latest deployed release: `base2026-source-review-local-caption-ay47-20260619`
 - SSL certificate: Let's Encrypt `aggressorbulkit.online`, domains `aggressorbulkit.online` and `www.aggressorbulkit.online`, auto-renewed by `certbot.timer`
 
 Latest WordPress root visual pass: `alex-yarosh` child theme `style.css?ver=1.5.63`, applied directly on 2026-06-19 for the compact `/about/` founder hero. Cache Enabler generated cache for `aggressorbulkit.online` should be cleared after direct theme updates.
@@ -48,11 +48,11 @@ nginx -t
 
 ## Local package
 
-Current live release: `base2026-gobig-readiness-card-ay46-20260619`.
+Current live release: `base2026-source-review-local-caption-ay47-20260619`.
 
-Latest data/reindex checkpoint: `base2026-gobig-readiness-card-ay46-20260619`.
+Latest data/reindex checkpoint: `base2026-source-review-local-caption-ay47-20260619`.
 
-This checkpoint adds one strict exact-evidence `@gobigsystems` Source Intelligence card for `Google Business Profile Categories` after newest-source readiness caught the ay45 source-only gap. Current live export has 1,452 public source records, 1,980 public passages, 1,630 insight cards, 1,059 public insight cards, and 1,007 public topics. Meilisearch remains on the 1,980-passage ay45 reindex because ay46 did not change passage count.
+This checkpoint ships three explicitly reviewed local-caption source-review rows after mechanical transcript cleanup, QA approval, and the guarded `scripts/tiktok-clear-reviewed-source-rows.py` transition back to `transcribed`. Current live export has 1,455 public source records, 1,986 public passages, 1,630 insight cards, 1,059 public insight cards, and 1,007 public topics. Meilisearch was reindexed with 1,986 public passages during ay47 deploy.
 
 The `base2026-api-nav-footer-r3-20260616` deploy changed generated HTML/navigation and the hotfix packaging contract only. It intentionally skipped Meilisearch reindex because public data and index fields did not change. The deploy fixed global `/knowledge/api.html` navigation in the search root, generated pages, mobile Base2026 nav, and footer.
 

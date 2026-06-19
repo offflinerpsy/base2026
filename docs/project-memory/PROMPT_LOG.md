@@ -5169,3 +5169,24 @@ Result:
 - Meilisearch reindexed 1980 public passages;
 - live SEO crawl passed 500 pages with 0 P0 bad links and 0 crawled error pages;
 - full mobile visual QA rerun passed 78 checks with 0 failures after one transient Meilisearch fetch reset in the first attempt.
+
+## 2026-06-19 — Local-caption source-review clearance and ay47 deploy
+
+User asked whether the work had looped and whether the plan was still coherent. Codex verified the bounded state, found that ay47 was live on the server while project memory still described ay46, and closed the mismatch instead of rereading the whole project.
+
+Actions:
+
+- reviewed the source-review queue from `scripts/tiktok-source-review-queue.py`;
+- mechanically cleaned three local-caption source-review transcripts;
+- approved them through private QA manifest and `scripts/tiktok-qa-review-apply.py`;
+- added `scripts/tiktok-clear-reviewed-source-rows.py` so explicit QA-pass source-review rows can safely return to `transcribed`;
+- deployed `base2026-source-review-local-caption-ay47-20260619` through the canonical release gate.
+
+Verification:
+
+- live symlink points to `base2026-source-review-local-caption-ay47-20260619`;
+- public export now has 1,455 source records and 1,986 passages;
+- Meilisearch reindexed 1,986 public passages;
+- live SEO crawl gate passed with 500 crawled pages, 0 P0 bad links, and 0 crawled error pages;
+- mobile visual QA passed 78 checks with 0 failures;
+- private source-review queue is now 57 rows: 42 local-caption, 13 audio-backed too-little/no-speech, and 2 no-source rows.

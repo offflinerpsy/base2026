@@ -136,6 +136,7 @@ PUBLIC_SAFE_EXACT = {
     "scripts/tiktok-qa-triage.py",
     "scripts/tiktok-qa-review-apply.py",
     "scripts/tiktok-caption-browser-extract.mjs",
+    "scripts/tiktok-clear-reviewed-source-rows.py",
     "scripts/tiktok-faithful-polish-local.py",
     "scripts/tiktok-normalize-polished-entities.py",
     "scripts/tiktok-process-transcripts.ps1",

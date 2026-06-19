@@ -963,3 +963,35 @@ nginx -t: pass
 - Meilisearch: reindexed 1978 passages into `base2026_public_tiktok`.
 - policy: `include_full_transcripts=false`.
 - QA: `-LatestReadiness 3` passed with 0 blockers; publication boundary, GitHub metadata, public export policy, and public release contract passed; live SEO crawl gate passed 500 crawled pages with 0 P0 bad links and 0 crawled error pages; mobile visual QA passed with 78 checks and 0 failures; live smoke confirmed the two `@gobigsystems` pages render `Source Intelligence`.
+
+## 2026-06-19 — base2026-asr-gobig-pipeline-ay45-20260619
+
+- release: `base2026-asr-gobig-pipeline-ay45-20260619`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-asr-gobig-pipeline-ay45-20260619`
+- reason: retry audio-backed source-review rows through ASR and ship only the one QA-pass recovered `@gobigsystems` source.
+- public export: 1452 source records, 1980 passages, 1629 insight cards, 1058 public insight cards, 1521 topics, 1006 public topics, 10 creators.
+- Meilisearch: reindexed 1980 passages into `base2026_public_tiktok`.
+- policy: `include_full_transcripts=false`.
+- QA: release gate passed with `-LatestReadiness 3`; live SEO crawl gate passed 500 pages with 0 P0 bad links and 0 crawled error pages; mobile visual QA rerun passed 78 checks with 0 failures after one transient Meilisearch reset on the first attempt.
+- note: 13 audio-backed rows stayed private because ASR produced too little/no usable speech.
+
+## 2026-06-19 — base2026-gobig-readiness-card-ay46-20260619
+
+- release: `base2026-gobig-readiness-card-ay46-20260619`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-gobig-readiness-card-ay46-20260619`
+- reason: add one strict exact-evidence Source Intelligence card for `Google Business Profile Categories` after newest-source readiness caught one ay45 source-only `@gobigsystems` row.
+- public export: 1452 source records, 1980 passages, 1630 insight cards, 1059 public insight cards, 1521 topics, 1007 public topics, 10 creators.
+- Meilisearch: unchanged at 1980 passages because passage data did not change.
+- policy: `include_full_transcripts=false`.
+- QA: newest-source readiness, public export policy, public release contract, and live smoke passed.
+
+## 2026-06-19 — base2026-source-review-local-caption-ay47-20260619
+
+- release: `base2026-source-review-local-caption-ay47-20260619`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-source-review-local-caption-ay47-20260619`
+- reason: ship three local-caption source-review rows after mechanical transcript cleanup, explicit QA pass, and guarded CSV clearance back to `transcribed`.
+- public export: 1455 source records, 1986 passages, 1630 insight cards, 1059 public insight cards, 1521 topics, 1007 public topics, 10 creators.
+- Meilisearch: reindexed 1986 passages into `base2026_public_tiktok`.
+- policy: `include_full_transcripts=false`.
+- QA: canonical release gate passed: current-batch polish status, AfterPolish rebuild/export, newest-source readiness, publication boundary, GitHub metadata, public export policy, public release contract, package, VPS deploy/reindex, live SEO crawl gate, and mobile visual QA.
+- note: private source-review backlog is now 57 rows: 42 local-caption rows, 13 audio-backed too-little/no-speech rows, and 2 rows with no usable source/audio.
