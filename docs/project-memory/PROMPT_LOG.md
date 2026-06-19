@@ -1,5 +1,21 @@
 # Prompt Log
 
+## 2026-06-19 — GitHub branch push and handoff sync
+
+User asked to keep closing the active launch goal until Git, deploy, and production state are not ambiguous.
+
+Actions:
+
+- confirmed `codex/base2026-launch-next` is clean and pushed to GitHub at `b10d9e5e5`;
+- confirmed the WordPress/geo branch `codex/novamira-plugin-evaluation` is clean and pushed to GitHub at `e1a2510`;
+- corrected launch memory that still claimed commit/push had not happened;
+- verified both branches are fast-forwardable over their `origin/main` branches before considering main-branch shipping.
+
+Next:
+
+- rerun final gates after this memory update;
+- if still clean, fast-forward merge the Base2026 branch and geo branch into their `main` branches and push.
+
 ## 2026-06-18 — About hero geometry hotfix and TikTok review queue recount
 
 User reported that the `/about/` first hero still rendered as an oversized poster on a laptop viewport and asked for a clear status on Hermes/TikTok processing.
