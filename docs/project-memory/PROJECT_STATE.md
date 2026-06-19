@@ -9,7 +9,7 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-source-review-local-caption-ay49-20260619`
+- latest deployed release: `base2026-source-review-local-caption-ay50-20260619`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape today: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, excerpt-only source payload, and in-page source-detail workspace
 - corrected product contract as of 2026-06-15: Base2026 behaves as a searchable video-source text database with one visible source text surface plus a separate Source Intelligence layer. Raw captions/ASR/media remain private; reviewed polished public source text/transcript is the source-record reading surface when policy allows, paired with Base2026-authored summaries, topics, insight cards, attribution, methodology, sharing actions, and correction/removal paths. Insight evidence should be collapsed by default instead of repeating the full source text.
@@ -17,7 +17,9 @@ Current public product:
 
 Latest live release:
 
-- `base2026-source-review-local-caption-ay49-20260619` is live under `/knowledge/`. This data-changing canonical-pipeline release supersedes ay48 after three more `@ray_fu` local-caption source-review rows were mechanically cleaned, explicitly QA-passed, and cleared back to `transcribed` with `scripts/tiktok-clear-reviewed-source-rows.py`. Current live export has 1,461 source records, 1,994 passages, 1,630 insight cards, 1,059 public insight cards, 1,521 topics, 1,007 public topics, and 10 creators. Meilisearch reindexed 1,994 public passages. Verification passed: newest-source readiness `--latest 3`, public export policy `include_full_transcripts=false`, public release contract, live SEO crawl gate, and mobile visual QA with 78 checks and 0 failures.
+- `base2026-source-review-local-caption-ay50-20260619` is live under `/knowledge/`. This data-changing canonical-pipeline release supersedes ay49 after three more `@ray_fu` local-caption source-review rows were mechanically cleaned, explicitly QA-passed, and cleared back to `transcribed` with `scripts/tiktok-clear-reviewed-source-rows.py`. Current live export has 1,464 source records, 1,998 passages, 1,630 insight cards, 1,059 public insight cards, 1,521 topics, 1,007 public topics, and 10 creators. Meilisearch reindexed 1,998 public passages. Verification passed: newest-source readiness `--latest 3`, public export policy `include_full_transcripts=false`, public release contract, live SEO crawl gate, and mobile visual QA with 78 checks and 0 failures.
+
+- `base2026-source-review-local-caption-ay49-20260619` remains the prior local-caption source-review release beneath ay50. It superseded ay48 after three more `@ray_fu` local-caption source-review rows were mechanically cleaned, explicitly QA-passed, and cleared back to `transcribed` with `scripts/tiktok-clear-reviewed-source-rows.py`.
 
 - `base2026-source-review-local-caption-ay48-20260619` remains the prior local-caption source-review release beneath ay49. It superseded ay47 after three more local-caption source-review rows were mechanically cleaned, explicitly QA-passed, and cleared back to `transcribed` with `scripts/tiktok-clear-reviewed-source-rows.py`.
 
