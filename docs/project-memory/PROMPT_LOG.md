@@ -5270,3 +5270,25 @@ Verification:
 - live SEO crawl gate passed with 500 crawled pages, 0 P0 bad links, and 0 crawled error pages;
 - mobile visual QA passed 78 checks with 0 failures;
 - private source-review queue is now 45 rows: 30 local-caption, 13 audio-backed too-little/no-speech, and 2 no-source rows.
+
+## 2026-06-19 — Local-caption source-review clearance batch 006 and ay52 deploy
+
+User asked whether the 10-hour run was finished and what remained. Codex resumed from the bounded ay51 state, selected the next local-caption source-review candidates, skipped unsafe/uncertain rows with unresolved entity, product, model, visual, or source dependence, and processed only six rows whose corrections could be checked against local raw/clean/polished transcript evidence.
+
+Actions:
+
+- mechanically corrected private polished transcripts for `7647005483651403039`, `7647365392070921503`, `7647707942870879495`, `7649790012220820754`, `7649798302174547222`, and `7649853023690312982`;
+- fixed `scripts/tiktok-qa-review-apply.py` so QA-pass review application removes stale uncertainty notes and avoids duplicate review-history entries;
+- approved those six rows through a private QA manifest and `scripts/tiktok-qa-review-apply.py`;
+- cleared only those explicit QA-pass rows back to `transcribed` with `scripts/tiktok-clear-reviewed-source-rows.py`;
+- deployed `base2026-source-review-local-caption-ay52-20260619` through the canonical release gate.
+
+Verification:
+
+- VPS current symlink points to `base2026-source-review-local-caption-ay52-20260619`;
+- public export now has 1,473 source records and 2,011 passages;
+- Meilisearch reindexed 2,011 public passages;
+- live SEO crawl gate passed with 500 crawled pages, 0 P0 bad links, and 0 crawled error pages;
+- targeted Source Intelligence rerun passed 4/0 after one transient mobile visual QA wait timeout;
+- full mobile visual QA rerun passed 78 checks with 0 failures;
+- private source-review queue is now 39 rows: 24 local-caption, 13 audio-backed too-little/no-speech, and 2 no-source rows.

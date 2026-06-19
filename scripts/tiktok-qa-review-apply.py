@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -11,6 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 TIKTOK = ROOT / "12_knowledge-base" / "sources" / "tiktok"
 QA_DIR = TIKTOK / "transcripts" / "polished-qa"
 ALLOWED_DECISIONS = {"pass", "keep_needs_review"}
+UNCERTAIN_NOTE_RE = re.compile(
+    r"\b(unclear|clipped|asr|likely wrong|kept raw|kept unclear|needs audio|audio verification|mid-sentence)\b",
+    re.IGNORECASE,
+)
 
 
 def utc_now() -> str:
@@ -32,6 +37,10 @@ def normalize_notes(value: Any) -> list[str]:
         return [str(item).strip() for item in value if str(item).strip()]
     text = str(value).strip()
     return [text] if text else []
+
+
+def clear_resolved_uncertainty_notes(notes: list[str]) -> list[str]:
+    return [note for note in notes if not UNCERTAIN_NOTE_RE.search(note)]
 
 
 def read_manifest(path: Path) -> dict[str, Any]:
@@ -57,6 +66,8 @@ def apply_decision(qa: dict[str, Any], item: dict[str, Any], reviewer: str, revi
 
     updated = dict(qa)
     current_notes = normalize_notes(updated.get("notes"))
+    if decision == "pass":
+        current_notes = clear_resolved_uncertainty_notes(current_notes)
     review_notes = normalize_notes(item.get("notes"))
     audit_entry = {
         "reviewed_at": reviewed_at,
@@ -68,7 +79,8 @@ def apply_decision(qa: dict[str, Any], item: dict[str, Any], reviewer: str, revi
     trail = updated.get("review_history")
     if not isinstance(trail, list):
         trail = []
-    trail.append(audit_entry)
+    if audit_entry not in trail:
+        trail.append(audit_entry)
 
     updated["status"] = "pass" if decision == "pass" else "needs_review"
     updated["reviewed_by"] = reviewer

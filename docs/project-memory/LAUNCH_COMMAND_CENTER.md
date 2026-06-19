@@ -51,10 +51,10 @@ Do not run direct deploy for data-changing releases unless the release gate has 
 
 | Area | Status | Current Fact | Next Gate |
 | --- | --- | --- | --- |
-| Public release | live | `base2026-source-review-local-caption-ay51-20260619` | newest-source readiness clean; next data change must use the release gate |
-| Public export | live | 1,467 sources; 2,001 passages; 1,630 insights; 1,059 public insights; 1,521 topics; 1,007 public topics; 10 creators | export policy and release contract before every package |
-| Meilisearch | live | `base2026_public_tiktok`, 2,001 passages | reindex only when data changes |
-| TikTok pipeline | operational | AI Recommends Solutions pass processed in `hermes-polish-20260618-ai-recommends`; 77 polished rows reviewed; 49 public-ready sources shipped across ay42/ay44/ay45/ay47-ay51 plus one ay46 readiness card; 45 source-review rows remain private/gated; `needs_asr=0` | run `python3 scripts/tiktok-source-review-queue.py --limit 25`; use release gate; never bypass newest-source readiness or transcript QA |
+| Public release | live | `base2026-source-review-local-caption-ay52-20260619` | newest-source readiness clean; next data change must use the release gate |
+| Public export | live | 1,473 sources; 2,011 passages; 1,630 insights; 1,059 public insights; 1,521 topics; 1,007 public topics; 10 creators | export policy and release contract before every package |
+| Meilisearch | live | `base2026_public_tiktok`, 2,011 passages | reindex only when data changes |
+| TikTok pipeline | operational | AI Recommends Solutions pass processed in `hermes-polish-20260618-ai-recommends`; 77 polished rows reviewed; source-review cleanup is live through ay52; 39 source-review rows remain private/gated; `needs_asr=0` | run `python3 scripts/tiktok-source-review-queue.py --limit 25`; use release gate; never bypass newest-source readiness or transcript QA |
 | GitHub | main pushed | `codex/base2026-launch-next` was pushed and fast-forwarded into GitHub `main` on 2026-06-19 | future changes still need boundary audit before staging |
 | GSC | manual-only | sitemap submitted earlier; individual request-indexing quota hit before | no automated GSC clicks |
 | SEO/Ahrefs | active | live crawl gate 0 P0 bad links / 0 crawled error pages | next crawl after substantial UI/SEO deploy |
@@ -76,13 +76,13 @@ Do not run direct deploy for data-changing releases unless the release gate has 
 | PIPE-01 | Create durable release gate and error ledger | Main Codex | completed | `base2026-release-gate.ps1 -Help`, `hermes-tiktok-refresh.ps1 -Help`, boundary audit, export policy, release contract pass |
 | PIPE-02 | Implement free social intake recommendations Phase 1-2 | Main Codex | completed | doctor reports required/optional capabilities; `scripts/social-discover.py` wrote 15 private TikTok discovery rows across 5 creators; Instagram missing-adapter state recorded; `videos.csv` hash unchanged |
 | PIPE-03 | Bridge social discovery into private TikTok queue | Main Codex | completed/live-proof | dry-run-first importer added; bridge queue was processed through ay41, ay42, ay44, ay45, and ay46 release gates after private backups/dedupe; no direct public export/deploy from importer |
-| DATA-01 | Process fresh TikTok batch | Main Codex | completed/live | AI Recommends Solutions ay51 batch includes explicit local-caption source-review cleanup; readiness blockers resolved with reviewed exact-evidence insights; ay51 deployed |
-| QA-01 | Verify live ay51 release | Main Codex | completed | newest-source readiness/export/contract clean; Meili has 2,001 passages |
-| MEM-01 | Update project memory after release | Main Codex | completed | handoff, next action, data sources, status board, prompt log, deployment log, project state, deployment runbook, and active queue point at ay51 |
+| DATA-01 | Process fresh TikTok batch | Main Codex | completed/live | AI Recommends Solutions ay52 batch includes explicit local-caption source-review cleanup; readiness blockers resolved with reviewed exact-evidence insights; ay52 deployed |
+| QA-01 | Verify live ay52 release | Main Codex | completed | newest-source readiness/export/contract clean; Meili has 2,011 passages; full mobile visual QA rerun passed 78/0 |
+| MEM-01 | Update project memory after release | Main Codex | completed | handoff, next action, data sources, status board, prompt log, deployment log, project state, deployment runbook, and active queue point at ay52 |
 | GIT-01 | Prepare safe Git step | Main Codex | completed/main pushed | branch passed final gates and was fast-forwarded into GitHub `main` |
 | SEO-01 | Continue GSC/Ahrefs growth work | Main Codex + SEO worker | pending next pass | do not automate GSC clicks; use clean candidate pages and crawl gates |
 | UI-01 | Continue mobile/product UI polish | Main Codex + frontend worker | pending next pass | every patch needs Playwright/mobile visual QA and no regression against known UI contracts |
-| QA-02 | Resolve private source-review queue | Main Codex + review worker | active | use `scripts/tiktok-source-review-queue.py`; 30 local-caption rows need source/QA review, 13 audio-backed rows need better source/audio after too-little ASR, 2 rows stay private until source/audio exists |
+| QA-02 | Resolve private source-review queue | Main Codex + review worker | active | use `scripts/tiktok-source-review-queue.py`; 24 local-caption rows need source/QA review, 13 audio-backed rows need better source/audio after too-little ASR, 2 rows stay private until source/audio exists |
 
 ## Known Failure Modes To Avoid
 
