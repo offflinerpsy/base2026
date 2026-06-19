@@ -407,3 +407,9 @@ Reason: the ay42 release attempt proved that running inventory inside `AfterPoli
 Decision: data-changing releases that add fresh creator/video rows must run `scripts/base2026-release-gate.ps1` with `-LatestReadiness 3` until the readiness gate becomes batch-aware. A single newest-source check is not enough for multi-creator batches.
 
 Reason: the ay43 pass showed that one latest source can pass while two adjacent fresh `@gobigsystems` source pages still lack reviewed public Source Intelligence. ay44 fixed those pages with exact-evidence reviewed cards and proved that `-LatestReadiness 3` catches this class of launch defect before final sign-off.
+
+## 2026-06-19 — ASR-too-little rows stay private
+
+Decision: ASR fallback rows that produce no usable speech or very short text must remain `needs_source_review` and must not be bulk-promoted into public export. `scripts/tiktok-process-transcripts.ps1` must report the ASR failure class and dedupe notes so retry results are auditable instead of noisy.
+
+Reason: some downloaded TikTok audio is music-only, visually dependent, or otherwise unusable for faithful transcription. Publishing a confident public source record from 0-4 words would invent meaning. The safe path is to ship only QA-pass ASR rows and keep weak ASR rows private until a better source/audio verification lane exists.

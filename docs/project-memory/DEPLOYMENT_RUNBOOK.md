@@ -7,10 +7,10 @@ Current public path:
 - WordPress root: `/var/www/alex-yarosh`
 - server current symlink: `/var/www/base2026-knowledge/current`
 - server releases: `/var/www/base2026-knowledge/releases/`
-- latest deployed release: `base2026-ai-recommends-readiness-fix-ay44-20260619`
+- latest deployed release: `base2026-gobig-readiness-card-ay46-20260619`
 - SSL certificate: Let's Encrypt `aggressorbulkit.online`, domains `aggressorbulkit.online` and `www.aggressorbulkit.online`, auto-renewed by `certbot.timer`
 
-Latest WordPress root homepage design-system pass: `alex-yarosh` child theme `style.css?ver=1.5.43`, applied directly through Novamira on 2026-06-14. Cache Enabler generated cache for `aggressorbulkit.online` was cleared after the direct update.
+Latest WordPress root visual pass: `alex-yarosh` child theme `style.css?ver=1.5.63`, applied directly on 2026-06-19 for the compact `/about/` founder hero. Cache Enabler generated cache for `aggressorbulkit.online` should be cleared after direct theme updates.
 
 ## Domain and SSL
 
@@ -48,11 +48,11 @@ nginx -t
 
 ## Local package
 
-Current live release: `base2026-ai-recommends-readiness-fix-ay44-20260619`.
+Current live release: `base2026-gobig-readiness-card-ay46-20260619`.
 
-Latest data/reindex checkpoint: `base2026-ai-recommends-readiness-fix-ay44-20260619`.
+Latest data/reindex checkpoint: `base2026-gobig-readiness-card-ay46-20260619`.
 
-This checkpoint processed the five-creator AI Recommends Solutions pass through the canonical release gate, deployed 1,450 public source records and 1,978 public passages, and reindexed Meilisearch. It supersedes ay43 after `-LatestReadiness 3` caught two fresh source-only pages that the narrower newest-source check missed.
+This checkpoint adds one strict exact-evidence `@gobigsystems` Source Intelligence card for `Google Business Profile Categories` after newest-source readiness caught the ay45 source-only gap. Current live export has 1,452 public source records, 1,980 public passages, 1,630 insight cards, 1,059 public insight cards, and 1,007 public topics. Meilisearch remains on the 1,980-passage ay45 reindex because ay46 did not change passage count.
 
 The `base2026-api-nav-footer-r3-20260616` deploy changed generated HTML/navigation and the hotfix packaging contract only. It intentionally skipped Meilisearch reindex because public data and index fields did not change. The deploy fixed global `/knowledge/api.html` navigation in the search root, generated pages, mobile Base2026 nav, and footer.
 

@@ -31,11 +31,11 @@ Keep Base2026 launch work stable and reproducible: public UI fixes, SEO/GSC work
 ## Current Branch And Release State
 
 - Branch: `codex/base2026-launch-next`; pushed to GitHub and fast-forwarded into GitHub `main` on 2026-06-19.
-- Current live release: `base2026-ai-recommends-readiness-fix-ay44-20260619`.
-- Current live export: 1,450 source records, 1,978 passages, 1,629 insight cards, 1,058 public insight cards, 1,521 topics, 1,006 public topics, 10 creators.
+- Current live release: `base2026-gobig-readiness-card-ay46-20260619`.
+- Current live export: 1,452 source records, 1,980 passages, 1,630 insight cards, 1,059 public insight cards, 1,521 topics, 1,007 public topics, 10 creators.
 - Current policy: `include_full_transcripts=false`.
-- Current Meilisearch index: `base2026_public_tiktok`, 1,978 public passages.
-- Latest live QA: SEO crawl gate passed 500 crawled pages with 0 P0 bad links and 0 crawled error pages; mobile visual QA passed with 78 checks and 0 failures.
+- Current Meilisearch index: `base2026_public_tiktok`, 1,980 public passages.
+- Latest live QA: SEO crawl gate passed 500 crawled pages with 0 P0 bad links and 0 crawled error pages; full mobile visual QA rerun passed with 78 checks and 0 failures.
 
 ## What Was Just Done
 
@@ -49,6 +49,8 @@ Keep Base2026 launch work stable and reproducible: public UI fixes, SEO/GSC work
 - Fixed `scripts/hermes-tiktok-refresh.ps1 -AfterPolish` so it skips inventory/caption intake and cannot expand `videos.csv` during release packaging.
 - Ran `base2026-ai-recommends-readiness-fix-ay44-20260619` through package, deploy, Meilisearch reindex, live SEO crawl, and mobile QA.
 - Before ay44, ay43 briefly packaged/deployed but an extended `--latest 3` readiness check caught two fresh `@gobigsystems` source-only pages. ay44 fixed the root cause by adding two strict exact-evidence reviewed Source Intelligence cards, then reran the full release gate with `-LatestReadiness 3`.
+- Retried the audio-backed source-review queue and deployed `base2026-asr-gobig-pipeline-ay45-20260619`: one QA-pass `@gobigsystems` ASR-recovered source shipped publicly, 13 weak/no-speech ASR rows stayed private, Meilisearch reindexed 1,980 public passages, live SEO crawl passed, and the mobile visual QA rerun passed 78/0.
+- Deployed `base2026-gobig-readiness-card-ay46-20260619` after newest-source readiness found one ay45 source-only `@gobigsystems` row; ay46 adds one strict exact-evidence Source Intelligence card for `Google Business Profile Categories` and keeps the remaining source-review backlog gated.
 
 ## Verification So Far
 
@@ -62,7 +64,8 @@ Keep Base2026 launch work stable and reproducible: public UI fixes, SEO/GSC work
 - Phase 1/2 verification passed: `scripts/base2026-worker.py doctor` reports required/optional capabilities, TikTok discovery smoke wrote 15 private JSONL rows across 5 creators via `tiktok_yt_dlp_flat_playlist`, Instagram missing-adapter state is explicit, `.planning/` outputs are ignored, and `12_knowledge-base/sources/tiktok/videos.csv` hash stayed unchanged.
 - Phase 3 verification passed: importer dry-run found 15 TikTok candidates; apply added 1 new queued recent source (`7652732487843581206`) and safely filled missing metadata for 14 existing rows; a post-apply dry run showed 0 new rows and 0 updates; backup is under ignored `.planning/backups/`.
 - `scripts/hermes-tiktok-refresh.ps1 -CheckOnly` is now truly read-only. It runs social discovery plus importer dry-run, then prints current queue state. A hash check around `-CheckOnly -PlaylistEnd 3` proved `videos.csv` did not change.
-- ay44 release gate passed package and deploy lanes: `-LatestReadiness 3`, publication boundary, GitHub metadata, public export policy, public release contract, VPS deploy, Meilisearch reindex, live SEO crawl, and mobile visual QA.
+- ay45 release gate passed package and deploy lanes: `-LatestReadiness 3`, publication boundary, GitHub metadata, public export policy, public release contract, VPS deploy, Meilisearch reindex, live SEO crawl, and mobile visual QA rerun.
+- ay46 readiness-card release is live: symlink points to `base2026-gobig-readiness-card-ay46-20260619`; public export policy, release contract, and newest-source readiness pass.
 - ay44 live smoke verified `/knowledge/`, live manifest counts, and the two `@gobigsystems` source pages `tiktok-video-7652081880103275789` and `tiktok-video-7652520714678832398` with `Source Intelligence`.
 - Final repo gates after the memory update passed: `git diff --check`, publication-boundary audit, GitHub metadata validation, public export policy, public release contract, and newest-source readiness.
 
@@ -70,7 +73,7 @@ Keep Base2026 launch work stable and reproducible: public UI fixes, SEO/GSC work
 
 - Git commit/push for the Base2026 release-gate/social-intake work is done; GitHub `main` now contains the checked release-gate/social-intake branch after a non-force fast-forward push.
 - `docs/research/FREE_SOCIAL_VIDEO_INTAKE_RECOMMENDATIONS_2026_06_18.md` is committed as a public-safe research artifact and is now the source for PIPE-02 Phase 1/2.
-- The AI Recommends Solutions creator pass is closed in the live ay44 release. The Hermes batch processed 77 videos: 30 passed immediately, 3 more were mechanically cleaned and approved through `tiktok-qa-review-apply.py`, and 33 total public-ready rows are now included. Current private inventory has 0 `needs_asr` rows and 61 `needs_source_review` rows: 45 local-caption review rows, 14 audio-backed ASR-retry rows, and 2 rows without usable local caption/audio. Those require source/audio verification before public export.
+- The AI Recommends Solutions creator pass is closed in the live ay46 release. The Hermes batch processed 77 videos: 30 passed immediately, 3 more were mechanically cleaned and approved through `tiktok-qa-review-apply.py`, 1 ASR-recovered row passed later, and ay46 added 1 exact-evidence readiness card. Current private inventory has 0 `needs_asr` rows and 60 `needs_source_review` rows: 45 local-caption review rows, 13 audio-backed rows with too little/no usable ASR, and 2 rows without usable local caption/audio. Those require source/audio verification before public export.
 - GSC individual URL submissions are manual-only for now because browser automation previously clicked the wrong UI areas and GSC quota was exhausted.
 - Historical source/audio verification debt remains gated; do not bulk-pass held rows.
 - Future data-changing releases must use `scripts/base2026-release-gate.ps1`.

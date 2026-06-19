@@ -1,5 +1,17 @@
 # Prompt Log
 
+## 2026-06-19 — ay46 readiness-card release and anti-loop sync
+
+User paused the long run to verify Codex was not looping after a context compaction. Codex checked live symlink/state instead of repeating the whole project-memory bundle.
+
+Result:
+
+- live symlink points to `base2026-gobig-readiness-card-ay46-20260619`;
+- ay46 adds one strict exact-evidence `@gobigsystems` Source Intelligence card for `Google Business Profile Categories`;
+- public export is now 1452 source records, 1980 passages, 1630 insight cards, 1059 public insight cards, 1521 topics, 1007 public topics, and 10 creators;
+- newest-source readiness, public export policy, and public release contract pass;
+- memory/runbook state was synced from ay45 to ay46 so the next resume does not redo the old release step.
+
 ## 2026-06-19 — ay44 readiness fix, about hero finalization, and launch-memory cleanup
 
 User asked why the guide/memory keeps accumulating stale state, requested a clear video-processing status, and pointed out that the `/about/` founder hero still looked oversized from the visible screenshot.
@@ -5142,3 +5154,18 @@ Current queue facts from the script:
 - QA status counts: 45 `needs_review`, 16 missing QA JSON.
 
 No public export, deploy, reindex, source status mutation, commit, or push was performed until the new queue tool and docs passed gates.
+
+## 2026-06-19 — ASR retry hardening and ay45 deploy
+
+User asked to continue after the connection dropped and to avoid repeating the same pipeline mistakes. Codex hardened `scripts/tiktok-process-transcripts.ps1` so ASR retries dedupe notes, parse noisy worker JSON, and report `asr_too_little`, `asr_no_usable`, `asr_no_audio`, and `asr_worker_parse_failed`.
+
+Result:
+
+- retried 14 audio-backed source-review rows;
+- 1 `@gobigsystems` row produced usable ASR, passed polish QA, and shipped publicly;
+- 13 weak/no-speech ASR rows stayed private as `needs_source_review`;
+- deployed `base2026-asr-gobig-pipeline-ay45-20260619` through `scripts/base2026-release-gate.ps1 -RunAfterPolish -Deploy`;
+- public export is now 1452 source records, 1980 passages, 1629 insight cards, 1058 public insight cards, 1521 topics, 1006 public topics, and 10 creators;
+- Meilisearch reindexed 1980 public passages;
+- live SEO crawl passed 500 pages with 0 P0 bad links and 0 crawled error pages;
+- full mobile visual QA rerun passed 78 checks with 0 failures after one transient Meilisearch fetch reset in the first attempt.

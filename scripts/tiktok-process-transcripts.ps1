@@ -65,6 +65,32 @@ function Test-SourceReviewReason {
   }
 }
 
+function Add-RowNote {
+  param(
+    [object]$Row,
+    [string]$Note
+  )
+  if (-not $Note) { return }
+  $existing = @()
+  if ($Row.notes) {
+    $existing = @($Row.notes -split ';' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+  }
+  if ($existing -notcontains $Note) {
+    $Row.notes = (@($existing) + $Note) -join "; "
+  }
+}
+
+function Convert-WorkerJson {
+  param([object[]]$WorkerOutput)
+  $text = (($WorkerOutput | Out-String) -replace '^\s+', '').Trim()
+  if (-not $text) { return $null }
+  $jsonStart = $text.IndexOf('{')
+  if ($jsonStart -gt 0) {
+    $text = $text.Substring($jsonStart)
+  }
+  try { return ($text | ConvertFrom-Json) } catch { return $null }
+}
+
 $rows = @(Import-Csv $VideosCsv)
 $targetStatuses = if ($AsrFallback) { @("queued", "pending", "", "needs_asr") } else { @("queued", "pending", "") }
 if ($AsrFallback -and $IncludeSourceReview) {
@@ -82,6 +108,10 @@ $caption = 0
 $needsAsr = 0
 $asrDone = 0
 $failed = 0
+$asrTooLittle = 0
+$asrNoUsable = 0
+$asrNoAudio = 0
+$asrWorkerParseFailed = 0
 
 foreach ($row in $targets) {
   $id = $row.video_id
@@ -102,7 +132,7 @@ foreach ($row in $targets) {
     $row.caption_source = "caption"
     $row.evidence_path = $vtt.FullName.Replace($TikTokRoot + "\", "")
     $row.review_status = ""
-    $row.notes = (($row.notes, "Captions downloaded via yt-dlp") | Where-Object { $_ }) -join "; "
+    Add-RowNote -Row $row -Note "Captions downloaded via yt-dlp"
     $caption++
     $done++
     continue
@@ -127,8 +157,10 @@ foreach ($row in $targets) {
     }
     if ($media) {
       $workerJson = & $WorkerPython $WorkerScript transcribe $media.FullName --model small.en --language en --device cpu --compute-type int8 --vad-filter 2>$null
-      $worker = $null
-      try { $worker = $workerJson | ConvertFrom-Json } catch { $worker = $null }
+      $worker = Convert-WorkerJson -WorkerOutput $workerJson
+      if (-not $worker) {
+        $asrWorkerParseFailed++
+      }
       if ($worker -and $worker.ok -and $worker.output -and (Test-Path -LiteralPath $worker.output)) {
         $asrRaw = Get-Content -LiteralPath $worker.output -Raw -Encoding UTF8
         $asrText = if ($null -eq $asrRaw) { "" } else { $asrRaw.Trim() }
@@ -149,7 +181,8 @@ foreach ($row in $targets) {
             $row.caption_source = "asr"
             $row.evidence_path = "transcripts\asr\$id.txt"
             $row.review_status = "needs_source_review"
-            $row.notes = (($row.notes, "ASR produced too little usable text; source review required") | Where-Object { $_ }) -join "; "
+            Add-RowNote -Row $row -Note "ASR produced too little usable text ($wordCount words); source review required"
+            $asrTooLittle++
             $failed++
             continue
           }
@@ -157,7 +190,7 @@ foreach ($row in $targets) {
           $row.caption_source = "asr"
           $row.evidence_path = "transcripts\asr\$id.txt"
           $row.review_status = ""
-          $row.notes = (($row.notes, "Caption download failed; faster-whisper ASR completed") | Where-Object { $_ }) -join "; "
+          Add-RowNote -Row $row -Note "Caption download failed; faster-whisper ASR completed"
           $asrDone++
           $done++
           continue
@@ -170,7 +203,8 @@ foreach ($row in $targets) {
       $row.caption_source = "asr"
       $row.evidence_path = ""
       $row.review_status = "needs_source_review"
-      $row.notes = (($row.notes, "ASR fallback produced no usable transcript; source review required") | Where-Object { $_ }) -join "; "
+      Add-RowNote -Row $row -Note "ASR fallback produced no usable transcript; source review required"
+      $asrNoUsable++
       $failed++
       continue
     } else {
@@ -178,7 +212,8 @@ foreach ($row in $targets) {
       $row.caption_source = ""
       $row.evidence_path = ""
       $row.review_status = "needs_source_review"
-      $row.notes = (($row.notes, "Caption download failed; audio fallback unavailable; source review required") | Where-Object { $_ }) -join "; "
+      Add-RowNote -Row $row -Note "Caption download failed; audio fallback unavailable; source review required"
+      $asrNoAudio++
       $failed++
       continue
     }
@@ -186,7 +221,7 @@ foreach ($row in $targets) {
 
   $row.transcript_status = "needs_asr"
   $row.caption_source = ""
-  $row.notes = (($row.notes, "Caption download failed; ASR queued") | Where-Object { $_ }) -join "; "
+  Add-RowNote -Row $row -Note "Caption download failed; ASR queued"
   $needsAsr++
 }
 
@@ -199,4 +234,8 @@ $rows | Export-Csv $VideosCsv -NoTypeInformation -Encoding UTF8
   asr = $asrDone
   needs_asr = $needsAsr
   failed = $failed
+  asr_too_little = $asrTooLittle
+  asr_no_usable = $asrNoUsable
+  asr_no_audio = $asrNoAudio
+  asr_worker_parse_failed = $asrWorkerParseFailed
 } | Format-List
