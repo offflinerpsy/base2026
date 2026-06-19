@@ -5190,3 +5190,23 @@ Verification:
 - live SEO crawl gate passed with 500 crawled pages, 0 P0 bad links, and 0 crawled error pages;
 - mobile visual QA passed 78 checks with 0 failures;
 - private source-review queue is now 57 rows: 42 local-caption, 13 audio-backed too-little/no-speech, and 2 no-source rows.
+
+## 2026-06-19 — Local-caption source-review clearance batch 002 and ay48 deploy
+
+User asked whether the work was looping after a long run. Codex resumed from the bounded ay47 state instead of re-reading the full project memory, selected the next three `local_caption_exists` source-review rows, and processed only the evidence that could be mechanically verified from local raw/clean/polished transcript files.
+
+Actions:
+
+- mechanically corrected `LinkSeeker.io`, `FindQuestions.com`, and `9,600` formatting in the private polished transcripts for `7635790305647742216`, `7636073338426641682`, and `7637620554882649362`;
+- approved those three rows through a private QA manifest and `scripts/tiktok-qa-review-apply.py`;
+- cleared only those explicit QA-pass rows back to `transcribed` with `scripts/tiktok-clear-reviewed-source-rows.py`;
+- deployed `base2026-source-review-local-caption-ay48-20260619` through the canonical release gate.
+
+Verification:
+
+- live symlink points to `base2026-source-review-local-caption-ay48-20260619`;
+- public export now has 1,458 source records and 1,989 passages;
+- Meilisearch reindexed 1,989 public passages;
+- live SEO crawl gate passed with 500 crawled pages, 0 P0 bad links, and 0 crawled error pages;
+- mobile visual QA passed 78 checks with 0 failures;
+- private source-review queue is now 54 rows: 39 local-caption, 13 audio-backed too-little/no-speech, and 2 no-source rows.
