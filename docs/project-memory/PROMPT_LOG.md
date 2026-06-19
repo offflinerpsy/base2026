@@ -5128,3 +5128,17 @@ Verification:
 - live Playwright checks at 1440x900, 1280x800, and 390x844 showed no horizontal overflow, the next section visible after the hero, and a compact hero height of 435px at 1280x800.
 
 No Base2026 public export, Base2026 deploy, Meilisearch reindex, commit, or push was performed in this pass.
+
+## 2026-06-19 — Source-review queue hardening
+
+User asked why video review stopped and pushed to keep Hermes/ISR work moving without bloating project memory. Codex added `scripts/tiktok-source-review-queue.py` so private `needs_source_review` rows are listed from actual local evidence availability before any status changes.
+
+Current queue facts from the script:
+
+- total held rows: 61;
+- 45 `local_caption_exists` rows require source/QA review before public release;
+- 14 `audio_available_retry_asr` rows should go through ASR retry before review;
+- 2 `no_local_caption_or_audio` rows stay private until source/audio exists;
+- QA status counts: 45 `needs_review`, 16 missing QA JSON.
+
+No public export, deploy, reindex, source status mutation, commit, or push was performed until the new queue tool and docs passed gates.

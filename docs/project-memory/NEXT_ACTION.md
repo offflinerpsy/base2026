@@ -15,6 +15,7 @@ Latest local transcript QA note:
 - Created 21 polished transcript files and 21 QA JSON files under `12_knowledge-base/sources/tiktok/transcripts/`.
 - QA totals: 10 `pass`, 11 `needs_review`, 0 `failed`.
 - Current source-review audit has 61 private gated rows: 45 have local captions that require source/audio review, 14 have audio fallback that can be retried through ASR, and 2 have no usable local caption/audio yet.
+- The source-review queue is now repeatable with `python3 scripts/tiktok-source-review-queue.py --limit 25`; use it before touching any held row so the next action is based on actual private evidence availability, not chat memory.
 - Next transcript action: source-verify the 45 local-caption rows, retry ASR on the 14 audio-backed rows only if audio quality is usable, and keep the 2 no-source rows private until usable source/audio exists. Do not allow any of those rows into a public release gate before review passes.
 
 Current verified facts:
@@ -51,8 +52,9 @@ Final ay44 live verification is complete:
 Next safe action:
 
 1. If the user gives new creators, add them to ignored local creator/intake config, run `scripts/social-discover.py`, dry-run `scripts/import-social-discovery-to-tiktok-csv.py`, apply only clean TikTok candidates, then process the resulting queue through `scripts/base2026-release-gate.ps1 -LatestReadiness 3`.
-2. If the user explicitly asks for Git, stage only public-safe source/docs files that passed `audit-publication-boundary.py`; do not stage generated/private artifacts.
-3. If the user asks for product/SEO work first, pick one scoped task from `UI-01` or `SEO-01` in `docs/project-memory/LAUNCH_COMMAND_CENTER.md`; handle Git only when a new safe change actually needs staging after gates.
+2. If the user asks why videos are held, run `python3 scripts/tiktok-source-review-queue.py --limit 25` and process only rows with verified local evidence. Do not bulk-pass the 61 held rows.
+3. If the user explicitly asks for Git, stage only public-safe source/docs files that passed `audit-publication-boundary.py`; do not stage generated/private artifacts.
+4. If the user asks for product/SEO work first, pick one scoped task from `UI-01` or `SEO-01` in `docs/project-memory/LAUNCH_COMMAND_CENTER.md`; handle Git only when a new safe change actually needs staging after gates.
 
 ## Do Not Do
 

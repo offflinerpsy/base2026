@@ -146,6 +146,19 @@ Fix:
 
 Rule: after `social-discover.py` plus importer `--apply`, never run the normal refresh runner without `-SkipInventory` unless the task is explicitly to expand inventory across all configured creators.
 
+### Source-review debt was managed from chat memory
+
+Observed: after the AI Recommends pass, held videos were easy to discuss as loose counts (`47 needs review`, `23 ASR`, `61 held`) instead of a deterministic work queue.
+
+Fix:
+
+- `scripts/tiktok-source-review-queue.py` reads private local `videos.csv` and classifies `needs_source_review` rows by evidence availability.
+- Local-caption rows are the first review lane.
+- Audio-backed rows go through ASR retry before any public decision.
+- Rows without local caption or audio stay private until a usable source is recovered.
+
+Rule: before clearing any `needs_source_review` row, run `python3 scripts/tiktok-source-review-queue.py --limit 25` and work from the generated queue. Do not bulk-pass held rows based on polished text alone.
+
 ## Current Policy
 
 - Raw captions, raw ASR, audio/video, logs, local DBs, `.planning/`, `output/`, `public-data/`, and private reviewed-candidate archives are never GitHub source.

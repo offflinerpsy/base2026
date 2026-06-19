@@ -140,6 +140,7 @@ PUBLIC_SAFE_EXACT = {
     "scripts/tiktok-normalize-polished-entities.py",
     "scripts/tiktok-process-transcripts.ps1",
     "scripts/tiktok-source-review-audit.py",
+    "scripts/tiktok-source-review-queue.py",
     "scripts/tiktok-ytdlp-metadata-extract.py",
     "scripts/validate-public-release-contract.py",
     "scripts/repair-public-text-excerpts.py",

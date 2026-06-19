@@ -54,7 +54,7 @@ Do not run direct deploy for data-changing releases unless the release gate has 
 | Public release | live | `base2026-ai-recommends-readiness-fix-ay44-20260619` | live QA passed; next data change must use the release gate |
 | Public export | live | 1,450 sources; 1,978 passages; 1,629 insights; 1,058 public insights; 1,521 topics; 1,006 public topics; 10 creators | export policy and release contract before every package |
 | Meilisearch | live | `base2026_public_tiktok`, 1,978 passages | reindex only when data changes |
-| TikTok pipeline | operational | AI Recommends Solutions pass processed in `hermes-polish-20260618-ai-recommends`; 77 polished rows reviewed; 33 public-ready rows shipped; 61 source-review rows remain private/gated; `needs_asr=0` | use release gate; never bypass newest-source readiness or transcript QA |
+| TikTok pipeline | operational | AI Recommends Solutions pass processed in `hermes-polish-20260618-ai-recommends`; 77 polished rows reviewed; 33 public-ready rows shipped; 61 source-review rows remain private/gated; `needs_asr=0` | run `python3 scripts/tiktok-source-review-queue.py --limit 25`; use release gate; never bypass newest-source readiness or transcript QA |
 | GitHub | main pushed | `codex/base2026-launch-next` was pushed and fast-forwarded into GitHub `main` on 2026-06-19 | future changes still need boundary audit before staging |
 | GSC | manual-only | sitemap submitted earlier; individual request-indexing quota hit before | no automated GSC clicks |
 | SEO/Ahrefs | active | live crawl gate 0 P0 bad links / 0 crawled error pages | next crawl after substantial UI/SEO deploy |
@@ -82,6 +82,7 @@ Do not run direct deploy for data-changing releases unless the release gate has 
 | GIT-01 | Prepare safe Git step | Main Codex | completed/main pushed | branch passed final gates and was fast-forwarded into GitHub `main` |
 | SEO-01 | Continue GSC/Ahrefs growth work | Main Codex + SEO worker | pending next pass | do not automate GSC clicks; use clean candidate pages and crawl gates |
 | UI-01 | Continue mobile/product UI polish | Main Codex + frontend worker | pending next pass | every patch needs Playwright/mobile visual QA and no regression against known UI contracts |
+| QA-02 | Resolve private source-review queue | Main Codex + review worker | active | use `scripts/tiktok-source-review-queue.py`; 45 local-caption rows need source/QA review, 14 audio-backed rows need ASR retry, 2 rows stay private until source/audio exists |
 
 ## Known Failure Modes To Avoid
 
@@ -116,3 +117,10 @@ If the user gives new creators:
 3. Dry-run the importer and inspect counts.
 4. Apply only clean TikTok candidates with backup.
 5. Run the canonical release gate through deploy/reindex/live QA.
+
+If the user asks why video review is not finished:
+
+1. Run `python3 scripts/tiktok-source-review-queue.py --limit 25`.
+2. Report the queue counts, not chat memory.
+3. Review only rows with usable evidence: local-caption rows first, audio-backed rows only after ASR retry, and no-source rows stay private.
+4. Do not bulk-clear `needs_source_review`; each public row needs reviewed transcript/source text and public readiness gates.
