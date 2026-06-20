@@ -139,6 +139,7 @@ python3 ./scripts/generate-public-pages.py --data $ExportRoot --out $WebRoot | W
 Assert-NativeSuccess "generate-public-pages"
 python3 ./scripts/generate-base2026-sitemap.py --web-root $WebRoot | Write-Output
 Assert-NativeSuccess "generate-base2026-sitemap"
+Copy-Item "./web/static/analytics.html" (Join-Path $WebRoot "analytics.html") -Force
 
 # Normalize generated asset cache-busts after every generator has written HTML.
 # Source/topic pages use ../static/... paths, while root pages use ./static/...
@@ -183,6 +184,7 @@ Public path:
 /knowledge/
 "@
 $ReleaseInfo | Set-Content -Path (Join-Path $ReleaseRoot "RELEASE.txt") -Encoding UTF8
+chmod -R a+rX $ReleaseRoot
 
 $ZipPath = Join-Path $Root "output\releases\$ReleaseName.zip"
 $ZipScript = @'
