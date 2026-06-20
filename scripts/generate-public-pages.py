@@ -14,8 +14,8 @@ CONTACT_EMAIL = "offflinerpsy@gmail.com"
 FONT_LINK = "https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&display=swap"
 FAVICON_ASSET_PATH = "static/assets/alex-yarosh-favicon-32.png"
 APPLE_TOUCH_ASSET_PATH = "static/assets/alex-yarosh-apple-touch.png"
-SOCIAL_IMAGE_URL = "https://aggressorbulkit.online/knowledge/static/assets/alex-yarosh-avatar.png"
-SOCIAL_IMAGE_ALT = "Alex Yarosh profile photo"
+SOCIAL_IMAGE_URL = "https://aggressorbulkit.online/knowledge/static/assets/alex-yarosh-social-card.png"
+SOCIAL_IMAGE_ALT = "Base2026 Signal Lab social preview card"
 TWITTER_SITE = "@AleksejAros"
 PROJECT_NAV_LINKS = [
     ("search", "Search", "index.html"),
@@ -55,6 +55,9 @@ def social_meta_tags(title: str, description: str, canonical: str, og_type: str 
             f'    <meta property="og:description" content="{escape(description)}" />',
             f'    <meta property="og:url" content="{escape(url)}" />',
             f'    <meta property="og:image" content="{escape(SOCIAL_IMAGE_URL)}" />',
+            '    <meta property="og:image:type" content="image/png" />',
+            '    <meta property="og:image:width" content="1200" />',
+            '    <meta property="og:image:height" content="630" />',
             f'    <meta property="og:image:alt" content="{escape(SOCIAL_IMAGE_ALT)}" />',
             '    <meta name="twitter:card" content="summary_large_image" />',
             f'    <meta name="twitter:site" content="{escape(TWITTER_SITE)}" />',
