@@ -5142,3 +5142,51 @@ Current queue facts from the script:
 - QA status counts: 45 `needs_review`, 16 missing QA JSON.
 
 No public export, deploy, reindex, source status mutation, commit, or push was performed until the new queue tool and docs passed gates.
+
+## 2026-06-19 — Dedicated analytics worktree created
+
+User asked to start a separate branch/worktree for Base2026 analytics upgrades so this chat can work independently from the main launch/pipeline workstream.
+
+Actions:
+
+- read the required project-memory files and checked current Git/worktree state;
+- confirmed active phase remains public product architecture correction plus launch monitoring and check-only TikTok intake pipeline hardening;
+- found the original worktree on `codex/base2026-launch-next` with uncommitted project-memory/script changes;
+- created branch `codex/base2026-analytics-upgrades` in `/Users/alexyarosh/Projects/base2026-migration/DW/base2026-analytics-upgrades`;
+- left the original worktree untouched and did not copy its uncommitted changes into the analytics worktree;
+- updated this branch's `NEXT_ACTION.md` with the analytics lane scope and next safe action.
+
+Result:
+
+- analytics work can continue from the dedicated worktree without switching the main worktree branch;
+- no commit, push, deploy, staging, intake automation, or public export was performed.
+
+## 2026-06-19 — Analytics project map prepared for GPT Pro planning
+
+User asked for a complete project map so they can design advanced Base2026 analytics and new features with GPT Pro in English Markdown.
+
+Actions:
+
+- read the analytics worktree status and current active phase;
+- inspected the public/private boundary, public JSONL schema, API index, data dictionary, release contract, analytics generators, package script, public page generator, search workspace analytics hooks, and current analytics page;
+- identified the current analytics data flow: public JSONL export -> topic signal briefs -> `base2026_analytics.json` and `analytics_summary.json` -> generated `/knowledge/analytics.html` plus search workspace analytics strip/chips;
+- confirmed advanced analytics should stay deterministic and public-data-only unless a separate reviewed private-to-public promotion gate is added.
+
+Next step:
+
+- wait for the user's GPT Pro analytics/design Markdown spec, then review it against the repo contracts before implementation.
+
+## 2026-06-19 — Full one-file Base2026 project map created
+
+User clarified that the previous short brief was insufficient and asked for one comprehensive Markdown file containing a full Base2026 project snapshot: product passport, logic, pipeline, data model, docs map, UI, analytics, deployment, safety boundaries, and operating rules.
+
+Actions:
+
+- created `docs/project-memory/BASE2026_FULL_PROJECT_MAP_2026_06_19.md`;
+- included a public-safe full architecture and operating map covering product definition, public/private boundary, repository structure, public JSONL model, canonical pipeline, UI logic, analytics layer, API/AI access, WordPress relationship, deploy gates, validation, Git/worktree workflow, script inventory, and recommended GPT Pro planning prompt;
+- updated `NEXT_ACTION.md` so the next analytics step points to this one-file map.
+
+Result:
+
+- the user can now give GPT Pro one Markdown file as the complete project context for designing the next analytics layer;
+- no commit, push, deploy, staging, intake automation, public export, or Meilisearch reindex was performed.

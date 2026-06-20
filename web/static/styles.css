@@ -5979,3 +5979,602 @@ blockquote {
     padding: 10px;
   }
 }
+
+
+/* Base2026 Signal Lab */
+.signal-lab {
+  max-width: 1180px;
+  overflow-x: clip;
+}
+
+.signal-lab a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.signal-lab-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.75fr);
+  gap: clamp(18px, 4vw, 42px);
+  align-items: end;
+  margin: 22px 0 16px;
+  padding: clamp(18px, 4vw, 34px);
+  border: 1px solid rgba(18, 26, 31, 0.11);
+  border-radius: var(--ay-radius-lg);
+  background: linear-gradient(180deg, rgba(255,250,240,.92), rgba(255,255,255,.72));
+  box-shadow: 0 16px 36px rgba(42,31,19,.08);
+}
+
+.signal-lab-hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(2.35rem, 7vw, 5rem);
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+}
+
+.signal-lab-hero .lead {
+  max-width: 720px;
+  margin: 0;
+  font-size: clamp(1.05rem, 2vw, 1.28rem);
+}
+
+.signal-lab-note {
+  max-width: 780px;
+  margin: 14px 0 0;
+  color: var(--ay-muted);
+  font-size: .95rem;
+}
+
+.signal-lab-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.signal-lab-stats span,
+.signal-lab-card,
+.signal-lab-controls,
+.signal-lab-cta {
+  border: 1px solid rgba(18, 26, 31, 0.10);
+  background: rgba(255, 250, 240, .86);
+}
+
+.signal-lab-stats span {
+  display: block;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.signal-lab-stats strong {
+  display: block;
+  font-family: var(--ay-font-mono);
+  font-size: clamp(1.25rem, 3vw, 1.9rem);
+  line-height: 1;
+}
+
+.signal-lab-stats em {
+  display: block;
+  margin-top: 4px;
+  color: var(--ay-muted);
+  font-style: normal;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.signal-lab-controls {
+  position: sticky;
+  top: 72px;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(160px, .8fr) minmax(130px, .55fr) auto;
+  gap: 10px;
+  align-items: end;
+  margin: 14px 0 18px;
+  padding: 12px;
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+}
+
+.signal-lab-controls label,
+.signal-lab-query label {
+  display: grid;
+  gap: 5px;
+  color: var(--ay-muted);
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.signal-lab-controls select,
+.signal-lab-query input {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid rgba(18, 26, 31, 0.16);
+  border-radius: var(--ay-radius);
+  background: #fffefa;
+  color: var(--ay-text);
+  font: inherit;
+}
+
+.signal-lab-controls select {
+  padding: 0 34px 0 11px;
+}
+
+.signal-lab-query input {
+  padding: 0 13px;
+}
+
+.signal-lab-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, .72fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.signal-lab-card {
+  min-width: 0;
+  padding: clamp(14px, 2vw, 18px);
+  border-radius: var(--ay-radius-lg);
+  box-shadow: 0 14px 28px rgba(42,31,19,.06);
+}
+
+.signal-lab-card--wide {
+  grid-column: 1 / -1;
+}
+
+.signal-lab-section-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.signal-lab-section-head h2,
+.signal-lab-cta h2 {
+  margin: 0 0 4px;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  letter-spacing: -0.025em;
+}
+
+.signal-lab-section-head p,
+.signal-lab-cta p {
+  margin: 0;
+  color: var(--ay-muted);
+  font-size: .94rem;
+}
+
+.signal-lab-query {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.signal-lab-playbook-output {
+  min-height: 90px;
+}
+
+.signal-lab-playbook-result {
+  display: grid;
+  gap: 14px;
+}
+
+.signal-lab-playbook-result section {
+  padding-top: 10px;
+  border-top: 1px solid rgba(18,26,31,.09);
+}
+
+.signal-lab-playbook-result h3 {
+  margin: 0 0 7px;
+  font-size: .92rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ay-muted);
+}
+
+.signal-lab-playbook-result ul,
+.signal-lab-playbook-result ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.signal-lab-playbook-result li + li {
+  margin-top: 5px;
+}
+
+.signal-lab-playbook-result li span {
+  color: var(--ay-muted);
+  font-size: .88rem;
+}
+
+.signal-lab-playbook-summary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #fff7ed;
+}
+
+.signal-lab-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.signal-lab-chip-row a {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 9px;
+  border: 1px solid rgba(200,79,7,.18);
+  border-radius: 999px;
+  background: #fff7ed;
+  color: var(--ay-text);
+  text-decoration: none;
+  font-size: .9rem;
+}
+
+.signal-lab-chip-row em {
+  color: var(--ay-orange);
+  font: normal 700 .78rem var(--ay-font-mono);
+}
+
+.signal-lab-chart {
+  width: 100%;
+  min-width: 0;
+  border-radius: 12px;
+  background: rgba(255,255,255,.46);
+}
+
+.signal-lab-chart--matrix {
+  height: 430px;
+}
+
+.signal-lab-chart--momentum {
+  height: 286px;
+}
+
+.signal-lab-chart--chain {
+  height: 390px;
+}
+
+.signal-lab-skeleton,
+.signal-lab-empty {
+  display: grid;
+  place-items: center;
+  min-height: 92px;
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed rgba(18,26,31,.16);
+  border-radius: 12px;
+  color: var(--ay-muted);
+  background: rgba(255,255,255,.48);
+  text-align: center;
+}
+
+.signal-lab-skeleton {
+  position: relative;
+  overflow: hidden;
+}
+
+.signal-lab-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent);
+  animation: signal-lab-shimmer 1.25s infinite;
+}
+
+@keyframes signal-lab-shimmer {
+  to { transform: translateX(100%); }
+}
+
+.signal-lab-empty--tight {
+  min-height: auto;
+  padding: 8px;
+  font-size: .86rem;
+}
+
+.signal-lab-matrix-fallback {
+  overflow: auto;
+  max-width: 100%;
+  padding-bottom: 4px;
+}
+
+.signal-lab-matrix-row {
+  display: grid;
+  grid-template-columns: 120px repeat(var(--cols, 12), minmax(46px, 1fr));
+  min-width: 740px;
+}
+
+.signal-lab-matrix-row > * {
+  min-height: 36px;
+  padding: 8px;
+  border: 1px solid rgba(18,26,31,.07);
+  color: var(--ay-text);
+  font-size: .78rem;
+}
+
+.signal-lab-matrix-head span {
+  color: var(--ay-muted);
+  font-weight: 700;
+}
+
+.signal-lab-matrix-row a {
+  background: color-mix(in srgb, #fff7ed calc(100% - (var(--signal) * 80%)), #c84f07 calc(var(--signal) * 80%));
+  font-family: var(--ay-font-mono);
+  text-decoration: none;
+}
+
+.signal-lab-lines-fallback,
+.signal-lab-chain-list,
+.signal-lab-gaps,
+.signal-lab-fingerprints {
+  display: grid;
+  gap: 9px;
+}
+
+.signal-lab-line-row,
+.signal-lab-chain-list a,
+.signal-lab-gap-row,
+.signal-lab-fingerprint {
+  display: block;
+  padding: 11px;
+  border: 1px solid rgba(18,26,31,.09);
+  border-radius: 12px;
+  background: rgba(255,255,255,.55);
+  color: var(--ay-text);
+  text-decoration: none;
+}
+
+.signal-lab-line-row {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.signal-lab-line-row span,
+.signal-lab-line-row em,
+.signal-lab-chain-list span,
+.signal-lab-gap-row small,
+.signal-lab-gap-row em,
+.signal-lab-fingerprint__head span,
+.signal-lab-fingerprint__meta {
+  color: var(--ay-muted);
+  font-size: .84rem;
+  font-style: normal;
+}
+
+.signal-lab-fingerprint__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--ay-text);
+  text-decoration: none;
+}
+
+.signal-lab-bars {
+  display: grid;
+  gap: 6px;
+  margin: 9px 0;
+}
+
+.signal-lab-bars a {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 30px;
+  padding: 6px 8px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff7ed;
+  color: var(--ay-text);
+  font-size: .86rem;
+  text-decoration: none;
+}
+
+.signal-lab-bars a::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--w, 20%);
+  background: rgba(200,79,7,.14);
+}
+
+.signal-lab-bars span,
+.signal-lab-bars em {
+  position: relative;
+  z-index: 1;
+}
+
+.signal-lab-bars em {
+  font-family: var(--ay-font-mono);
+  font-style: normal;
+  color: var(--ay-orange);
+}
+
+.signal-lab-gap-row {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 5px 12px;
+}
+
+.signal-lab-gap-row p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--ay-muted);
+  font-size: .9rem;
+}
+
+.signal-lab-gap-row span {
+  display: grid;
+  gap: 2px;
+}
+
+.signal-lab-cta {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 900px) {
+  .signal-lab-hero,
+  .signal-lab-grid,
+  .signal-lab-controls,
+  .signal-lab-query,
+  .signal-lab-cta {
+    grid-template-columns: 1fr;
+  }
+
+  .signal-lab-controls {
+    position: static;
+  }
+
+  .signal-lab-chart--matrix,
+  .signal-lab-chart--chain {
+    height: 360px;
+  }
+
+  .signal-lab-cta {
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 520px) {
+  .signal-lab {
+    width: min(100%, calc(100vw - 20px));
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .signal-lab-hero,
+  .signal-lab-card,
+  .signal-lab-controls,
+  .signal-lab-cta {
+    border-radius: 12px;
+  }
+
+  .signal-lab-hero,
+  .signal-lab-card {
+    padding: 14px;
+  }
+
+  .signal-lab-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .signal-lab-stats span {
+    padding: 10px;
+  }
+
+  .signal-lab-controls {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .signal-lab-query {
+    grid-template-columns: 1fr;
+  }
+
+  .signal-lab-chart--matrix,
+  .signal-lab-chart--momentum,
+  .signal-lab-chart--chain {
+    height: 310px;
+  }
+
+  .signal-lab-section-head {
+    display: block;
+  }
+
+  .signal-lab-line-row,
+  .signal-lab-gap-row,
+  .signal-lab-fingerprint__head {
+    display: block;
+  }
+}
+
+
+/* Mobile overflow hardening for Signal Lab and shared cookie controls */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.signal-lab,
+.signal-lab *,
+.cookie-banner,
+.cookie-banner * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.signal-lab img,
+.signal-lab canvas,
+.signal-lab svg {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .cookie-banner {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: calc(100% - 20px);
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .cookie-actions {
+    justify-content: stretch;
+  }
+
+  .cookie-actions .ay-button,
+  .cookie-actions .ay-button-secondary {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .signal-lab {
+    width: calc(100% - 20px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .site-header__bar {
+    width: calc(100% - 20px);
+  }
+
+  .signal-lab-hero {
+    padding: 14px;
+  }
+
+  .signal-lab-stats {
+    grid-template-columns: 1fr;
+  }
+}

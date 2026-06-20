@@ -1,5 +1,32 @@
 # Next Action
 
+## Current Focus: Analytics Upgrade Worktree
+
+Status: dedicated analytics branch `codex/base2026-analytics-upgrades` is checked out at `/Users/alexyarosh/Projects/base2026-migration/DW/base2026-analytics-upgrades`.
+
+Branch base: created on 2026-06-19 from `codex/base2026-launch-next` at `f50e25d4a` (`chore: add TikTok source review queue`).
+
+Scope for this worktree:
+
+- improve Base2026 public analytics as a separate product workstream;
+- keep changes public-safe and source-driven;
+- prefer deterministic analytics generated from reviewed public export JSONL;
+- avoid touching deploy/intake automation unless the user explicitly asks in this branch;
+- do not commit generated public export folders, release archives, logs, raw captions, ASR/media, private queues, `.planning/`, `output/`, `public-data/`, local DB files, or credentials.
+
+Important branch note:
+
+- The original main worktree `/Users/alexyarosh/Projects/base2026-migration/DW/base2026` had uncommitted ay45/project-memory/script changes when this branch was created. Those dirty changes were intentionally not copied into this worktree so the analytics lane stays isolated. Before analytics work depends on the latest pipeline state, sync from the source branch after those changes are committed, or keep work limited to analytics source/UI that does not rely on the ay45 local edits.
+
+Next safe analytics action:
+
+1. Give GPT Pro the full one-file project map at `docs/project-memory/BASE2026_FULL_PROJECT_MAP_2026_06_19.md` and ask it for an English Markdown analytics/design spec.
+2. Review that spec against the full project map, public/private boundary, and deterministic public JSONL data model.
+3. Convert the spec into one tight implementation slice, preferably extending build-time public analytics JSON before changing UI.
+4. Implement only one scoped analytics slice at a time, then run public/private boundary checks before any Git staging.
+
+## Branch-Point Launch Handoff
+
 ## Current Focus: ay44 Live, Canonical Pipeline Ready For Next Creators
 
 Status: MacBook pipeline refresh is live on branch `codex/base2026-launch-next`.

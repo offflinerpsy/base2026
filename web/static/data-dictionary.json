@@ -31,7 +31,9 @@
       "file": "/knowledge/static/documents.jsonl",
       "format": "jsonl",
       "description": "Search-ready public documents used by the Base2026 workspace.",
-      "primary_keys": ["item_id"],
+      "primary_keys": [
+        "item_id"
+      ],
       "common_fields": [
         "item_id",
         "source_id",
@@ -97,6 +99,37 @@
         "monthly_activity",
         "top_sources"
       ]
+    },
+    {
+      "file": "/knowledge/static/signal_lab.json",
+      "format": "json",
+      "description": "Deterministic Signal Lab analytics for creator/topic matrix, topic momentum, creator fingerprints, signal chains, coverage gaps, and static query playbooks.",
+      "schema": "base2026.signal_lab.v1",
+      "common_fields": [
+        "schema",
+        "generated_at",
+        "source",
+        "topics",
+        "creators",
+        "creator_topic_matrix",
+        "topic_momentum",
+        "creator_fingerprints",
+        "signal_chains",
+        "coverage_gaps",
+        "query_presets",
+        "lookups"
+      ],
+      "derived_from": [
+        "source_records.jsonl",
+        "documents.jsonl",
+        "passages.jsonl",
+        "insight_cards.jsonl",
+        "topics.jsonl",
+        "creators.jsonl",
+        "topic_signal_briefs.jsonl",
+        "analytics_summary.json"
+      ],
+      "public_boundary": "Contains only public deterministic aggregates and links back to /knowledge/ routes; no raw captions, raw ASR, media, local DB, or private QA."
     }
   ]
 }

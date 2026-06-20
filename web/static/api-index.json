@@ -90,6 +90,15 @@
       "description": "Compact deterministic signal summaries for strong public topics."
     },
     {
+      "id": "signal_lab_analytics",
+      "name": "Signal Lab analytics",
+      "url": "https://aggressorbulkit.online/knowledge/static/signal_lab.json",
+      "path": "/knowledge/static/signal_lab.json",
+      "format": "json",
+      "type": "application/json",
+      "description": "Public deterministic creator/topic/signal analytics derived from reviewed Base2026 source records."
+    },
+    {
       "id": "data_dictionary",
       "url": "https://aggressorbulkit.online/knowledge/data-dictionary.json",
       "format": "json",

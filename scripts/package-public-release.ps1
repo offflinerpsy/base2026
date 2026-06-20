@@ -48,6 +48,9 @@ Assert-NativeSuccess "generate-base2026-analytics"
 $AnalyticsSummaryPath = Join-Path $ExportRoot "analytics_summary.json"
 python3 ./scripts/generate-public-analytics.py --data $ExportRoot --out $AnalyticsSummaryPath | Write-Output
 Assert-NativeSuccess "generate-public-analytics"
+$SignalLabPath = Join-Path $ExportRoot "signal_lab.json"
+python3 ./scripts/generate-base2026-signal-lab.py --data $ExportRoot --out $SignalLabPath | Write-Output
+Assert-NativeSuccess "generate-base2026-signal-lab"
 python3 ./scripts/generate-info-pages.py --source ./docs/public-pages --out ./web/static | Write-Output
 Assert-NativeSuccess "generate-info-pages"
 
@@ -82,6 +85,7 @@ $Html | Set-Content -Path (Join-Path $WebRoot "index.html") -Encoding UTF8
 
 Copy-Item "./web/static/styles.css" (Join-Path $StaticRoot "styles.css") -Force
 Copy-Item "./web/static/meili.js" (Join-Path $StaticRoot "meili.js") -Force
+Copy-Item "./web/static/analytics.js" (Join-Path $StaticRoot "analytics.js") -Force
 Copy-Item "./web/static/cookie-consent.js" (Join-Path $StaticRoot "cookie-consent.js") -Force
 Copy-Item "./web/static/share-actions.js" (Join-Path $StaticRoot "share-actions.js") -Force
 if (Test-Path "./web/static/roadmap.js") {
@@ -89,6 +93,9 @@ if (Test-Path "./web/static/roadmap.js") {
 }
 if (Test-Path "./web/static/assets") {
   Copy-Item "./web/static/assets" (Join-Path $StaticRoot "assets") -Recurse -Force
+}
+if (Test-Path "./web/static/vendor") {
+  Copy-Item "./web/static/vendor" (Join-Path $StaticRoot "vendor") -Recurse -Force
 }
 foreach ($ReadabilityAsset in @(
   @{ Source = "./web/static/llms.txt"; Target = (Join-Path $WebRoot "llms.txt") },
@@ -108,6 +115,7 @@ foreach ($TestPageAsset in @("roadmap-dataviz-test.html", "roadmap-dataviz-test.
 $DocPages = @(
   "methodology.html",
   "api.html",
+  "analytics.html",
   "opt-out.html",
   "roadmap.html",
   "story.html",
@@ -122,7 +130,7 @@ foreach ($DocPage in $DocPages) {
   $DocHtml = $DocHtml -replace 'src="(?:\./|/)static/cookie-consent\.js\?v=[^"]+"', "src=`"./static/cookie-consent.js?v=$CacheBust`""
   $DocHtml | Set-Content -Path (Join-Path $WebRoot $DocPage) -Encoding UTF8
 }
-foreach ($StaticDataFile in @("documents.jsonl", "passages.jsonl", "insight_cards.jsonl", "manifest.json", "topic_signal_briefs.jsonl", "base2026_analytics.json", "analytics_summary.json")) {
+foreach ($StaticDataFile in @("documents.jsonl", "passages.jsonl", "insight_cards.jsonl", "manifest.json", "topic_signal_briefs.jsonl", "base2026_analytics.json", "analytics_summary.json", "signal_lab.json")) {
   Copy-Item (Join-Path $ExportRoot $StaticDataFile) (Join-Path $StaticRoot $StaticDataFile) -Force
 }
 Copy-Item "./scripts/meili-index-public.py" (Join-Path $ScriptsRoot "meili-index-public.py") -Force
@@ -138,6 +146,8 @@ Assert-NativeSuccess "generate-base2026-sitemap"
 $VersionedAssets = @(
   "styles.css",
   "meili.js",
+  "analytics.js",
+  "vendor/echarts.min.js",
   "cookie-consent.js",
   "share-actions.js",
   "roadmap.js"

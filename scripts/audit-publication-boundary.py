@@ -49,6 +49,7 @@ GENERATED_STATIC_PREFIXES = {
 GENERATED_STATIC_EXACT = {
     "web/static/analytics_summary.json",
     "web/static/base2026_analytics.json",
+    "web/static/signal_lab.json",
     "web/static/sitemap.xml",
     "web/static/topic_signal_briefs.jsonl",
 }
@@ -109,6 +110,7 @@ PUBLIC_SAFE_EXACT = {
     "scripts/fetch-tiktok-avatars.py",
     "scripts/generate-base2026-sitemap.py",
     "scripts/generate-base2026-analytics.py",
+    "scripts/generate-base2026-signal-lab.py",
     "scripts/generate-public-analytics.py",
     "scripts/generate-topic-signal-briefs.py",
     "scripts/generate-public-pages.py",
