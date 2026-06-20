@@ -178,6 +178,31 @@
     </div>`;
   }
 
+
+  function renderMatrixBars(rows, topics, creators) {
+    const el = $('[data-chart-matrix]');
+    if (!el) return;
+    const creator = creators[0];
+    const byKey = new Map(rows.map((row) => [`${row.creator_handle}::${row.topic_id}`, row]));
+    const ranked = topics.map((topic) => {
+      const row = creator ? byKey.get(`${creator.creator_handle}::${topic.topic_id}`) : rows.find((item) => item.topic_id === topic.topic_id);
+      return { topic, row, score: num(row?.signal_score), sourceCount: num(row?.source_count) };
+    }).filter((item) => item.row).sort((a, b) => b.score - a.score || b.sourceCount - a.sourceCount).slice(0, 16);
+    if (!ranked.length) return renderMatrixFallback(state.data, rows, topics, creators);
+    const maxScore = Math.max(0.1, ...ranked.map((item) => item.score));
+    el.innerHTML = `<div class="signal-lab-matrix-bars" aria-label="Filtered creator topic matrix">
+      <div class="signal-lab-matrix-bars__head"><strong>${esc(creator?.creator_handle || 'Selected signal')}</strong><span>Ranked topic coverage. Full labels stay readable; click any row to open /knowledge/.</span></div>
+      ${ranked.map(({ topic, row, score, sourceCount }) => `<a class="signal-lab-matrix-bar" href="${row.workspace_url || knowledgeUrl({ creator: creator?.creator_handle?.replace(/^@/, ''), topic: topic.topic_id })}" style="--w:${Math.max(8, Math.round((score / maxScore) * 100))}%">
+        <span><strong>${esc(topic.topic_label)}</strong><em>${fmt.format(sourceCount)} sources · ${fmt.format(row.public_insight_count)} insights</em></span>
+        <b>${pct(score)}</b>
+      </a>`).join('')}
+    </div>`;
+  }
+
+  function topicLegend(topics) {
+    return `<div class="signal-lab-topic-legend" aria-label="Full topic labels">${topics.map((topic, index) => `<a href="${topic.workspace_url || knowledgeUrl({ topic: topic.topic_id })}" title="${esc(topic.topic_label)}"><em>${index + 1}</em><span>${esc(topic.topic_label)}</span></a>`).join('')}</div>`;
+  }
+
   function renderMatrix(data) {
     const el = $('[data-chart-matrix]');
     if (!el) return;
@@ -185,9 +210,11 @@
     const topics = visibleTopics(data);
     const creators = visibleCreators(data);
     if (!rows.length || !topics.length || !creators.length) return renderMatrixFallback(data, rows, topics, creators);
+    if (creators.length <= 1) return renderMatrixBars(rows, topics, creators);
     if (!hasEcharts()) return renderMatrixFallback(data, rows, topics, creators);
-    el.innerHTML = '';
-    const chart = window.echarts.init(el, null, { renderer: 'canvas' });
+    el.innerHTML = '<div class="signal-lab-chart-canvas" data-chart-matrix-canvas></div>' + topicLegend(topics);
+    const canvas = $('[data-chart-matrix-canvas]', el);
+    const chart = window.echarts.init(canvas, null, { renderer: 'canvas' });
     const topicIndex = new Map(topics.map((topic, index) => [topic.topic_id, index]));
     const creatorIndex = new Map(creators.map((creator, index) => [creator.creator_handle, index]));
     const cells = rows.filter((row) => topicIndex.has(row.topic_id) && creatorIndex.has(row.creator_handle)).map((row) => ({
@@ -203,8 +230,8 @@
           return `<strong>${esc(row.creator_handle)} × ${esc(row.topic_label)}</strong><br/>Sources: ${fmt.format(row.source_count)}<br/>Insights: ${fmt.format(row.public_insight_count)}<br/>Latest: ${esc(row.latest_source_date || 'unknown')}<br/><em>Click to open workspace</em>`;
         },
       },
-      grid: { left: 116, right: 20, top: 28, bottom: window.innerWidth < 520 ? 84 : 58 },
-      xAxis: { type: 'category', data: topics.map((topic) => topic.topic_label), axisLabel: { rotate: 35, width: 92, overflow: 'truncate', color: '#5f6a72' }, axisLine: { lineStyle: { color: '#e6ded1' } }, splitArea: { show: true } },
+      grid: { left: 116, right: 16, top: 18, bottom: 16 },
+      xAxis: { type: 'category', data: topics.map((topic, index) => `${index + 1}`), axisLabel: { rotate: 0, color: '#5f6a72', fontWeight: 700 }, axisLine: { lineStyle: { color: '#e6ded1' } }, splitArea: { show: true } },
       yAxis: { type: 'category', data: creators.map((creator) => creator.creator_handle), axisLabel: { color: '#5f6a72' }, axisLine: { lineStyle: { color: '#e6ded1' } }, splitArea: { show: true } },
       visualMap: { min: 0, max: Math.max(0.1, ...cells.map((cell) => cell.value[2])), show: false, inRange: { color: ['#fff7ed', '#fed7aa', '#fb923c', '#c84f07', '#7c2d12'] } },
       series: [{ type: 'heatmap', data: cells, label: { show: false }, emphasis: { itemStyle: { borderColor: '#10231f', borderWidth: 1 } }, itemStyle: { borderRadius: 4, borderColor: '#fffaf0', borderWidth: 2 } }],
@@ -212,7 +239,7 @@
     chart.on('click', (params) => {
       if (params?.data?.item?.workspace_url) window.location.href = params.data.item.workspace_url;
     });
-    attachResize(chart, el);
+    attachResize(chart, canvas);
   }
 
   function renderMomentumFallback(rows) {
@@ -367,7 +394,7 @@
       <section><h3>Creator coverage</h3>${result.creators.length ? `<ul>${result.creators.map((creator) => `<li><a href="${knowledgeUrl({ creator: creator.replace(/^@/, ''), q: query })}">${esc(creator)}</a></li>`).join('')}</ul>` : '<p class="signal-lab-empty signal-lab-empty--tight">Creator overlap is thin for this query.</p>'}</section>
       <section><h3>Source-backed actions</h3>${result.actions.length ? `<ol>${result.actions.map((action) => `<li>${esc(action.text)} ${action.url ? `<a href="${action.url}">source</a>` : ''}</li>`).join('')}</ol>` : '<p class="signal-lab-empty signal-lab-empty--tight">No reviewed public action cards match closely yet.</p>'}</section>
       <section><h3>Evidence pack</h3>${result.sources.length ? `<ul>${result.sources.map((source) => `<li><a href="${source.url || sourceUrl(source.source_id)}">${esc(source.title || source.source_id)}</a> <span>${esc(source.creator_handle || '')}</span></li>`).join('')}</ul>` : '<p class="signal-lab-empty signal-lab-empty--tight">Open the workspace search for source-level evidence.</p>'}</section>
-      <a class="ay-button" href="${knowledgeUrl({ q: query })}">Open this search in workspace</a>
+      <a class="ay-button ay-button-orange" href="${knowledgeUrl({ q: query })}">Open this search in workspace</a>
     </div>`;
   }
 
