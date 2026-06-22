@@ -489,21 +489,21 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
       <section class="roadmap-experience" aria-labelledby="roadmap-experience-title">
         <div class="roadmap-experience__intro">
           <p class="eyebrow">Product roadmap</p>
-          <h2 id="roadmap-experience-title">A compact build sequence for the public knowledge layer.</h2>
-          <p>Trust, ingestion, knowledge, rights, signals, and revenue stay in one inspectable operating map.</p>
+          <h2 id="roadmap-experience-title">What is live, what is gated, and what comes next.</h2>
+          <p>The roadmap now separates shipped public product, gated pipeline work, and future monetization so it matches the real Base2026 state.</p>
         </div>
         <section class="summary-strip" aria-label="Roadmap summary">
           <article>
-            <span>Now</span>
-            <strong>Public Trust Foundation</strong>
+            <span>Live</span>
+            <strong>Search, Source Intelligence, creators/topics, Signal Lab, API files</strong>
           </article>
           <article>
-            <span>Next</span>
-            <strong>Content Ingestion Pipeline</strong>
+            <span>In progress</span>
+            <strong>Reviewed creator intake, source QA, creator rights, Signal Lab v2</strong>
           </article>
           <article>
             <span>Later</span>
-            <strong>AI Knowledge Layer, Creator Controls, Analytics, Monetization</strong>
+            <strong>Offline AI briefs, usage analytics, private signal-map offers</strong>
           </article>
         </section>
         <section class="control-strip" aria-label="Roadmap controls">
@@ -534,15 +534,15 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
           </article>
           <article class="roadmap-panel roadmap-panel-wide" aria-labelledby="funding-title">
             <div class="roadmap-panel-head">
-              <p class="eyebrow">Funding logic</p>
-              <h2 id="funding-title">What support unlocks</h2>
+              <p class="eyebrow">Product logic</p>
+              <h2 id="funding-title">What each layer unlocks</h2>
             </div>
             <div id="funding-grid" class="funding-grid"></div>
           </article>
           <article class="roadmap-panel roadmap-panel-wide" aria-labelledby="priority-title">
             <div class="roadmap-panel-head">
               <p class="eyebrow">Execution order</p>
-              <h2 id="priority-title">Now / Next / Later</h2>
+              <h2 id="priority-title">Live / In progress / Later</h2>
             </div>
             <div id="priority-stack" class="priority-stack"></div>
           </article>
@@ -554,15 +554,15 @@ def page_shell(meta: dict[str, str], h1: str, body: str) -> str:
             <div class="proof-grid">
               <article class="proof-card">
                 <h3>Trust before scale</h3>
-                <p>Policies, attribution, correction paths, and public status come before expanding the database.</p>
+                <p>The public layer is useful only if source records stay attributable, reviewable, and correctable.</p>
               </article>
               <article class="proof-card">
                 <h3>Pipeline before AI</h3>
-                <p>Ingestion, transcription, metadata, and review must be stable before answer generation becomes public.</p>
+                <p>New creator intake stays gated until source text, topics, and insight cards are reviewed.</p>
               </article>
               <article class="proof-card">
                 <h3>Governance before revenue</h3>
-                <p>Creator controls and source transparency stay visible before analytics, sponsors, or paid access are added.</p>
+                <p>Commercial ideas come after source quality, creator trust, and public/private boundaries are stable.</p>
               </article>
             </div>
           </article>

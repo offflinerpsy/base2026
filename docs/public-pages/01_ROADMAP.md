@@ -1,174 +1,193 @@
 # Base2026 Roadmap
 
-## Positioning
+Last reviewed: 2026-06-22
 
-**Base2026 is an open, local-first knowledge base project that turns public short-form expert videos into attributed, searchable, readable knowledge records.**
+## What Base2026 is
 
-The project started as a personal SEO/SMM research notebook and is evolving into a public, creator-attributed discovery layer for marketers, researchers, and builders.
+Base2026 is a public, source-backed knowledge base built from reviewed short-form expert videos.
 
-Base2026 is not a social network clone, not a video re-hosting platform, and not a mass transcript dump. The goal is to build a reliable searchable layer over public short-form expert knowledge, with attribution, provenance, opt-out, and correction workflows.
+It is designed to help people search, compare, and cite public creator knowledge without turning the project into a raw transcript dump or a video re-hosting site.
 
-## Why this exists
+## Current live snapshot
 
-Short-form platforms contain practical knowledge: marketing tactics, SEO observations, platform updates, creator experiments, sales advice, product positioning, and operational lessons. The problem is that this knowledge is difficult to search, compare, cite, and revisit.
+Base2026 is already live at `/knowledge/` with:
 
-Base2026 turns that stream of public spoken knowledge into structured source records, searchable passages, topic pages, and public discovery paths.
+- 10 public TikTok creators;
+- 1,476 public source records;
+- 2,016 searchable public passages;
+- 1,060 public insight cards;
+- creator, source, topic, and comparison pages;
+- Base2026 Signal Lab analytics;
+- public API/readability files for agents and researchers.
 
-## Current status
+Raw captions, raw ASR output, downloaded media, private QA notes, local databases, and unreviewed source material are not published.
 
-### Live
+## Done and live
 
-- Public VPS deployment.
-- Searchable knowledge base interface.
-- Initial database of public short-form expert content.
-- Creator/source attribution model.
-- Creator, source, topic, and comparison pages.
-- Public roadmap, project story, privacy, source/content policy, support, methodology, and creator correction/removal pages.
-- Reviewed public source text on source records where policy allows.
-- Base2026-authored short and fuller source explanations.
-- Source-backed public insight cards.
-- Public analytics page with database coverage and topic/source signals.
+### Public search workspace
 
-### Current limitations
+Users can search the reviewed public source library, filter by creator/topic/source/year, open source records, and follow links back to the original creator source.
 
-- Transcription is local-first and working, but historical QA still requires source/audio verification for some rows.
-- TikTok and Instagram extraction are unstable by nature.
-- Small VPS is not suitable for heavy ASR/transcription workloads.
-- AI-powered open-ended answer generation is not yet a public feature.
-- Creator claim workflow and public change log are planned.
-- Visitor-level usage analytics and search-demand analytics are planned.
+### Source records
 
-# Development sequence
+Source pages now have a clearer contract:
 
-## Phase 1 - Public Trust Foundation
+- reviewed public source text where policy allows;
+- source summaries;
+- Source Intelligence cards;
+- creator attribution;
+- correction/removal path;
+- no raw caption or raw ASR dump.
 
-**Status:** Live
+### Creator, topic, and comparison pages
 
-**Purpose:** Keep the public project understandable and accountable while the database grows.
+The site generates public pages for creators, topics, sources, and topic comparisons. Thin/singleton pages stay controlled so Base2026 does not become low-quality programmatic SEO.
 
-The public layer has a live search workspace, source records, creator/topic pages, methodology, source policy, privacy notes, and correction/removal paths.
+### Signal Lab
 
-### Milestones
+Signal Lab is live as the public analytics surface. It shows creator/topic overlap, topic momentum, creator fingerprints, coverage gaps, and deterministic source-backed playbooks from public JSON only.
 
-- Public VPS deployment.
-- Searchable knowledge base interface.
-- Initial database and attribution model.
-- Public roadmap live.
-- Project story and mission published.
-- Privacy policy published.
-- Source and content policy published.
-- Creator correction/removal page published.
+### Public trust layer
 
-## Phase 2 - Content Ingestion Pipeline
+The public methodology, source policy, privacy, support, roadmap, API, and creator correction/removal pages are live.
 
-**Status:** In progress
+### Deploy and safety gates
 
-**Purpose:** Turn public creator videos into reviewed source text, searchable passages, and source-backed intelligence.
+Public releases are packaged, audited, deployed to VPS, and reindexed through repeatable scripts. Publication-boundary checks remain required before staging or deploy.
 
-The pipeline is live for reviewed public exports, but historical transcript QA, source-review debt, and automated handoff hardening are still active work.
+## In progress
 
-### Milestones
+### Reviewed creator intake
 
-- Local transcription and source-text pipeline.
-- Data cleanup and review workflow.
-- Backups and reproducible export rebuilds.
-- TikTok intake handoff workflow.
-- Source metadata model.
-- Media/audio/video fallback logic.
-- Reviewed public source-text export.
-- Evidence-gated insight-card extraction.
-- Entity/topic cleanup.
-- Historical transcript QA and source-review queue.
+New TikTok creator records can be discovered and imported locally, but public publishing is still gated. The current process is:
 
-## Phase 3 - AI Knowledge Layer
+1. discover public creator posts;
+2. import candidates into the private local queue;
+3. polish and QA transcript/source text;
+4. keep uncertain rows private;
+5. export only reviewed public rows;
+6. deploy through the release gate.
 
-**Status:** Live
+This protects the public site from weak transcripts, source-only pages, and unsupported claims.
 
-**Purpose:** Convert reviewed source text into summaries, topics, insight cards, and discovery paths.
+### Historical source review
 
-The public intelligence layer is live, with search, topic pages, analytics, public insight cards, and source-backed explanations. The remaining work is dedupe, QA, and better answer/compare surfaces.
+Some older rows still need source/audio verification. They remain private or gated until reviewed.
 
-### Milestones
+### Creator rights workflow
 
-- Base2026 source summaries.
-- Entity and topic clustering.
-- Search and filtering.
-- Source-backed answer blocks.
-- Source-backed public insight cards.
-- Confidence / verification labels.
-- Internal linking between related entries.
+Correction/removal is live. Creator claim workflow, automated request processing, dispute review, and public changelog are still planned.
 
-## Phase 4 - Creator & Rights Controls
+### Signal Lab v2
 
-**Status:** In progress
-
-**Purpose:** Give creators and source owners a clear way to correct, update, remove, or claim materials.
-
-The public correction/removal page is live. Creator claims, automated request processing, and a public changelog are still planned.
-
-### Milestones
-
-- Creator claim workflow.
-- Creator correction/removal page.
-- Automated request processing workflow.
-- Public change log.
-- Source dispute review process.
-
-## Phase 5 - Analytics & Public Signals
-
-**Status:** Live
-
-**Purpose:** Show what is in the database, what topics are visible, and where the source graph is growing.
-
-The public analytics page is live for database coverage and topic/source signals. Visitor-level analytics, search-demand signals, and most-viewed entries remain planned.
-
-### Milestones
-
-- Public database counters.
-- Most viewed knowledge entries.
-- Source coverage metrics.
-- Content growth chart.
-- Search demand signals.
-
-## Phase 6 - Monetization Layer
-
-**Status:** Research
-
-**Purpose:** Turn the platform into a sustainable product without compromising trust.
-
-### Milestones
-
-- Sponsorship / supporter model.
-- Premium research views.
-- API / data access model.
-- Partner pages.
-- Public revenue rules.
-- Transparent commercial policy.
-
-# Execution order
-
-## Now
-
-- Public Trust Foundation.
-- Public VPS deployment.
-- Searchable knowledge base interface.
-- Reviewed public source-text pages.
-- Public analytics and topic signals.
+Signal Lab v1 is live. Remaining analytics work includes stronger topic pages, better workspace entry points, public chart polish, and later offline AI-assisted briefs with source verification.
 
 ## Next
 
-- Content Ingestion Pipeline.
-- TikTok intake handoff workflow.
-- Evidence-gated insight-card review.
-- Historical transcript QA and source-review queue.
+### 1. Stronger workspace integration
+
+Add more useful entry points from search results and topic pages into Signal Lab:
+
+- “Build source-backed playbook” for strong queries;
+- “Compare creators for this topic”;
+- topic-level mini signal summaries.
+
+### 2. Creator and source operations
+
+Improve the public creator layer:
+
+- complete creator avatars and metadata;
+- improve creator profile summaries;
+- add a clearer claim/correction workflow;
+- keep source attribution consistent across search, source pages, and creator pages.
+
+### 3. Pipeline hardening
+
+Make fresh creator intake more reliable without making it fully automatic:
+
+- better held-row review queue;
+- clearer source-review reports;
+- safer release-gate defaults;
+- continued prevention of private/raw material leakage.
+
+### 4. Public API readiness
+
+Keep public JSON and documentation stable enough for future tools:
+
+- source search;
+- source lookup;
+- creator comparison;
+- topic signal lookup;
+- source-backed playbook generation;
+- coverage-gap inspection.
 
 ## Later
 
-- Creator claim workflow.
-- Visitor/search analytics.
-- Monetization Layer.
-- API / MCP data access.
+### Offline AI briefs
 
-# What this roadmap proves
+Use AI only as a build-time review/polish layer, not as a public live hallucination engine. Any AI-assisted brief should be generated offline, verified against source IDs, and shipped as static reviewed JSON.
 
-This roadmap is not a list of promised features. It is a public development sequence: first transparency and governance, then ingestion, AI processing, creator controls, analytics, and monetization. Each layer makes the next one safer and more useful.
+### Visitor and search-demand analytics
+
+Add privacy-respecting usage analytics only after the public source layer is stable.
+
+### Monetization
+
+Possible future product directions:
+
+- private signal maps for a niche or competitor set;
+- AI visibility audits;
+- creator/source watchlists;
+- paid reports;
+- read-only API access.
+
+Any monetization must preserve attribution, public/private boundaries, and creator trust.
+
+## Not planned for the public v1 product
+
+Base2026 should not become:
+
+- a raw transcript archive;
+- a TikTok or Instagram clone;
+- a video re-hosting platform;
+- a public live-LLM answer bot;
+- a scraped private research dump;
+- a heavy dashboard app separate from `/knowledge/`.
+
+## Phase status
+
+### Phase 1 — Public trust foundation
+
+Status: done/live.
+
+Public pages, methodology, policies, correction/removal path, and deployment boundary are live.
+
+### Phase 2 — Content ingestion pipeline
+
+Status: working, still gated.
+
+The pipeline can publish reviewed public rows, but uncertain transcripts and source-review rows remain private.
+
+### Phase 3 — AI/source intelligence layer
+
+Status: live v1.
+
+Public insight cards, topics, source summaries, and Source Intelligence are live. The next work is quality, dedupe, and better topic/playbook surfaces.
+
+### Phase 4 — Creator and rights controls
+
+Status: partial.
+
+Correction/removal is live. Claims, changelog, and request automation remain planned.
+
+### Phase 5 — Analytics and Signal Lab
+
+Status: live v1.
+
+Signal Lab is live. Next work is deeper integration with search and topic pages.
+
+### Phase 6 — Monetization
+
+Status: research.
+
+No ads or banners are planned for the public knowledge layer. Commercial offers should be separate, transparent, and trust-preserving.
