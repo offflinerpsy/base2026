@@ -43,24 +43,26 @@ The public site is designed for source discovery, attribution, comparison, citat
 
 ## Current Status
 
-Latest deployed release: `base2026-social-metadata-h1-ay39-20260618`.
+Latest deployed release: `base2026-source-intelligence-contract-ay54-20260619`.
 
 Current public export:
 
-- 1,388 source records;
-- 1,906 searchable passages;
-- 1,623 insight cards;
-- 1,052 public insight cards;
-- 1,516 topics;
-- 1,001 public topics;
-- 1,482 sitemap URLs across the latest generated public sitemap files.
+- 1,476 source records;
+- 2,016 searchable passages;
+- 1,631 insight cards;
+- 1,060 public insight cards;
+- 1,522 topics;
+- 1,008 public topics;
+- 10 creator profiles.
 
 Recent readiness checks:
 
 - public export policy: current live release uses reviewed public source text where policy allows and continues to forbid raw/unreviewed transcript dumps;
-- publication boundary audit: passing for current changed public-safe files;
-- GitHub metadata validation: passing;
-- static SEO/social metadata audit: passing for 1,483 indexable HTML files with title, description, canonical URL, H1, JSON-LD schema, and OG/X metadata present; 1,929 noindex utility/detail-state files were intentionally skipped.
+- newest-source readiness: latest public sources must have reviewed topics or Source Intelligence before release;
+- publication boundary audit: passing with `forbidden=0` and `secret_findings=0` in the current launch-readiness pass;
+- GitHub metadata validation: passing for the public repository metadata, homepage, license, and topics;
+- live SEO crawl gate: passed on 500 crawled pages with 0 P0 bad links and 0 crawled error pages;
+- mobile visual QA: passed 78 public UI checks with 0 failures.
 
 ## Current Public Shape
 
@@ -187,6 +189,16 @@ python3 scripts/audit-publication-boundary.py
 python3 scripts/validate-github-metadata.py
 pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/preflight-github-launch.ps1 -SkipExportPolicy -SkipLiveCheck
 ```
+
+## Project Docs
+
+- [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
+- [Governance](GOVERNANCE.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- Funding links are declared in `.github/FUNDING.yml` when public sponsorship accounts are ready.
 
 ## Project Control
 

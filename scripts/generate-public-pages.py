@@ -491,55 +491,53 @@ def evidence_qa_section(title: str, helper: str, rows: list[tuple[str, str]]) ->
 def source_answer_section(
     source: dict,
     public_insights: list[dict],
-    public_text: str,
-    summary_short: str,
-    summary_long: str,
+    passages: list[dict],
 ) -> str:
+    if not public_insights:
+        return ""
     handle = display_handle(source.get("creator_handle") or source.get("handle") or "creator")
-    topic = source_seo_topic(source)
     date = source.get("published_date") or source.get("published_at") or "undated"
-    topic_labels = [label for label in (source.get("topic_labels") or []) if label]
-    if not topic_labels:
-        topic_labels = [topic] if topic else []
-    primary_claims = [
-        compact(row.get("claim_text") or "", 220)
-        for row in public_insights
-        if row.get("claim_text")
-    ]
-    primary_actions = [
-        compact(row.get("suggested_action") or "", 220)
-        for row in public_insights
-        if row.get("suggested_action")
-    ]
+    primary = public_insights[0]
+    primary_claim = compact(primary.get("claim_text") or "", 260)
+    primary_action = compact(primary.get("suggested_action") or "", 320)
+    primary_evidence = compact(expanded_insight_evidence(primary, passages), 360)
+    insight_topics = []
+    seen_topics = set()
+    for row in public_insights:
+        label = compact(row.get("topic") or row.get("topic_label") or "", 80)
+        key = label.casefold()
+        if label and key not in seen_topics:
+            insight_topics.append(label)
+            seen_topics.add(key)
     rows = [
         (
             "What is this source mainly about?",
-            summary_long or summary_short or f"This source is an attributed Base2026 record from {handle} about {topic}.",
+            primary_claim,
         ),
         (
             "What should an operator take from it?",
-            primary_actions[0] if primary_actions else (primary_claims[0] if primary_claims else summary_short),
+            primary_action,
         ),
         (
             "What public evidence supports the record?",
-            sentence_excerpt(public_text, 520, 4),
+            primary_evidence,
         ),
         (
             "How is this source attributed?",
             f"Base2026 attributes this public source record to {handle}, published {date}, with the original platform link and correction/removal path kept on the page.",
         ),
     ]
-    if topic_labels:
+    if insight_topics:
         rows.insert(
             2,
             (
                 "Which topics does it connect to?",
-                "This source is connected to " + ", ".join(topic_labels[:5]) + ".",
+                "This source is connected to " + ", ".join(insight_topics[:5]) + ".",
             ),
         )
     return evidence_qa_section(
         "Questions this source answers",
-        "Short Base2026 answers generated only from reviewed public source text, public insight cards, and attribution metadata.",
+        "Short Base2026 answers generated only from reviewed Source Intelligence cards and attribution metadata.",
         rows,
     )
 
@@ -1417,7 +1415,7 @@ def source_page(source: dict, passages: list[dict], insights: list[dict]) -> str
         {section_title("Source Intelligence", "Reviewed source-backed claims promoted from this evidence.")}
         {source_intelligence_body}
       </section>
-      {source_answer_section(source, public_insights, public_text, summary_short, summary_long)}
+      {source_answer_section(source, public_insights, passages)}
       {f'''
       <section class="content-section">
         {section_title("Supporting Passages", "Distinct public passages that add context beyond the Source Text.")}

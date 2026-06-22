@@ -1039,3 +1039,14 @@ nginx -t: pass
 - policy: `include_full_transcripts=false`.
 - QA: canonical release gate passed: current-batch polish status, AfterPolish rebuild/export, newest-source readiness `--latest 3`, publication boundary, GitHub metadata, public export policy, public release contract, package, VPS deploy/reindex, live SEO crawl gate, and mobile visual QA with 78 checks and 0 failures.
 - note: private source-review backlog is now 45 rows: 30 local-caption rows, 13 audio-backed too-little/no-speech rows, and 2 rows with no usable source/audio.
+
+## 2026-06-19 — base2026-source-intelligence-contract-ay54-20260619
+
+- release: `base2026-source-intelligence-contract-ay54-20260619`
+- deployed path: `/var/www/base2026-knowledge/releases/base2026-source-intelligence-contract-ay54-20260619`
+- reason: fix the source-detail contract after `tiktok-video-7652384458804432136` rendered no Source Intelligence and generated invalid "Questions this source answers" from the beginning of Source Text.
+- public export: 1476 source records, 2016 passages, 1631 insight cards, 1060 public insight cards, 1522 topics, 1008 public topics, 10 creators.
+- Meilisearch: reindexed 2016 passages into `base2026_public_tiktok`; deploy task `395`.
+- policy: `include_full_transcripts=false`.
+- QA: canonical release gate passed with `-LatestReadiness 3`; publication boundary, GitHub metadata, public export policy, public release contract, VPS deploy/reindex, live SEO crawl gate, direct live URL smoke, and mobile visual QA passed.
+- note: source-page Q&A now renders only from reviewed Source Intelligence cards; raw source text is no longer a Q&A fallback.

@@ -1,5 +1,27 @@
 # Prompt Log
 
+## 2026-06-22 — GitHub open-source readiness docs cleanup
+
+User asked to stop only reporting gaps and directly fix the GitHub/project docs for Base2026 before funding/open-source submissions.
+
+Actions:
+
+- updated `README.md` from stale ay39 metrics to live ay54 metrics and added links to project docs;
+- added human-readable `GOVERNANCE.md`, `ROADMAP.md`, and `CHANGELOG.md`;
+- added `.github/FUNDING.yml` with safe commented placeholders until public sponsor accounts are configured;
+- updated `scripts/audit-publication-boundary.py` and `docs/project-memory/PUBLICATION_BOUNDARY.md` so these new public docs are recognized as public-safe.
+
+Verification:
+
+- `git diff --check` passed;
+- `python3 scripts/audit-publication-boundary.py` passed with `changed_files=19`, `public_safe_candidates=19`, `needs_review=0`, `forbidden=0`, `secret_findings=0`;
+- `python3 scripts/validate-github-metadata.py` passed;
+- `.github/FUNDING.yml` parses as YAML.
+
+Not done:
+
+- no commit, push, deploy, or release-gate run in this pass.
+
 ## 2026-06-19 — ay46 readiness-card release and anti-loop sync
 
 User paused the long run to verify Codex was not looping after a context compaction. Codex checked live symlink/state instead of repeating the whole project-memory bundle.
@@ -5292,3 +5314,23 @@ Verification:
 - targeted Source Intelligence rerun passed 4/0 after one transient mobile visual QA wait timeout;
 - full mobile visual QA rerun passed 78 checks with 0 failures;
 - private source-review queue is now 39 rows: 24 local-caption, 13 audio-backed too-little/no-speech, and 2 no-source rows.
+
+## 2026-06-19 — Source Intelligence/Q&A contract fix and ay54 deploy
+
+User reported that `https://aggressorbulkit.online/knowledge/sources/tiktok-video-7652384458804432136.html` had no Source Intelligence and that "Questions this source answers" repeated the opening source text.
+
+Root cause:
+
+- `scripts/generate-public-pages.py` allowed source-page Q&A to render from `summary_long`, `summary_short`, `sentence_excerpt(public_text, ...)`, and a generic topic fallback when no reviewed public insight existed.
+
+Actions:
+
+- added one strict reviewed public Source Intelligence candidate for `@darrenshawseo` / `tiktok-video-7652384458804432136` under `Local SEO service-area rankings`;
+- changed generated source-page Q&A so it renders only from reviewed Source Intelligence cards and never from raw source-text fallbacks;
+- rebuilt SQLite, exported public TikTok data, packaged, deployed, and reindexed Meilisearch as `base2026-source-intelligence-contract-ay54-20260619`.
+
+Verification:
+
+- public export now has 1,476 source records, 2,016 passages, 1,631 insight cards, 1,060 public insight cards, 1,522 topics, 1,008 public topics, and 10 creators;
+- release gate passed newest-source readiness `--latest 3`, publication boundary, GitHub metadata, public export policy, public release contract, VPS deploy/reindex, live SEO crawl, and mobile visual QA 78/0;
+- direct live smoke confirmed the reported source page has Source Intelligence, no empty state, and no old raw-source Q&A fallback.

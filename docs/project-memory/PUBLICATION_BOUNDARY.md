@@ -12,7 +12,13 @@ Base2026 has two layers:
 - `.gitignore`
 - `requirements-local-worker.txt`
 - `README.md`
+- `ROADMAP.md`
+- `CHANGELOG.md`
+- `GOVERNANCE.md`
 - `SECURITY.md`
+- `CONTRIBUTING.md`
+- `CODE_OF_CONDUCT.md`
+- `.github/FUNDING.yml` when it contains only public sponsorship links or commented placeholders
 - `docs/`
 - `docs/public-pages/` public Markdown used to generate site info pages
 - `scripts/`
