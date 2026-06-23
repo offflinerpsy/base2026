@@ -49,7 +49,8 @@ Current local repo state:
 
 - current checked-out branch on this MacBook: `codex/base2026-launch-next`
 - GitHub default branch: `main`
-- GitHub public repository: `https://github.com/offflinerpsy/base2026`
+- GitHub public repository: `https://github.com/logic-crafts/base2026`
+- GitHub organization/company account: `logic-crafts` (`https://github.com/orgs/logic-crafts/repositories`); the repo was moved there because startup/registration flows often require a company/org identity. Local `origin` on this Mac is now `https://github.com/logic-crafts/base2026.git`.
 - working branch `codex/github-publication-staging` also exists on GitHub as the original publication staging branch
 - first public-safe commit exists
 - Hermes reliability pass completed: WebUI scheduled task repaired, GPT-5.4 worker script added, false ASR backlog closed

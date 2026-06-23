@@ -4,6 +4,13 @@
 
 Status: MacBook pipeline refresh is live on branch `codex/base2026-launch-next`. GitHub/open-source readiness docs were cleaned up on 2026-06-22 without committing/pushing.
 
+GitHub org update, 2026-06-23:
+
+- Company/org GitHub home: `https://github.com/orgs/logic-crafts/repositories`.
+- Base2026 canonical repo: `https://github.com/logic-crafts/base2026`.
+- Local `origin` on this Mac is set to `https://github.com/logic-crafts/base2026.git`.
+- `gh repo list logic-crafts` showed at least: `base2026` public, `geo` private, `barnhouse-vibes-kg-0edb14f0` private.
+
 Latest docs-readiness note:
 
 - `README.md` now reflects live ay54 metrics: 1,476 source records, 2,016 passages, 1,631 insight cards, 1,060 public insight cards, 1,522 topics, 1,008 public topics, and 10 creators.
