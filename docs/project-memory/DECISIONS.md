@@ -1,5 +1,11 @@
 # Decisions
 
+## 2026-06-23 — Keep Base2026 discovery state out of crawlable query URLs
+
+Decision: canonical Base2026 search/discovery URLs should be `/knowledge/` plus client-side `#search?...` state, not `/knowledge/index.html?...` or other crawlable query variants. Generated static entity pages should link back to the search workspace through hash state, while sitemap generation remains limited to self-canonical, indexable HTML files.
+
+Reason: GSC/Ahrefs already surfaced duplicate/canonical noise around `/knowledge/index.html` and query-state search routes. Hash state preserves user navigation without asking crawlers to spend budget on filter/query combinations that canonicalize back to the search root.
+
 ## 2026-06-23 — Use Logic Crafts organization as GitHub home
 
 Decision: treat `logic-crafts` as the current company GitHub organization for Base2026 and related Alex/company startup assets. Base2026 canonical GitHub URL is `https://github.com/logic-crafts/base2026`; local `origin` should point to `https://github.com/logic-crafts/base2026.git`.

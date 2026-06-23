@@ -39,6 +39,10 @@ Keep Base2026 launch work stable and reproducible: public UI fixes, SEO/GSC work
 
 ## What Was Just Done
 
+- 2026-06-23 indexation foundation: WordPress theme now removes category/tag taxonomies from WP sitemaps and emits `noindex,follow` on category/tag/date archives to keep `/category/uncategorized/` out of index strategy.
+- 2026-06-23 Base2026 crawl cleanup: generated search links now target `/knowledge/` and `#search?...` hash state instead of crawlable `/knowledge/index.html?...` query routes; static `meili.html` and runtime `meili.js` understand the hash route; regenerated temp pages had 0 `index.html?` links and 0 `./index.html`/`../index.html` search links.
+- 2026-06-23 SEO structure audit: live WordPress/Base2026 H1-H3/canonical/sitemap crawl saved to `docs/project-memory/SEO_STRUCTURE_AUDIT_2026-06-23.md`; generator now inserts H2 list headings before Base2026 index card H3 grids so topics/creators/sources index pages have clean H1→H2→H3 structure.
+- 2026-06-23 footer alignment guard: WordPress theme and Base2026 CSS now keep footer CTA buttons in one row on mobile instead of stacking into multiple rows; local Playwright CSS-injection check at 390px showed one row.
 - Processed the AI Recommends Solutions creator pass for `@heytonyagency`, `@iamdandavies`, `@harrysandersseo`, `@ray_fu`, and `@gobigsystems`.
 - Ran `scripts/social-discover.py` into ignored private JSONL: 200 discovered source records across 10 configured TikTok creators, 0 failures.
 - Ran importer dry-run/apply into private local `videos.csv`: 100 new candidate rows added and safe missing metadata updated with an ignored backup.
