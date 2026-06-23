@@ -1,8 +1,16 @@
 # Next Action
 
-## Current Focus: ay54 Live, GitHub Open-Source Readiness Docs Updated
+## Current Focus: ay55 Live, Creator Avatar Hotfix Verified, Git Step Pending
 
 Status: MacBook pipeline refresh is live on branch `codex/base2026-launch-next`. GitHub/open-source readiness docs were cleaned up on 2026-06-22 without committing/pushing.
+
+
+Latest ay55 live hotfix note, 2026-06-23:
+
+- Deployed `base2026-creator-avatar-assets-ay55-20260623` after live Base2026 visual QA found 404 console errors for missing creator avatar assets on `/knowledge/`.
+- Fixed missing static creator avatars for `@harrysandersseo`, `@gobigsystems`, and `@iamdandavies` by running `scripts/fetch-tiktok-avatars.py`, regenerating `public-data/tiktok` so avatar URLs propagate through creators/source/documents/passages/chunks, packaging a data-preserving hotfix, deploying, and reindexing Meilisearch.
+- Verification passed: live assets return 200 image/jpeg, Meili proxy returns avatar URL for `@gobigsystems`, failed-request probe returns no 404s on `/knowledge/`, and desktop/tablet Base2026 visual QA passed 14/14 with 0 failures.
+- Local Node was repaired with `brew reinstall node` after Playwright QA initially failed because `/opt/homebrew/Cellar/node/25.2.1/bin/node` was linked to missing `libsimdjson.29.dylib`.
 
 GitHub org update, 2026-06-23:
 
@@ -42,7 +50,7 @@ Latest local transcript QA note:
 
 Current verified facts:
 
-- Current live release: `base2026-source-intelligence-contract-ay54-20260619`.
+- Current live release: `base2026-creator-avatar-assets-ay55-20260623`.
 - The release used the canonical gate `scripts/base2026-release-gate.ps1` instead of an ad hoc chat sequence.
 - The AI Recommends Solutions creator pass was processed from ignored private discovery output: `@heytonyagency`, `@iamdandavies`, `@harrysandersseo`, `@ray_fu`, and `@gobigsystems`.
 - Discovery found 200 source records across 10 configured creators; the importer added 100 new candidate rows into private local `videos.csv`.

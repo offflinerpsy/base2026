@@ -1,5 +1,34 @@
 # Prompt Log
 
+## 2026-06-23 — ay55 creator avatar asset hotfix
+
+User approved proceeding with the Base2026 plan: close dirty repo state, run safety checks, then do a live SEO/UI smoke pass.
+
+Actions:
+
+- classified the dirty research/staging docs as public-safe candidates;
+- ran boundary/export/release/readiness checks;
+- found live `/knowledge/` console 404s for missing creator avatar assets (`harrysandersseo`, `gobigsystems`, `iamdandavies`);
+- repaired local Homebrew Node after it was linked against a missing `libsimdjson.29.dylib`;
+- fetched stable TikTok creator avatar assets into `web/static/assets/creators/`;
+- regenerated public TikTok export so avatar URLs propagate through creators/source/documents/passages/chunks;
+- patched `scripts/package-public-hotfix-from-export.ps1` so optional static analytics/signal files fall back to `web/static`;
+- packaged, deployed, and reindexed `base2026-creator-avatar-assets-ay55-20260623`.
+
+Verification:
+
+- `python3 scripts/audit-publication-boundary.py` => `needs_review=0`, `forbidden=0`, `secret_findings=0`;
+- public export policy, release contract, and newest-source readiness passed;
+- VPS deploy verified nginx active and current symlink at `base2026-creator-avatar-assets-ay55-20260623`;
+- Meilisearch reindexed 2,016 passages, task `407`;
+- live avatar assets return 200 image/jpeg;
+- live Meili proxy returns `@gobigsystems` with `/knowledge/static/assets/creators/gobigsystems.jpeg`;
+- desktop/tablet Base2026 visual QA passed 14/14, failures 0: `output/evidence/mobile-visual-qa-20260623-152404-base-smoke-after-avatar/report.md`.
+
+Not done:
+
+- no Git commit/push yet; working tree now contains the research/staging docs plus ay55 avatar/package/public-export changes.
+
 ## 2026-06-22 — GitHub open-source readiness docs cleanup
 
 User asked to stop only reporting gaps and directly fix the GitHub/project docs for Base2026 before funding/open-source submissions.

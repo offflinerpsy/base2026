@@ -31,13 +31,15 @@ Keep Base2026 launch work stable and reproducible: public UI fixes, SEO/GSC work
 ## Current Branch And Release State
 
 - Branch: `codex/base2026-launch-next`; pushed to GitHub and fast-forwarded into GitHub `main` on 2026-06-19.
-- Current live release: `base2026-source-intelligence-contract-ay54-20260619`.
+- Current live release: `base2026-creator-avatar-assets-ay55-20260623`.
 - Current live export: 1,476 source records, 2,016 passages, 1,631 insight cards, 1,060 public insight cards, 1,522 topics, 1,008 public topics, 10 creators.
 - Current policy: `include_full_transcripts=false`.
 - Current Meilisearch index: `base2026_public_tiktok`, 2,016 public passages.
 - Latest live QA: SEO crawl gate passed 500 crawled pages with 0 P0 bad links and 0 crawled error pages; full mobile visual QA passed with 78 checks and 0 failures; direct smoke for `tiktok-video-7652384458804432136` confirmed Source Intelligence present and old raw-source Q&A fallback absent.
 
 ## What Was Just Done
+
+- 2026-06-23 ay55 creator-avatar hotfix: live `/knowledge/` smoke found 404s for `harrysandersseo.jpeg`, `gobigsystems.jpeg`, and `iamdandavies.jpeg`; fetched stable TikTok avatar assets, regenerated the public export so avatar URLs propagate through chunks/search data, patched the hotfix packager optional static-file fallback, deployed `base2026-creator-avatar-assets-ay55-20260623`, reindexed Meilisearch task `407`, and verified desktop/tablet Base2026 visual QA 14/14 with 0 failures.
 
 - 2026-06-23 indexation foundation: WordPress theme now removes category/tag taxonomies from WP sitemaps and emits `noindex,follow` on category/tag/date archives to keep `/category/uncategorized/` out of index strategy.
 - 2026-06-23 Base2026 crawl cleanup: generated search links now target `/knowledge/` and `#search?...` hash state instead of crawlable `/knowledge/index.html?...` query routes; static `meili.html` and runtime `meili.js` understand the hash route; regenerated temp pages had 0 `index.html?` links and 0 `./index.html`/`../index.html` search links.

@@ -9,13 +9,16 @@ Current public product:
 - public TikTok knowledge search UI under `/knowledge/`
 - Meilisearch-backed public index: `base2026_public_tiktok`
 - public release deployed on VPS at `/var/www/base2026-knowledge/current`
-- latest deployed release: `base2026-source-intelligence-contract-ay54-20260619`
+- latest deployed release: `base2026-creator-avatar-assets-ay55-20260623`
 - canonical public domain: `https://aggressorbulkit.online`
 - public dataset shape today: TikTok source records, searchable passages, creator/source/topic/compare pages, public roadmap/policy/support pages, reviewed public insight cards, excerpt-only source payload, and in-page source-detail workspace
 - corrected product contract as of 2026-06-15: Base2026 behaves as a searchable video-source text database with one visible source text surface plus a separate Source Intelligence layer. Raw captions/ASR/media remain private; reviewed polished public source text/transcript is the source-record reading surface when policy allows, paired with Base2026-authored summaries, topics, insight cards, attribution, methodology, sharing actions, and correction/removal paths. Insight evidence should be collapsed by default instead of repeating the full source text.
 - live search proxy fixed: nginx now adds the Meilisearch search-key Authorization header for `/knowledge-search/multi-search`
 
 Latest live release:
+
+
+- `base2026-creator-avatar-assets-ay55-20260623` is live under `/knowledge/`. This data-preserving avatar hotfix fixes live search-page console 404s for missing creator avatar assets after the ay54 creator expansion. It fetched stable local TikTok avatar images, regenerated the public export so avatar URLs reach creator/source/document/passage/chunk data, deployed the release, and reindexed Meilisearch with 2,016 public passages. Verification passed: missing avatar assets now return 200 image/jpeg, Meili search hits include avatar URLs, failed-request probe on `/knowledge/` returns no 404s, and desktop/tablet Base2026 visual QA passed 14 checks with 0 failures.
 
 - `base2026-source-intelligence-contract-ay54-20260619` is live under `/knowledge/`. This data-changing release fixes the source-detail Source Intelligence/Q&A contract after `tiktok-video-7652384458804432136` showed no Source Intelligence and rendered junk "Questions this source answers" from the beginning of Source Text. The fix adds one strict reviewed public Source Intelligence card for the `@darrenshawseo` service-area ranking source and changes the generator so source Q&A renders only from reviewed Source Intelligence cards, never from raw source-text fallbacks. Current live export has 1,476 source records, 2,016 passages, 1,631 insight cards, 1,060 public insight cards, 1,522 topics, 1,008 public topics, and 10 creators. Meilisearch reindexed 2,016 public passages. Verification passed: newest-source readiness `--latest 3`, public export policy `include_full_transcripts=false`, public release contract, live SEO crawl gate, direct live URL smoke, and full mobile visual QA with 78 checks and 0 failures.
 
