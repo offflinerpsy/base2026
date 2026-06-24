@@ -2,26 +2,26 @@
 
 Status: **PASS**
 
-Analyzed at: 2026-06-23T23:30:03.281Z
+Analyzed at: 2026-06-23T23:34:33.584Z
 
 Base URL: https://aggressorbulkit.online
 
 ## Scope
 
 - Live crawl starting from `/`, `/knowledge/`, and `/knowledge/sitemap.xml`.
-- Max pages: 500.
+- Max pages: 1700.
 - Robots respected for same-site crawl decisions.
 - No GSC, IndexNow, Ahrefs recrawl, deploy, commit, push, or TikTok intake was run.
 
 ## Summary
 
-- Crawled pages: 500
+- Crawled pages: 1700
 - Sitemap URLs: 1577
 - Sitemap files: 4
-- Internal links seen: 25834
-- Unique internal links seen: 652
+- Internal links seen: 87586
+- Unique internal links seen: 1471
 - Redirected crawled pages: 0
-- Status counts: {200:500}
+- Status counts: {200:1700}
 
 ## P0 Gate
 
@@ -33,9 +33,9 @@ No P0 crawl/link failures found in this bounded live crawl.
 
 ## SEO Basics
 
-- noindex_pages: 0
+- noindex_pages: 115
 - canonical_missing: 0
-- canonical_mismatch_indexable: 0
+- canonical_mismatch_indexable: 1
 - title_missing: 0
 - meta_description_missing: 0
 - h1_missing: 0
@@ -44,6 +44,11 @@ No P0 crawl/link failures found in this bounded live crawl.
 - twitter_incomplete: 0
 - schema_missing: 0
 - schema_invalid: 0
+
+## Non-Blocking Warnings
+
+- **CANONICAL_MISMATCH_INDEXABLE** (1): Indexable HTML pages whose canonical URL differs from the final URL.
+  - https://aggressorbulkit.online/ai-visibility-audit/?plan=diagnostic
 
 ## Files
 
@@ -56,7 +61,7 @@ No P0 crawl/link failures found in this bounded live crawl.
 ## Limitations
 
 - This is a bounded live crawl, not an Ahrefs replacement for historical external crawl metrics.
-- The crawl is capped at 500 pages; sitemap contains 1577 URLs.
+- The crawl is capped at 1700 pages; sitemap contains 1577 URLs.
 - The gate validates current live HTML/link contracts and metadata basics; it does not submit URLs to GSC, IndexNow, or Ahrefs.
 
 ## Next Safe SEO Action

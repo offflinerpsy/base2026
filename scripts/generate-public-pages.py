@@ -25,6 +25,7 @@ PROJECT_NAV_LINKS = [
     ("creators", "Creators", "creators/"),
     ("methodology", "Methodology", "methodology.html"),
 ]
+PUBLISHED_TOPIC_IDS: set[str] = set()
 FOOTER_LINKS = [
     ("Roadmap", "../roadmap.html"),
     ("Methodology", "../methodology.html"),
@@ -1175,7 +1176,11 @@ def creator_href(handle: str, prefix: str = "../creators") -> str:
 
 
 def topic_href(topic_id: str, prefix: str = "../topics") -> str:
-    return f"{prefix}/{slug(topic_id, 'uncategorized')}.html"
+    topic_key = slug(topic_id, "uncategorized")
+    if PUBLISHED_TOPIC_IDS and topic_key not in PUBLISHED_TOPIC_IDS:
+        base = "../" if prefix.startswith("..") else "./"
+        return workspace_href(base=base, topic=topic_id)
+    return f"{prefix}/{topic_key}.html"
 
 
 def workspace_href(base: str = "../", **params: str) -> str:
@@ -1907,6 +1912,12 @@ def main() -> int:
     passages = read_jsonl(data / "passages.jsonl")
     insights = read_jsonl(data / "insight_cards.jsonl")
     topics = read_jsonl(data / "topics.jsonl")
+    global PUBLISHED_TOPIC_IDS
+    PUBLISHED_TOPIC_IDS = {
+        slug(topic.get("topic_id") or topic.get("topic") or "uncategorized")
+        for topic in topics
+        if topic.get("public")
+    }
     creators = read_jsonl(data / "creators.jsonl")
     signal_briefs = {
         row.get("topic_id") or "": row
