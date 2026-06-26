@@ -153,7 +153,12 @@ foreach ($DocPage in $DocPages) {
 }
 
 foreach ($StaticDataFile in @("documents.jsonl", "passages.jsonl", "insight_cards.jsonl", "manifest.json", "topic_signal_briefs.jsonl", "base2026_analytics.json", "analytics_summary.json")) {
-  Copy-Item (Join-Path $ExportRoot $StaticDataFile) (Join-Path $StaticRoot $StaticDataFile) -Force
+  $StaticDataSource = Join-Path $ExportRoot $StaticDataFile
+  if (Test-Path $StaticDataSource) {
+    Copy-Item $StaticDataSource (Join-Path $StaticRoot $StaticDataFile) -Force
+  } elseif (Test-Path "./web/static/$StaticDataFile") {
+    Copy-Item "./web/static/$StaticDataFile" (Join-Path $StaticRoot $StaticDataFile) -Force
+  }
 }
 Copy-Item "./scripts/meili-index-public.py" (Join-Path $ScriptsRoot "meili-index-public.py") -Force
 Copy-Item (Join-Path $ExportRoot "*") $DataRoot -Recurse -Force

@@ -1,5 +1,17 @@
 # Decisions
 
+## 2026-06-23 — Keep Base2026 discovery state out of crawlable query URLs
+
+Decision: canonical Base2026 search/discovery URLs should be `/knowledge/` plus client-side `#search?...` state, not `/knowledge/index.html?...` or other crawlable query variants. Generated static entity pages should link back to the search workspace through hash state, while sitemap generation remains limited to self-canonical, indexable HTML files.
+
+Reason: GSC/Ahrefs already surfaced duplicate/canonical noise around `/knowledge/index.html` and query-state search routes. Hash state preserves user navigation without asking crawlers to spend budget on filter/query combinations that canonicalize back to the search root.
+
+## 2026-06-23 — Use Logic Crafts organization as GitHub home
+
+Decision: treat `logic-crafts` as the current company GitHub organization for Base2026 and related Alex/company startup assets. Base2026 canonical GitHub URL is `https://github.com/logic-crafts/base2026`; local `origin` should point to `https://github.com/logic-crafts/base2026.git`.
+
+Reason: Alex registered a company/org GitHub account because startup/application flows often request a company identity, and the project/repositories were moved there while keeping access effectively the same.
+
 ## 2026-06-15 — Use a compact current handoff to prevent context rot
 
 Decision: keep `docs/project-memory/CURRENT_HANDOFF.md` as the first resume file for the active task. It should summarize the current goal, dirty source files, done work, verification, open loops, and exact next action. Full project-memory rereads should be targeted, not automatic.

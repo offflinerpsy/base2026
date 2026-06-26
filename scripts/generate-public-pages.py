@@ -18,13 +18,14 @@ SOCIAL_IMAGE_URL = "https://aggressorbulkit.online/knowledge/static/assets/alex-
 SOCIAL_IMAGE_ALT = "Alex Yarosh profile photo"
 TWITTER_SITE = "@AleksejAros"
 PROJECT_NAV_LINKS = [
-    ("search", "Search", "index.html"),
+    ("search", "Search", ""),
     ("analytics", "Analytics", "analytics.html"),
     ("api", "API", "api.html"),
     ("topics", "Topics", "topics/"),
     ("creators", "Creators", "creators/"),
     ("methodology", "Methodology", "methodology.html"),
 ]
+PUBLISHED_TOPIC_IDS: set[str] = set()
 FOOTER_LINKS = [
     ("Roadmap", "../roadmap.html"),
     ("Methodology", "../methodology.html"),
@@ -702,6 +703,8 @@ def section_title(label: str, tooltip: str) -> str:
 
 def root_href(relative_root: str, target: str) -> str:
     root = relative_root.rstrip("/")
+    if not target:
+        return f"{root}/"
     return f"{root}/{target.lstrip('/')}"
 
 
@@ -712,7 +715,7 @@ def base2026_dropdown(relative_root: str, current: str = "") -> str:
         links.append(f'<a href="{escape(root_href(relative_root, target))}"{active}>{escape(label)}</a>')
     return f"""
           <div class="site-header__base">
-            <a class="site-header__link site-header__link--base2026" href="{escape(root_href(relative_root, 'index.html'))}" aria-haspopup="true">Base2026</a>
+            <a class="site-header__link site-header__link--base2026" href="{escape(root_href(relative_root, ''))}" aria-haspopup="true">Base2026</a>
             <div class="site-header__base-menu" aria-label="Base2026 navigation">
               <span>Base2026 Library</span>
               {''.join(links)}
@@ -777,7 +780,7 @@ def base2026_breadcrumbs(relative_root: str, title: str) -> str:
     current = (title.split("|", 1)[0] or "Current page").strip()
     return f"""
       <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="{escape(root_href(relative_root, 'index.html'))}">Base2026</a>
+        <a href="{escape(root_href(relative_root, ''))}">Base2026</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{escape(current)}</span>
       </nav>
@@ -916,7 +919,7 @@ def page_shell(
           <h3>Base2026 Pilot Project</h3>
           <p>Independent pilot project: a searchable knowledge base for short-form expert video.</p>
           <ul class="ay-footer-menu">
-            <li><a href="{relative_root}/index.html">Search Base2026</a></li>
+            <li><a href="{relative_root}/">Search Base2026</a></li>
             <li><a href="{relative_root}/analytics.html">Analytics</a></li>
             <li><a href="{relative_root}/api.html">API &amp; AI access</a></li>
             <li><a href="{relative_root}/roadmap.html">Roadmap</a></li>
@@ -1173,12 +1176,16 @@ def creator_href(handle: str, prefix: str = "../creators") -> str:
 
 
 def topic_href(topic_id: str, prefix: str = "../topics") -> str:
-    return f"{prefix}/{slug(topic_id, 'uncategorized')}.html"
+    topic_key = slug(topic_id, "uncategorized")
+    if PUBLISHED_TOPIC_IDS and topic_key not in PUBLISHED_TOPIC_IDS:
+        base = "../" if prefix.startswith("..") else "./"
+        return workspace_href(base=base, topic=topic_id)
+    return f"{prefix}/{topic_key}.html"
 
 
-def workspace_href(base: str = "../index.html", **params: str) -> str:
+def workspace_href(base: str = "../", **params: str) -> str:
     query = urlencode({str(key): str(value).lstrip("@") for key, value in params.items() if value})
-    return f"{base}?{query}" if query else base
+    return f"{base.rstrip('/')}/#search?{query}" if query else f"{base.rstrip('/')}/"
 
 
 def topic_chips(topic_rows: list[tuple[str, str, int]], prefix: str = "../topics") -> str:
@@ -1765,10 +1772,11 @@ def index_page(
         <h1>{escape(title)}</h1>
         <p class="lead">{escape(intro)}</p>
         <div class="hero-actions">
-          <a class="ay-button" href="../index.html">Back to search</a>
+          <a class="ay-button" href="../">Back to search</a>
         </div>
       </section>
-      <section class="content-section">
+      <section class="content-section" aria-labelledby="{escape(slug(title, 'index'))}-list-heading">
+        <h2 id="{escape(slug(title, 'index'))}-list-heading">Available {escape(title.lower())}</h2>
         <div class="card-grid">{cards}</div>
       </section>
         """,
@@ -1848,7 +1856,7 @@ def analytics_page(analytics: dict) -> str:
         <h1>Signals across the public source library.</h1>
         <p class="lead">A compact public analytics layer for topics, creators, sources, and repeated SEO/GEO/AEO themes. It is generated from the same public release data used by search.</p>
         <div class="hero-actions">
-          <a class="ay-button" href="./index.html">Search the library</a>
+          <a class="ay-button" href="./">Search the library</a>
           <a class="ay-button-secondary" href="./topics/">Topics</a>
         </div>
       </section>
@@ -1904,6 +1912,12 @@ def main() -> int:
     passages = read_jsonl(data / "passages.jsonl")
     insights = read_jsonl(data / "insight_cards.jsonl")
     topics = read_jsonl(data / "topics.jsonl")
+    global PUBLISHED_TOPIC_IDS
+    PUBLISHED_TOPIC_IDS = {
+        slug(topic.get("topic_id") or topic.get("topic") or "uncategorized")
+        for topic in topics
+        if topic.get("public")
+    }
     creators = read_jsonl(data / "creators.jsonl")
     signal_briefs = {
         row.get("topic_id") or "": row

@@ -31,7 +31,7 @@ Keep Base2026 launch work stable and reproducible: public UI fixes, SEO/GSC work
 ## Current Branch And Release State
 
 - Branch: `codex/base2026-launch-next`; pushed to GitHub and fast-forwarded into GitHub `main` on 2026-06-19.
-- Current live release: `base2026-source-intelligence-contract-ay54-20260619`.
+- Current live release: `base2026-creator-avatar-assets-ay55-20260623`.
 - Current live export: 1,476 source records, 2,016 passages, 1,631 insight cards, 1,060 public insight cards, 1,522 topics, 1,008 public topics, 10 creators.
 - Current policy: `include_full_transcripts=false`.
 - Current Meilisearch index: `base2026_public_tiktok`, 2,016 public passages.
@@ -39,6 +39,12 @@ Keep Base2026 launch work stable and reproducible: public UI fixes, SEO/GSC work
 
 ## What Was Just Done
 
+- 2026-06-23 ay55 creator-avatar hotfix: live `/knowledge/` smoke found 404s for `harrysandersseo.jpeg`, `gobigsystems.jpeg`, and `iamdandavies.jpeg`; fetched stable TikTok avatar assets, regenerated the public export so avatar URLs propagate through chunks/search data, patched the hotfix packager optional static-file fallback, deployed `base2026-creator-avatar-assets-ay55-20260623`, reindexed Meilisearch task `407`, and verified desktop/tablet Base2026 visual QA 14/14 with 0 failures.
+
+- 2026-06-23 indexation foundation: WordPress theme now removes category/tag taxonomies from WP sitemaps and emits `noindex,follow` on category/tag/date archives to keep `/category/uncategorized/` out of index strategy.
+- 2026-06-23 Base2026 crawl cleanup: generated search links now target `/knowledge/` and `#search?...` hash state instead of crawlable `/knowledge/index.html?...` query routes; static `meili.html` and runtime `meili.js` understand the hash route; regenerated temp pages had 0 `index.html?` links and 0 `./index.html`/`../index.html` search links.
+- 2026-06-23 SEO structure audit: live WordPress/Base2026 H1-H3/canonical/sitemap crawl saved to `docs/project-memory/SEO_STRUCTURE_AUDIT_2026-06-23.md`; generator now inserts H2 list headings before Base2026 index card H3 grids so topics/creators/sources index pages have clean H1→H2→H3 structure.
+- 2026-06-23 footer alignment guard: WordPress theme and Base2026 CSS now keep footer CTA buttons in one row on mobile instead of stacking into multiple rows; local Playwright CSS-injection check at 390px showed one row.
 - Processed the AI Recommends Solutions creator pass for `@heytonyagency`, `@iamdandavies`, `@harrysandersseo`, `@ray_fu`, and `@gobigsystems`.
 - Ran `scripts/social-discover.py` into ignored private JSONL: 200 discovered source records across 10 configured TikTok creators, 0 failures.
 - Ran importer dry-run/apply into private local `videos.csv`: 100 new candidate rows added and safe missing metadata updated with an ignored backup.
