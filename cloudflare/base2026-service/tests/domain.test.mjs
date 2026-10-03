@@ -25,7 +25,7 @@ const domain = await import(join(temp, "domain.mjs")),
   azure = await import(join(temp, "azure.mjs")),
   worker = await import(join(temp, "index.mjs"));
 test.after(() => rm(temp, { recursive: true, force: true }));
-test("untrusted client gate fields cannot enable Azure; possibly charged send cannot retry", () => {
+test("untrusted client gate fields cannot enable Azure; possibly charged send cannot retry", async () => {
   const enabled = {
     enabled: "true",
     deployment: "authorized-deployment",
@@ -35,8 +35,8 @@ test("untrusted client gate fields cannot enable Azure; possibly charged send ca
     budgetUSD: 5,
     authorizationHash: "a".repeat(64),
   };
-  assert.equal(azure.azureStatus(enabled).state, "blocked");
-  assert.equal(azure.azureStatus(enabled).request_sent, false);
+  assert.equal((await azure.azureStatus(enabled)).state, "blocked");
+  assert.equal((await azure.azureStatus(enabled)).request_sent, false);
   assert.deepEqual(azure.classifyProviderFailure(true, false), {
     state: "uncertain_cost",
     retry_allowed: false,
@@ -173,4 +173,42 @@ test("Markdown exports preserve the reviewed media URL and its rights basis", ()
   });
   assert.ok(md.includes("https://example\\.com/asset"));
   assert.ok(md.includes("owned"));
+});
+
+test("Azure v1 endpoints normalize one trailing slash and reject arbitrary hosts, ports and URL tricks", () => {
+  for (const host of [
+    "fixture-resource.openai.azure.com",
+    "fixture-resource.services.ai.azure.com",
+  ]) {
+    const endpoint = "https://" + host + "/openai/v1";
+    assert.equal(azure.azureEndpoint(endpoint + "/"), endpoint);
+    assert.equal(
+      azure.azureRequest(
+        {
+          endpoint: endpoint + "/",
+          protocol: "responses",
+          deployment: "fixture",
+          output_token_cap: 10,
+          input_token_cap: 10000,
+        },
+        { brief: {}, brand: {}, plan: { evidence_ledger: [] } },
+      ).url,
+      endpoint + "/responses",
+    );
+  }
+  for (const endpoint of [
+    "http://fixture.openai.azure.com/openai/v1",
+    "https://example.com/openai/v1",
+    "https://fixture.openai.azure.com.evil.test/openai/v1",
+    "https://fixture.services.ai.azure.com:443/openai/v1",
+    "https://user@fixture.openai.azure.com/openai/v1",
+    "https://fixture.openai.azure.com/openai/v1/?q=x",
+    "https://fixture.openai.azure.com/openai/v1/#x",
+    "https://fixture.openai.azure.com/openai/x/../v1",
+    "https://fixture.openai.azure.com/openai/v1//",
+  ])
+    assert.throws(
+      () => azure.azureEndpoint(endpoint),
+      /azure_endpoint_invalid/,
+    );
 });

@@ -259,15 +259,27 @@ document.querySelectorAll("[data-add]").forEach(
 function render(resetDraft = false) {
   const p = state.project;
   const latestAuthor = p.author_jobs.at(-1);
+  $("adapter-reasons").replaceChildren(
+    ...state.azure.reasons.map((r) => node("li", r)),
+  );
+  $("author").textContent =
+    state.azure.state === "ready"
+      ? "Request approved Azure draft"
+      : "Check Azure author gate";
   $("adapter-state").textContent =
-    latestAuthor?.state === "completed"
-      ? "DRAFT RECEIVED"
-      : latestAuthor?.state === "uncertain_cost"
-        ? "RECONCILIATION REQUIRED"
-        : "ACTIVATION GATED";
-  $("adapter-note").textContent = latestAuthor?.request_sent
-    ? "Provider request recorded. Review the exact saved candidate before export; uncertain sends never retry automatically."
-    : "Direct adapter implemented. No provider request has been sent for this project.";
+    state.azure.state === "ready"
+      ? "READY FOR APPROVED REQUEST"
+      : latestAuthor?.state === "completed"
+        ? "DRAFT RECEIVED"
+        : latestAuthor?.state === "uncertain_cost"
+          ? "RECONCILIATION REQUIRED"
+          : "ACTIVATION GATED";
+  $("adapter-note").textContent =
+    state.azure.state === "ready"
+      ? "Server approval, credential binding and service reservation gates are satisfied. No request is sent by this readiness check."
+      : latestAuthor?.request_sent
+        ? "Provider request recorded. Review the exact saved candidate before export; uncertain sends never retry automatically."
+        : "Direct adapter implemented. No provider request has been sent for this project.";
   const subject = p.id + ":" + (state.review_hash || "");
   if (subject !== reviewSubject) {
     $("review-form").reset();
@@ -697,5 +709,7 @@ work(async () => {
     state = await api(`/api/projects/${saved}`);
     render(true);
   }
-  notice("Local service ready. No website crawl or live AI inference.");
+  notice(
+    "Local service ready. Check the project author gate for current provider readiness.",
+  );
 });

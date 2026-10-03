@@ -10,20 +10,96 @@ import {
   parseDraft,
   type Project,
 } from "./domain";
-export function azureStatus(_input: any = {}) {
+export async function azureStatus(env: Env, p?: Project) {
+  const enabled = env.AZURE_ENABLED === "true";
+  const credential_bound =
+    typeof Reflect.get(env, "AZURE_API_KEY") === "string" &&
+    !!Reflect.get(env, "AZURE_API_KEY").trim();
+  const reasons: string[] = [];
+  if (!enabled) reasons.push("Live Azure inference disabled");
+  if (!credential_bound)
+    reasons.push("Existing credential is not securely bound to this service");
+  let approval_valid = false,
+    budget_available = false,
+    job: any = null;
+  if (!p)
+    reasons.push(
+      "Select a project to check its exact approved input, plan and brief scope",
+    );
+  else {
+    try {
+      await requirePlan(p);
+      requireThat(p.brief, "brief_missing", 422);
+      const scope = await binding(p),
+        g = await grantFor(env.SERVICE_DB, p, scope);
+      requireThat(
+        g && (await hash(JSON.parse(g.descriptor_json))) === g.id,
+        "azure_approval_missing_or_invalid",
+      );
+      const a = approval(g!, p, scope),
+        request = azureRequest(a, p);
+      approval_valid = true;
+      const cost = reservedCost(a, a.input_token_cap, a.output_token_cap);
+      const totals: any = await sql(
+        env.SERVICE_DB,
+        "SELECT coalesce(sum(CASE WHEN substr(created_at,1,10)=? THEN reserved_micro ELSE 0 END),0) AS day_micro,coalesce(sum(CASE WHEN substr(created_at,1,7)=? THEN reserved_micro ELSE 0 END),0) AS month_micro FROM azure_jobs WHERE account_id=?",
+        now().slice(0, 10),
+        now().slice(0, 7),
+        a.account_id,
+      ).first();
+      budget_available =
+        cost <= a.per_call_micro &&
+        Number(totals?.day_micro ?? 0) + cost <= a.per_day_micro &&
+        Number(totals?.month_micro ?? 0) + cost <= a.per_month_micro;
+      if (!budget_available)
+        reasons.push(
+          "Service-local full-price reservation exceeds an approved call/day/month ceiling",
+        );
+      const id = await hash({
+        request_sha256: await hash(request),
+        approval: g!.id,
+        project: p.id,
+        binding: scope,
+        plan: p.plan.hash,
+        order: p.brief.order_id,
+      });
+      job = await sql(
+        env.SERVICE_DB,
+        "SELECT state,request_sent FROM azure_jobs WHERE workspace=? AND project_id=? AND id=?",
+        WORKSPACE,
+        p.id,
+        id,
+      ).first();
+      if (job) reasons.push("Existing operation; no provider resend");
+    } catch {
+      reasons.push(
+        "Exact server approval or current source/plan/brief authority is missing, invalid, expired or revoked",
+      );
+    }
+  }
   return {
-    state: "blocked",
-    reasons: [
-      "Live Azure inference disabled by default",
-      "Exact project approval record required: existing resource/deployment, model version and expected response model",
-      "Verified processing region, source/processor scope and expiry required",
-      "Verified full-price rates and per-call/day/month spend ceilings required",
-      "Server-only existing credential binding not configured",
-    ],
-    live_ai: false,
-    request_sent: false,
+    state: reasons.length ? "blocked" : "ready",
+    reasons,
+    enabled,
+    credential_bound,
+    approval_valid,
+    budget_available,
+    live_ai: job?.state === "completed",
+    request_sent: !!job?.request_sent,
+    existing_job_state: job?.state ?? null,
     retry_allowed: false,
   };
+}
+export function azureEndpoint(value: string) {
+  // The approved descriptor pins one exact resource; this validates only Microsoft's two v1 formats.
+  requireThat(
+    typeof value === "string" &&
+      /^https:\/\/[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.(?:openai\.azure\.com|services\.ai\.azure\.com)\/openai\/v1\/?$/.test(
+        value,
+      ),
+    "azure_endpoint_invalid",
+  );
+  return value.replace(/\/$/, "");
 }
 export function classifyProviderFailure(sent: boolean, knownNoCharge: boolean) {
   return {
@@ -37,7 +113,10 @@ export interface AzureApproval {
   deployment: string;
   model_version: string;
   response_model: string;
-  region: string;
+  resource_region: string;
+  deployment_sku: string;
+  processing_geography: string;
+  version_upgrade_option: string;
   account_id: string;
   project_id: string;
   binding_hash: string;
@@ -68,19 +147,8 @@ const sql = (db: D1Database, q: string, ...v: any[]) =>
   db.prepare(q).bind(...v);
 const digest = (s: any) => typeof s === "string" && /^[a-f0-9]{64}$/.test(s);
 function approval(g: Grant, p: Project, scope: string): AzureApproval {
-  const a: AzureApproval = JSON.parse(g.descriptor_json),
-    u = new URL(a.endpoint);
-  requireThat(
-    u.protocol === "https:" &&
-      /^[a-z0-9-]+\.openai\.azure\.com$/.test(u.hostname) &&
-      u.pathname === "/openai/v1" &&
-      !u.port &&
-      !u.username &&
-      !u.password &&
-      !u.search &&
-      !u.hash,
-    "azure_endpoint_invalid",
-  );
+  const a: AzureApproval = JSON.parse(g.descriptor_json);
+  azureEndpoint(a.endpoint);
   requireThat(
     ["chat", "responses"].includes(a.protocol) &&
       ["max_tokens", "max_completion_tokens"].includes(a.chat_output_field),
@@ -90,13 +158,22 @@ function approval(g: Grant, p: Project, scope: string): AzureApproval {
     "deployment",
     "model_version",
     "response_model",
-    "region",
+    "resource_region",
+    "deployment_sku",
+    "version_upgrade_option",
     "account_id",
   ] as const)
     requireThat(
       typeof a[key] === "string" && /^[a-zA-Z0-9_.:-]{1,200}$/.test(a[key]),
       "azure_model_descriptor_invalid",
     );
+  requireThat(
+    typeof a.processing_geography === "string" &&
+      a.processing_geography.length >= 2 &&
+      a.processing_geography.length <= 300 &&
+      !/unknown|unverified/i.test(a.processing_geography),
+    "azure_processing_geography_invalid",
+  );
   for (const key of [
     "binding_hash",
     "plan_hash",
@@ -193,7 +270,8 @@ export function azureRequest(a: AzureApproval, p: Project) {
   );
   return {
     url:
-      a.endpoint + (a.protocol === "chat" ? "/chat/completions" : "/responses"),
+      azureEndpoint(a.endpoint) +
+      (a.protocol === "chat" ? "/chat/completions" : "/responses"),
     body: bytes,
   };
 }
@@ -459,7 +537,11 @@ export async function runAzureAuthor(
             approval_id: g!.id,
             request_sha256: row.request_sha256,
             model_version: a.model_version,
-            region: a.region,
+            resource_region: a.resource_region,
+            deployment_sku: a.deployment_sku,
+            processing_geography: a.processing_geography,
+            version_upgrade_option: a.version_upgrade_option,
+            model_evidence_sha256: a.model_evidence_sha256,
           }
         : {}),
       recorded_at: row.created_at,

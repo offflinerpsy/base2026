@@ -262,7 +262,10 @@ async function permit(project, overrides = {}) {
     deployment: "fixture-only",
     model_version: "fixture-version",
     response_model: "fixture-model-version",
-    region: "fixture-region",
+    resource_region: "fixture-resource-region",
+    deployment_sku: "GlobalStandard",
+    processing_geography: "Global model-supported geographies",
+    version_upgrade_option: "NoAutoUpgrade",
     account_id: "fixture-account-" + crypto.randomUUID(),
     project_id: p.id,
     binding_hash: await domain.binding(p),
@@ -643,4 +646,59 @@ test("account reservations enforce shared daily ceiling across project operation
   assert.equal(calls, 1);
   assert.equal(results.filter((r) => r.state === "completed").length, 1);
   assert.equal(results.filter((r) => r.state === "blocked").length, 1);
+});
+
+test("server readiness reflects real scoped gates without sending or disclosing credentials", async () => {
+  const project = await makeReady(),
+    p = project.state.project;
+  const absent = await azure.azureStatus(env, p);
+  assert.equal(absent.state, "blocked");
+  assert.equal(absent.credential_bound, false);
+  const grant = await permit(project, {
+    endpoint: "https://fixture-resource.services.ai.azure.com/openai/v1/",
+  });
+  const ready = await call("/api/projects/" + project.id, undefined, grant.env);
+  assert.equal(
+    ready.body.azure.state,
+    "ready",
+    JSON.stringify(ready.body.azure),
+  );
+  assert.equal(ready.body.azure.credential_bound, true);
+  assert.equal(ready.body.azure.approval_valid, true);
+  assert.equal(ready.body.azure.request_sent, false);
+  assert.ok(
+    !JSON.stringify(ready.body).includes("FIXTURE_NOT_A_REAL_CREDENTIAL"),
+  );
+  assert.equal((await azure.authorJobs(db, project.id)).length, 0);
+  const general = await call("/api/status", undefined, grant.env);
+  assert.equal(general.body.azure.credential_bound, true);
+  assert.ok(!general.body.azure.reasons.some((r) => r.includes("credential")));
+  let calls = 0;
+  const result = await azure.runAzureAuthor(
+    grant.env,
+    p,
+    crypto.randomUUID(),
+    async (url) => {
+      calls++;
+      assert.equal(
+        url,
+        "https://fixture-resource.services.ai.azure.com/openai/v1/chat/completions",
+      );
+      return chatReply(fixtureDraft(p));
+    },
+  );
+  assert.equal(result.state, "completed");
+  assert.equal(calls, 1);
+  const existing = await azure.azureStatus(grant.env, p);
+  assert.equal(existing.state, "blocked");
+  assert.equal(existing.existing_job_state, "completed");
+  assert.equal(existing.request_sent, true);
+  assert.equal(existing.credential_bound, true);
+  await db
+    .prepare("UPDATE azure_authorizations SET revoked_at=? WHERE id=?")
+    .bind(domain.now(), grant.id)
+    .run();
+  const revoked = await azure.azureStatus(grant.env, p);
+  assert.equal(revoked.approval_valid, false);
+  assert.equal(revoked.state, "blocked");
 });

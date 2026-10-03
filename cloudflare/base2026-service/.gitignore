@@ -1,6 +1,7 @@
 node_modules/
 .wrangler/
 .dev.vars*
+.env*
 *.log
 *.sqlite*
 worker-configuration.d.ts

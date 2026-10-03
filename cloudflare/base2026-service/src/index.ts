@@ -160,12 +160,12 @@ async function previous(env: Env, id: string, op: string, requestHash: string) {
   }
   return null;
 }
-async function publicState(p: Project) {
+async function publicState(env: Env, p: Project) {
   return {
     project: p,
     checks: await checks(p),
     review_hash: p.current_version_id ? await reviewHash(p, current(p)) : null,
-    azure: azureStatus(),
+    azure: await azureStatus(env, p),
   };
 }
 async function save(
@@ -232,13 +232,13 @@ async function save(
     return {
       duplicate: true,
       operation_revision: prior.revision,
-      ...(await publicState(await load(env, p.id))),
+      ...(await publicState(env, await load(env, p.id))),
     };
   }
   return {
     duplicate: false,
     operation_revision: p.revision,
-    ...(await publicState(p)),
+    ...(await publicState(env, p)),
   };
 }
 async function putImmutable(env: Env, key: string, bytes: string) {
@@ -385,7 +385,7 @@ async function api(
       mode: "loopback_operator",
       workspace: WORKSPACE,
       identity: "local_operator_unverified",
-      azure: azureStatus({ enabled: env.AZURE_ENABLED }),
+      azure: await azureStatus(env),
       publication: false,
       website_fetch: false,
     });
@@ -409,7 +409,7 @@ async function api(
     if (await previous(env, id, op, requestHash))
       return json({
         duplicate: true,
-        ...(await publicState(await load(env, id))),
+        ...(await publicState(env, await load(env, id))),
       });
     const p: Project = {
       schema_version: SCHEMA,
@@ -461,10 +461,10 @@ async function api(
       );
       return json({
         duplicate: true,
-        ...(await publicState(await load(env, id))),
+        ...(await publicState(env, await load(env, id))),
       });
     }
-    return json(await publicState(p), 201);
+    return json(await publicState(env, p), 201);
   }
   requireThat(
     segments[0] === "api" && segments[1] === "projects" && segments[2],
@@ -474,7 +474,7 @@ async function api(
   const id = segments[2],
     p = await load(env, id);
   if (segments.length === 3 && request.method === "GET")
-    return json(await publicState(p));
+    return json(await publicState(env, p));
   const action = segments[3];
   if (
     action === "author-jobs" &&
@@ -580,7 +580,7 @@ async function api(
     return json({
       duplicate: true,
       operation_revision: prior.revision,
-      ...(await publicState(p)),
+      ...(await publicState(env, p)),
     });
   requireThat(
     Number.isSafeInteger(b.expected_revision) &&
@@ -831,7 +831,13 @@ async function api(
         approval_id: status.approval_id,
         request_sha256: status.request_sha256,
         model_version: status.model_version,
-        region: status.region,
+        resource_region: status.resource_region,
+        deployment_sku: status.deployment_sku,
+        processing_geography: status.processing_geography,
+        version_upgrade_option: status.version_upgrade_option,
+        model_evidence_sha256: status.model_evidence_sha256,
+        deployment_metadata:
+          "server_approved_evidence; response model identifier checked",
         usage: status.usage,
       };
       const payload_hash = await hash(packet),

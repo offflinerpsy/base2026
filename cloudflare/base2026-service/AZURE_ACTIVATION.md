@@ -1,73 +1,94 @@
 # Direct Azure adapter: activation boundary
 
-The service implements direct Azure v1 chat-completions and Responses HTTP transport.
-It never invokes DSH, Harness or an agent runner. Current live activation is blocked;
-deterministic mock transport tests are not provider acceptance.
+The service implements direct Azure v1 chat-completions and Responses transport.
+Live activation is currently blocked. Mock transport tests are contract checks.
 
-## Exact records required
+## Operator evidence and generated descriptor
 
-The server administrator provisions an immutable `azure_authorizations` record,
-not a browser form. Its ID is SHA-256 of the canonical descriptor JSON. The descriptor
-must contain every `AzureApproval` field in [src/azure.ts](src/azure.ts):
+An engineer creates the canonical descriptor and its SHA-256 ID from one reviewed
+human-readable approval packet. The owner approves the concrete resource, model,
+input purpose, processing scope and maximum spend; the owner does not assemble
+hashes or database fields. An administrator then provisions the immutable
+`azure_authorizations` row. There is no browser approval-provisioning endpoint.
 
-- Existing resource HTTPS endpoint, chosen protocol and exact deployment alias;
-  underlying model version, expected returned model identifier, verified processing
-  region and model evidence SHA. A configured alias alone is insufficient.
-- Exact project ID, input/source/brand binding hash, accepted plan hash and brief
-  order ID; processor approval SHA covering those inputs, permitted purpose,
-  retention/residency and expiry. Scope changes invalidate the record.
-- Existing billing account identity, full-price input/output rates in micro-USD per
-  million tokens, price evidence SHA, input/output token caps, per-call/day/month
-  micro-USD ceilings, spend authorization SHA and effective expiry.
-- Supported chat output-limit field (`max_tokens` or `max_completion_tokens`) and
-  bounded timeout. No automatic model substitution, retries or tools.
+Every `AzureApproval` field in [src/azure.ts](src/azure.ts) is required:
 
-The approval row repeats workspace/project/binding and expiry, records creation
-time, and permits only a separate revocation timestamp to change. The database
-administration boundary is the trust anchor; the descriptor hashes do not prove
-consent by themselves. There is no approval-creation API for users.
+- One exact existing resource endpoint, protocol and deployment alias; model
+  version, expected returned model identifier and recent deployment evidence SHA.
+  Supported bases are `https://<resource>.openai.azure.com/openai/v1[/]` and
+  `https://<resource>.services.ai.azure.com/openai/v1[/]`. One optional trailing
+  slash is normalized. The descriptor pins the full resource hostname. Userinfo,
+  ports, queries, fragments, path tricks, other hosts and redirects are refused.
+- Resource region, exact deployment SKU/type, permitted processing geography and
+  `versionUpgradeOption`, derived from existing account/deployment metadata.
+  Resource location alone does not establish inference residency. Standard
+  processing may span regions in its geography; DataZone and Global have wider
+  processing scopes according to their deployment type. Approve that actual scope.
+- Exact project/input/source/brand binding, accepted plan hash and brief order ID;
+  processor approval evidence covering purpose, rights, retention, processing
+  geography and expiry. A scope change invalidates the record.
+- Existing billing account identity, current undiscounted input/output USD rates
+  converted to integer micro-USD per million tokens, price evidence SHA, token
+  caps, call/day/month ceilings, spend authorization evidence SHA and expiry.
+- Supported output-limit field and bounded timeout. One attempt, no fallback,
+  provider tools or automatic resend.
 
-## Credential custody and first call
+Metadata fields are approved declarations backed by deployment evidence. Runtime
+checks compare the returned `model` identifier and usage; they do not independently
+prove the underlying model version, deployment SKU, upgrade policy or processing
+location. Refresh metadata before acceptance, especially if automatic upgrades
+are configured. Never infer these from a deployment alias or the Ubuntu VM region.
 
-The existing credential custodian must bind only the approved existing resource
-credential as server secret `AZURE_API_KEY`. Never send it to the browser, put it
-in the authorization descriptor, log it, expose it in command arguments, or copy
-the entire existing provider environment.
+Microsoft documents the [supported endpoint formats](https://learn.microsoft.com/en-us/azure/ai-studio/ai-services/concepts/endpoints)
+and [deployment processing locations](https://learn.microsoft.com/en-us/azure/foundry/responsible-ai/openai/data-privacy).
 
-For an approved local integration, use Wrangler's private ignored `.dev.vars`
-secret mechanism with mode 0600, supplied by the credential custodian. Do not paste
-the value into chat. For a later approved isolated cloud Worker, the supported
-server-secret binding is `wrangler secret put AZURE_API_KEY`; that step belongs
-to the separately gated deployment/custody process. Neither binding was performed
-during implementation. No new credential or grant is assumed.
+The administration boundary is the trust anchor: descriptor hashes alone do not
+prove consent. The row repeats workspace/project/input and expiry, and permits
+only a separate revocation timestamp to change.
 
-Local development defaults to `AZURE_ENABLED=false`. After the exact approval row,
-credential binding and explicit first-call spend permission are verified, the
-operator may select `SERVICE_ENABLE_APPROVED_AZURE=true` for the local launcher.
-That flag cannot bypass the scope, rights, expiry, model, budget or send fences.
-Cloud access remains disabled until its approved identity boundary is implemented.
+## One local canary after specific approval
 
-Then authorize one bounded canary, verify actual returned model/version and usage
-against the pinned descriptor, independently review the draft, and test the
-service result. Existing subscription access is not an API budget. Current
-instructions prohibit spend, so no live canary was attempted.
+Prepare one synthetic, nonprivate project and saved brief. Freeze its request hash,
+metadata evidence, price evidence, token reservation, USD cap and expiry in the
+approval packet. Missing metadata or rates make the packet unready for approval;
+historic model aliases and general pricing estimates must not fill those gaps.
 
-## Durable behavior already implemented
+After approval for that one paid request, the existing credential custodian binds
+only the already approved existing resource key as `AZURE_API_KEY`, using local
+Wrangler `.dev.vars`, private and ignored, mode 0600. Keys must not enter chat,
+browser data, descriptor JSON, logs or command arguments. Do not copy the whole
+provider environment. This step does not create a credential or access grant.
 
-A full-price reservation is committed in D1 before a separate durable send fence.
-Account/day/month caps include all reservations conservatively, across project
-approvals. Job identity deduplicates the exact approval/input/plan/order operation.
-There is one HTTP attempt, bounded input/output/body/time, manual redirect refusal,
-model/usage validation, and no provider tools.
+Do **not** use `wrangler secret put` for the local canary: it creates a Worker
+version and belongs to a separate approved cloud deployment. Cloud identity and
+nonlocal access remain disabled, independently of successful local acceptance.
 
-Successful candidates retain model/job/request/usage provenance. Model claims
-remain unresolved and media rights unknown until a human supplies verification.
-A distinct human review is still required for export. Human edits retain model
-lineage. Changed authority during a response holds its candidate.
+Select `SERVICE_ENABLE_APPROVED_AZURE=true` only for the approved local launcher.
+It cannot bypass exact scope, rights, expiry, model, budget or durable send gates.
+The status API exposes server-derived gate booleans and project readiness without
+revealing keys. Checking readiness does not send a provider request.
 
-Timeouts, interrupted sends, unverified usage/model or unknown responses become
-terminal `uncertain_cost`; they retain the reservation and never resend
-automatically. A late response cannot silently turn an uncertain send into accepted
-content. Manual reconciliation must use provider/account evidence under the
-approved administration boundary. No automated reconciliation or budget refund
-is claimed.
+Make the one bounded request. Check returned model identifier, request IDs, usage,
+cost, saved candidate and evidence lineage; a different human must review the
+actual draft before export. Timeout or an unknown charged result is a terminal
+`uncertain_cost`, with manual account reconciliation and no automatic resend.
+Current instructions prohibit spend; no credential binding or paid canary has
+been performed.
+
+## Reservation scope and durable behavior
+
+Full-price cost is reserved in D1 before the durable send fence. Call/day/month
+ceilings aggregate reservations across project approvals sharing an account ID
+**inside this service D1 database**. They do not limit other applications, Azure
+account-wide spending, other database instances or external jobs. Check actual
+billing authority and concurrent external spend separately before approval.
+
+Job identity binds the approval, source/plan/order and exact request hash. Input,
+output, response body and deadline are bounded. Successful candidates preserve
+model/job/request/usage and approved deployment metadata. Claims remain unresolved
+and media rights unknown until human verification; edits retain model lineage.
+Changed input authority during a response holds the candidate.
+
+Unknown responses keep their reservation and never resend. A late response cannot
+silently accept an uncertain send. Manual reconciliation uses provider/account
+evidence; no automatic refund or global billing enforcement is claimed.
