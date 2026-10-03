@@ -131,6 +131,14 @@ operational view for the project; its database and implementation are not
 published here and are not a separate startup release. The factory scenario and
 that private operational view do not change the public product boundary.
 
+## Product development record
+
+The [English product-development record](docs/product-development/README.md)
+explains the SEO content-service hypothesis, Cloudflare/Azure/GCP roles,
+implementation and review states, acceptance gates, and GitHub/Linear
+traceability. Its October 3 checkpoint is separate from the existing dated
+production-release receipts.
+
 ## Public dataset quickstart
 
 Base2026 exposes public source documents, evidence passages, reviewed insight
