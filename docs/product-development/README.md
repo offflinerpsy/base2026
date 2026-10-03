@@ -64,7 +64,8 @@ billing design, economics, migration and rollback.
 **Why:** test whether the evidence library can support a repeatable professional
 workflow with useful outcomes and sustainable delivery effort.
 
-**How:** compare three product steps before choosing the first build:
+**How:** the accepted revision compared three product steps to support the
+selected first build:
 
 1. Concierge delivery with assisted exports and manual commercial operations.
 2. A lean automated slice: website inputs → plan → brief → draft → human review
@@ -72,18 +73,33 @@ workflow with useful outcomes and sustainable delivery effort.
 3. A fuller SaaS workflow, adding customer workbench, CMS adapters, integrated
    billing and stronger operational recovery after the lean slice earns it.
 
-The lean slice is a review requirement and candidate product scope. It has not
+The lean slice was an independent-review requirement and is now the selected
+first product scope in the accepted architecture. It has not
 been reported here as implemented or deployed. Internal use on owner-controlled
 sites should measure editorial quality, time saved, provenance and recovery.
 That dogfood evidence is distinct from external paid demand.
 
-**Progress:** an initial architecture package and independent review exist.
-The 2026-10-03 review requested three material revisions: comparable lean
-automation, deeper Cloudflare capability fit, and a concrete Azure role with
-GCP evaluated by relevant jobs. A subsequent revision is reported prepared but
-its exact export and independent acceptance remain pending at this checkpoint.
-The architecture work remains **In Review**. No new customer SaaS deployment or commercial
-traction is established by this documentation.
+**Progress:** architecture revision 1 passed independent review on 2026-10-03
+and is accepted as the design for the next bounded implementation. All three
+previous material gaps are addressed: comparable lean automation, current
+Cloudflare capability fit, and a concrete Azure role with GCP evaluated by jobs.
+The revised package's 297 manifest entries passed integrity verification.
+This is architecture acceptance; implementation remains proposed.
+
+**Selected first product:** a closed, export-first automated workbench:
+inputs → plan → human plan approval → brief/draft/checks → human content
+approval → export. Self-service billing and CMS publishing are later options.
+Cloudflare is the proposed control/data plane; Azure Foundry is the proposed
+author adapter, gated on exact deployment, model, processing and budget evidence.
+Existing Google Search measurement is an input. A 28-capability matrix evaluates
+Cloudflare AI Search/Browser Run, Azure compute/data/model roles and GCP options.
+
+A four-site owner-controlled dogfood test is planned, with measurable quality,
+time and cost gates. It has not been completed. The 7–13 working-day planning
+range starts only after inputs, permissions, model/deployment/budget readiness
+and reviewer availability are established. It is not a launch date.
+No new customer SaaS deployment, completed dogfood, actual paying customer or
+confirmed cloud-credit balance is established by this architecture acceptance.
 
 The initial review checked reuse, tenant/security/rights design, migration and
 rollback reasoning, a dependency backlog and economics arithmetic. Its offline
@@ -99,15 +115,15 @@ every vendor service or moving existing assets to consume promotional credits.
 
 | Cloud / capability group | Candidate SEO job | Integration approach and phase | Current state / next gate |
 | --- | --- | --- | --- |
-| Cloudflare Workers and Static Assets | Application/API and existing public delivery | Reuse the public edge surface; add service routes only after the accepted boundary is clear | Existing foundation documented; new service integration proposed |
+| Cloudflare Workers and Static Assets | Application/API and existing public delivery | Reuse the public edge surface; add service routes only after the accepted boundary is clear | Existing foundation documented; service role selected in the accepted architecture, implementation proposed |
 | Cloudflare D1 and R2 | Job metadata, approved versions and protected artifacts | Server-derived tenant scope, explicit public/private stores, private artifact access | Existing foundation; new tenant semantics and load limits need targeted acceptance |
-| Cloudflare Workflows, Queues and Containers | Long jobs, bounded retries and work that needs a container | Reuse an outbox/reconciler where sufficient; introduce orchestration only for a proved job | Capability fit under review; idempotency and uncertain remote effects must remain explicit |
-| Cloudflare AI Search and Browser Run | Retrieval/ingestion and bounded website intake | Benchmark managed retrieval and URL intake against existing FTS/API; keep rights and tenant filtering | Evaluation requested; no adoption or live benchmark claimed |
-| Cloudflare Workers AI and AI Gateway | Supported inference and model routing/observability | Select by quality, latency, limits and complete cost accounting | Existing transcription foundation; content-service role under review |
-| Azure compute, Container Apps and storage/data services | Bounded authoring, review, data or QA jobs that benefit from Azure | Select a concrete component/job and phase; avoid wholesale replatforming | Architecture consideration required; actual account, region, access and deployment gates remain |
-| Microsoft Foundry | Author/review/embedding/media model candidates | Compare exact deployment/model/region quality, quotas and full-price cost | Evaluation required; no production model access, credit coverage or benchmark claim |
+| Cloudflare Workflows, Queues and Containers | Long jobs, bounded retries and work that needs a container | Reuse an outbox/reconciler where sufficient; introduce orchestration only for a proved job | Capability fit evaluated in the accepted design; live idempotency and uncertain-effect checks remain |
+| Cloudflare AI Search and Browser Run | Retrieval/ingestion and bounded website intake | Benchmark managed retrieval and URL intake against existing FTS/API; keep rights and tenant filtering | Evaluated in the accepted architecture; no live adoption or benchmark claimed |
+| Cloudflare Workers AI and AI Gateway | Supported inference and model routing/observability | Select by quality, latency, limits and complete cost accounting | Existing transcription foundation; service inference/routing options evaluated, with live readiness still gated |
+| Azure compute, Container Apps and storage/data services | Bounded authoring, review, data or QA jobs that benefit from Azure | Select a concrete component/job and phase; avoid wholesale replatforming | Evaluated in the accepted matrix; actual account, region, access and deployment gates remain |
+| Microsoft Foundry | Author/review/embedding/media model candidates | Compare exact deployment/model/region quality, quotas and full-price cost | Proposed author adapter in the accepted architecture; deployment/model/processing/budget readiness still gated |
 | Google Search Console | Search-performance measurement | Preserve the existing Google Search measurement input; it is separate from Google Cloud infrastructure | Existing integration input; fresh results need their own dated readback |
-| GCP Cloud Run, data services and Vertex AI | Justified compute/data/model jobs | Adopt an additional backend only for a distinct supported outcome | Capability selection and account access remain under evaluation |
+| GCP Cloud Run, data services and Vertex AI | Justified compute/data/model jobs | Adopt an additional backend only for a distinct supported outcome | Alternatives evaluated; additional adoption needs a distinct supported outcome and account verification |
 
 Each accepted cloud decision must record: capability → SEO job → integration →
 phase → cost/limits → adopt/defer/reject, with dated primary sources and a
@@ -146,9 +162,10 @@ outside this work.
 
 ## Evidence needed for the next product step
 
-1. Accept the exact architecture revision and the three-option comparison.
-2. Choose the lean scope and a concrete Cloudflare/Azure job map; record any
-   GCP deferrals with reasons.
+1. Use the accepted revision-1 architecture and its three-option comparison
+   as the implementation boundary; preserve its conditional readiness gates.
+2. Implement the accepted lean scope and Cloudflare/Azure job map only after
+   their readiness gates; retain the documented reasons for GCP deferrals.
 3. Implement and verify one bounded end-to-end dogfood run, measuring time and
    quality against a stated baseline.
 4. Verify tenant/data rights, retries and uncertain remote effects for that
