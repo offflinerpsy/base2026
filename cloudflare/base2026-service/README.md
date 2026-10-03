@@ -1,0 +1,138 @@
+# Base2026 service workbench
+
+A separate, locally running operator workbench: supplied inputs → deterministic
+candidate plan → exact plan approval → bounded brief → operator draft → accountable
+human review → immutable HTML, Markdown and JSON exports with a SHA manifest.
+Download is not publication. No CMS, crawler, billing actuator, live provider request in its default disabled mode,
+agent launcher, queue, cron or cloud resource is created by this package.
+
+## Run on Ubuntu
+
+Use Node 22 and the pinned lockfile. Install and start from this package:
+
+```bash
+npm ci --ignore-scripts --no-audit --no-fund
+npm run typecheck
+SERVICE_STATE_DIR=/absolute/private/service-state npm run dev
+```
+
+The state directory must be absolute and outside the repository. The launcher
+applies only the new local D1 migration and starts Wrangler with local R2/D1 at
+`http://127.0.0.1:8789/`. Keep the complete state directory for local restarts.
+Never commit it. There is no remote migration/deploy command in the scripts.
+
+`wrangler.jsonc` contains an all-zero D1 identifier and a local bucket placeholder,
+not cloud resource identities. Generated runtime types stay ignored and are refreshed before typecheck. It defaults to `SERVICE_MODE=disabled`. Only the
+local launcher selects loopback mode. Wrangler 4.124.0 and compatibility date
+2026-08-22 are pinned together; generated Env types come from `npm run types`.
+This package cannot safely deploy as a commercial cloud service yet.
+
+## Operator flow
+
+1. Declare an owned domain, audience, brand facts/voice/exclusions and up to
+   twelve topics. The workspace and local actor are fixed by the server.
+2. Supply rights-scoped text, safe HTML, inventory CSV (`url,title`) or an
+   authorized GSC snapshot. Nothing is fetched from a source URL. HTML is
+   reduced to text; active markup is refused. A public URL is not reuse rights.
+3. Save a candidate plan. Inspect proposed intent, matching existing URLs and
+   evidence. Confirm the exact plan SHA before making a brief or draft.
+4. Choose a candidate and save a bounded brief. Write or import plain operator
+   text, edit metadata/links, declare claims and record media rights.
+5. Save an immutable version. A different named human reviewer must record
+   notes and facts/rights/brand/complete-claims declarations for its exact hash.
+6. Create an export and download all formats and the manifest. Historical
+   artifacts stay immutable; invalidated approvals hold their downloads.
+
+Unknown/expired rights and unresolved claims prevent approval/export. Resolve
+unknown source rights with a recorded rights basis. Withdrawal is irreversible;
+its tombstone cannot be cleared by renaming or resubmitting the same input.
+Changing the selected topic clears the current draft selection and review while retaining history. A new plan may use other active inputs. Changes to sources, rights, brand,
+topics, body, metadata, claims, links or media invalidate the relevant acceptance.
+
+This local mode records unverified human identity declarations, not authenticated
+client identity or independently proven factual correctness. Structural checks
+are explicitly not independent QA. All test content says **FIXTURE** and has
+`live_ai=false`; it is never represented as live model generation.
+
+## Data and exact bindings
+
+D1 stores a bounded current project document, append-only plan/review history and
+immutable content versions. Every update uses revision compare-and-swap plus an
+operation receipt in one D1 batch. Reusing an operation ID with the same request
+returns its logical result; changed bytes conflict. UI operation IDs derive from
+the submitted payload. Accepted order lines are unique by project/order; export
+and downloads perform no charge. Receipts and accepted lines have SQL immutability
+triggers. Content-history immutability is enforced by the service mutation API,
+not by a separate SQL table trigger on every nested version.
+
+Plan approval binds project/domain/schema, exact brand, topics and source bytes,
+identity, rights and provenance metadata. Saved drafts bind the approved plan,
+brief, order, full payload and source/brand/schema binding. Review binds that
+exact version and stores its own immutable receipt hash. Review receipt changes
+hold old exports. Payload hashes are recalculated before review/export.
+
+R2 keys are project scoped and content addressed. Writes are conditional and
+existing objects are checked byte-for-byte by SHA. Downloads and repeated exports
+recheck object SHA; an object path alone grants nothing. Each download verifies
+current authority, source expiry after artifact reads, and commits a revision/expiry-guarded issuance receipt before returning
+bytes. This is an issuance receipt, not proof the client received the entire file.
+HTML escapes operator text, JSON contains provenance/brief/ledgers, and Markdown
+escapes raw HTML and Markdown syntax. Media is referenced with rights information;
+no image is loaded or generated by the service.
+
+Limits: 50 projects, 20 sources/project, 16 KB/input, 100 inventory URLs/project,
+12 topics, 24 distinct plans, 24 content versions/exports, 48 approval receipts,
+24 blocked author attempts, 60 KB/request, 2 MiB/project document, 512 KiB/artifact.
+These are local resource bounds, not subscription entitlements or monthly billing.
+
+## Adapters and auth gates
+
+Direct Azure authoring is implemented for v1 chat-completions and Responses. **Live activation is BLOCKED** in the current preview. Server-approved exact project/model/deployment-SKU/processing-geography/processor/budget records and a scoped existing server secret are required; client-supplied gate fields cannot activate it. D1 commits full-price service-local account reservations and a send fence before one HTTP attempt. Model/usage mismatches, timeouts and interrupted sends remain terminal uncertain_cost with no blind resend. Model drafts require human claim/rights resolution and exact review; edits preserve model lineage. See [AZURE_ACTIVATION.md](AZURE_ACTIVATION.md) for the exact descriptor and supported custody step. No credentials were read or bound, and no live provider request was made during implementation. Mock tests prove the code contract, not provider readiness.
+
+The GCP adapter is an input adapter for an authorized GSC snapshot only. It keeps
+property, dates, country/device/search-type filters, query/page rows, supplied
+metrics and export provenance. CSV header:
+`query,page,clicks,impressions,position`. Search volume is always UNKNOWN; matching
+observations do not prove demand or causal effects. No GCP orchestration/storage,
+OAuth grant or analytics refresh is added. Public Base2026 retrieval is deferred;
+no private inputs are uploaded to its API.
+
+Nonlocal URLs, disabled mode, forwarded/cloud headers and nonloopback peer headers
+are refused before assets or API access. Mutations require same Origin and
+`application/json`; cross-site browser requests are refused. The local launcher
+binds only 127.0.0.1. A hostname check is not remote identity: cloud/nonlocal use
+must stay disabled until the existing approved auth integration is implemented
+and independently accepted. There is no auth bypass for cloud deployment.
+
+## Verify
+
+Start with a fresh private test state directory, then run `npm test` against the
+loopback service. Focused unit, isolated storage-boundary, startup and API scenarios cover exact gates, escaping,
+GSC refusal, the complete flow, CAS/deduplication, immutable versions, artifact
+hashes, approval invalidation, rights, withdrawal, crossproject isolation and
+hostile requests. Tests create labelled fixture projects and do not remove them.
+Tests need a running local service; repeated runs eventually hit its project cap.
+
+The controller performs local restart/isolated restore, R2 corruption refusal and
+browser checks through its existing isolated Ubuntu harness. Those observations,
+logs, databases and screenshots belong outside Git. Deterministic injected HTTP tests use the real service handler and isolated D1/R2 to verify reservation, send fence, duplicate/unknown outcomes, revocation, model/usage refusal, account caps and model-candidate-to-human-review/export. These are not live Azure billing evidence; local restart is not a cloud Workflows claim.
+
+## Reuse and publication boundary
+
+Patterns, not runtime ownership, transfer from
+[editorial.ts](../base2026-worker/src/editorial.ts),
+[evidence-dependencies.ts](../base2026-worker/src/evidence-dependencies.ts),
+[the editorial migration](../base2026-worker/migrations/0004_editorial_articles.sql)
+and [the packet tool](../base2026-worker/scripts/editorial-packet.mjs).
+The new packet schema is not a legacy public-publisher payload and cannot grant
+publication authority. See the
+[canonical Cloudflare manual](../../docs/BASE2026_CLOUDFLARE_PIPELINE_CANONICAL_OPERATING_MANUAL.md)
+and [visual contract](../../docs/project-memory/VISUAL_SYSTEM_CONTRACT.md).
+The UI uses the contract palette/radii/gutters and system fallbacks for Manrope /
+Geist Mono; it loads no third-party fonts or assets.
+
+Only package source, tests, migration, lockfile,
+placeholder config and these docs are publication candidates. Dependencies,
+Wrangler state, input/output packets, databases, screenshots, logs and private
+operational review artifacts stay excluded. Legacy workers and shared project
+memory are untouched. See [HANDOFF.md](HANDOFF.md) for the next executable slice.

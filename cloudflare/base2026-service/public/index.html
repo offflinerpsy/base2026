@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>SEO workbench · Base2026</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <a href="/" class="wordmark">Base2026</a><span>Service workbench</span
+      ><span class="tag">Local operator</span>
+    </header>
+    <main>
+      <div class="intro">
+        <p class="eyebrow">SOURCE → PLAN → REVIEW → EXPORT</p>
+        <h1>Turn your inputs into a reviewed content packet.</h1>
+        <p>
+          Plan from supplied brand knowledge, write with a human, and download
+          an exact approved version. Search demand stays unknown without
+          analytics.
+        </p>
+      </div>
+      <div id="notice" role="status" aria-live="polite"></div>
+      <div class="layout">
+        <aside class="sidebar">
+          <h2>Projects</h2>
+          <div id="projects"></div>
+          <button id="new-project" class="secondary">New project</button>
+          <div class="adapter">
+            <h3>Azure author</h3>
+            <strong id="adapter-state" class="hold">BLOCKED</strong>
+            <p id="adapter-note">
+              Direct adapter implemented. Live generation awaits activation; no
+              provider request has been sent.
+            </p>
+            <details>
+              <summary>Required integration gates</summary>
+              <ul id="adapter-reasons"></ul>
+            </details>
+          </div>
+          <p class="small">
+            Loopback operator mode. Local human declarations are recorded; cloud
+            identity is not integrated.
+          </p>
+        </aside>
+        <div class="workspace">
+          <section id="create-panel" class="card">
+            <h2>Set up a brand project</h2>
+            <p>
+              Approve one owned domain. The service does not crawl or inspect
+              it.
+            </p>
+            <form id="create-form">
+              <div class="row">
+                <label
+                  >Project name<input
+                    name="name"
+                    required
+                    maxlength="120"
+                    placeholder="Editorial workspace" /></label
+                ><label
+                  >Owned domain<input
+                    name="domain"
+                    required
+                    placeholder="example.com"
+                /></label>
+              </div>
+              <label
+                >Audience<input
+                  name="audience"
+                  required
+                  placeholder="Who should this content help?" /></label
+              ><label
+                >Brand voice<textarea
+                  name="voice"
+                  required
+                  placeholder="Plain, practical, source-aware"
+                ></textarea>
+              </label>
+              <div class="row">
+                <label
+                  >Approved brand facts<textarea name="facts"></textarea></label
+                ><label
+                  >Exclusions<textarea name="exclusions"></textarea>
+                </label>
+              </div>
+              <label
+                >Topics, one per line (up to 12)<textarea
+                  name="topics"
+                  required
+                ></textarea></label
+              ><label class="check"
+                ><input type="checkbox" name="owned" required />I am authorized
+                to use this domain and supply its brand inputs.</label
+              ><button>Create project</button>
+            </form>
+          </section>
+          <div id="project-panel" hidden>
+            <div class="project-heading">
+              <div>
+                <h2 id="project-name"></h2>
+                <p id="project-scope"></p>
+              </div>
+              <span id="state" class="tag"></span>
+            </div>
+            <nav class="tabs" aria-label="Workbench stages">
+              <button data-tab="inputs">Inputs</button
+              ><button data-tab="plan">Plan & brief</button
+              ><button data-tab="draft">Draft</button
+              ><button data-tab="review">Review & export</button>
+            </nav>
+            <section id="tab-inputs" class="card tab">
+              <h2>Rights-scoped source inputs</h2>
+              <p>
+                Paste bounded text, safe HTML, a URL inventory CSV, or an
+                authorized GSC snapshot. Supplied inputs are not an inspected
+                website.
+              </p>
+              <div id="sources"></div>
+              <form id="source-form">
+                <div class="row">
+                  <label>Source title<input name="title" required /></label
+                  ><label
+                    >Input format<select name="kind">
+                      <option value="text">Supplied text</option>
+                      <option value="html">Supplied safe HTML</option>
+                      <option value="csv">URL inventory CSV (url,title)</option>
+                      <option value="gsc">Authorized GSC CSV</option>
+                    </select></label
+                  >
+                </div>
+                <label
+                  >Owned source URL (optional)<input
+                    name="url"
+                    type="url" /></label
+                ><label
+                  >Source content (max 16 KB)<textarea
+                    name="content"
+                    class="tall"
+                    required
+                  ></textarea>
+                </label>
+                <div class="row">
+                  <label
+                    >Reuse rights<select name="rights">
+                      <option value="unknown">Unknown — holds approval</option>
+                      <option value="owned">Owned</option>
+                      <option value="licensed">Licensed</option>
+                    </select></label
+                  ><label
+                    >Rights expire (optional)<input
+                      name="expires_at"
+                      type="date"
+                  /></label>
+                </div>
+                <label
+                  >Permitted use / rights basis<input
+                    name="permitted_use"
+                    required /></label
+                ><label>Attribution<input name="attribution" required /></label>
+                <details>
+                  <summary>GSC snapshot provenance (required for GSC)</summary>
+                  <p>
+                    CSV header: query,page,clicks,impressions,position. Up to
+                    100 rows. Search volume stays UNKNOWN.
+                  </p>
+                  <div class="row">
+                    <label
+                      >Property<input
+                        name="property"
+                        placeholder="sc-domain:example.com" /></label
+                    ><label
+                      >Country filter<input name="country" placeholder="ALL"
+                    /></label>
+                  </div>
+                  <div class="row">
+                    <label
+                      >Start date<input name="start_date" type="date" /></label
+                    ><label
+                      >End date<input name="end_date" type="date"
+                    /></label>
+                  </div>
+                  <div class="row">
+                    <label
+                      >Device filter<input
+                        name="device"
+                        placeholder="ALL" /></label
+                    ><label
+                      >Search type<input name="search_type" placeholder="web"
+                    /></label>
+                  </div>
+                </details>
+                <button>Save source</button>
+              </form>
+              <details>
+                <summary>Edit brand profile / topics</summary>
+                <p>Saving changes invalidates exact approvals.</p>
+                <form id="profile-form">
+                  <label>Project name<input name="name" required /></label
+                  ><label>Audience<input name="audience" required /></label
+                  ><label
+                    >Voice<textarea name="voice" required></textarea></label
+                  ><label>Facts<textarea name="facts"></textarea></label
+                  ><label
+                    >Exclusions<textarea name="exclusions"></textarea></label
+                  ><label
+                    >Topics, one per line<textarea
+                      name="topics"
+                      required
+                    ></textarea></label
+                  ><button>Save profile changes</button>
+                </form>
+              </details>
+            </section>
+            <section id="tab-plan" class="card tab" hidden>
+              <h2>Saved candidate plan</h2>
+              <p>
+                Deterministic proposals from your topics and supplied inventory.
+                Confirm intent and possible overlap. No inferred keyword
+                volumes.
+              </p>
+              <button id="save-plan">Build & save plan</button>
+              <div id="plan"></div>
+              <form id="plan-approval-form" hidden>
+                <label
+                  >Plan reviewer name<input name="reviewer" required /></label
+                ><label class="check"
+                  ><input type="checkbox" required />I accept the exact saved
+                  plan, its evidence and unknowns.</label
+                ><button>Approve exact plan hash</button>
+              </form>
+              <form id="brief-form" hidden>
+                <label
+                  >Approved candidate<select
+                    name="candidate_id"
+                    id="candidate-select"
+                  ></select></label
+                ><button>Save bounded brief</button>
+              </form>
+              <div id="brief"></div>
+            </section>
+            <section id="tab-draft" class="card tab" hidden>
+              <h2>Human draft & saved versions</h2>
+              <p>
+                Use the approved brief to write or import your own text. Saving
+                creates an immutable version. Edits need a new review.
+              </p>
+              <button id="author" class="secondary">
+                Check Azure author gate
+              </button>
+              <div id="author-status"></div>
+              <form id="draft-form">
+                <div class="row">
+                  <label>Author name<input name="author" required /></label
+                  ><label
+                    >Provenance<select name="provenance">
+                      <option value="human_authored">Human authored</option>
+                      <option value="human_imported">Human imported</option>
+                    </select></label
+                  >
+                </div>
+                <label
+                  >Title<input name="title" required maxlength="180" /></label
+                ><label
+                  >Meta description<textarea
+                    name="description"
+                    required
+                    maxlength="320"
+                  ></textarea></label
+                ><label
+                  >Content (plain text, max 24 KB)<textarea
+                    name="body"
+                    class="editor"
+                    required
+                  ></textarea>
+                </label>
+                <fieldset>
+                  <legend>Internal links</legend>
+                  <p class="small">Use pages on this project’s owned domain.</p>
+                  <div id="internal_links-editor"></div>
+                  <button
+                    type="button"
+                    data-add="internal_links"
+                    class="secondary"
+                  >
+                    Add internal link
+                  </button>
+                </fieldset>
+                <fieldset>
+                  <legend>Claims & supporting sources</legend>
+                  <p class="small">
+                    Declare factual claims. Each verified claim needs a check
+                    note.
+                  </p>
+                  <div id="claims-editor"></div>
+                  <button type="button" data-add="claims" class="secondary">
+                    Add claim
+                  </button>
+                </fieldset>
+                <fieldset>
+                  <legend>Media & reuse rights</legend>
+                  <p class="small">
+                    Supply an owned-domain asset and a rights basis, or leave an
+                    explicit rights hold.
+                  </p>
+                  <div id="media-editor"></div>
+                  <button type="button" data-add="media" class="secondary">
+                    Add media record
+                  </button>
+                </fieldset>
+                <textarea name="internal_links" hidden>[]</textarea
+                ><textarea name="claims" hidden>[]</textarea
+                ><textarea name="media" hidden>[]</textarea
+                ><button>Save immutable version</button>
+              </form>
+              <div id="versions"></div>
+            </section>
+            <section id="tab-review" class="card tab" hidden>
+              <h2>Accountable review & immutable export</h2>
+              <div id="checks"></div>
+              <h3>Safe content preview</h3>
+              <article id="content-preview"></article>
+              <div id="review-ledgers"></div>
+              <div id="review-binding" class="small mono"></div>
+              <form id="review-form">
+                <label
+                  >Human reviewer name<input
+                    name="reviewer"
+                    required
+                    placeholder="Must differ from author" /></label
+                ><label
+                  >Review notes<textarea name="note" required></textarea></label
+                ><label class="check"
+                  ><input name="facts" type="checkbox" required />I checked
+                  facts and sources.</label
+                ><label class="check"
+                  ><input name="rights" type="checkbox" required />I checked
+                  source and media rights.</label
+                ><label class="check"
+                  ><input name="brand" type="checkbox" required />I checked
+                  brand voice, intent and metadata.</label
+                ><label class="check"
+                  ><input name="claims_complete" type="checkbox" required />The
+                  claims ledger is complete and resolved.</label
+                ><button>Approve exact saved version</button>
+              </form>
+              <p id="review-receipt"></p>
+              <button id="export">Create immutable export</button>
+              <div id="exports"></div>
+              <p class="small">
+                HTML, Markdown and JSON are bound by a SHA manifest. Download is
+                not publication, indexing or delivery to a CMS.
+              </p>
+              <button id="receipts" class="secondary">
+                Show download receipts
+              </button>
+              <pre id="receipt-list"></pre>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer>
+      Base2026 · Source-aware editorial work · Local preview, no deployment
+    </footer>
+  </body>
+</html>
