@@ -189,6 +189,10 @@ ASSET_VERSION = "base2026-cloudflare-20260819-01"
 # Reviewed public local-tool source packages. Technical receipts are never assets.
 FREE_TOOLS_PACKAGE = PROJECT_ROOT / "packages" / "free-tools"
 SITEMAP_TOOL_SOURCE = PROJECT_ROOT / "packages" / "sitemap-builder" / "source"
+# One reviewed guide, not an open-ended generated-content import.
+CSV_REDIRECT_GUIDE_SOURCE = PROJECT_ROOT / "web" / "static" / "guides" / "csv-to-cloudflare-redirects"
+CSV_REDIRECT_GUIDE_FILES = ("index.html", "sample-map.csv", "sample-redirects.txt")
+CSV_REDIRECT_GUIDE_ROUTE = "/guides/csv-to-cloudflare-redirects/"
 FREE_TOOLS_ASSET_PATHS = (
     "static/free-tools/LICENSE",
     "static/free-tools/OFL.txt",
@@ -1472,6 +1476,7 @@ HUB_SITEMAP_ROUTES = (
     "/tools/redirect-rule-compiler/",
     "/tools/internal-link-anchor-auditor/",
     "/tools/gsc-period-diff-analyzer/",
+    "/guides/csv-to-cloudflare-redirects/",
 )
 
 RUNTIME_GUIDE_ROUTES = (
@@ -2035,6 +2040,79 @@ def _render_startup_page(template: str, header_html: str, footer_html: str) -> b
         "{{STARTUP_FOOTER}}", footer_html
     )
     return _ensure_social_image_meta(_with_source_lab_runtime(rendered)).encode("utf-8")
+
+
+def _reviewed_csv_redirect_guide_assets() -> dict[str, bytes]:
+    """Admit three curated source files byte-exact; never copy editorial receipts."""
+    source = CSV_REDIRECT_GUIDE_SOURCE
+    if source.is_symlink() or not source.is_dir():
+        raise ReleaseBuildError("reviewed CSV redirect guide source is missing or symlinked")
+    files = set()
+    for path in source.rglob("*"):
+        if path.is_symlink() or not (path.is_file() or path.is_dir()):
+            raise ReleaseBuildError("CSV redirect guide contains a nonregular source path")
+        if path.is_file():
+            files.add(path.relative_to(source).as_posix())
+    if files != set(CSV_REDIRECT_GUIDE_FILES):
+        raise ReleaseBuildError("CSV redirect guide differs from the exact three-file allowlist")
+    return {
+        CSV_REDIRECT_GUIDE_ROUTE.lstrip("/") + name: (source / name).read_bytes()
+        for name in CSV_REDIRECT_GUIDE_FILES
+    }
+
+
+def _with_csv_redirect_guide_link(relative_name: str, payload: bytes) -> bytes:
+    """Add only this guide's link; retain existing guide bodies and source shells."""
+    route = CSV_REDIRECT_GUIDE_ROUTE
+    marker = 'data-b26-csv-redirect-guide="' + relative_name + '"'
+    targets = {"solutions/index.html", "tools/index.html", "site-structure.html", "guides/redirect-map-checklist/index.html"}
+    if relative_name not in targets:
+        return payload
+    text = payload.decode("utf-8")
+    if marker in text:
+        expected_count = 2 if relative_name == "solutions/index.html" else 1
+        if text.count(marker) != 1 or text.count(route) != expected_count:
+            raise ReleaseBuildError("CSV redirect guide link is duplicated or changed")
+        return payload
+    if route in text:
+        raise ReleaseBuildError("CSV redirect guide has an unrecognized existing contextual link")
+    if relative_name == "solutions/index.html":
+        needle = '<div class="solution-hub-grid">'
+        # Retained legacy solution documents need not be the curated hub. Do
+        # not guess at their structure or replace their content wholesale.
+        if needle not in text:
+            return payload
+        if text.count(needle) != 1:
+            raise ReleaseBuildError("CSV redirect guide hub insertion point is ambiguous")
+        fragment = ('<article class="solution-hub-card" ' + marker + '><div class="solution-hub-card__meta"><span>Practical guide</span></div>'
+            '<h2><a href="' + route + '">Convert a redirect CSV to a Cloudflare _redirects file</a></h2>'
+            '<p>Compile an exact-path draft from a six-row example, review excluded mappings and test the routing layer on staging.</p>'
+            '<a href="' + route + '">Work through the example</a></article>')
+        text = text.replace(needle, needle + fragment, 1)
+    elif relative_name == "tools/index.html":
+        cards = list(re.finditer(r'<article\b[^>]*data-tool-card[^>]*>.*?</article>', text, re.S))
+        matches = [match for match in cards if 'href="/tools/redirect-rule-compiler/"' in match.group(0)]
+        if len(matches) != 1 or not matches[0].group(0).endswith('</div></article>'):
+            raise ReleaseBuildError("CSV redirect guide compiler catalog card is ambiguous")
+        match = matches[0]
+        card = match.group(0)
+        fragment = '<p class="ux-card-guide" ' + marker + '><a href="' + route + '">Convert a CSV to Cloudflare _redirects</a></p>'
+        card = card[:-len('</div></article>')] + fragment + '</div></article>'
+        text = text[:match.start()] + card + text[match.end():]
+    elif relative_name == "site-structure.html":
+        needle = '<li><a href="/solutions/">Practical SEO guides</a></li>'
+        if text.count(needle) != 1:
+            raise ReleaseBuildError("CSV redirect guide HTML sitemap insertion point is ambiguous")
+        fragment = '<li ' + marker + '><a href="' + route + '">CSV to Cloudflare redirects</a></li>'
+        text = text.replace(needle, needle + fragment, 1)
+    else:
+        needle = '<h2 id="check-crawl-controls-and-the-intended-sitemap">'
+        if text.count(needle) != 1:
+            raise ReleaseBuildError("Retained redirect checklist context insertion point is ambiguous")
+        fragment = ('<p ' + marker + '>For Cloudflare static assets, follow the <a href="' + route + '">CSV-to-Cloudflare redirect guide</a> '
+            'to compile a reviewed map into a draft, resolve exclusions and check the routing layer on staging.</p>\n')
+        text = text.replace(needle, fragment + needle, 1)
+    return text.encode("utf-8")
 
 
 def _reviewed_local_tool_assets() -> dict[str, bytes]:
@@ -2786,8 +2864,10 @@ def build_release(
     reviewed_media_assets: tuple[dict[str, object], ...] = ()
     factory_release_manifest_bytes = b""
     factory_release_assets: tuple[dict[str, object], ...] = ()
+    reviewed_csv_guide_assets: dict[str, bytes] = {}
     if standalone_startup:
         reviewed_media_manifest_bytes, reviewed_media_assets = _load_reviewed_tools_studio_media()
+        reviewed_csv_guide_assets = _reviewed_csv_redirect_guide_assets()
         # Validate the complete, pinned Factory snapshot before creating a
         # staging directory or writing any generated artifact.  The source
         # release may retain an older /factory tree, but that tree is never a
@@ -3494,6 +3574,19 @@ def build_release(
                         startup_footer,
                     ),
                 )
+
+        if standalone_startup:
+            # Exact guide bytes bypass shell regeneration. Existing practical
+            # guide pages are retained input, with only the required link added.
+            for relative_name, payload in reviewed_csv_guide_assets.items():
+                write_generated_public_file(relative_name, payload, normalize_urls=False)
+            for relative_name in ("solutions/index.html", "tools/index.html", "site-structure.html", "guides/redirect-map-checklist/index.html"):
+                target = stage / relative_name
+                if target.is_file():
+                    before = target.read_bytes()
+                    after = _with_csv_redirect_guide_link(relative_name, before)
+                    if after != before:
+                        write_generated_public_file(relative_name, after, normalize_urls=False)
 
         assetsignore_payload = (
             "# Cloudflare Workers Static Assets metadata exclusions.\n"

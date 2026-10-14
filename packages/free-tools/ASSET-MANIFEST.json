@@ -23,8 +23,8 @@
       "sha256": "5d474a76d3f2ec16c4fe918bb7883a7a543b26b60d11aff7b3aa7d92ffb77abc"
     },
     "static/free-tools/batch2-tools.mjs": {
-      "bytes": 6231,
-      "sha256": "8bd5490ef1b9cf5cdb4ea28666d254b7a97164e724a5f31d8f632557a7f0509e"
+      "bytes": 6312,
+      "sha256": "8c24819a34b7490c29e54ebd72554994ba3e417747348ae11c8f01584dc4fdb5"
     },
     "static/free-tools/batch2.mjs": {
       "bytes": 19658,
@@ -167,8 +167,8 @@
       "sha256": "f59ddd78b3de489d96bbffe433e30cc3b4d143125cec7d92758935512da30223"
     },
     "tools/redirect-rule-compiler/index.html": {
-      "bytes": 10939,
-      "sha256": "657ecff8abc92ec7773b29df71d77a9a67096d9fb317d4fa8d3bfc58f49c3654"
+      "bytes": 11027,
+      "sha256": "865bba9da8b25cbb49ec93477e9b7543de4cca8ba9296b8810f42b1ea2b82e5b"
     },
     "tools/redirect-rule-compiler/sample-map.csv": {
       "bytes": 172,

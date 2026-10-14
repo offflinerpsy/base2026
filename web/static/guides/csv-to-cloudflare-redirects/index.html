@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html class="b26-blog-document" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Convert a Redirect CSV to a Cloudflare _redirects File | Base2026</title>
+
+
+<meta content="light" name="color-scheme"/>
+<link href="https://base2026.dev/guides/csv-to-cloudflare-redirects/" rel="canonical"/>
+<link href="/blog/feed.xml" rel="alternate" title="Base2026 Blog" type="application/rss+xml"/>
+
+
+
+
+
+
+
+
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&amp;family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="/static/base2026-core.css?v=20260929-ui2" rel="stylesheet"/>
+<link href="/static/base2026-blog.css?v=20260929-ui2" rel="stylesheet"/>
+<script defer="" src="/static/base2026-blog-discovery.js"></script>
+<script defer="" src="/static/base2026-activation-measurement.js?v=20260922-article-events-v1"></script>
+
+<link href="/static/brand/b26-seal-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="/static/brand/b26-seal-180.png" rel="apple-touch-icon" sizes="180x180"/>
+<script defer="" src="/static/base2026-source-lab.js?v=20260906-agency"></script>
+
+
+
+
+
+
+<link href="/static/base2026-customer-ui.css?v=20260929-ui2" rel="stylesheet"/><script defer="" src="/static/vendor/gsap/gsap.min.js"></script><script defer="" src="/static/vendor/gsap/ScrollTrigger.min.js"></script><script defer="" src="/static/base2026-customer-motion.js?v=20260929-ui2"></script><meta content="Convert a redirect CSV to a Cloudflare _redirects file. Reproduce the example, review excluded rows and verify routing on staging." name="description"/><meta content="index,follow" name="robots"/><meta content="article" property="og:type"/><meta content="Convert a Redirect CSV to a Cloudflare _redirects File | Base2026" property="og:title"/><meta content="Convert a redirect CSV to a Cloudflare _redirects file. Reproduce the example, review excluded rows and verify routing on staging." property="og:description"/><meta content="https://base2026.dev/guides/csv-to-cloudflare-redirects/" property="og:url"/><meta content="Convert a Redirect CSV to a Cloudflare _redirects File | Base2026" name="twitter:title"/><meta content="Convert a redirect CSV to a Cloudflare _redirects file. Reproduce the example, review excluded rows and verify routing on staging." name="twitter:description"/><script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "@id": "https://base2026.dev/guides/csv-to-cloudflare-redirects/#article", "url": "https://base2026.dev/guides/csv-to-cloudflare-redirects/", "mainEntityOfPage": "https://base2026.dev/guides/csv-to-cloudflare-redirects/", "headline": "Convert a redirect CSV to a Cloudflare _redirects file", "description": "Convert a redirect CSV to a Cloudflare _redirects file. Reproduce the example, review excluded rows and verify routing on staging.", "inLanguage": "en", "publisher": {"@type": "Organization", "name": "Base2026", "url": "https://base2026.dev/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Base2026", "item": "https://base2026.dev/"}, {"@type": "ListItem", "position": 2, "name": "SEO Guides", "item": "https://base2026.dev/solutions/"}, {"@type": "ListItem", "position": 3, "name": "Convert a redirect CSV to a Cloudflare _redirects file", "item": "https://base2026.dev/guides/csv-to-cloudflare-redirects/"}]}]}</script><link href="/static/practical-guides.css" rel="stylesheet"/><link rel="stylesheet" href="/static/base2026-toolkit.css?v=20261014-toolkit">
+<meta property="og:site_name" content="Base2026">
+<meta property="og:image" content="https://base2026.dev/static/assets/tools-studio/tools-studio-social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Base2026 conceptual research illustration: find the source, keep the context and build the brief.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://base2026.dev/static/assets/tools-studio/tools-studio-social.png">
+<meta name="twitter:image:alt" content="Base2026 conceptual research illustration: find the source, keep the context and build the brief.">
+</head>
+<body class="b26-blog-page" data-b26-design-system="b26-independent-v1">
+<a class="b26-blog-skip" href="#b26-guide-main">Skip to guide</a>
+<header class="b26-site-header b26-experience-header" data-b26-shell>
+  <div class="b26-site-header__inner">
+    <a class="b26-wordmark" href="/" aria-label="Base2026 home"><img class="b26-wordmark__seal" src="/static/brand/b26-seal.webp" alt="" width="44" height="44" decoding="async"><span class="b26-wordmark__text"><span>Base</span><strong>2026</strong></span></a>
+    <nav class="b26-desktop-nav" aria-label="Primary navigation"><a href="/tools/">Free tools</a><a href="/solutions/">SEO guides</a><details class="b26-nav-group ux-research-group"><summary aria-controls="b26-research-menu">Research</summary><div class="ux-research-menu" id="b26-research-menu"><a href="/tools/evidence-search/">Search practitioner advice</a><a href="/topics/">SEO topics</a><a href="/sources/">Source records</a><a href="/creators/">Creators</a><a href="/workspace/">Search Workspace</a></div></details><a href="/about">About</a></nav>
+    <div class="b26-header-actions"><a class="b26-account-link" href="/my-research/" data-members-account-link>Sign in</a><a class="b26-header-cta" href="/tools/">Browse free tools </a></div>
+    <button class="b26-mobile-open" type="button" data-mobile-open aria-controls="b26-mobile-sheet" aria-haspopup="dialog" aria-expanded="false" hidden><span>Menu</span><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7h14M3 13h14" stroke="currentColor" stroke-width="1.5"/></svg></button>
+    <details class="b26-mobile-nav" data-mobile-fallback><summary>Menu</summary><nav aria-label="Navigation without JavaScript"><a href="/tools/">Free tools</a><a href="/solutions/">SEO guides</a><a href="/topics/">Research</a><a href="/about">About</a><a href="/topics/">SEO topics</a><a href="/sources/">Source records</a><a href="/creators/">Creators</a><a href="/workspace/">Search Workspace</a><a href="/my-research/">My Research / sign in</a></nav></details>
+  </div>
+  <dialog class="b26-mobile-sheet" id="b26-mobile-sheet" aria-labelledby="b26-mobile-title">
+    <div class="b26-mobile-sheet__inner">
+      <div class="b26-mobile-sheet__top"><span id="b26-mobile-title"><img src="/static/brand/b26-seal.webp" alt="" width="36" height="36">Explore Base2026</span><button type="button" data-mobile-close aria-label="Close navigation">Close <span aria-hidden="true">×</span></button></div>
+      <nav aria-label="Mobile navigation"><div class="b26-mobile-primary"><a href="/tools/">Free tools</a><a href="/solutions/">SEO guides</a><a href="/topics/">Research</a><a href="/about">About</a></div><div class="b26-mobile-account"><span>Keep useful research together.</span><a href="/my-research/" data-members-account-link>Sign in</a></div><div class="b26-mobile-secondary"><div><p>Practitioner evidence</p><a href="/tools/evidence-search/">Search practitioner advice</a><a href="/topics/">SEO topics</a><a href="/sources/">Source records</a><a href="/creators/">Creators</a><a href="/workspace/">Search Workspace</a></div><div><p>Guides &amp; integrations</p><a href="/blog/">SEO articles</a><a href="/tools/wordpress-evidence-sidebar/">WordPress integration</a><a href="/api">API &amp; MCP</a><a href="/site-structure">HTML sitemap</a></div></div></nav>
+      <p class="b26-mobile-sheet__note">Useful explanations. Original sources.<br>Context you can inspect.</p>
+    </div>
+  </dialog>
+</header>
+<main class="b26-practical-guide" data-b26-practical-guide="" id="b26-guide-main"><nav aria-label="Breadcrumb"><a href="/">Base2026</a><span aria-hidden="true"> / </span><a href="/solutions/">SEO Guides</a></nav><article><h1 id="convert-a-redirect-csv-to-a-cloudflare-_redirects-file">Convert a redirect CSV to a Cloudflare <code>_redirects</code> file</h1>
+<p>Use the <a href="/tools/redirect-rule-compiler/">Redirect Rule Compiler</a> to turn a CSV map into a draft for Cloudflare static assets. The six-row example below produces three rules you can inspect, download and test on staging.</p>
+<p>The compiler processes your supplied data locally. It does not visit the URLs, change your Cloudflare configuration or deploy the file. Start by reproducing the example, then adapt a copy for your own site.</p>
+<h2 id="1-prepare-a-csv-with-the-destinations-you-intend">1. Prepare a CSV with the destinations you intend</h2>
+<p>Use <code>from,to</code> headers and an optional <code>status</code> column. This example uses made-up paths:</p>
+<pre><code class="language-csv">from,to,status
+/old-guide,/middle-guide,301
+/middle-guide,/guides/current/,301
+/temporary,/offers/,302
+/conflict,/one/,301
+/conflict,/two/,301
+/unsafe?item=9,/catalog/,301
+</code></pre>
+<p><a download="" href="./sample-map.csv">Download the six-row CSV</a>, or copy the block into the tool. Its <strong>Try an example</strong> button loads the same mappings.</p>
+<p>Use exact root-relative paths, or HTTP(S) source URLs from one origin. Keep case, percent escapes and trailing slashes as intended: <code>/guide</code> and <code>/guide/</code> are different inputs. Mixed absolute source origins cause the entire batch to be withheld. A generated root-relative rule applies on the deployment host; a hostname in your CSV does not configure a domain redirect.</p>
+<p>Choose the replacement content before compiling. The <a href="/guides/redirect-map-checklist/">redirect map checklist</a> helps review that decision and the map's connections. Do not remove a query string just to make a row pass: it may distinguish content that needs a different routing decision.</p>
+<h2 id="2-compile-with-chain-flattening-off">2. Compile with chain flattening off</h2>
+<p>In the compiler:</p>
+<ol>
+<li>Paste the CSV into <strong>Redirect mappings CSV</strong>, or choose the downloaded file. A selected file takes precedence over pasted text.</li>
+<li>Keep <strong>Default redirect status</strong> at <code>301</code>.</li>
+<li>Leave <strong>Flatten chains with identical status codes</strong> unchecked.</li>
+<li>Select <strong>Compile the draft</strong>.</li>
+</ol>
+<p>The sample supplies a status on every row, so the default does not override any of them. For your own map, a blank status uses the selected default. The compiler supports <code>301</code>, <code>302</code>, <code>307</code> and <code>308</code> and writes each code explicitly.</p>
+<p>With those settings, the result is <strong>6 input mappings, 3 draft rules, 3 excluded mappings and 0 flattened chains</strong>. The draft is sorted by source path:</p>
+<pre><code class="language-text">/middle-guide /guides/current/ 301
+/old-guide /middle-guide 301
+/temporary /offers/ 302
+</code></pre>
+<p><a download="" href="./sample-redirects.txt">Download this exact sample draft</a>. It contains 88 UTF-8 bytes, with LF line endings and a final newline. The <code>.txt</code> filename makes this example easy to inspect; the file used in your project's asset directory must be named <code>_redirects</code>, without an extension.</p>
+<p>The output is a plan derived from the CSV. It does not establish that <code>/guides/current/</code> exists or that the server will return any of these responses.</p>
+<h2 id="3-resolve-the-excluded-rows-and-review-the-retained-chain">3. Resolve the excluded rows and review the retained chain</h2>
+<p>A smaller draft does not mean the whole map is ready. Review the findings before using it:</p>
+<div aria-label="Sample redirect mappings and review actions" class="b26-practical-guide__table" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>Supplied mapping</th>
+<th>What the compiler does</th>
+<th>Your next decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/old-guide</code> → <code>/middle-guide</code> → <code>/guides/current/</code>, both 301</td>
+<td>Retains both hops because flattening is off.</td>
+<td>Decide whether the intermediate hop is intentional.</td>
+</tr>
+<tr>
+<td><code>/temporary</code> → <code>/offers/</code>, 302</td>
+<td>Keeps the supplied 302.</td>
+<td>Confirm that the move is temporary and the offer is the right destination.</td>
+</tr>
+<tr>
+<td>Two targets for <code>/conflict</code></td>
+<td>Excludes both rows.</td>
+<td>Choose the intended target; the compiler does not pick the first row.</td>
+</tr>
+<tr>
+<td><code>/unsafe?item=9</code> → <code>/catalog/</code></td>
+<td>Excludes the row because the source contains a query.</td>
+<td>Decide how the query identifies the request and use a routing approach that supports that requirement.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Correct the conflict in your source CSV and rerun it. The compiler excludes queries in either the source or destination. Keep any unresolved query-dependent mapping in your review notes so it is not mistaken for a completed redirect. Cycles and paths that reach an excluded mapping are also withheld.</p>
+<p>Use 301 for an intended permanent move and 302 for an intended temporary move, as described in <a href="https://developers.google.com/search/docs/crawling-indexing/301-redirects">Google's redirect guidance</a>. Chain flattening is an optional content and routing decision. When enabled, this compiler can shorten a supplied chain only when every hop has the same status code; it retains mixed-status chains. Do not flatten a 301 → 302 sequence by silently turning the temporary hop into a permanent move. Neither setting verifies the live destination.</p>
+<h2 id="4-fit-the-draft-to-your-cloudflare-project">4. Fit the draft to your Cloudflare project</h2>
+<p>Cloudflare's <a href="https://developers.cloudflare.com/workers/static-assets/redirects/">static assets redirect documentation</a> defines one rule per line as <code>[source] [destination] [code?]</code>. Cloudflare uses 302 when the code is omitted; the compiler's default is 301 for blank CSV statuses, and its draft includes the code on every line.</p>
+<p>Put the reviewed <code>_redirects</code> file in the configured static asset directory. In a framework project, a <code>public/</code> or <code>static/</code> source directory is suitable only if the build copies that file into the final asset output. Inspect the built output before staging.</p>
+<p>Review the existing <code>_redirects</code> file before merging a draft. For multiple rules with the same source path, Cloudflare documents that the top-most rule applies. Preserve existing intentional rules and check for overlap. The compiler sorts its exact-path output; it does not inspect your project's other redirect layers.</p>
+<p>Cloudflare permits up to 2,000 static and 100 dynamic redirects, with a 1,000-character limit per declaration. This compiler accepts at most 2,000 mappings and 2 MiB per CSV. It emits exact paths only and excludes wildcards, placeholders, fragments and queries. Cloudflare supports some syntax that this tool deliberately leaves out; a compiler result is not a check of every platform limit or deployment setting.</p>
+<p>Check which handler serves each old path. Cloudflare warns that <code>_redirects</code> rules do not apply to requests served by Worker code. Its <a href="https://developers.cloudflare.com/workers/static-assets/routing/worker-script/">Worker routing documentation</a> explains asset-first behavior and the <code>assets.run_worker_first</code> setting. For Pages projects, the <a href="https://developers.cloudflare.com/pages/configuration/redirects/">Pages redirect documentation</a> gives the corresponding exception for requests served by Pages Functions. A file copied into an asset directory cannot replace redirect logic in the handler that actually serves the request.</p>
+<h2 id="5-test-the-status-destination-and-queries-on-staging">5. Test the status, destination and queries on staging</h2>
+<p>Deploy the reviewed draft through your project's normal staging process. Use an HTTP client or crawler that records status codes, <code>Location</code> headers and every hop. Replace the reserved example host below with your real staging hostname:</p>
+<pre><code class="language-sh">curl -sS -D - -o /dev/null "https://staging.example.test/old-guide"
+curl -sS -L -D - -o /dev/null --max-redirs 10 "https://staging.example.test/old-guide"
+curl -sS -D - -o /dev/null "https://staging.example.test/old-guide?utm_source=redirect-test"
+</code></pre>
+<p>The first command inspects one response. The second follows redirects and prints each response's headers. With the unflattened example, inspect the planned 301 to <code>/middle-guide</code>, then the planned 301 to <code>/guides/current/</code>. Confirm the final page's real response and content separately.</p>
+<p>The third command tests an incoming query on an otherwise supported path. Excluding queries from the CSV does not establish what happens to query parameters on real requests. Cloudflare's format allows query strings in destinations but does not support query-parameter matching. Decide the query behavior you need, then inspect the actual <code>Location</code> and final URL on your deployment. Do not infer preservation or removal from the compiler's result.</p>
+<p>Before accepting the change, record these checks:</p>
+<ul>
+<li>Each emitted source returns the intended status and <code>Location</code> on the intended host.</li>
+<li>The complete chain reaches the correct content without a loop or an unintended hop.</li>
+<li>The temporary mapping still returns its planned 302.</li>
+<li>Relevant query, case and trailing-slash variants behave as intended.</li>
+<li>Static asset and Worker- or Function-handled routes use the routing layer you expected.</li>
+<li>The destinations, internal links and final canonical URLs match the reviewed content plan.</li>
+</ul>
+<p>Keep the reviewed CSV, draft, compiler findings and staging observations together. After release, repeat the response checks on the public host and update the internal links you control to the final URLs. The <a href="/guides/compare-seo-crawl-exports/">crawl comparison guide</a> explains how to compare equivalent exports for changed status, canonical and robots fields without treating an absent row as proof that a page was deleted.</p></article><p class="b26-practical-guide__return"><a href="/solutions/">Explore more SEO guides</a><span aria-hidden="true"> · </span><a href="/tools/">Browse free tools</a></p></main>
+<footer class="b26-site-footer b26-compact-footer" data-b26-shell>
+  <div class="b26-compact-footer__inner">
+    <div class="b26-compact-footer__top">
+      <div class="b26-compact-footer__brand"><a class="b26-compact-footer__logo" href="/" aria-label="Base2026 home"><img class="b26-compact-footer__seal" src="/static/brand/b26-seal.webp" alt="" width="36" height="36" decoding="async"><span class="b26-compact-footer__wordmark">Base<strong>2026</strong></span></a><p>Free SEO tools.<br>Research you can use.</p><p class="b26-compact-footer__note">Practical tools for website checks, guides for the next step, and practitioner evidence with its original sources.</p></div>
+      <nav aria-label="Product"><h2>Product</h2><a href="/tools/">Free tools</a><a href="/tools/evidence-search/">SEO Video Search</a><a href="/solutions/">SEO guides &amp; checklists</a><a href="/topics/">SEO topics &amp; sources</a><a href="/my-research/">My Research</a></nav>
+      <nav aria-label="About Base2026"><h2>Base2026</h2><a href="/about">About the product</a><a href="/founder">Meet the founder</a><a href="/investors">For investors</a><a href="/roadmap">Roadmap</a><a href="/partner">Get in touch</a></nav>
+      <nav aria-label="Resources and trust"><h2>Resources &amp; trust</h2><a href="/blog/">SEO &amp; AI search articles</a><a href="/api">API &amp; MCP</a><a href="/methodology">Methodology</a><a href="/source-policy">Source policy</a><a href="/opt-out">Creator rights</a></nav>
+    </div>
+    <div class="b26-compact-footer__channels"><span>Follow the work</span><nav aria-label="Base2026 and founder channels"><a href="https://www.youtube.com/@base2026dev" target="_blank" rel="noopener noreferrer" aria-label="Base2026 on YouTube, opens in a new tab"><img src="/static/brand/youtube.svg" width="18" height="18" alt="" loading="lazy">YouTube</a><a href="https://www.tiktok.com/@alex.yarosh3" target="_blank" rel="noopener noreferrer" aria-label="Alex Yarosh on TikTok, opens in a new tab"><img src="/static/brand/tiktok.svg" width="18" height="18" alt="" loading="lazy">TikTok</a><a href="https://x.com/AleksejAros" target="_blank" rel="noopener noreferrer" aria-label="Alex Yarosh on X, opens in a new tab"><img src="/static/brand/x.svg" width="18" height="18" alt="" loading="lazy">X</a><a href="https://github.com/offflinerpsy/base2026" target="_blank" rel="noopener noreferrer" aria-label="Base2026 on GitHub, opens in a new tab"><img src="/static/brand/github.svg" width="18" height="18" alt="" loading="lazy">GitHub</a></nav></div>
+    <div class="b26-compact-footer__disclosure"><p>Independent research. Original creators credited. Explore the advice and follow the sources.</p><nav aria-label="Legal, sitemap and demos"><a href="/site-structure">HTML sitemap</a><a href="/privacy">Privacy</a><a href="/city/">3D city demo</a><a href="/factory/">Factory demo</a></nav></div>
+    <div class="b26-compact-footer__bottom"><span>© 2026 Base2026</span><a class="b26-cloudflare-mark" href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" aria-label="Powered by Cloudflare"><span>Powered by</span><img src="https://www.cloudflare.com/img/logo-cloudflare-dark.svg" alt="Cloudflare" width="86" height="32" loading="lazy" decoding="async"></a></div>
+  </div>
+</footer>
+</body>
+</html>
+
