@@ -1,0 +1,83 @@
+{
+  "schema_version": "base2026.csv-tool-contract/1",
+  "execution": "local Web Worker",
+  "limits": {
+    "records_per_input": 5000,
+    "bytes_per_input": 2097152,
+    "combined_bytes": 4194304,
+    "cell_characters": 16384
+  },
+  "identity": "exact trimmed key or URL; no automatic merge",
+  "exports_csv_formula_defense": true,
+  "privacy": {
+    "target_requests": false,
+    "uploads": false,
+    "persistent_storage": false,
+    "telemetry": false
+  },
+  "tool_id": "internal-link-anchor-auditor",
+  "required_inputs": {
+    "inlinks": [
+      "source",
+      "target",
+      "anchor",
+      "follow"
+    ]
+  },
+  "optional_inputs": {
+    "inventory": [
+      "url",
+      "status",
+      "indexable"
+    ]
+  },
+  "required_options": {
+    "site_origin": "HTTP(S) origin only, without path, query, fragment or credentials"
+  },
+  "url_rules": {
+    "origin": "both source and target must match selected parsed HTTP origin",
+    "fragments": "all fragment markers excluded",
+    "identity": "exact trimmed string including query/case/slash"
+  },
+  "follow_true": [
+    "true",
+    "1",
+    "yes",
+    "follow"
+  ],
+  "follow_false": [
+    "false",
+    "0",
+    "no",
+    "nofollow"
+  ],
+  "follow_other": "UNKNOWN",
+  "inventory_indexable_true": [
+    "true",
+    "1",
+    "yes"
+  ],
+  "inventory_indexable_false": [
+    "false",
+    "0",
+    "no"
+  ],
+  "inventory_conflicts": "UNKNOWN_CONFLICT",
+  "duplicates": "exact CSV inlinks rows remain occurrences and are flagged",
+  "anchor_normalization": [
+    "trim",
+    "Unicode NFC",
+    "lowercase",
+    "collapse whitespace"
+  ],
+  "generic_examples": [
+    "click here",
+    "read more",
+    "learn more",
+    "here",
+    "read the related guide"
+  ],
+  "coverage_without_inventory": "UNKNOWN_NOT_SUPPLIED",
+  "zero_observed_inlinks": "NO_INLINKS_IN_SUPPLIED_EXPORT; not an actual orphan/indexability verdict",
+  "shared_anchor": "SHARED_ANCHOR_TARGETS_REVIEW; not cannibalization or a ranking fault"
+}

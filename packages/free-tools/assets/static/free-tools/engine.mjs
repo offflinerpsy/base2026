@@ -1,3 +1,4 @@
+import {auditInternalLinks,compareGscPeriods} from './batch3.mjs';
 import {reconcileIndexing,compileRedirects} from './batch2.mjs';
 import {csvRows, csvCell} from './sitemap-core.mjs';
 import {TOOLS, LIMITS} from './tools.mjs';
@@ -225,7 +226,7 @@ export function compareCrawls(inputs,options={}) {
     columns:['URL','Field','Before observation','After observation','Finding','Review note'],rows,scope:{fields_compared:fields,coverage:options.complete?'USER_DECLARED_COMPLETE_SAME_SCOPE':'UNKNOWN',url_identity:'exact trimmed string',live_status:'UNKNOWN',ranking_or_traffic_cause:'NOT_INFERRED'},notes:TOOLS['seo-crawl-comparison'].boundaries};
 }
 
-export const ANALYZERS={'robots-txt-tester':testRobots,'redirect-map-checker':checkRedirectMap,'hreflang-checker':checkHreflang,'broken-link-task-builder':buildBrokenLinkTasks,'seo-crawl-comparison':compareCrawls,'indexing-signal-reconciler':(i,o)=>reconcileIndexing(i,o,{readCsv,urlValue}),'redirect-rule-compiler':(i,o)=>compileRedirects(i,o,{readCsv,urlValue})};
+export const ANALYZERS={'internal-link-anchor-auditor':(i,o)=>auditInternalLinks(i,o,{readCsv,urlValue}),'gsc-period-diff-analyzer':(i,o)=>compareGscPeriods(i,o,{readCsv}),'robots-txt-tester':testRobots,'redirect-map-checker':checkRedirectMap,'hreflang-checker':checkHreflang,'broken-link-task-builder':buildBrokenLinkTasks,'seo-crawl-comparison':compareCrawls,'indexing-signal-reconciler':(i,o)=>reconcileIndexing(i,o,{readCsv,urlValue}),'redirect-rule-compiler':(i,o)=>compileRedirects(i,o,{readCsv,urlValue})};
 export function tableCsv(columns,rows) {return [columns,...rows].map(row=>row.map(v=>csvCell(String(v??''))).join(',')).join('\r\n')+'\r\n';}
 export function runTool(id,inputs,options={},metadata=[],observedAt=new Date().toISOString()) {
   const def=TOOLS[id];if(!def||!ANALYZERS[id])fail('Unknown tool.');let total=0;

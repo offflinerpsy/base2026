@@ -440,6 +440,138 @@
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
       "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+    },
+    {
+      "id": "internal-link-anchor-auditor",
+      "name": "Internal Link & Anchor Auditor",
+      "route": "/tools/internal-link-anchor-auditor/",
+      "title": "Free Internal Link & Anchor Auditor for CSV Exports | Base2026",
+      "h1": "Internal link and anchor auditor",
+      "description": "Audit internal link and anchor counts from CSV exports. Compare supplied URL coverage, followed links and shared anchors locally. No crawling or ranking scores.",
+      "og": {
+        "type": "website",
+        "title": "Free Internal Link & Anchor Auditor for CSV Exports | Base2026",
+        "description": "Audit internal link and anchor counts from CSV exports. Compare supplied URL coverage, followed links and shared anchors locally. No crawling or ranking scores.",
+        "url": "https://base2026.dev/tools/internal-link-anchor-auditor/"
+      },
+      "canonical": "https://base2026.dev/tools/internal-link-anchor-auditor/",
+      "category": "Review internal links",
+      "usecase": "See which pages receive links in your export, which source pages link to them and how the anchor text is distributed. Keep missing coverage separate from an actual site problem.",
+      "inputs": [
+        {
+          "role": "inlinks",
+          "label": "Inlinks CSV",
+          "format": "csv",
+          "required": true,
+          "help": "Required: source,target,anchor,follow. One occurrence per row; repeats remain counted. follow accepts true/1/yes/follow or false/0/no/nofollow. Other values stay UNKNOWN."
+        },
+        {
+          "role": "inventory",
+          "label": "URL inventory CSV (optional)",
+          "format": "csv",
+          "required": false,
+          "help": "Required when supplied: url,status,indexable. indexable uses true/1/yes or false/0/no. Conflicting rows stay unknown. An inventory URL with no observed links is not proof of an orphan page."
+        }
+      ],
+      "outputs": [
+        "Results CSV",
+        "Findings CSV",
+        "Readable Markdown report",
+        "JSON input manifest",
+        "Anchor frequencies CSV",
+        "Input details CSV"
+      ],
+      "boundaries": [
+        "Counts occurrences and unique source URLs only in the supplied export. No crawl, actual orphan classification, crawl depth, live indexability or ranking effect is established. Without URL inventory, coverage is UNKNOWN.",
+        "URLs keep exact identity after surrounding whitespace trimming, including case, trailing slash and query. Fragments, credentials, invalid URLs and links whose source or target is outside the selected origin are excluded and reported.",
+        "Exact duplicate input rows remain link occurrences and are flagged. Inventory conflicts stay UNKNOWN; no first row wins. Known followed, known nofollow and unknown-follow counts stay separate.",
+        "Anchors are grouped by Unicode NFC, lowercase and collapsed whitespace. Shared text across targets is SHARED_ANCHOR_TARGETS_REVIEW, not cannibalization. Generic examples are click here, read more, learn more, here and read the related guide; context may make them useful."
+      ],
+      "next": [
+        [
+          "Build tasks for supplied broken targets",
+          "/tools/broken-link-task-builder/"
+        ],
+        [
+          "Reconcile indexing observations",
+          "/tools/indexing-signal-reconciler/"
+        ]
+      ],
+      "privacy": {
+        "target_fetch": false,
+        "upload": false,
+        "storage": false,
+        "telemetry": false
+      },
+      "assets_prefix": "/static/free-tools/",
+      "source_license": "Apache-2.0",
+      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+    },
+    {
+      "id": "gsc-period-diff-analyzer",
+      "name": "GSC Period Change Analyzer",
+      "route": "/tools/gsc-period-diff-analyzer/",
+      "title": "Free GSC Period Change Analyzer from CSV Exports | Base2026",
+      "h1": "GSC period change analyzer",
+      "description": "Compare GSC CSV exports by page, query or prepared key. Calculate observed click, impression, CTR and position changes locally while preserving missing and invalid evidence.",
+      "og": {
+        "type": "website",
+        "title": "Free GSC Period Change Analyzer from CSV Exports | Base2026",
+        "description": "Compare GSC CSV exports by page, query or prepared key. Calculate observed click, impression, CTR and position changes locally while preserving missing and invalid evidence.",
+        "url": "https://base2026.dev/tools/gsc-period-diff-analyzer/"
+      },
+      "canonical": "https://base2026.dev/tools/gsc-period-diff-analyzer/",
+      "category": "Review Search Console exports",
+      "usecase": "Compare two exported periods without uploading client data. Review the largest observed changes, keep missing rows unknown and use a descriptive click decomposition when both periods have impressions.",
+      "inputs": [
+        {
+          "role": "before",
+          "label": "Before period CSV",
+          "format": "csv",
+          "required": true,
+          "help": "English headers only: Page / Top pages / URL, Query / Top queries, or Key; plus Clicks and Impressions. Optional CTR and Position / Average position. Counts are ungrouped nonnegative integers."
+        },
+        {
+          "role": "after",
+          "label": "After period CSV",
+          "format": "csv",
+          "required": true,
+          "help": "Use the same key type and comparable period length, search type and filters. These conditions cannot be verified from the CSV. Missing rows are UNKNOWN, never zero."
+        }
+      ],
+      "outputs": [
+        "Results CSV",
+        "Findings CSV",
+        "Readable Markdown report",
+        "JSON input manifest",
+        "Raw metric rows CSV",
+        "Metric details CSV"
+      ],
+      "boundaries": [
+        "Describes supplied exported rows only. Period length, search type, filters and property comparability are NOT VERIFIED. GSC exports can be limited to top rows; anonymized queries and omitted rows prevent treating the export as complete property totals.",
+        "Missing rows, blank metrics, invalid metrics and conflicting duplicate keys stay distinct. Exact identical rows may collapse with notice; conflicting rows are quarantined. Positions are never aggregated across duplicates.",
+        "CTR is clicks / impressions when impressions are positive. With zero impressions, CTR and decomposition are UNKNOWN. Percentage change from a zero baseline is undefined, not Infinity. Lower position numbers are better; the reported position delta is after minus before.",
+        "No algorithm penalty, technical cause, ranking explanation or guaranteed opportunity is inferred. Findings identify observed deltas and evidence needing review, without a confidence or SEO score."
+      ],
+      "next": [
+        [
+          "Compare supplied crawl observations",
+          "/tools/seo-crawl-comparison/"
+        ],
+        [
+          "Reconcile indexing observations",
+          "/tools/indexing-signal-reconciler/"
+        ]
+      ],
+      "privacy": {
+        "target_fetch": false,
+        "upload": false,
+        "storage": false,
+        "telemetry": false
+      },
+      "assets_prefix": "/static/free-tools/",
+      "source_license": "Apache-2.0",
+      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
     }
   ]
 }

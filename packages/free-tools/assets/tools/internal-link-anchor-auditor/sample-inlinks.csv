@@ -1,0 +1,6 @@
+source,target,anchor,follow
+https://example.test/,https://example.test/guide/,Read more,true
+https://example.test/,https://example.test/guide/,Read more,true
+https://example.test/about/,https://example.test/guide/,Technical guide,unknown
+https://example.test/,https://example.test/other/,Technical guide,false
+https://foreign.test/,https://example.test/guide/,Foreign source,true
