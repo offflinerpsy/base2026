@@ -429,6 +429,10 @@
         [
           "Build a sitemap",
           "/tools/sitemap-builder/"
+        ],
+        [
+          "Convert a CSV to Cloudflare redirects",
+          "/guides/csv-to-cloudflare-redirects/"
         ]
       ],
       "privacy": {

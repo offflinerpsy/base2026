@@ -1417,6 +1417,45 @@ def test_local_tool_manifest_rejects_extra_path_or_changed_bytes(
         builder._reviewed_local_tool_assets()
 
 
+def test_csv_redirect_guide_admits_exact_public_files_and_rejects_receipts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    assets = builder._reviewed_csv_redirect_guide_assets()
+    prefix = "guides/csv-to-cloudflare-redirects/"
+    assert set(assets) == {prefix + name for name in ("index.html", "sample-map.csv", "sample-redirects.txt")}
+    for relative, payload in assets.items():
+        assert payload == (builder.CSV_REDIRECT_GUIDE_SOURCE / Path(relative).name).read_bytes()
+    assert hashlib.sha256(assets[prefix + "index.html"]).hexdigest() == "ff928945c0fd48db3c59225ad241b8fb96cabdef1543072e9146cd4ce170e388"
+    assert len(assets[prefix + "sample-redirects.txt"]) == 88
+    source = tmp_path / "guide"
+    source.mkdir()
+    for relative, payload in assets.items():
+        (source / Path(relative).name).write_bytes(payload)
+    monkeypatch.setattr(builder, "CSV_REDIRECT_GUIDE_SOURCE", source)
+    (source / "CLAIM_MAP.json").write_text("{}")
+    with pytest.raises(builder.ReleaseBuildError, match="three-file allowlist"):
+        builder._reviewed_csv_redirect_guide_assets()
+
+
+def test_csv_redirect_guide_context_links_are_scoped_and_idempotent() -> None:
+    fixtures = {
+        "solutions/index.html": '<div class="solution-hub-grid"><article>Retained card</article></div>',
+        "tools/index.html": '<article data-tool-card><div class="ux-card-action"><a href="/tools/redirect-rule-compiler/">Retained action</a></div></article>',
+        "site-structure.html": '<li><a href="/solutions/">Practical SEO guides</a></li>',
+        "guides/redirect-map-checklist/index.html": '<p>Retained guide paragraph</p><h2 id="check-crawl-controls-and-the-intended-sitemap">Crawl controls</h2>',
+    }
+    for relative, text in fixtures.items():
+        patched = builder._with_csv_redirect_guide_link(relative, text.encode())
+        assert patched.count(builder.CSV_REDIRECT_GUIDE_ROUTE.encode()) == (2 if relative == "solutions/index.html" else 1)
+        assert builder._with_csv_redirect_guide_link(relative, patched) == patched
+        assert b"Retained" in patched or b"Practical SEO guides" in patched
+        duplicate_marker = ('data-b26-csv-redirect-guide="' + relative + '"').encode()
+        with pytest.raises(builder.ReleaseBuildError, match="duplicated or changed"):
+            builder._with_csv_redirect_guide_link(relative, patched + duplicate_marker)
+    assert builder._with_csv_redirect_guide_link("guides/hreflang-map-checklist/index.html", b"unchanged") == b"unchanged"
+    assert builder._with_csv_redirect_guide_link("solutions/index.html", b"<p>Unrelated legacy shape</p>") == b"<p>Unrelated legacy shape</p>"
+
+
 def test_catalog_batch3_cards_schema_and_local_policy_are_consistent() -> None:
     import re
     text = builder.DEFAULT_TOOLS_STUDIO_TEMPLATE.read_text()
@@ -1455,6 +1494,8 @@ def test_startup_local_tool_package_bytes_reach_the_canonical_builder(
     stylesheet.write_text("body{color:#111820}")
     receipt = builder.build_release(source, output, homepage_template=homepage, homepage_stylesheet=stylesheet)
     for relative, payload in builder._reviewed_local_tool_assets().items():
+        assert (output / relative).read_bytes() == payload
+    for relative, payload in builder._reviewed_csv_redirect_guide_assets().items():
         assert (output / relative).read_bytes() == payload
     assert (output / "_headers").read_text() == builder.HEADERS_PAYLOAD + builder._local_tools_headers()
     assert (output / builder.HUB_SITEMAP_FILENAME).read_bytes() == builder._hub_sitemap_payload()
