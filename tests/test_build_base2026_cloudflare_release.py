@@ -1386,7 +1386,7 @@ def test_changed_editorial_media_cannot_reach_a_release(tmp_path: Path, monkeypa
 
 def test_local_tool_packages_use_exact_public_paths_and_hashes() -> None:
     assets = builder._reviewed_local_tool_assets()
-    assert len(assets) == 53  # 39 portfolio assets plus 14 unchanged sitemap assets.
+    assert len(assets) == 65  # 51 portfolio assets plus 14 unchanged sitemap assets.
     manifest = json.loads((ROOT / "packages/free-tools/ASSET-MANIFEST.json").read_text())
     assert set(manifest["files"]) <= set(assets)
     for relative, metadata in manifest["files"].items():
@@ -1417,24 +1417,26 @@ def test_local_tool_manifest_rejects_extra_path_or_changed_bytes(
         builder._reviewed_local_tool_assets()
 
 
-def test_catalog_batch2_cards_schema_and_local_policy_are_consistent() -> None:
+def test_catalog_batch3_cards_schema_and_local_policy_are_consistent() -> None:
     import re
     text = builder.DEFAULT_TOOLS_STUDIO_TEMPLATE.read_text()
     cards = re.findall(r'<article\b[^>]*data-tool-card[^>]*>.*?</article>', text, re.S)
-    assert len(cards) == 12
+    assert len(cards) == 14
+    assert text.count("14 free browser tools.") == 1
+    assert text.count("Choose from fourteen tools.") == 4
     schemas = [json.loads(match) for match in re.findall(r'<script type="application/ld\+json">(.*?)</script>', text, re.S)]
     collection = next(schema for schema in schemas if schema.get("@type") == "CollectionPage")
     items = collection["mainEntity"]["itemListElement"]
-    assert collection["mainEntity"]["numberOfItems"] == len(items) == 12
+    assert collection["mainEntity"]["numberOfItems"] == len(items) == 14
     routes = [item["item"]["url"].removeprefix("https://base2026.dev") for item in items]
-    assert len(set(routes)) == 12
+    assert len(set(routes)) == 14
     for route in routes:
         assert sum(f'href="{route}"' in card for card in cards) == 1
     for slug in ["sitemap-builder", "robots-txt-tester"]:
         card = next(card for card in cards if f'href="/tools/{slug}/"' in card)
         assert "ux-card-guide" not in card
     headers = builder.HEADERS_PAYLOAD + builder._local_tools_headers()
-    for slug in ["indexing-signal-reconciler", "redirect-rule-compiler"]:
+    for slug in ["indexing-signal-reconciler", "redirect-rule-compiler", "internal-link-anchor-auditor", "gsc-period-diff-analyzer"]:
         assert headers.count(f"/tools/{slug}/*\n") == 1
         assert builder._hub_sitemap_payload().count(f"https://base2026.dev/tools/{slug}/".encode()) == 1
 

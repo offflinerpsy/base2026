@@ -7,11 +7,11 @@ if(def) {
   const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);if(cls)n.className=cls;return n;};
   const counted=(count,noun)=>`${count} ${noun}${count===1?'':'s'}`;
   function resetResult(){worker?.terminate();worker=undefined;result=undefined;tablePage=0;findingsPage=0;$('tool-results').hidden=true;if($('config-preview'))$('config-preview').value='';$('run-tool').disabled=false;$('tool-form').setAttribute('aria-busy','false');for(const name of ['summary','downloads','result-head','result-body','finding-body','report-notes'])$(name).replaceChildren();}
-  function clearAll(){resetResult();for(const field of def.inputs){$('input-'+field.role).value='';$('file-'+field.role).value='';}status('Paste your data, choose local files or try the example.');}
+  function clearAll(){resetResult();for(const field of def.inputs){$('input-'+field.role).value='';$('file-'+field.role).value='';}for(const opt of def.options)if(opt.clearOnReset)$('option-'+opt.name).value=opt.value;status('Paste your data, choose local files or try the example.');}
   function inputsReady(){resetResult();status('Inputs changed. Run the check to get fresh results.');}
   function renderRows(){
     const data=result.rows,start=tablePage*PAGE,end=Math.min(data.length,start+PAGE);$('result-body').replaceChildren();
-    for(const row of data.slice(start,end)){const tr=node('tr');row.forEach((value,i)=>{const td=node('td',value);td.dataset.label=result.columns[i];tr.append(td);});$('result-body').append(tr);}
+    for(const row of data.slice(start,end)){const tr=node('tr');row.forEach((value,i)=>{const shown=def.previewSignificantDigits===12&&typeof value==='number'&&Number.isFinite(value)&&!Number.isInteger(value)?Number(value.toPrecision(12)):value;const td=node('td',shown);td.dataset.label=result.columns[i];tr.append(td);});$('result-body').append(tr);}
     $('table-page').textContent=data.length?`${start+1}–${end} of ${data.length} result rows`:'No result rows. Read findings and scope below.';$('prev-rows').disabled=tablePage===0;$('next-rows').disabled=end>=data.length;
     const fs=findingsPage*PAGE,fe=Math.min(result.findings.length,fs+PAGE);$('finding-body').replaceChildren();
     for(const f of result.findings.slice(fs,fe)){const li=node('li');li.append(node('strong',`${f.severity}: ${f.rule}`),node('p',f.subject),node('p',f.detail));if(f.source)li.append(node('small',f.source));$('finding-body').append(li);}
@@ -27,7 +27,7 @@ if(def) {
   }
   $('copy-config')?.addEventListener('click',async()=>{if(!result)return;const el=$('config-preview');try{await navigator.clipboard.writeText(el.value);status('Draft copied. Test the configuration in staging before use.');}catch{el.focus();el.select();status('Draft selected. Use your browser copy command, then test it in staging.');}});
   $('clear-tool').addEventListener('click',clearAll);
-  $('try-example').addEventListener('click',()=>{clearAll();for(const field of def.inputs)$('input-'+field.role).value=def.sample[field.role];for(const opt of def.options){const el=$('option-'+opt.name);if(opt.type==='checkbox')el.checked=!!opt.value;else el.value=opt.value;}status('Made-up example data loaded. Run the check to see real calculated results.');$('tool-form').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});
+  $('try-example').addEventListener('click',()=>{clearAll();for(const field of def.inputs)$('input-'+field.role).value=def.sample[field.role];for(const opt of def.options){const el=$('option-'+opt.name);if(opt.type==='checkbox')el.checked=!!opt.value;else el.value=opt.sampleValue??opt.value;}status('Made-up example data loaded. Run the check to see real calculated results.');$('tool-form').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});
   for(const field of def.inputs){$('input-'+field.role).addEventListener('input',()=>{if($('file-'+field.role).files.length){$('file-'+field.role).value='';}inputsReady();});$('file-'+field.role).addEventListener('change',()=>{if($('file-'+field.role).files.length)$('input-'+field.role).value='';inputsReady();});}
   for(const option of def.options)$('option-'+option.name).addEventListener('input',inputsReady);
   $('run-tool').addEventListener('click',()=>{

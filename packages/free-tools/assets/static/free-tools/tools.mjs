@@ -1,3 +1,4 @@
+import {BATCH3_TOOLS} from './batch3-tools.mjs';
 import {BATCH2_TOOLS} from './batch2-tools.mjs';
 export const TOOLS = {
   'robots-txt-tester': {
@@ -60,6 +61,7 @@ export const TOOLS = {
     boundaries:['Reports supplied snapshot changes, not live page behavior, a ranking effect or the cause of a traffic change.','A URL found in one partial export is an observation about coverage, not proof that the page was added or deleted.','Only shared supported fields are compared. Missing columns stay unknown. Invalid or conflicting duplicate rows are excluded from comparison.'],
     next:[['Check a redirect plan','/tools/redirect-map-checker/'],['Build the intended sitemap','/tools/sitemap-builder/']]
   },
-  ...BATCH2_TOOLS
+  ...BATCH2_TOOLS,
+  ...BATCH3_TOOLS
 };
 export const LIMITS = Object.freeze({fileBytes:2097152,totalBytes:4194304,records:5000,robotsBytes:65536,urlLength:4096,cellLength:16384});

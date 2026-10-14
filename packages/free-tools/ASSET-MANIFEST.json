@@ -11,8 +11,8 @@
       "sha256": "58172e0c0fac2cda8a37b348164bb55e44b0e69051e557e92b1d3f6910141f7b"
     },
     "static/free-tools/app.mjs": {
-      "bytes": 7228,
-      "sha256": "701bdc21afe62d5c769911bcda518371041596c69464f4771c61e6cbbf8f2d45"
+      "bytes": 7489,
+      "sha256": "76f0072bd796cb5310595815de3c0ffb74bfc3e6317afdd6ab768e4b3421abee"
     },
     "static/free-tools/b26-seal.webp": {
       "bytes": 15140,
@@ -30,9 +30,17 @@
       "bytes": 19658,
       "sha256": "9838bd115d0238ed68fd8aaf32c825745108154d4b7b7617331820782b6421fb"
     },
+    "static/free-tools/batch3-tools.mjs": {
+      "bytes": 8915,
+      "sha256": "d45489e3bd51b2dde5a600c71fed437e86877f7a1799a0b272e10554151000f9"
+    },
+    "static/free-tools/batch3.mjs": {
+      "bytes": 19633,
+      "sha256": "52b6514e98ee0bb186106bf9a12cad8d14a1070096345fb822ee41cfb8f079b7"
+    },
     "static/free-tools/engine.mjs": {
-      "bytes": 25625,
-      "sha256": "ce87894c0623801b54105afe497e618ef9aa15497e405791bafa4a0836aa03f0"
+      "bytes": 25840,
+      "sha256": "b63e5ff93a7e707e4001031b47f6c3ee96f187b9b580b429fd0068b4cf47ede0"
     },
     "static/free-tools/manrope-latin.woff2": {
       "bytes": 24836,
@@ -47,8 +55,8 @@
       "sha256": "cb5d7e3dade8fdc66d174be40fc233da53d81178454f8e94ea5e8949c1734c59"
     },
     "static/free-tools/tools.mjs": {
-      "bytes": 10221,
-      "sha256": "e17e3371167bb96505d839059e5da6f809b51c549c697e1ab13824c6b8dfd242"
+      "bytes": 10289,
+      "sha256": "01858979cc43ee39329b4a27cef55f43aa80419c0555d9c1036e9ae11d9513a8"
     },
     "static/free-tools/worker.mjs": {
       "bytes": 2141,
@@ -69,6 +77,26 @@
     "tools/broken-link-task-builder/sample-statuses.csv": {
       "bytes": 208,
       "sha256": "8de3f099aa740e79b52a90e1be7bd0dd0809dea79d3afb99b1fa55e320d3313b"
+    },
+    "tools/gsc-period-diff-analyzer/README.md": {
+      "bytes": 4038,
+      "sha256": "205f34ccfaf053680cdd58327184f5371c35c224841d8a4548391670e4137983"
+    },
+    "tools/gsc-period-diff-analyzer/index.html": {
+      "bytes": 11523,
+      "sha256": "d59c844dec85e3604f2a82cd525d76f70242d9f73372f150a7d754bfffdde620"
+    },
+    "tools/gsc-period-diff-analyzer/input-contract.json": {
+      "bytes": 2739,
+      "sha256": "ed7de0fd2c73810615df90d741de65e7337605c7f7f89b3531e64f7b60515cc6"
+    },
+    "tools/gsc-period-diff-analyzer/sample-after.csv": {
+      "bytes": 168,
+      "sha256": "96179395f4c6058ffa4e607afed74c819a3a2af60d2895cff9f105c50b28773e"
+    },
+    "tools/gsc-period-diff-analyzer/sample-before.csv": {
+      "bytes": 167,
+      "sha256": "238ca21c85ad2f9725028dbde600f3b3a93a1c66ae37142c51b33e0261125944"
     },
     "tools/hreflang-checker/README.md": {
       "bytes": 1798,
@@ -101,6 +129,26 @@
     "tools/indexing-signal-reconciler/sample-sitemap.txt": {
       "bytes": 56,
       "sha256": "6221a0980e41c96da0ab620717f2c7a5918e163382727da18e3e1975b0483edf"
+    },
+    "tools/internal-link-anchor-auditor/README.md": {
+      "bytes": 3237,
+      "sha256": "7ee85ef84f359cfb27a186a5ade7df1a02dd3a1c9d02fe1f2f0864c61920aa74"
+    },
+    "tools/internal-link-anchor-auditor/index.html": {
+      "bytes": 10705,
+      "sha256": "99fc66b7a95eb61a3a85c45a4280a504074ca0e6ea7c03cbf2c069f454a7c76f"
+    },
+    "tools/internal-link-anchor-auditor/input-contract.json": {
+      "bytes": 1962,
+      "sha256": "f92fa5a9be9c3aeaab13540e7a9cf0bc5ae238fba7ad7e02d15a235d4ea06047"
+    },
+    "tools/internal-link-anchor-auditor/sample-inlinks.csv": {
+      "bytes": 380,
+      "sha256": "3d03121b01f8901f2bdee3bf868a76c601a6fc74468a20891deffed752800c35"
+    },
+    "tools/internal-link-anchor-auditor/sample-inventory.csv": {
+      "bytes": 135,
+      "sha256": "4a8cb2eb8749f595e9332429c72980fe2beb243bd1461bd45b215f1b5803b270"
     },
     "tools/redirect-map-checker/README.md": {
       "bytes": 1727,

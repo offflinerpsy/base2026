@@ -197,6 +197,8 @@ FREE_TOOLS_ASSET_PATHS = (
     "static/free-tools/base2026-core.css",
     "static/free-tools/batch2-tools.mjs",
     "static/free-tools/batch2.mjs",
+    "static/free-tools/batch3-tools.mjs",
+    "static/free-tools/batch3.mjs",
     "static/free-tools/engine.mjs",
     "static/free-tools/manrope-latin.woff2",
     "static/free-tools/sitemap-core.mjs",
@@ -207,6 +209,11 @@ FREE_TOOLS_ASSET_PATHS = (
     "tools/broken-link-task-builder/index.html",
     "tools/broken-link-task-builder/sample-inlinks.csv",
     "tools/broken-link-task-builder/sample-statuses.csv",
+    "tools/gsc-period-diff-analyzer/README.md",
+    "tools/gsc-period-diff-analyzer/index.html",
+    "tools/gsc-period-diff-analyzer/input-contract.json",
+    "tools/gsc-period-diff-analyzer/sample-after.csv",
+    "tools/gsc-period-diff-analyzer/sample-before.csv",
     "tools/hreflang-checker/README.md",
     "tools/hreflang-checker/index.html",
     "tools/hreflang-checker/sample-map.csv",
@@ -215,6 +222,11 @@ FREE_TOOLS_ASSET_PATHS = (
     "tools/indexing-signal-reconciler/sample-crawl.csv",
     "tools/indexing-signal-reconciler/sample-gsc.csv",
     "tools/indexing-signal-reconciler/sample-sitemap.txt",
+    "tools/internal-link-anchor-auditor/README.md",
+    "tools/internal-link-anchor-auditor/index.html",
+    "tools/internal-link-anchor-auditor/input-contract.json",
+    "tools/internal-link-anchor-auditor/sample-inlinks.csv",
+    "tools/internal-link-anchor-auditor/sample-inventory.csv",
     "tools/redirect-map-checker/README.md",
     "tools/redirect-map-checker/index.html",
     "tools/redirect-map-checker/sample-map.csv",
@@ -1458,6 +1470,8 @@ HUB_SITEMAP_ROUTES = (
     "/guides/compare-seo-crawl-exports/",
     "/tools/indexing-signal-reconciler/",
     "/tools/redirect-rule-compiler/",
+    "/tools/internal-link-anchor-auditor/",
+    "/tools/gsc-period-diff-analyzer/",
 )
 
 RUNTIME_GUIDE_ROUTES = (
@@ -2055,7 +2069,7 @@ def _local_tools_headers() -> str:
         if route in blocks:
             raise ReleaseBuildError("duplicate local-tool CSP route")
         blocks[route] = block
-    order = ["/tools/robots-txt-tester/*", "/tools/redirect-map-checker/*", "/tools/hreflang-checker/*", "/tools/broken-link-task-builder/*", "/tools/seo-crawl-comparison/*", "/static/free-tools/*", "/tools/indexing-signal-reconciler/*", "/tools/redirect-rule-compiler/*"]
+    order = ["/tools/robots-txt-tester/*", "/tools/redirect-map-checker/*", "/tools/hreflang-checker/*", "/tools/broken-link-task-builder/*", "/tools/seo-crawl-comparison/*", "/static/free-tools/*", "/tools/indexing-signal-reconciler/*", "/tools/redirect-rule-compiler/*", "/tools/internal-link-anchor-auditor/*", "/tools/gsc-period-diff-analyzer/*"]
     if set(blocks) != set(order):
         raise ReleaseBuildError("local-tool CSP routes differ from the reviewed allowlist")
     csp = "default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; worker-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"

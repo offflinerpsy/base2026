@@ -1,0 +1,99 @@
+{
+  "schema_version": "base2026.csv-tool-contract/1",
+  "execution": "local Web Worker",
+  "limits": {
+    "records_per_input": 5000,
+    "bytes_per_input": 2097152,
+    "combined_bytes": 4194304,
+    "cell_characters": 16384
+  },
+  "identity": "exact trimmed key or URL; no automatic merge",
+  "exports_csv_formula_defense": true,
+  "privacy": {
+    "target_requests": false,
+    "uploads": false,
+    "persistent_storage": false,
+    "telemetry": false
+  },
+  "tool_id": "gsc-period-diff-analyzer",
+  "required_inputs": [
+    "before",
+    "after"
+  ],
+  "required_options": {
+    "key_type": [
+      "pages",
+      "queries",
+      "key"
+    ],
+    "ctr_format": [
+      "percent",
+      "fraction"
+    ]
+  },
+  "optional_options": {
+    "decompose": "boolean; descriptive only"
+  },
+  "english_header_aliases": {
+    "page": [
+      "page",
+      "top pages",
+      "url"
+    ],
+    "query": [
+      "query",
+      "top queries"
+    ],
+    "key": [
+      "key"
+    ],
+    "clicks": [
+      "clicks"
+    ],
+    "impressions": [
+      "impressions"
+    ],
+    "ctr": [
+      "ctr"
+    ],
+    "position": [
+      "position",
+      "average position"
+    ]
+  },
+  "required_columns": [
+    "exactly one key header matching the selected mode",
+    "clicks",
+    "impressions"
+  ],
+  "optional_columns": [
+    "ctr",
+    "position"
+  ],
+  "header_rules": "ignore case; spaces/hyphens map to underscores; duplicate aliases or mixed key types rejected",
+  "counts": "safe nonnegative ungrouped integers; clicks <= impressions",
+  "position": "optional finite positive number; never averaged across duplicates",
+  "provided_ctr": {
+    "percent": "2.5% or 2.5 -> 0.025",
+    "fraction": "0.025 -> 0.025; % sign forbidden",
+    "locale": "decimal point only; no guessing",
+    "raw_retained": true,
+    "mismatch_tolerance_fraction": 5e-05
+  },
+  "derived_ctr": "clicks/impressions only when impressions > 0 and counts valid",
+  "zero_impressions_ctr": "UNKNOWN",
+  "missing_row": "UNKNOWN, not zero",
+  "percentage_change_zero_baseline": "UNDEFINED_ZERO_BASELINE",
+  "duplicate_conflicts": "quarantined; no deltas",
+  "identical_rows": "may collapse with notice; no metric sums or position averages",
+  "position_delta": "after minus before; lower is better",
+  "decomposition": {
+    "preconditions": "both periods valid counts and impressions > 0",
+    "impression_component": "(I1-I0)*(CTR0+CTR1)/2",
+    "ctr_component": "(CTR1-CTR0)*(I0+I1)/2",
+    "conservation": "sum equals click delta within exported floating-point tolerance",
+    "causality": "NOT_INFERRED"
+  },
+  "comparability": "period length/property/search type/filters NOT_VERIFIED",
+  "coverage": "export top-row limits and anonymized/omitted queries; not property totals"
+}

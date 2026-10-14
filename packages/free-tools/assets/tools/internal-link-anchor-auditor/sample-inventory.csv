@@ -1,0 +1,4 @@
+url,status,indexable
+https://example.test/guide/,200,true
+https://example.test/other/,200,true
+https://example.test/unlinked/,200,true
