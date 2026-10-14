@@ -301,6 +301,145 @@
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
       "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+    },
+    {
+      "id": "indexing-signal-reconciler",
+      "name": "Indexing Signal Reconciler",
+      "route": "/tools/indexing-signal-reconciler/",
+      "title": "Free Indexing Signal Reconciler for CSV Exports | Base2026",
+      "h1": "Reconcile your supplied indexing signals",
+      "description": "Compare supplied crawl, sitemap and Search Console observations. Find contradictory signals and missing evidence locally, without fetching pages or predicting Google indexing.",
+      "og": {
+        "type": "website",
+        "title": "Free Indexing Signal Reconciler for CSV Exports | Base2026",
+        "description": "Compare supplied crawl, sitemap and Search Console observations. Find contradictory signals and missing evidence locally, without fetching pages or predicting Google indexing.",
+        "url": "https://base2026.dev/tools/indexing-signal-reconciler/"
+      },
+      "canonical": "https://base2026.dev/tools/indexing-signal-reconciler/",
+      "category": "Review indexing evidence",
+      "usecase": "Bring your crawl signals and optional sitemap or Search Console observations. See where the supplied evidence agrees, conflicts or leaves a question open.",
+      "inputs": [
+        {
+          "role": "crawl",
+          "label": "Crawl signals CSV",
+          "format": "csv",
+          "required": true,
+          "help": "Required: url and at least one of status,robots,canonical. HTTP status must be a numeric code from 100 to 599. Up to 5,000 rows."
+        },
+        {
+          "role": "sitemap",
+          "label": "Sitemap URLs (optional)",
+          "format": "txt",
+          "accept": ".txt,.csv,.xml",
+          "required": false,
+          "help": "One absolute HTTP(S) URL per line, a CSV with url or loc, or an XML urlset. Up to 5,000 URLs. Omit this input to keep sitemap membership unknown."
+        },
+        {
+          "role": "gsc",
+          "label": "Search Console observations CSV (optional)",
+          "format": "csv",
+          "required": false,
+          "help": "Prepare these explicit columns: url, with any of gsc_status,google_canonical,last_crawl. This is a user-prepared column contract, not automatic support for every native Search Console export."
+        }
+      ],
+      "outputs": [
+        "Results CSV",
+        "Findings CSV",
+        "Readable Markdown report",
+        "JSON input manifest"
+      ],
+      "boundaries": [
+        "Reports observations in supplied files only. Aligned supplied signals do not establish live indexability, Google indexing, rankings or an outcome.",
+        "Missing, invalid and conflicting observations remain distinct. Canonical targets outside the crawl or in conflicting crawl rows stay unknown. All applicable findings are exported; the primary label is only a review order.",
+        "URL joins preserve the exact trimmed string, including case, query and trailing slash. Robots none means noindex and nofollow. Unrecognized directives cannot prove an index signal. Crawler-scoped directives are preserved as text but their applicability remains unknown.",
+        "Search Console status and dates are supplied text, not API verification. No native coverage export layout is assumed. Missing sitemap or Search Console input stays unknown."
+      ],
+      "next": [
+        [
+          "Build a sitemap",
+          "/tools/sitemap-builder/"
+        ],
+        [
+          "Test supplied robots.txt",
+          "/tools/robots-txt-tester/"
+        ],
+        [
+          "Compare two crawl exports",
+          "/tools/seo-crawl-comparison/"
+        ]
+      ],
+      "privacy": {
+        "target_fetch": false,
+        "upload": false,
+        "storage": false,
+        "telemetry": false
+      },
+      "assets_prefix": "/static/free-tools/",
+      "source_license": "Apache-2.0",
+      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+    },
+    {
+      "id": "redirect-rule-compiler",
+      "name": "Redirect Rule Compiler",
+      "route": "/tools/redirect-rule-compiler/",
+      "title": "Free Cloudflare Static _redirects Draft from CSV | Base2026",
+      "h1": "Compile an exact-path redirect draft",
+      "description": "Turn a CSV map into a draft Cloudflare static assets _redirects file. Exclude conflicting paths, cycles and unsafe syntax. Local processing; test the draft in staging.",
+      "og": {
+        "type": "website",
+        "title": "Free Cloudflare Static _redirects Draft from CSV | Base2026",
+        "description": "Turn a CSV map into a draft Cloudflare static assets _redirects file. Exclude conflicting paths, cycles and unsafe syntax. Local processing; test the draft in staging.",
+        "url": "https://base2026.dev/tools/redirect-rule-compiler/"
+      },
+      "canonical": "https://base2026.dev/tools/redirect-rule-compiler/",
+      "category": "Prepare a site change",
+      "usecase": "Turn your supplied map into an exact-path _redirects draft for Cloudflare static assets. Review excluded rows, then test the draft in staging before use.",
+      "inputs": [
+        {
+          "role": "map",
+          "label": "Redirect mappings CSV",
+          "format": "csv",
+          "required": true,
+          "help": "Required headers: from,to. Optional: status. Use exact root-relative paths or HTTP(S) source URLs from one origin. Up to 2,000 mappings. Queries in either source or target are excluded."
+        }
+      ],
+      "outputs": [
+        "Draft _redirects",
+        "Results CSV",
+        "Findings CSV",
+        "Readable Markdown report",
+        "JSON input manifest"
+      ],
+      "boundaries": [
+        "Emits a draft for exact paths in Cloudflare static assets _redirects only. It does not generate Workers routing, Bulk Redirects, Apache, NGINX or Vercel configuration. Test host routing, asset and Worker precedence, incoming-query behavior and redirects in staging. No server behavior is verified here.",
+        "Queries in either source or target are excluded: this MVP does not choose query preservation or replacement behavior. Incoming request queries still require staging checks. Fragments, dot segments, protocol-relative URLs, whitespace, controls, wildcards, placeholders and ambiguous escapes are excluded.",
+        "Absolute source URLs must have one origin. Mixed origins quarantine the entire batch; no first-row origin wins. With one origin, the draft paths apply to the deployment host, which you must verify. Paths keep exact case, slash and percent-escape spelling.",
+        "Cycles, conflicting sources and paths reaching excluded mappings are withheld. Chain flattening is off by default; opting in permits only identical status codes. Terminal targets are supplied map endpoints, not verified live destinations.",
+        "Local safety caps: 2,000 input rows, 4,096 characters per URL and 1,000 characters per emitted line. ASCII paths or unambiguous percent-encoded UTF-8 only. These bounds do not establish compatibility with your deployment."
+      ],
+      "next": [
+        [
+          "Check a redirect plan",
+          "/tools/redirect-map-checker/"
+        ],
+        [
+          "Compare crawl exports",
+          "/tools/seo-crawl-comparison/"
+        ],
+        [
+          "Build a sitemap",
+          "/tools/sitemap-builder/"
+        ]
+      ],
+      "privacy": {
+        "target_fetch": false,
+        "upload": false,
+        "storage": false,
+        "telemetry": false
+      },
+      "assets_prefix": "/static/free-tools/",
+      "source_license": "Apache-2.0",
+      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
     }
   ]
 }

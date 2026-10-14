@@ -1,3 +1,4 @@
+import {BATCH2_TOOLS} from './batch2-tools.mjs';
 export const TOOLS = {
   'robots-txt-tester': {
     name:'Robots.txt Tester', title:'Free Robots.txt Tester for Your URL List | Base2026',
@@ -58,6 +59,7 @@ export const TOOLS = {
     sample:{before:'url,status,title,canonical,robots,h1\nhttps://example.test/,200,Home,https://example.test/,index follow,Welcome\nhttps://example.test/guide/,200,Our guide,https://example.test/guide/,index follow,Our guide\nhttps://example.test/old/,200,Old page,https://example.test/old/,index follow,Old page\n',after:'url,status,title,canonical,robots,h1\nhttps://example.test/,200,Home,https://example.test/,index follow,Welcome\nhttps://example.test/guide/,200,Updated guide,https://example.test/guide/,noindex follow,Updated guide\nhttps://example.test/new/,200,New page,https://example.test/new/,index follow,New page\n'},
     boundaries:['Reports supplied snapshot changes, not live page behavior, a ranking effect or the cause of a traffic change.','A URL found in one partial export is an observation about coverage, not proof that the page was added or deleted.','Only shared supported fields are compared. Missing columns stay unknown. Invalid or conflicting duplicate rows are excluded from comparison.'],
     next:[['Check a redirect plan','/tools/redirect-map-checker/'],['Build the intended sitemap','/tools/sitemap-builder/']]
-  }
+  },
+  ...BATCH2_TOOLS
 };
 export const LIMITS = Object.freeze({fileBytes:2097152,totalBytes:4194304,records:5000,robotsBytes:65536,urlLength:4096,cellLength:16384});

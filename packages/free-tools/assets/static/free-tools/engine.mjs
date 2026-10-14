@@ -1,3 +1,4 @@
+import {reconcileIndexing,compileRedirects} from './batch2.mjs';
 import {csvRows, csvCell} from './sitemap-core.mjs';
 import {TOOLS, LIMITS} from './tools.mjs';
 
@@ -14,7 +15,7 @@ export function urlValue(value) {
   try { const parsed=new URL(raw); if (!['http:','https:'].includes(parsed.protocol) || parsed.username || parsed.password || parsed.hash) return {error:'Only HTTP(S) URLs without credentials or fragments are supported.'}; return {raw,parsed}; }
   catch {return {error:'Invalid absolute HTTP(S) URL.'};}
 }
-export function readCsv(text,role,schema,required) {
+export function readCsv(text,role,schema,required,{preserveValues=false}={}) {
   if (bytes(text)>LIMITS.fileBytes) fail(`${role}: file exceeds 2 MiB.`);
   const all=csvRows(text,LIMITS.records+1);
   if (!all.length) fail(`${role}: CSV is empty. Include a header row.`);
@@ -28,7 +29,7 @@ export function readCsv(text,role,schema,required) {
     if(all[i].length!==keys.length)fail(`${role}: record ${i+1} has ${all[i].length} cells; expected ${keys.length}.`);
     if(all[i].every(v=>clean(v)===''))continue;
     const row={record:i+1};
-    for(let c=0;c<columns.length;c++) {if(all[i][c].length>LIMITS.cellLength)fail(`${role}: a cell exceeds 16,384 characters.`);if(columns[c])row[columns[c]]=clean(all[i][c]);}
+    for(let c=0;c<columns.length;c++) {if(all[i][c].length>LIMITS.cellLength)fail(`${role}: a cell exceeds 16,384 characters.`);if(columns[c])row[columns[c]]=preserveValues?all[i][c]:clean(all[i][c]);}
     rows.push(row);
   }
   if(rows.length>LIMITS.records)fail(`${role}: maximum 5,000 data records.`);
@@ -224,11 +225,11 @@ export function compareCrawls(inputs,options={}) {
     columns:['URL','Field','Before observation','After observation','Finding','Review note'],rows,scope:{fields_compared:fields,coverage:options.complete?'USER_DECLARED_COMPLETE_SAME_SCOPE':'UNKNOWN',url_identity:'exact trimmed string',live_status:'UNKNOWN',ranking_or_traffic_cause:'NOT_INFERRED'},notes:TOOLS['seo-crawl-comparison'].boundaries};
 }
 
-export const ANALYZERS={'robots-txt-tester':testRobots,'redirect-map-checker':checkRedirectMap,'hreflang-checker':checkHreflang,'broken-link-task-builder':buildBrokenLinkTasks,'seo-crawl-comparison':compareCrawls};
+export const ANALYZERS={'robots-txt-tester':testRobots,'redirect-map-checker':checkRedirectMap,'hreflang-checker':checkHreflang,'broken-link-task-builder':buildBrokenLinkTasks,'seo-crawl-comparison':compareCrawls,'indexing-signal-reconciler':(i,o)=>reconcileIndexing(i,o,{readCsv,urlValue}),'redirect-rule-compiler':(i,o)=>compileRedirects(i,o,{readCsv,urlValue})};
 export function tableCsv(columns,rows) {return [columns,...rows].map(row=>row.map(v=>csvCell(String(v??''))).join(',')).join('\r\n')+'\r\n';}
 export function runTool(id,inputs,options={},metadata=[],observedAt=new Date().toISOString()) {
   const def=TOOLS[id];if(!def||!ANALYZERS[id])fail('Unknown tool.');let total=0;
-  for(const field of def.inputs){const text=inputs[field.role];if(typeof text!=='string'||!text.trim())fail(`${field.label}: choose a file or paste content.`);const size=bytes(text);if(size>LIMITS.fileBytes)fail(`${field.label}: maximum 2 MiB.`);total+=size;}
+  for(const field of def.inputs){const text=inputs[field.role]??'';if(typeof text!=='string'||(field.required&&!text.trim()))fail(`${field.label}: choose a file or paste content.`);const size=bytes(text);if(size>LIMITS.fileBytes)fail(`${field.label}: maximum 2 MiB.`);total+=size;}
   if(total>LIMITS.totalBytes)fail('Combined inputs exceed 4 MiB.');
   const result=ANALYZERS[id](inputs,options);
   const manifest={schema:'base2026.free-tools-input-manifest/1',ruleset:`base2026.${id}/1.0.0`,observed_at:observedAt,scope:result.scope,input_observations:metadata,limits:LIMITS,
@@ -239,5 +240,5 @@ export function runTool(id,inputs,options={},metadata=[],observedAt=new Date().t
     {name:`${id}-findings.csv`,label:'Findings CSV',mime:'text/csv;charset=utf-8',text:tableCsv(['Severity','Rule','Subject','Detail','Source record'],findingsRows)},
     {name:`${id}-report.md`,label:'Readable report',mime:'text/markdown;charset=utf-8',text:report},
     {name:`${id}-manifest.json`,label:'Input manifest',mime:'application/json;charset=utf-8',text:JSON.stringify(manifest,null,2)+'\n'}];
-  return {...result,manifest,exports};
+  return {...result,manifest,exports:[...exports,...(result.extraExports||[])]};
 }

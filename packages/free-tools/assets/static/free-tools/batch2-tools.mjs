@@ -1,0 +1,31 @@
+/** Additional local tools. The original five definitions remain unchanged. */
+export const BATCH2_TOOLS = {
+  'indexing-signal-reconciler': {
+    name:'Indexing Signal Reconciler',title:'Free Indexing Signal Reconciler for CSV Exports | Base2026',
+    h1:'Reconcile your supplied indexing signals',
+    description:'Compare supplied crawl, sitemap and Search Console observations. Find contradictory signals and missing evidence locally, without fetching pages or predicting Google indexing.',
+    intro:'Bring your crawl signals and optional sitemap or Search Console observations. See where the supplied evidence agrees, conflicts or leaves a question open.',
+    action:'Reconcile the signals',category:'Review indexing evidence',
+    inputs:[{role:'crawl',label:'Crawl signals CSV',format:'csv',required:true,help:'Required: url and at least one of status,robots,canonical. HTTP status must be a numeric code from 100 to 599. Up to 5,000 rows.'},
+      {role:'sitemap',label:'Sitemap URLs (optional)',format:'txt',accept:'.txt,.csv,.xml',required:false,help:'One absolute HTTP(S) URL per line, a CSV with url or loc, or an XML urlset. Up to 5,000 URLs. Omit this input to keep sitemap membership unknown.'},
+      {role:'gsc',label:'Search Console observations CSV (optional)',format:'csv',required:false,help:'Prepare these explicit columns: url, with any of gsc_status,google_canonical,last_crawl. This is a user-prepared column contract, not automatic support for every native Search Console export.'}],
+    options:[],
+    sample:{crawl:'url,status,robots,canonical\nhttps://example.test/guide/,200,"index,follow",https://example.test/guide/\nhttps://example.test/draft/,200,"noindex,follow",https://example.test/draft/\nhttps://example.test/variant/,200,"index,follow",https://example.test/unknown/\n',sitemap:'https://example.test/guide/\nhttps://example.test/draft/\n',gsc:'url,gsc_status,google_canonical,last_crawl\nhttps://example.test/guide/,Crawled - currently not indexed,https://example.test/guide/,2026-10-01\n'},
+    boundaries:['Reports observations in supplied files only. Aligned supplied signals do not establish live indexability, Google indexing, rankings or an outcome.','Missing, invalid and conflicting observations remain distinct. Canonical targets outside the crawl or in conflicting crawl rows stay unknown. All applicable findings are exported; the primary label is only a review order.','URL joins preserve the exact trimmed string, including case, query and trailing slash. Robots none means noindex and nofollow. Unrecognized directives cannot prove an index signal. Crawler-scoped directives are preserved as text but their applicability remains unknown.','Search Console status and dates are supplied text, not API verification. No native coverage export layout is assumed. Missing sitemap or Search Console input stays unknown.'],
+    next:[['Build a sitemap','/tools/sitemap-builder/'],['Test supplied robots.txt','/tools/robots-txt-tester/'],['Compare two crawl exports','/tools/seo-crawl-comparison/']]
+  },
+  'redirect-rule-compiler': {
+    name:'Redirect Rule Compiler',title:'Free Cloudflare Static _redirects Draft from CSV | Base2026',
+    h1:'Compile an exact-path redirect draft',
+    description:'Turn a CSV map into a draft Cloudflare static assets _redirects file. Exclude conflicting paths, cycles and unsafe syntax. Local processing; test the draft in staging.',
+    intro:'Turn your supplied map into an exact-path _redirects draft for Cloudflare static assets. Review excluded rows, then test the draft in staging before use.',
+    action:'Compile the draft',category:'Prepare a site change',configPreview:true,
+    limitHelp:'Local processing · no signup · up to 2,000 mappings, 2 MiB per file. Exact paths only; no live requests.',
+    inputs:[{role:'map',label:'Redirect mappings CSV',format:'csv',required:true,help:'Required headers: from,to. Optional: status. Use exact root-relative paths or HTTP(S) source URLs from one origin. Up to 2,000 mappings. Queries in either source or target are excluded.'}],
+    options:[{name:'default_status',label:'Default redirect status',type:'text',value:'301',help:'Use 301, 302, 307 or 308. Applied only when a row has no status.'},
+      {name:'flatten_chains',label:'Flatten chains with identical status codes',type:'checkbox',value:false,help:'Off by default. When selected, only chains whose every status code is identical can be flattened. Mixed status chains retain their original hops.'}],
+    sample:{map:'from,to,status\n/old-guide,/middle-guide,301\n/middle-guide,/guides/current/,301\n/temporary,/offers/,302\n/conflict,/one/,301\n/conflict,/two/,301\n/unsafe?item=9,/catalog/,301\n'},
+    boundaries:['Emits a draft for exact paths in Cloudflare static assets _redirects only. It does not generate Workers routing, Bulk Redirects, Apache, NGINX or Vercel configuration. Test host routing, asset and Worker precedence, incoming-query behavior and redirects in staging. No server behavior is verified here.','Queries in either source or target are excluded: this MVP does not choose query preservation or replacement behavior. Incoming request queries still require staging checks. Fragments, dot segments, protocol-relative URLs, whitespace, controls, wildcards, placeholders and ambiguous escapes are excluded.','Absolute source URLs must have one origin. Mixed origins quarantine the entire batch; no first-row origin wins. With one origin, the draft paths apply to the deployment host, which you must verify. Paths keep exact case, slash and percent-escape spelling.','Cycles, conflicting sources and paths reaching excluded mappings are withheld. Chain flattening is off by default; opting in permits only identical status codes. Terminal targets are supplied map endpoints, not verified live destinations.','Local safety caps: 2,000 input rows, 4,096 characters per URL and 1,000 characters per emitted line. ASCII paths or unambiguous percent-encoded UTF-8 only. These bounds do not establish compatibility with your deployment.'],
+    next:[['Check a redirect plan','/tools/redirect-map-checker/'],['Compare crawl exports','/tools/seo-crawl-comparison/'],['Build a sitemap','/tools/sitemap-builder/']]
+  }
+};

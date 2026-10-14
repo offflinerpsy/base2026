@@ -1,0 +1,7 @@
+from,to,status
+/old-guide,/middle-guide,301
+/middle-guide,/guides/current/,301
+/temporary,/offers/,302
+/conflict,/one/,301
+/conflict,/two/,301
+/unsafe?item=9,/catalog/,301
