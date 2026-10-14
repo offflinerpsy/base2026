@@ -1,0 +1,4 @@
+url,status,title,canonical,robots,h1
+https://example.test/,200,Home,https://example.test/,index follow,Welcome
+https://example.test/guide/,200,Updated guide,https://example.test/guide/,noindex follow,Updated guide
+https://example.test/new/,200,New page,https://example.test/new/,index follow,New page

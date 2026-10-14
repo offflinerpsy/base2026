@@ -1,0 +1,7 @@
+page_url,hreflang,alternate_url
+https://example.test/en/,en,https://example.test/en/
+https://example.test/en/,fr,https://example.test/fr/
+https://example.test/fr/,fr,https://example.test/fr/
+https://example.test/fr/,en,https://example.test/en/
+https://example.test/de/,de,https://example.test/de/
+https://example.test/de/,en,https://example.test/en/

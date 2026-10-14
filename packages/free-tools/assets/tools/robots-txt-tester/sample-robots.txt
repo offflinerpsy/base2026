@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /private/
+Allow: /private/help$
+
+User-agent: Googlebot
+Disallow: /drafts/
+Allow: /drafts/public$
+Sitemap: https://example.test/sitemap.xml

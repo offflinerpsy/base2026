@@ -1,0 +1,306 @@
+{
+  "schema": "base2026.free-tools-portfolio/1",
+  "tools": [
+    {
+      "id": "robots-txt-tester",
+      "name": "Robots.txt Tester",
+      "route": "/tools/robots-txt-tester/",
+      "title": "Free Robots.txt Tester for Your URL List | Base2026",
+      "h1": "Free robots.txt tester",
+      "description": "Robots.txt tester for your URL list. Check supplied Allow and Disallow rules, see matched paths and export results. Local processing; no website crawl.",
+      "og": {
+        "type": "website",
+        "title": "Free Robots.txt Tester for Your URL List | Base2026",
+        "description": "Robots.txt tester for your URL list. Check supplied Allow and Disallow rules, see matched paths and export results. Local processing; no website crawl.",
+        "url": "https://base2026.dev/tools/robots-txt-tester/"
+      },
+      "canonical": "https://base2026.dev/tools/robots-txt-tester/",
+      "category": "Check crawl rules",
+      "usecase": "See the matching rule for each supplied URL before you change robots.txt. Nothing is fetched or submitted.",
+      "inputs": [
+        {
+          "role": "robots",
+          "label": "robots.txt content",
+          "format": "txt",
+          "required": true,
+          "help": "Paste the file content or choose a UTF-8 .txt file. Maximum 64 KiB. Google-style Allow/Disallow matching; unsupported directives are reported."
+        },
+        {
+          "role": "urls",
+          "label": "URLs to test",
+          "format": "txt",
+          "required": true,
+          "help": "One absolute HTTP(S) URL per line, from one origin: the same scheme, host and port. Up to 5,000 URLs. The URLs are never visited."
+        }
+      ],
+      "outputs": [
+        "Results CSV",
+        "Findings CSV",
+        "Readable Markdown report",
+        "JSON input manifest"
+      ],
+      "boundaries": [
+        "Tests supplied rules only; live robots.txt, HTTP status, page meta directives and indexing remain unknown.",
+        "Allowing crawling does not guarantee indexing. A robots.txt block is not a noindex instruction.",
+        "Supports Google-style group selection, Allow/Disallow, * and terminal $. Crawl-delay, Host, Noindex and unknown directives are displayed but not applied."
+      ],
+      "next": [
+        [
+          "Check supplied HTML",
+          "/tools/page-readiness/"
+        ],
+        [
+          "Build a sitemap",
+          "/tools/sitemap-builder/"
+        ]
+      ],
+      "privacy": {
+        "target_fetch": false,
+        "upload": false,
+        "storage": false,
+        "telemetry": false
+      },
+      "assets_prefix": "/static/free-tools/",
+      "source_license": "Apache-2.0",
+      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+    },
+    {
+      "id": "redirect-map-checker",
+      "name": "Redirect Map Checker",
+      "route": "/tools/redirect-map-checker/",
+      "title": "Free Redirect Map Checker for CSV Plans | Base2026",
+      "h1": "Free redirect map checker",
+      "description": "Redirect map checker for CSV plans. Find conflicting targets, loops and chains in supplied mappings. Export a review before implementation; no live HTTP requests.",
+      "og": {
+        "type": "website",
+        "title": "Free Redirect Map Checker for CSV Plans | Base2026",
+        "description": "Redirect map checker for CSV plans. Find conflicting targets, loops and chains in supplied mappings. Export a review before implementation; no live HTTP requests.",
+        "url": "https://base2026.dev/tools/redirect-map-checker/"
+      },
+      "canonical": "https://base2026.dev/tools/redirect-map-checker/",
+      "category": "Prepare a site change",
+      "usecase": "Check the redirect plan you already have. Find conflicting mappings and follow chains without sending a request to your site.",
+      "inputs": [
+        {
+          "role": "map",
+          "label": "Redirect mappings CSV",
+          "format": "csv",
+          "required": true,
+          "help": "Required headers: from,to. Optional: status. Absolute HTTP(S) URLs only. Up to 5,000 mappings. Missing status stays unknown."
+        }
+      ],
+      "outputs": [
+        "Results CSV",
+        "Findings CSV",
+        "Readable Markdown report",
+        "JSON input manifest"
+      ],
+      "boundaries": [
+        "This checks a supplied plan, not live redirects or response headers. Final targets are terminal entries in the map, not verified 200 pages.",
+        "URL identity is exact after surrounding whitespace is trimmed. Case, query and trailing slash are preserved.",
+        "Conflicting sources are excluded from chain resolution. You decide which mapping is correct; the tool never changes your server."
+      ],
+      "next": [
+        [
+          "Compare SEO crawl exports",
+          "/tools/seo-crawl-comparison/"
+        ],
+        [
+          "Build a sitemap",
+          "/tools/sitemap-builder/"
+        ]
+      ],
+      "privacy": {
+        "target_fetch": false,
+        "upload": false,
+        "storage": false,
+        "telemetry": false
+      },
+      "assets_prefix": "/static/free-tools/",
+      "source_license": "Apache-2.0",
+      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+    },
+    {
+      "id": "hreflang-checker",
+      "name": "Hreflang Map Checker",
+      "route": "/tools/hreflang-checker/",
+      "title": "Free Hreflang Checker for Alternate URL Maps | Base2026",
+      "h1": "Free hreflang map checker",
+      "description": "Hreflang map checker for CSV exports. Find conflicting language targets, missing self references and return links in supplied data. No page fetching.",
+      "og": {
+        "type": "website",
+        "title": "Free Hreflang Checker for Alternate URL Maps | Base2026",
+        "description": "Hreflang map checker for CSV exports. Find conflicting language targets, missing self references and return links in supplied data. No page fetching.",
+        "url": "https://base2026.dev/tools/hreflang-checker/"
+      },
+      "canonical": "https://base2026.dev/tools/hreflang-checker/",
+      "category": "Prepare international pages",
+      "usecase": "Bring your alternate URL map. Review conflicting language targets, self references and return links in the data you supplied.",
+      "inputs": [
+        {
+          "role": "map",
+          "label": "Hreflang map CSV",
+          "format": "csv",
+          "required": true,
+          "help": "Required headers: page_url,hreflang,alternate_url. One alternate link per row. Up to 5,000 rows. Include all pages you want to compare."
+        }
+      ],
+      "outputs": [
+        "Results CSV",
+        "Findings CSV",
+        "Readable Markdown report",
+        "JSON input manifest"
+      ],
+      "boundaries": [
+        "Checks the supplied map only. It does not fetch page HTML, HTTP headers, canonicals or Google indexing.",
+        "A return link can be checked only when the destination page is present in the supplied map. Missing maps and links in conflicting language slots remain unknown.",
+        "Language-tag shape is checked, not every ISO language/region assignment or Google support. Conflicting language slots are excluded from self-reference and return-link inference."
+      ],
+      "next": [
+        [
+          "Check supplied page HTML",
+          "/tools/page-readiness/"
+        ],
+        [
+          "Compare SEO crawl exports",
+          "/tools/seo-crawl-comparison/"
+        ]
+      ],
+      "privacy": {
+        "target_fetch": false,
+        "upload": false,
+        "storage": false,
+        "telemetry": false
+      },
+      "assets_prefix": "/static/free-tools/",
+      "source_license": "Apache-2.0",
+      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+    },
+    {
+      "id": "broken-link-task-builder",
+      "name": "Broken Link Task Builder",
+      "route": "/tools/broken-link-task-builder/",
+      "title": "Free Broken Link Report from Crawl Exports | Base2026",
+      "h1": "Free broken link task builder",
+      "description": "Broken link task builder for crawl exports. Join supplied 404/410 statuses with inlinks and export source pages and repair tasks. No crawl or automatic changes.",
+      "og": {
+        "type": "website",
+        "title": "Free Broken Link Report from Crawl Exports | Base2026",
+        "description": "Broken link task builder for crawl exports. Join supplied 404/410 statuses with inlinks and export source pages and repair tasks. No crawl or automatic changes.",
+        "url": "https://base2026.dev/tools/broken-link-task-builder/"
+      },
+      "canonical": "https://base2026.dev/tools/broken-link-task-builder/",
+      "category": "Prepare link repairs",
+      "usecase": "Stop handing over a list of dead URLs without their source pages. Join your two exports and prepare a concrete repair list.",
+      "inputs": [
+        {
+          "role": "statuses",
+          "label": "Response status CSV",
+          "format": "csv",
+          "required": true,
+          "help": "Required headers: url,status. Optional: observed_at. Only supplied 404/410 responses become broken-link tasks."
+        },
+        {
+          "role": "inlinks",
+          "label": "Inlinks CSV",
+          "format": "csv",
+          "required": true,
+          "help": "Required headers: source,target. Optional: anchor. A Screaming Frog-style From/To/Anchor Text export is also supported. Up to 5,000 records per file."
+        }
+      ],
+      "outputs": [
+        "Results CSV",
+        "Findings CSV",
+        "Readable Markdown report",
+        "JSON input manifest"
+      ],
+      "boundaries": [
+        "A supplied 404/410 is evidence at the observation time, not a live check. A 403, 429, timeout, absent status or conflicting status is unknown; a 5xx needs review.",
+        "Source pages and anchors come only from your supplied inlinks. Link counts are counts in this export, not a complete site graph.",
+        "The output is a repair handoff. It never chooses replacements, edits links or submits changes."
+      ],
+      "next": [
+        [
+          "Compare the next crawl",
+          "/tools/seo-crawl-comparison/"
+        ],
+        [
+          "Check a redirect plan",
+          "/tools/redirect-map-checker/"
+        ]
+      ],
+      "privacy": {
+        "target_fetch": false,
+        "upload": false,
+        "storage": false,
+        "telemetry": false
+      },
+      "assets_prefix": "/static/free-tools/",
+      "source_license": "Apache-2.0",
+      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+    },
+    {
+      "id": "seo-crawl-comparison",
+      "name": "SEO Crawl Comparison",
+      "route": "/tools/seo-crawl-comparison/",
+      "title": "Free SEO Crawl Comparison from CSV Exports | Base2026",
+      "h1": "Free SEO crawl comparison",
+      "description": "SEO crawl comparison for CSV exports. Review supplied changes to status, titles, canonicals, robots directives and headings. No crawling or ranking claims.",
+      "og": {
+        "type": "website",
+        "title": "Free SEO Crawl Comparison from CSV Exports | Base2026",
+        "description": "SEO crawl comparison for CSV exports. Review supplied changes to status, titles, canonicals, robots directives and headings. No crawling or ranking claims.",
+        "url": "https://base2026.dev/tools/seo-crawl-comparison/"
+      },
+      "canonical": "https://base2026.dev/tools/seo-crawl-comparison/",
+      "category": "Review a site change",
+      "usecase": "Compare the observations before and after a site change. Keep field changes separate from missing coverage and planned changes.",
+      "inputs": [
+        {
+          "role": "before",
+          "label": "Before crawl CSV",
+          "format": "csv",
+          "required": true,
+          "help": "Required: url. Compare any shared columns: status,title,canonical,robots,h1,description,link_count. Standard header aliases are supported."
+        },
+        {
+          "role": "after",
+          "label": "After crawl CSV",
+          "format": "csv",
+          "required": true,
+          "help": "Use the same columns and crawler scope where possible. Up to 5,000 rows per file. Exact URL joins; no automatic mapping between different URLs."
+        }
+      ],
+      "outputs": [
+        "Results CSV",
+        "Findings CSV",
+        "Readable Markdown report",
+        "JSON input manifest"
+      ],
+      "boundaries": [
+        "Reports supplied snapshot changes, not live page behavior, a ranking effect or the cause of a traffic change.",
+        "A URL found in one partial export is an observation about coverage, not proof that the page was added or deleted.",
+        "Only shared supported fields are compared. Missing columns stay unknown. Invalid or conflicting duplicate rows are excluded from comparison."
+      ],
+      "next": [
+        [
+          "Check a redirect plan",
+          "/tools/redirect-map-checker/"
+        ],
+        [
+          "Build the intended sitemap",
+          "/tools/sitemap-builder/"
+        ]
+      ],
+      "privacy": {
+        "target_fetch": false,
+        "upload": false,
+        "storage": false,
+        "telemetry": false
+      },
+      "assets_prefix": "/static/free-tools/",
+      "source_license": "Apache-2.0",
+      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+    }
+  ]
+}
