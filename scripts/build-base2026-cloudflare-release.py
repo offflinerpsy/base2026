@@ -185,6 +185,68 @@ OLD_SEARCH_PREFIX = "/knowledge-search"
 NEW_SEARCH_PREFIX = "/api/search"
 ASSET_VERSION = "base2026-cloudflare-20260819-01"
 
+
+# Reviewed public local-tool source packages. Technical receipts are never assets.
+FREE_TOOLS_PACKAGE = PROJECT_ROOT / "packages" / "free-tools"
+SITEMAP_TOOL_SOURCE = PROJECT_ROOT / "packages" / "sitemap-builder" / "source"
+FREE_TOOLS_ASSET_PATHS = (
+    "static/free-tools/LICENSE",
+    "static/free-tools/OFL.txt",
+    "static/free-tools/app.mjs",
+    "static/free-tools/b26-seal.webp",
+    "static/free-tools/base2026-core.css",
+    "static/free-tools/batch2-tools.mjs",
+    "static/free-tools/batch2.mjs",
+    "static/free-tools/engine.mjs",
+    "static/free-tools/manrope-latin.woff2",
+    "static/free-tools/sitemap-core.mjs",
+    "static/free-tools/suite.css",
+    "static/free-tools/tools.mjs",
+    "static/free-tools/worker.mjs",
+    "tools/broken-link-task-builder/README.md",
+    "tools/broken-link-task-builder/index.html",
+    "tools/broken-link-task-builder/sample-inlinks.csv",
+    "tools/broken-link-task-builder/sample-statuses.csv",
+    "tools/hreflang-checker/README.md",
+    "tools/hreflang-checker/index.html",
+    "tools/hreflang-checker/sample-map.csv",
+    "tools/indexing-signal-reconciler/README.md",
+    "tools/indexing-signal-reconciler/index.html",
+    "tools/indexing-signal-reconciler/sample-crawl.csv",
+    "tools/indexing-signal-reconciler/sample-gsc.csv",
+    "tools/indexing-signal-reconciler/sample-sitemap.txt",
+    "tools/redirect-map-checker/README.md",
+    "tools/redirect-map-checker/index.html",
+    "tools/redirect-map-checker/sample-map.csv",
+    "tools/redirect-rule-compiler/README.md",
+    "tools/redirect-rule-compiler/index.html",
+    "tools/redirect-rule-compiler/sample-map.csv",
+    "tools/robots-txt-tester/README.md",
+    "tools/robots-txt-tester/index.html",
+    "tools/robots-txt-tester/sample-robots.txt",
+    "tools/robots-txt-tester/sample-urls.txt",
+    "tools/seo-crawl-comparison/README.md",
+    "tools/seo-crawl-comparison/index.html",
+    "tools/seo-crawl-comparison/sample-after.csv",
+    "tools/seo-crawl-comparison/sample-before.csv",
+)
+SITEMAP_TOOL_ASSET_NAMES = (
+    "LICENSE",
+    "OFL.txt",
+    "README.md",
+    "app.css",
+    "app.mjs",
+    "b26-seal.webp",
+    "base2026-core.css",
+    "core.mjs",
+    "index.html",
+    "manrope-latin.woff2",
+    "public.css",
+    "sample-sitemap.xml",
+    "sample-urls.txt",
+    "worker.mjs",
+)
+
 # These are the only reviewed Design & Media exports admitted to a public
 # release.  Keep the output mapping explicit: the repository also contains
 # private/raw media that must never be discovered by a glob or directory copy.
@@ -1368,6 +1430,7 @@ HUB_SITEMAP_ROUTES = (
     "/investors",
     "/source-policy",
     "/founder",
+    "/cases/",
     "/privacy",
     "/partner",
     "/apply-research",
@@ -1384,7 +1447,19 @@ HUB_SITEMAP_ROUTES = (
     "/tools/evidence-search/",
     "/tools/source-diversity-check/",
     "/tools/source-backed-brief/",
+    "/tools/sitemap-builder/",
+    "/tools/robots-txt-tester/",
+    "/tools/redirect-map-checker/",
+    "/tools/hreflang-checker/",
+    "/tools/broken-link-task-builder/",
+    "/tools/seo-crawl-comparison/",
+    "/guides/redirect-map-checklist/",
+    "/guides/hreflang-map-checklist/",
+    "/guides/compare-seo-crawl-exports/",
+    "/tools/indexing-signal-reconciler/",
+    "/tools/redirect-rule-compiler/",
 )
+
 RUNTIME_GUIDE_ROUTES = (
     "/topics/content-freshness",
     "/topics/internal-linking",
@@ -1946,6 +2021,49 @@ def _render_startup_page(template: str, header_html: str, footer_html: str) -> b
         "{{STARTUP_FOOTER}}", footer_html
     )
     return _ensure_social_image_meta(_with_source_lab_runtime(rendered)).encode("utf-8")
+
+
+def _reviewed_local_tool_assets() -> dict[str, bytes]:
+    """Admit only exact public package paths, validating the package manifest."""
+    manifest = json.loads((FREE_TOOLS_PACKAGE / "ASSET-MANIFEST.json").read_text(encoding="utf-8"))
+    records = manifest.get("files", {})
+    if set(records) != set(FREE_TOOLS_ASSET_PATHS):
+        raise ReleaseBuildError("local-tool manifest differs from the public asset allowlist")
+    assets: dict[str, bytes] = {}
+    for relative in FREE_TOOLS_ASSET_PATHS:
+        path = FREE_TOOLS_PACKAGE / "assets" / relative
+        if path.is_symlink() or not path.is_file():
+            raise ReleaseBuildError(f"local-tool asset is not a regular file: {relative}")
+        payload = path.read_bytes()
+        if len(payload) != records[relative].get("bytes") or _sha256(payload) != records[relative].get("sha256"):
+            raise ReleaseBuildError(f"local-tool asset changed from its manifest: {relative}")
+        assets[relative] = payload
+    for name in SITEMAP_TOOL_ASSET_NAMES:
+        path = SITEMAP_TOOL_SOURCE / name
+        if path.is_symlink() or not path.is_file():
+            raise ReleaseBuildError(f"sitemap-tool asset is not a regular file: {name}")
+        assets[f"tools/sitemap-builder/{name}"] = path.read_bytes()
+    return assets
+
+
+def _local_tools_headers() -> str:
+    """Keep the reviewed local-only CSP blocks in deterministic route order."""
+    rules = (FREE_TOOLS_PACKAGE / "CSP-RULES.txt").read_text(encoding="utf-8")
+    blocks = {}
+    for block in rules.strip().split("\n\n"):
+        route = block.splitlines()[0]
+        if route in blocks:
+            raise ReleaseBuildError("duplicate local-tool CSP route")
+        blocks[route] = block
+    order = ["/tools/robots-txt-tester/*", "/tools/redirect-map-checker/*", "/tools/hreflang-checker/*", "/tools/broken-link-task-builder/*", "/tools/seo-crawl-comparison/*", "/static/free-tools/*", "/tools/indexing-signal-reconciler/*", "/tools/redirect-rule-compiler/*"]
+    if set(blocks) != set(order):
+        raise ReleaseBuildError("local-tool CSP routes differ from the reviewed allowlist")
+    csp = "default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; worker-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    expected = lambda route: f"{route}\n  Content-Security-Policy: {csp}\n  Referrer-Policy: no-referrer"
+    if any(blocks[route] != expected(route) for route in order):
+        raise ReleaseBuildError("local-tool CSP differs from the reviewed local-only policy")
+    sitemap = expected("/tools/sitemap-builder/*") + "\n\n/tools/sitemap-builder/\n  Cache-Control: no-cache"
+    return "\n" + sitemap + "\n\n" + "\n\n".join(blocks[route] for route in order) + "\n"
 
 
 def _hub_sitemap_payload() -> bytes:
@@ -2952,7 +3070,7 @@ def build_release(
             write_generated_public_file(relative_name, artifact_text.encode("utf-8"))
 
         write_generated_public_file(ROBOTS_FILENAME, ROBOTS_PAYLOAD.encode("utf-8"))
-        write_generated_public_file(HEADERS_FILENAME, HEADERS_PAYLOAD.encode("utf-8"))
+        write_generated_public_file(HEADERS_FILENAME, (HEADERS_PAYLOAD + (_local_tools_headers() if standalone_startup else "")).encode("utf-8"))
         if standalone_startup:
             sitemap_index_path = stage / "sitemap.xml"
             if not sitemap_index_path.is_file():
@@ -3207,6 +3325,18 @@ def build_release(
                         f"reviewed Tools Studio media changed during build: {name}"
                     )
                 write_reviewed_repository_media(asset, media_payload)
+            # Preserve reviewed package bytes; all paths are public and explicit.
+            for relative_name, payload in _reviewed_local_tool_assets().items():
+                kind = "binary" if Path(relative_name).suffix in {".woff2", ".webp"} else "text"
+                write_generated_public_file(relative_name, payload, kind=kind, normalize_urls=False)
+                # Bind package provenance without weakening unchanged-binary checks.
+                index = next(i for i, record in enumerate(records) if record.relative_path == relative_name)
+                existing = records[index]
+                if kind == "binary" and existing.source_sha256 and existing.source_sha256 != _sha256(payload):
+                    raise ReleaseBuildError(f"retained local-tool binary differs from reviewed package: {relative_name}")
+                records[index] = FileRecord(relative_path=relative_name, source_sha256=_sha256(payload), artifact_sha256=_sha256(payload), source_size=len(payload), artifact_size=len(payload), kind=kind, changed=False)
+            for extension in ("css", "js"):
+                write_generated_public_file(f"static/base2026-toolkit.{extension}", (PROJECT_ROOT / f"templates/base2026-toolkit.{extension}").read_bytes(), normalize_urls=False)
             write_generated_public_file(
                 "tools/index.html",
                 _render_startup_page(

@@ -1,0 +1,2 @@
+https://example.test/guide/
+https://example.test/draft/

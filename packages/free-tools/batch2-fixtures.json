@@ -1,0 +1,134 @@
+[
+  {
+    "fixture_id": "ISR-F01",
+    "tool_id": "indexing-signal-reconciler",
+    "inputs": {
+      "crawl": "url,status,robots,canonical\nhttps://example.test/tools/,200,\"index,follow\",https://example.test/tools/\nhttps://example.test/promo-draft/,200,\"noindex,follow\",https://example.test/promo-draft/\nhttps://example.test/pricing/,200,\"index,follow\",https://example.test/pricing/\nhttps://example.test/guides/deep-audit/,200,\"index,follow\",https://example.test/guides/deep-audit/",
+      "sitemap": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n  <url><loc>https://example.test/tools/</loc></url>\n  <url><loc>https://example.test/promo-draft/</loc></url>\n  <url><loc>https://example.test/pricing/</loc></url>\n  <url><loc>https://example.test/guides/deep-audit/</loc></url>\n</urlset>",
+      "gsc": "url,gsc_status,google_canonical,last_crawl\nhttps://example.test/tools/,Submitted and indexed,https://example.test/tools/,2026-10-12\nhttps://example.test/promo-draft/,Excluded by 'noindex' tag,,2026-10-11\nhttps://example.test/pricing/,Duplicate: Google chose different canonical than user,https://example.test/,2026-10-10\nhttps://example.test/guides/deep-audit/,Crawled - currently not indexed,https://example.test/guides/deep-audit/,2026-10-09"
+    },
+    "options": {}
+  },
+  {
+    "fixture_id": "ISR-F02",
+    "tool_id": "indexing-signal-reconciler",
+    "inputs": {
+      "crawl": "url,status,robots,canonical\nhttps://example.test/,200,\"index,follow\",https://example.test/\nhttps://example.test/guides/,200,\"index,follow\",https://example.test/guides/\nhttps://example.test/guides/?sort=newest,200,\"noindex,follow\",https://example.test/guides/",
+      "sitemap": "https://example.test/\nhttps://example.test/guides/",
+      "gsc": ""
+    },
+    "options": {}
+  },
+  {
+    "fixture_id": "ISR-F03",
+    "tool_id": "indexing-signal-reconciler",
+    "inputs": {
+      "crawl": "url,status,robots,canonical\nhttps://example.test/article,200,\"index,follow\",https://example.test/article/\nhttps://example.test/article/,200,\"index,follow\",https://example.test/article/\nhttps://example.test/old-offer/,200,\"index,follow\",https://example.test/retired-offer/\nhttps://example.test/retired-offer/,404,\"noindex\",https://example.test/retired-offer/",
+      "sitemap": "https://example.test/article\nhttps://example.test/article/",
+      "gsc": ""
+    },
+    "options": {}
+  },
+  {
+    "fixture_id": "ISR-F04",
+    "tool_id": "indexing-signal-reconciler",
+    "inputs": {
+      "crawl": "url,status,robots,canonical\nhttps://example.test/syndicated-post/,200,\"index,follow\",https://partner.example.org/original-post/",
+      "sitemap": "",
+      "gsc": ""
+    },
+    "options": {}
+  },
+  {
+    "fixture_id": "ISR-F05",
+    "tool_id": "indexing-signal-reconciler",
+    "inputs": {
+      "crawl": "page_path,http_code\n/tools/,200",
+      "sitemap": "",
+      "gsc": ""
+    },
+    "options": {}
+  },
+  {
+    "fixture_id": "ISR-F06",
+    "tool_id": "indexing-signal-reconciler",
+    "inputs": {
+      "crawl": "url,status,robots,canonical\nhttps://example.test/variant-page/,200,\"index,follow\",https://example.test/primary-page/\nhttps://example.test/primary-page/,,\"index,follow\",https://example.test/primary-page/",
+      "sitemap": "https://example.test/primary-page/",
+      "gsc": ""
+    },
+    "options": {}
+  },
+  {
+    "fixture_id": "RRC-F01",
+    "tool_id": "redirect-rule-compiler",
+    "inputs": {
+      "map": "from,to,status\n/legacy-seo,/old-seo,301\n/old-seo,/tools/seo-crawl-comparison/,308\n/guides/old-checklist,/guides/redirect-map-checklist/,301\n/guides/old-checklist,/guides/redirect-map-checklist/,301"
+    },
+    "options": {
+      "target_platform": "cloudflare_redirects_exact_mvp",
+      "default_status": "301",
+      "flatten_chains": true
+    }
+  },
+  {
+    "fixture_id": "RRC-F02",
+    "tool_id": "redirect-rule-compiler",
+    "inputs": {
+      "map": "from,to,status\nhttps://example.test/services/audit,https://example.test/tools/page-readiness/,301\nhttps://example.test/sitemap-tool,https://example.test/tools/sitemap-builder/,308"
+    },
+    "options": {
+      "target_platform": "cloudflare_redirects_exact_mvp",
+      "default_status": "301",
+      "flatten_chains": true
+    }
+  },
+  {
+    "fixture_id": "RRC-F03",
+    "tool_id": "redirect-rule-compiler",
+    "inputs": {
+      "map": "from,to,status\n/blog/*,/articles/:splat,301\n/guide#top,/guides/,301\n/old page,/new-page/,301\n/clean-path,/tools/,301"
+    },
+    "options": {
+      "target_platform": "cloudflare_redirects_exact_mvp",
+      "default_status": "301",
+      "flatten_chains": true
+    }
+  },
+  {
+    "fixture_id": "RRC-F04",
+    "tool_id": "redirect-rule-compiler",
+    "inputs": {
+      "map": "from,to,status\n/item?sku=9,/catalog/sku-9/,\n/loop-a,/loop-b,301\n/loop-b,/loop-a,301\n/promo,/offers/?utm=legacy,301"
+    },
+    "options": {
+      "target_platform": "cloudflare_redirects_exact_mvp",
+      "default_status": "301",
+      "flatten_chains": true
+    }
+  },
+  {
+    "fixture_id": "RRC-F05",
+    "tool_id": "redirect-rule-compiler",
+    "inputs": {
+      "map": "from,target_url\n/old,/new"
+    },
+    "options": {
+      "target_platform": "cloudflare_redirects_exact_mvp",
+      "default_status": "301",
+      "flatten_chains": true
+    }
+  },
+  {
+    "fixture_id": "RRC-F06",
+    "tool_id": "redirect-rule-compiler",
+    "inputs": {
+      "map": "from,to,status\nhttps://alpha.example.test/page-a,https://alpha.example.test/new-a,301\nhttps://beta.example.test/page-b,https://alpha.example.test/new-b,301"
+    },
+    "options": {
+      "target_platform": "cloudflare_redirects_exact_mvp",
+      "default_status": "301",
+      "flatten_chains": true
+    }
+  }
+]

@@ -15,7 +15,7 @@ The included [sample URL list](./sample-urls.txt) and [sample sitemap](./sample-
 - [app.mjs](./app.mjs): accessible preview, state reset and Blob downloads.
 - [index.html](./index.html), [app.css](./app.css), [public.css](./public.css), [base2026-core.css](./base2026-core.css): interface and styling.
 
-To run locally, keep these files together with `manrope-latin.woff2` and `b26-seal.webp`, then serve the folder over HTTP, for example `python3 -m http.server 8000 --bind 127.0.0.1`. Open `http://127.0.0.1:8000/`. JavaScript, Web Workers and a secure browser context are required. Production hosting should retain a Content Security Policy with `connect-src 'none'`, same-origin scripts/workers/styles/fonts and no third-party analytics script on the tool page.
+To run locally, keep these files together with `manrope-latin.woff2` and `b26-seal.webp`, then serve the folder over HTTP, for example `python3 -m http.server 8000 --bind 127.0.0.1`. Open the loopback server address printed by the development server. JavaScript, Web Workers and a secure browser context are required. Production hosting should retain a Content Security Policy with `connect-src 'none'`, same-origin scripts/workers/styles/fonts and no third-party analytics script on the tool page.
 
 ## Scope and privacy
 

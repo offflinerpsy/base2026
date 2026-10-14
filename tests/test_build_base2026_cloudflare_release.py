@@ -1382,3 +1382,81 @@ def test_changed_editorial_media_cannot_reach_a_release(tmp_path: Path, monkeypa
     with pytest.raises(builder.ReleaseBuildError, match="editorial asset"):
         builder.build_release(source, output, homepage_template=builder.DEFAULT_HOMEPAGE_TEMPLATE, homepage_stylesheet=builder.DEFAULT_HOMEPAGE_STYLESHEET)
     assert not output.exists()
+
+
+def test_local_tool_packages_use_exact_public_paths_and_hashes() -> None:
+    assets = builder._reviewed_local_tool_assets()
+    assert len(assets) == 53  # 39 portfolio assets plus 14 unchanged sitemap assets.
+    manifest = json.loads((ROOT / "packages/free-tools/ASSET-MANIFEST.json").read_text())
+    assert set(manifest["files"]) <= set(assets)
+    for relative, metadata in manifest["files"].items():
+        assert hashlib.sha256(assets[relative]).hexdigest() == metadata["sha256"]
+        assert len(assets[relative]) == metadata["bytes"]
+    assert not any("EVIDENCE" in path or "PREVIEW" in path for path in assets)
+
+
+def test_local_tool_manifest_rejects_extra_path_or_changed_bytes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import shutil
+    source = ROOT / "packages/free-tools"
+    package = tmp_path / "package"
+    shutil.copytree(source / "assets", package / "assets")
+    manifest_path = package / "ASSET-MANIFEST.json"
+    original = json.loads((source / "ASSET-MANIFEST.json").read_text())
+    manifest_path.write_text(json.dumps(original))
+    monkeypatch.setattr(builder, "FREE_TOOLS_PACKAGE", package)
+    injected = json.loads(json.dumps(original))
+    injected["files"]["private.txt"] = {"bytes": 0, "sha256": "0" * 64}
+    manifest_path.write_text(json.dumps(injected))
+    with pytest.raises(builder.ReleaseBuildError, match="allowlist"):
+        builder._reviewed_local_tool_assets()
+    manifest_path.write_text(json.dumps(original))
+    (package / "assets/static/free-tools/app.mjs").write_text("changed")
+    with pytest.raises(builder.ReleaseBuildError, match="changed from its manifest"):
+        builder._reviewed_local_tool_assets()
+
+
+def test_catalog_batch2_cards_schema_and_local_policy_are_consistent() -> None:
+    import re
+    text = builder.DEFAULT_TOOLS_STUDIO_TEMPLATE.read_text()
+    cards = re.findall(r'<article\b[^>]*data-tool-card[^>]*>.*?</article>', text, re.S)
+    assert len(cards) == 12
+    schemas = [json.loads(match) for match in re.findall(r'<script type="application/ld\+json">(.*?)</script>', text, re.S)]
+    collection = next(schema for schema in schemas if schema.get("@type") == "CollectionPage")
+    items = collection["mainEntity"]["itemListElement"]
+    assert collection["mainEntity"]["numberOfItems"] == len(items) == 12
+    routes = [item["item"]["url"].removeprefix("https://base2026.dev") for item in items]
+    assert len(set(routes)) == 12
+    for route in routes:
+        assert sum(f'href="{route}"' in card for card in cards) == 1
+    for slug in ["sitemap-builder", "robots-txt-tester"]:
+        card = next(card for card in cards if f'href="/tools/{slug}/"' in card)
+        assert "ux-card-guide" not in card
+    headers = builder.HEADERS_PAYLOAD + builder._local_tools_headers()
+    for slug in ["indexing-signal-reconciler", "redirect-rule-compiler"]:
+        assert headers.count(f"/tools/{slug}/*\n") == 1
+        assert builder._hub_sitemap_payload().count(f"https://base2026.dev/tools/{slug}/".encode()) == 1
+
+
+def test_startup_local_tool_package_bytes_reach_the_canonical_builder(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = tmp_path / "source-web"
+    output = tmp_path / "release"
+    write_fixture(source)
+    write_legacy_plugin_fixture(source, monkeypatch)
+    (source / "index.html").write_text((source / "index.html").read_text().replace("/wp-admin/admin-post.php", "/support.html"))
+    homepage = tmp_path / "homepage.html"
+    stylesheet = tmp_path / "homepage.css"
+    homepage.write_text('<!doctype html><link rel="canonical" href="https://base2026.dev/">{{STARTUP_HEADER}}<main>Tools</main>{{STARTUP_FOOTER}}')
+    stylesheet.write_text("body{color:#111820}")
+    receipt = builder.build_release(source, output, homepage_template=homepage, homepage_stylesheet=stylesheet)
+    for relative, payload in builder._reviewed_local_tool_assets().items():
+        assert (output / relative).read_bytes() == payload
+    assert (output / "_headers").read_text() == builder.HEADERS_PAYLOAD + builder._local_tools_headers()
+    assert (output / builder.HUB_SITEMAP_FILENAME).read_bytes() == builder._hub_sitemap_payload()
+    assert (output / "static/base2026-toolkit.js").read_bytes() == (ROOT / "templates/base2026-toolkit.js").read_bytes()
+    assert (output / "static/base2026-toolkit.css").read_bytes() == (ROOT / "templates/base2026-toolkit.css").read_bytes()
+    assert receipt["verification"]["binary_bytes_preserved"] is True
+    assert receipt["counts"]["binary_files_byte_preserved"] > 0

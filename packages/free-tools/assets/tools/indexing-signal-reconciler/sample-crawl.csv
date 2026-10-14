@@ -1,0 +1,4 @@
+url,status,robots,canonical
+https://example.test/guide/,200,"index,follow",https://example.test/guide/
+https://example.test/draft/,200,"noindex,follow",https://example.test/draft/
+https://example.test/variant/,200,"index,follow",https://example.test/unknown/
