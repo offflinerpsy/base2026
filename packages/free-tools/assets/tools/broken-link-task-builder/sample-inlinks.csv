@@ -1,0 +1,6 @@
+source,target,anchor
+https://example.test/,https://example.test/removed,Read the guide
+https://example.test/services/,https://example.test/removed,Our guide
+https://example.test/,https://example.test/retired,Old resource
+https://example.test/,https://example.test/rate-limited,Reference
+https://example.test/,https://example.test/unavailable,Another reference

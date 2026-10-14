@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="index,follow">
+  <title>Free Sitemap Builder and XML Comparison | Base2026</title>
+  <meta name="description" content="Free sitemap builder for a supplied URL list. Create XML, compare an existing sitemap and export added or missing URLs. Local processing; no signup or crawl.">
+  <meta name="referrer" content="no-referrer">
+  <link rel="canonical" href="https://base2026.dev/tools/sitemap-builder/">
+  <meta property="og:type" content="website"><meta property="og:title" content="Free Sitemap Builder and XML Comparison | Base2026">
+  <meta property="og:description" content="Free sitemap builder for a supplied URL list. Create XML, compare an existing sitemap and export added or missing URLs. Local processing; no signup or crawl."><meta property="og:url" content="https://base2026.dev/tools/sitemap-builder/">
+  <meta name="twitter:title" content="Free Sitemap Builder and XML Comparison | Base2026">
+  <meta name="twitter:description" content="Free sitemap builder for a supplied URL list. Create XML, compare an existing sitemap and export added or missing URLs. Local processing; no signup or crawl.">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","@id":"https://base2026.dev/tools/sitemap-builder/#app","name":"Base2026 Sitemap Builder","url":"https://base2026.dev/tools/sitemap-builder/","description":"Free sitemap builder for a supplied URL list. Create XML, compare an existing sitemap and export added or missing URLs. Local processing; no signup or crawl.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","isAccessibleForFree":true,"browserRequirements":"JavaScript and Web Workers","license":"https://www.apache.org/licenses/LICENSE-2.0","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Base2026","item":"https://base2026.dev/"},{"@type":"ListItem","position":2,"name":"Free tools","item":"https://base2026.dev/tools/"},{"@type":"ListItem","position":3,"name":"Sitemap Builder","item":"https://base2026.dev/tools/sitemap-builder/"}]}</script>
+  <link rel="icon" href="./b26-seal.webp"><link rel="stylesheet" href="./base2026-core.css"><link rel="stylesheet" href="./app.css"><link rel="stylesheet" href="./public.css">
+  <script type="module" src="./app.mjs"></script>
+<meta property="og:site_name" content="Base2026">
+<meta property="og:image" content="https://base2026.dev/static/assets/tools-studio/tools-studio-social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Base2026 conceptual research illustration: find the source, keep the context and build the brief.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://base2026.dev/static/assets/tools-studio/tools-studio-social.png">
+<meta name="twitter:image:alt" content="Base2026 conceptual research illustration: find the source, keep the context and build the brief.">
+</head>
+<body class="b26-form-page">
+  <a class="skip-link" href="#main">Skip to sitemap builder</a>
+  <header class="b26-site-header"><div class="b26-site-header__inner"><a class="b26-wordmark" href="/" aria-label="Base2026 home"><img class="b26-wordmark__seal" src="./b26-seal.webp" alt="" width="44" height="44"><span class="b26-wordmark__text"><span>Base</span><strong>2026</strong></span></a><nav class="tool-nav" aria-label="Product navigation"><a href="/tools/">All tools</a><a href="#how-it-works">How it works</a><a href="./README.md">Source code</a><a href="/solutions/">SEO guides</a><a href="/topics/">Research</a></nav></div></header>
+  <main id="main" class="workbench">
+    <section class="intro"><p class="b26-eyebrow">Free sitemap builder · no signup</p><h1>Free sitemap builder</h1><p>Build a sitemap for one host and compare it with an existing XML file. Review every inclusion, exclusion and exact duplicate before you download.</p></section>
+    <section class="panel" id="form" aria-labelledby="import-title" aria-busy="false">
+      <h2 id="import-title">Import your files</h2>
+      <p class="help">UTF-8 files · up to 5,000 URL records per input · 2 MiB per file · 4 MiB combined. One host per sitemap.</p>
+      <p class="sample-links">Want to try it first? Download the <a href="./sample-urls.txt" download>sample URL list</a> and <a href="./sample-sitemap.xml" download>sample sitemap</a>, then import both files and choose <code>example.test</code>. These are made-up URLs.</p>
+      <div class="files">
+        <div><label for="expected">Expected URLs <span aria-hidden="true">*</span></label><input id="expected" type="file" accept=".txt,.csv" aria-describedby="expected-help"><span class="help" id="expected-help">TXT: one absolute HTTP(S) URL per line. CSV: one column, or a url/loc header. Only exact duplicates are removed.</span></div>
+        <div><label for="existing">Existing sitemap <span class="help-inline">(optional)</span></label><input id="existing" type="file" accept=".xml" aria-describedby="existing-help"><span class="help" id="existing-help">One XML urlset. Sitemap indexes and XML extensions are unsupported. URLs in the file are never visited.</span></div>
+      </div>
+      <div class="actions"><button id="import" type="button" class="b26-button--primary">Import files</button><button id="clear" type="button" class="b26-button--secondary">Clear files &amp; results</button></div>
+      <label for="host">Include URLs from one host</label><select id="host" disabled><option value="">Import files, then choose a host</option></select>
+      <span class="help">Host matching includes a non-default port. Path, query, case and trailing slash stay exactly as supplied. Credentials and fragments are excluded.</span>
+      <button id="build" type="button" class="b26-button--primary" disabled>Build &amp; compare</button>
+      <div id="status" class="notice" role="status" aria-live="polite" tabindex="-1">Choose your expected URL file to begin.</div>
+    </section>
+    <section id="results" class="panel" hidden tabindex="-1" aria-labelledby="result-title">
+      <h2 id="result-title">Review your sitemap</h2><p id="comparison" class="help"></p><div id="counts"></div>
+      <div class="actions"><button type="button" class="b26-button--primary" data-download="xml">Download sitemap XML</button><button type="button" class="b26-button--secondary" data-download="csv">Changes CSV</button><button type="button" class="b26-button--secondary" data-download="manifest">Manifest JSON</button><button type="button" class="b26-button--secondary" data-download="report">Readable report</button></div>
+      <p class="help">Added means expected-only: URLs to add to the supplied sitemap. Missing means existing-only: URLs left out of the new sitemap. Neither label describes Google indexing.</p>
+      <p class="help">Lastmod is copied only from a supplied exact XML match with valid date syntax; otherwise it is omitted. Site coverage, HTTP status and canonical are unknown.</p>
+      <div class="actions filters" role="group" aria-label="Preview record category"><button class="b26-button--secondary" data-category="included" aria-pressed="true">Included</button><button class="b26-button--secondary" data-category="added" aria-pressed="false">Added</button><button class="b26-button--secondary" data-category="missing" aria-pressed="false">Missing</button><button class="b26-button--secondary" data-category="excluded" aria-pressed="false">Excluded</button><button class="b26-button--secondary" data-category="duplicate" aria-pressed="false">Duplicates</button></div>
+      <table aria-label="URL preview"><thead><tr><th scope="col">URL (exact input)</th><th scope="col">Source</th><th scope="col">Record</th><th scope="col">Reason</th></tr></thead><tbody id="rows"></tbody></table>
+      <div class="actions"><button id="prev" class="b26-button--secondary">Previous</button><span id="page-label" role="status"></span><button id="next" class="b26-button--secondary">Next</button></div>
+      <details><summary>Warnings</summary><pre id="warnings"></pre></details><details><summary>XML preview</summary><pre id="xml-preview"></pre></details>
+    </section>
+    <p class="help">Inputs and results remain in tab memory until cleared or closed. Downloads are files you choose to keep. No uploads, URL requests, analytics or AI calls are used.</p>
+    <section class="panel tool-explanation" id="how-it-works" aria-labelledby="how-title">
+      <h2 id="how-title">From your URL list to a file you can review.</h2>
+      <ol><li><strong>Import the URLs you intend to include.</strong> Use a UTF-8 TXT or CSV file. Add one existing XML urlset if you want a comparison.</li><li><strong>Choose one host and review the result.</strong> Check the added, missing, excluded and duplicate records. URL paths, queries, letter case and trailing slashes are preserved.</li><li><strong>Download the files you need.</strong> Get the sitemap XML, changes CSV, input manifest or readable report. Review the sitemap before adding it to your own site.</li></ol>
+      <details><summary>Will this crawl my website or check Google indexing?</summary><p>No. It processes the files you choose in your browser. It does not visit the URLs, validate HTTP status, choose canonical URLs or submit anything to a search engine. A valid sitemap does not guarantee indexing.</p></details>
+      <details><summary>Which sitemap files can I compare?</summary><p>One XML <code>urlset</code>, with up to 5,000 URL records and 2 MiB per file. Sitemap indexes, XML extensions, DOCTYPE and entity declarations are unsupported. A lastmod value is copied only from a matching supplied URL with valid date syntax; it is never guessed.</p></details>
+      <details><summary>Where do my files go?</summary><p>The app processes them in this tab. Inputs and results remain in tab memory until you clear them or close the tab. Downloads are files you choose to keep. The app makes no uploads, target URL requests, analytics calls or AI calls.</p></details>
+      <p class="source-links">Built with open-source JavaScript. <a href="./README.md">Read the source and run it locally</a>. For a page you are editing, <a href="/tools/page-readiness/">check its HTML source</a>.</p>
+    </section>
+    <noscript><p class="notice error">JavaScript and Web Workers are required for local processing. Enable JavaScript and reload.</p></noscript>
+  <section class="panel tool-panel"><h2>Related SEO guides</h2><ul><li><a href="/guides/redirect-map-checklist/">How to check a redirect map before a site change</a></li><li><a href="/guides/compare-seo-crawl-exports/">How to compare two SEO crawl exports and turn changes into tasks</a></li></ul></section></main>
+  <footer class="b26-site-footer"><div class="local-footer"><img src="./b26-seal.webp" alt="" width="36" height="36"><span>Base2026 · Sitemap Builder<br>Your files. Clear rules. A result you can inspect. <a href="/tools/">Explore all free tools</a> · <a href="https://github.com/offflinerpsy/base2026" rel="noopener noreferrer">GitHub</a></span></div></footer>
+</body>
+</html>

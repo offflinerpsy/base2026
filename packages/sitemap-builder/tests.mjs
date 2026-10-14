@@ -1,0 +1,53 @@
+import assert from 'node:assert/strict';
+import {writeFileSync,readFileSync} from 'node:fs';
+import {checkSizes,decode,expectedRows,xmlRows,urlHost,build,csvRows,csvCell,LIMITS} from './source/core.mjs';
+const NS = 'http://www.sitemaps.org/schemas/sitemap/0.9';
+export const expected = 'https://example.test/A\nhttps://example.test/A/\nhttps://example.test/a\nhttps://example.test/q?x=1&y=2\nhttps://example.test/東京?c=é\nhttps://example.test/A\nhttps://other.test/b\n<script>globalThis.PWNED=1</script>\n=HYPERLINK("https://bad.test")\nhttps://example.test/f#part\nhttps://user:pass@example.test/private\n';
+export const existing = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="${NS}"><url><loc>https://example.test/A</loc><lastmod>2026-10-01</lastmod></url><url><loc>https://example.test/removed</loc></url><url><loc>https://example.test/removed</loc></url><url><loc>https://other.test/old</loc></url></urlset>`;
+const fixtures = {expected,existing,host:'example.test'};
+const checks = [];
+function test(name, fn) { try { fn(); checks.push({name,status:'PASS'}); } catch(e) { checks.push({name,status:'FAIL',error:e.message}); } }
+const e = expectedRows(expected,'txt'), x = xmlRows(existing);
+const result = build(e,x,'example.test',[], '2026-10-08T00:00:00Z');
+test('exact counts and reasons across both inputs',()=>assert.deepEqual(result.manifest.counts,{expected_records:11,existing_records:4,included:5,existing_included:2,added:4,missing:1,excluded:6,duplicate:2,exclusion_reasons:{'other-host':2,'invalid-absolute-http-url':2,'credentials-or-fragment':2}}));
+test('diff direction exact expected-only and existing-only',()=> { assert.deepEqual(result.added.map(r=>r.url),['https://example.test/A/','https://example.test/a','https://example.test/q?x=1&y=2','https://example.test/東京?c=é']); assert.deepEqual(result.missing.map(r=>r.url),['https://example.test/removed']); });
+test('XML round trip includes every expected URL unchanged and sorted',()=>assert.deepEqual(xmlRows(result.xml).rows.map(r=>r.url),['https://example.test/A','https://example.test/A/','https://example.test/a','https://example.test/q?x=1&y=2','https://example.test/東京?c=é']));
+test('XML ampersands escaped; absent lastmod omitted',()=> { assert.ok(result.xml.includes('x=1&amp;y=2')); assert.equal((result.xml.match(/<lastmod>/g)||[]).length,1); assert.ok(result.xml.includes('<lastmod>2026-10-01</lastmod>')); });
+test('exported CSV can be read including inert formula defense',()=> { const rows = csvRows(result.csv,30000); assert.equal(rows.length,14); assert.ok(rows.some(r=>r[3].startsWith("'=HYPERLINK"))); assert.ok(rows.some(r=>r[3]==='<script>globalThis.PWNED=1</script>')); });
+test('CSV RFC quoting embedded comma quote newline and CRLF',()=>assert.deepEqual(csvRows('url,note\r\n"https://example.test/q?a=1,b=2","quote "" and\nnewline"\r\n'),[['url','note'],['https://example.test/q?a=1,b=2','quote " and\nnewline']]));
+test('single column headerless CSV accepted; extra columns explicitly warned',()=> { assert.equal(expectedRows('https://example.test/one\n','csv').rows.length,1); assert.equal(expectedRows('url,title\nhttps://example.test/one,a\n','csv').warnings.length,1); });
+test('CSV loc header and exact duplicate classification',()=> { const p=expectedRows('loc\nhttps://example.test/A\nhttps://example.test/A\n','csv'); const r=build(p,undefined,'example.test',[], 'now'); assert.equal(r.manifest.counts.duplicate,1); });
+test('no comparison differs from empty XML comparison',()=> { const r=build(e,undefined,'example.test',[],'now'); assert.equal(r.added.length,0); assert.equal(r.manifest.scope.comparison,false); assert.equal(build(e,xmlRows(`<urlset xmlns="${NS}"/>`),'example.test',[],'now').added.length,5); });
+test('host explicitly required and never inferred',()=> { assert.throws(()=>build(e,x,'',[],'now')); assert.throws(()=>build(e,x,'absent.test',[],'now')); });
+test('host classifier never serializes URL; ports IDN and host case',()=> { assert.equal(urlHost('https://EXAMPLE.test:443/A?b=2&a=1').host,'example.test'); assert.equal(urlHost('http://example.test:8080/A').host,'example.test:8080'); assert.ok(urlHost('https://例.test/a').host.startsWith('xn--')); });
+test('UTF-8 BOM accepted and malformed UTF-8/UTF-16/NUL rejected',()=> { assert.equal(decode(new Uint8Array([239,187,191,65])),'A'); for(const bytes of [[255,254,65,0],[195,40],[0]]) assert.throws(()=>decode(new Uint8Array(bytes))); });
+test('whitespace trimming disclosed and URL query retained',()=> { const p=expectedRows(' https://example.test/A?x=2&x=1 \n','txt'); assert.equal(p.rows[0].url,'https://example.test/A?x=2&x=1'); assert.equal(p.warnings.length,1); });
+test('formula defense = + - @ including leading whitespace',()=> { for(const s of ['=1','+SUM(1)','-1','@sum','\t=1','\r+1']) assert.equal(csvRows(csvCell(s))[0][0],"'"+s); });
+test('CSV malformed structures fail closed',()=> { for(const s of ['url\n"unterminated','url\n"x"bad','ur,l\nx,y','url,name\nx']) assert.throws(()=>expectedRows(s,'csv')); });
+const wrap = inner=>`<urlset xmlns="${NS}">${inner}</urlset>`;
+fixtures.badXml = [
+  '<urlset>', wrap('<url><loc>https://example.test/a</url>'), wrap('<url/>'), wrap('<url><loc>a</loc><loc>b</loc></url>'),
+  '<!DOCTYPE urlset SYSTEM "https://outside.test/x">'+wrap(''), '<!DOCTYPE urlset [<!ENTITY x "boom">]>'+wrap(''),
+  wrap('<url><loc>&custom;</loc></url>'), wrap('<url><loc>&#0;</loc></url>'), wrap('<url><loc>https://a/?x=1&bad=2</loc></url>'),
+  `<sitemapindex xmlns="${NS}"/>`, wrap('<script>globalThis.PWNED=1</script>'), wrap('<url><loc><b>x</b></loc></url>'),
+  wrap('<url loc="x"/>'), wrap('')+'<other/>', wrap('')+wrap(''), '<urlset xmlns="wrong"/>',
+  wrap('<url><loc>abc]]></loc></url>'), '<!--bad--comment-->'+wrap(''), '<?xml version="1.0" encoding="ISO-8859-1"?>'+wrap(''),
+  wrap('<url><loc>&#xD800;</loc></url>'), wrap('<url><loc>\u0001</loc></url>')
+];
+for(let i=0;i<fixtures.badXml.length;i++) test(`malformed/unsupported XML rejection ${i+1}`,()=>assert.throws(()=>xmlRows(fixtures.badXml[i])));
+test('namespace prefix, comments, numeric entities and CDATA preserved inertly',()=> { const p=xmlRows(`<s:urlset xmlns:s="${NS}"><!--note--><s:url><s:loc><![CDATA[https://example.test/東京?x=1&y=2]]></s:loc></s:url><s:url><s:loc>https://example.test/&#x41;</s:loc></s:url></s:urlset>`); assert.equal(p.rows[0].url,'https://example.test/東京?x=1&y=2'); assert.equal(p.rows[1].url,'https://example.test/A'); });
+test('invalid supplied lastmod omitted with warning',()=> { for(const date of ['not-a-date','2026-02-30']) { const r=build(expectedRows('https://example.test/A','txt'),xmlRows(wrap(`<url><loc>https://example.test/A</loc><lastmod>${date}</lastmod></url>`)),'example.test',[],'now'); assert.ok(!r.xml.includes('lastmod')); assert.ok(r.manifest.warnings.some(w=>w.reason.includes('Invalid lastmod'))); } });
+test('valid timezone lastmod stays exact across UTC day boundary',()=> { const r=build(expectedRows('https://example.test/A','txt'),xmlRows(wrap('<url><loc>https://example.test/A</loc><lastmod>2026-10-01T00:00:00+09:00</lastmod></url>')),'example.test',[],'now'); assert.ok(r.xml.includes('<lastmod>2026-10-01T00:00:00+09:00</lastmod>')); });
+test('apostrophe astral Unicode percent encoding and query ordering round trip',()=> { const urls=["https://example.test/it's?b=2&a=1",'https://example.test/🦊/%2F?x=%26&x=1']; const r=build(expectedRows(urls.join('\n'),'txt'),undefined,'example.test',[],'now'); assert.deepEqual(xmlRows(r.xml).rows.map(r=>r.url),urls.sort()); });
+test('XML quote pairing case-sensitive declaration and prototype attributes rejected',()=> { for(const value of ["<?xml version=\"1.0'?>"+wrap(''),'<?XML version="1.0"?>'+wrap(''),wrap('<url __proto__="x"><loc>a</loc></url>')]) assert.throws(()=>xmlRows(value)); });
+test('ignored priority/changefreq disclosed with no invented replacement',()=> { const p=xmlRows(wrap('<url><loc>https://example.test/A</loc><priority>1.0</priority><changefreq>daily</changefreq></url>')); assert.ok(p.warnings.some(w=>w.reason.includes('ignored'))); const r=build(expectedRows('https://example.test/A','txt'),p,'example.test',[],'now'); assert.ok(!r.xml.includes('priority')); assert.ok(!r.xml.includes('changefreq')); });
+const upperTxt=Array.from({length:5000},(_,i)=>`https://example.test/${i}`).join('\n');
+const upperXml=wrap(Array.from({length:5000},(_,i)=>`<url><loc>https://example.test/${i}</loc></url>`).join(''));
+test('TXT CSV XML accept exactly 5,000 URL records',()=> { assert.equal(expectedRows(upperTxt,'txt').rows.length,5000); assert.equal(expectedRows('url\n'+upperTxt,'csv').rows.length,5000); assert.equal(xmlRows(upperXml).rows.length,5000); });
+test('TXT CSV XML reject 5,001 records including duplicate records',()=> { assert.throws(()=>expectedRows(upperTxt+'\nhttps://example.test/0','txt')); assert.throws(()=>expectedRows('url\n'+upperTxt+'\nhttps://example.test/0','csv')); assert.throws(()=>xmlRows(upperXml.replace('</urlset>','<url><loc>https://example.test/0</loc></url></urlset>'))); });
+test('metadata limits before any file read: 2 MiB each / 4 MiB combined',()=> { assert.equal(checkSizes([{size:LIMITS.fileBytes},{size:LIMITS.fileBytes}]),LIMITS.totalBytes); assert.throws(()=>checkSizes([{size:LIMITS.fileBytes+1}])); assert.throws(()=>checkSizes([{size:LIMITS.fileBytes},{size:LIMITS.fileBytes+1}])); assert.throws(()=>decode(new Uint8Array(LIMITS.fileBytes+1))); });
+test('maximum-byte bounded valid TXT and XML fixtures',()=> { assert.equal(expectedRows('https://example.test/A\n'+' '.repeat(LIMITS.fileBytes-23),'txt').rows.length,1); const padded=wrap('<!--'+' '.repeat(LIMITS.fileBytes-wrap('').length-7)+'-->'); assert.equal(Buffer.byteLength(padded),LIMITS.fileBytes); assert.equal(xmlRows(padded).rows.length,0); });
+test('manifest retains provenance unknowns and content privacy declarations',()=> { const m=JSON.parse(JSON.stringify(result.manifest)); assert.equal(m.ruleset,'base2026.sitemap-local/1.0.2'); assert.equal(m.completeness.site_coverage,'UNKNOWN'); assert.equal(m.privacy.target_fetch,false); assert.equal(m.privacy.public_api,false); });
+writeFileSync(new URL('./FIXTURES.json',import.meta.url),JSON.stringify(fixtures,null,2)+'\n');
+writeFileSync(new URL('./TEST-EVIDENCE.json',import.meta.url),JSON.stringify({node:process.version,observed_at:new Date().toISOString(),checks,passed:checks.filter(r=>r.status==='PASS').length,failed:checks.filter(r=>r.status==='FAIL').length},null,2)+'\n');
+if(checks.some(r=>r.status==='FAIL')) { console.log(checks.filter(r=>r.status==='FAIL')); process.exitCode=1; } else console.log(`${checks.length} meaningful checks passed`);

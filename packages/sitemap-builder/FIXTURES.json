@@ -1,0 +1,28 @@
+{
+  "expected": "https://example.test/A\nhttps://example.test/A/\nhttps://example.test/a\nhttps://example.test/q?x=1&y=2\nhttps://example.test/東京?c=é\nhttps://example.test/A\nhttps://other.test/b\n<script>globalThis.PWNED=1</script>\n=HYPERLINK(\"https://bad.test\")\nhttps://example.test/f#part\nhttps://user:pass@example.test/private\n",
+  "existing": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>https://example.test/A</loc><lastmod>2026-10-01</lastmod></url><url><loc>https://example.test/removed</loc></url><url><loc>https://example.test/removed</loc></url><url><loc>https://other.test/old</loc></url></urlset>",
+  "host": "example.test",
+  "badXml": [
+    "<urlset>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>https://example.test/a</url></urlset>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url/></urlset>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>a</loc><loc>b</loc></url></urlset>",
+    "<!DOCTYPE urlset SYSTEM \"https://outside.test/x\"><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"></urlset>",
+    "<!DOCTYPE urlset [<!ENTITY x \"boom\">]><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"></urlset>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>&custom;</loc></url></urlset>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>&#0;</loc></url></urlset>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>https://a/?x=1&bad=2</loc></url></urlset>",
+    "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><script>globalThis.PWNED=1</script></urlset>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc><b>x</b></loc></url></urlset>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url loc=\"x\"/></urlset>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"></urlset><other/>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"></urlset><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"></urlset>",
+    "<urlset xmlns=\"wrong\"/>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>abc]]></loc></url></urlset>",
+    "<!--bad--comment--><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"></urlset>",
+    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"></urlset>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>&#xD800;</loc></url></urlset>",
+    "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>\u0001</loc></url></urlset>"
+  ]
+}

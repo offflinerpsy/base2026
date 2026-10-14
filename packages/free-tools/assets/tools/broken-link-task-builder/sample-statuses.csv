@@ -1,0 +1,5 @@
+url,status,observed_at
+https://example.test/removed,404,2026-10-01
+https://example.test/retired,410,2026-10-01
+https://example.test/rate-limited,429,2026-10-01
+https://example.test/unavailable,503,2026-10-01

@@ -1,0 +1,4 @@
+https://example.test/
+https://example.test/drafts/article
+https://example.test/drafts/public
+https://example.test/private/file
