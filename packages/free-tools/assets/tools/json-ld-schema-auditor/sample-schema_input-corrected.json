@@ -1,0 +1,30 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@id": "#article",
+      "@type": "Article",
+      "headline": "A practical site migration checklist",
+      "datePublished": "2026-10-01",
+      "author": {
+        "@id": "#author"
+      },
+      "publisher": {
+        "@id": "#publisher"
+      },
+      "license": {
+        "@id": "https://license.example.test/terms"
+      }
+    },
+    {
+      "@id": "#author",
+      "@type": "Person",
+      "name": "Morgan Lee"
+    },
+    {
+      "@id": "#publisher",
+      "@type": "Organization",
+      "name": "Example Publishing"
+    }
+  ]
+}
