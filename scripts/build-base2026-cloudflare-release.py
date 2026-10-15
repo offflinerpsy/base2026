@@ -2687,6 +2687,9 @@ def _rewrite_workspace_html(
     for quote in ('"', "'"):
         text = text.replace(f"{quote}./static/", f"{quote}/static/")
         text = text.replace(f"{quote}static/", f"{quote}/static/")
+        text = text.replace(f"href={quote}#searchbox{quote}", f"href={quote}/workspace/#searchbox{quote}")
+        text = text.replace(f"href={quote}./#search?", f"href={quote}/workspace/#search?")
+        text = text.replace(f"href={quote}#search?", f"href={quote}/workspace/#search?")
     text = text.replace('href="./story.html"', 'href="/about.html"')
     text = text.replace("href='./story.html'", "href='/about.html'")
     # "Project Story" belongs to the public Base2026 project page.  Older
