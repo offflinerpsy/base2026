@@ -203,9 +203,13 @@ FREE_TOOLS_ASSET_PATHS = (
     "static/free-tools/batch2.mjs",
     "static/free-tools/batch3-tools.mjs",
     "static/free-tools/batch3.mjs",
+    "static/free-tools/batch4-tools.mjs",
+    "static/free-tools/batch4.mjs",
     "static/free-tools/engine.mjs",
     "static/free-tools/manrope-latin.woff2",
     "static/free-tools/sitemap-core.mjs",
+    "static/free-tools/snippet-preview.css",
+    "static/free-tools/snippet-preview.mjs",
     "static/free-tools/suite.css",
     "static/free-tools/tools.mjs",
     "static/free-tools/worker.mjs",
@@ -245,6 +249,10 @@ FREE_TOOLS_ASSET_PATHS = (
     "tools/seo-crawl-comparison/index.html",
     "tools/seo-crawl-comparison/sample-after.csv",
     "tools/seo-crawl-comparison/sample-before.csv",
+    "tools/serp-snippet-audit/README.md",
+    "tools/serp-snippet-audit/index.html",
+    "tools/serp-snippet-audit/input-contract.json",
+    "tools/serp-snippet-audit/sample-pages.csv",
 )
 SITEMAP_TOOL_ASSET_NAMES = (
     "LICENSE",
@@ -1476,6 +1484,7 @@ HUB_SITEMAP_ROUTES = (
     "/tools/redirect-rule-compiler/",
     "/tools/internal-link-anchor-auditor/",
     "/tools/gsc-period-diff-analyzer/",
+    "/tools/serp-snippet-audit/",
     "/guides/csv-to-cloudflare-redirects/",
 )
 
@@ -2115,6 +2124,45 @@ def _with_csv_redirect_guide_link(relative_name: str, payload: bytes) -> bytes:
     return text.encode("utf-8")
 
 
+def _with_metadata_audit_link(relative_name: str, payload: bytes) -> bytes:
+    """Add scoped metadata-audit links without rebuilding retained public shells."""
+    route = "/tools/serp-snippet-audit/"
+    targets = {"solutions/index.html", "site-structure.html", "guides/compare-seo-crawl-exports/index.html"}
+    if relative_name not in targets:
+        return payload
+    marker = 'data-b26-metadata-audit="' + relative_name + '"'
+    text = payload.decode("utf-8")
+    if marker in text:
+        if text.count(marker) != 1 or text.count(route) != (2 if relative_name == "solutions/index.html" else 1):
+            raise ReleaseBuildError("metadata audit link is duplicated or changed")
+        return payload
+    if route in text:
+        raise ReleaseBuildError("metadata audit has an unrecognized contextual link")
+    if relative_name == "solutions/index.html":
+        needle = '<div class="solution-hub-grid">'
+        if needle not in text:
+            return payload
+        if text.count(needle) != 1:
+            raise ReleaseBuildError("metadata audit hub insertion point is ambiguous")
+        fragment = ('<article class="solution-hub-card" ' + marker + '><div class="solution-hub-card__meta"><span>Local CSV tool</span></div>'
+            '<h2><a href="' + route + '">Audit titles and descriptions from a metadata CSV</a></h2>'
+            '<p>Find missing or duplicate metadata, review supplied social fields and export observations before editing pages.</p>'
+            '<a href="' + route + '">Audit a metadata CSV</a></article>')
+    elif relative_name == "site-structure.html":
+        needle = '<li><a href="/tools/gsc-period-diff-analyzer/">GSC Period Change Analyzer</a></li>'
+        fragment = '<li ' + marker + '><a href="' + route + '">Metadata CSV Auditor &amp; Snippet Preview</a></li>'
+    else:
+        needle = '<h2 id="work-through-a-small-before-and-after-example">'
+        fragment = ('<p ' + marker + '>To review one snapshot first, use the <a href="' + route + '">Metadata CSV Auditor</a> '
+            'to find missing or duplicate titles and descriptions and inventory supplied social fields. It processes your export locally without fetching pages.</p>\n')
+        if text.count(needle) != 1:
+            raise ReleaseBuildError("metadata audit guide insertion point is ambiguous")
+        return text.replace(needle, fragment + needle, 1).encode("utf-8")
+    if text.count(needle) != 1:
+        raise ReleaseBuildError("metadata audit insertion point is ambiguous")
+    return text.replace(needle, needle + fragment, 1).encode("utf-8")
+
+
 def _reviewed_local_tool_assets() -> dict[str, bytes]:
     """Admit only exact public package paths, validating the package manifest."""
     manifest = json.loads((FREE_TOOLS_PACKAGE / "ASSET-MANIFEST.json").read_text(encoding="utf-8"))
@@ -2147,7 +2195,7 @@ def _local_tools_headers() -> str:
         if route in blocks:
             raise ReleaseBuildError("duplicate local-tool CSP route")
         blocks[route] = block
-    order = ["/tools/robots-txt-tester/*", "/tools/redirect-map-checker/*", "/tools/hreflang-checker/*", "/tools/broken-link-task-builder/*", "/tools/seo-crawl-comparison/*", "/static/free-tools/*", "/tools/indexing-signal-reconciler/*", "/tools/redirect-rule-compiler/*", "/tools/internal-link-anchor-auditor/*", "/tools/gsc-period-diff-analyzer/*"]
+    order = ["/tools/robots-txt-tester/*", "/tools/redirect-map-checker/*", "/tools/hreflang-checker/*", "/tools/broken-link-task-builder/*", "/tools/seo-crawl-comparison/*", "/static/free-tools/*", "/tools/indexing-signal-reconciler/*", "/tools/redirect-rule-compiler/*", "/tools/internal-link-anchor-auditor/*", "/tools/gsc-period-diff-analyzer/*", "/tools/serp-snippet-audit/*"]
     if set(blocks) != set(order):
         raise ReleaseBuildError("local-tool CSP routes differ from the reviewed allowlist")
     csp = "default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; worker-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
@@ -3585,6 +3633,15 @@ def build_release(
                 if target.is_file():
                     before = target.read_bytes()
                     after = _with_csv_redirect_guide_link(relative_name, before)
+                    if after != before:
+                        write_generated_public_file(relative_name, after, normalize_urls=False)
+
+        if standalone_startup:
+            for relative_name in ("solutions/index.html", "site-structure.html", "guides/compare-seo-crawl-exports/index.html"):
+                target = stage / relative_name
+                if target.is_file():
+                    before = target.read_bytes()
+                    after = _with_metadata_audit_link(relative_name, before)
                     if after != before:
                         write_generated_public_file(relative_name, after, normalize_urls=False)
 

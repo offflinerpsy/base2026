@@ -11,8 +11,8 @@
       "sha256": "58172e0c0fac2cda8a37b348164bb55e44b0e69051e557e92b1d3f6910141f7b"
     },
     "static/free-tools/app.mjs": {
-      "bytes": 7489,
-      "sha256": "76f0072bd796cb5310595815de3c0ffb74bfc3e6317afdd6ab768e4b3421abee"
+      "bytes": 7674,
+      "sha256": "a1a01a8edfc6d5cf7f0e0b5b8fbdcc31062641039461ea39053946caca652398"
     },
     "static/free-tools/b26-seal.webp": {
       "bytes": 15140,
@@ -38,9 +38,17 @@
       "bytes": 19633,
       "sha256": "52b6514e98ee0bb186106bf9a12cad8d14a1070096345fb822ee41cfb8f079b7"
     },
+    "static/free-tools/batch4-tools.mjs": {
+      "bytes": 3438,
+      "sha256": "ea8897a4c77369023ec304adf9cb67b18d5fd5a80fafdb29b7e9583f176bf82f"
+    },
+    "static/free-tools/batch4.mjs": {
+      "bytes": 6676,
+      "sha256": "94bdeecdb3df5ecba696b7c9269106ea895a30b574a825a7498dabb535be9920"
+    },
     "static/free-tools/engine.mjs": {
-      "bytes": 25840,
-      "sha256": "b63e5ff93a7e707e4001031b47f6c3ee96f187b9b580b429fd0068b4cf47ede0"
+      "bytes": 25983,
+      "sha256": "dad84b37c5e5a0e1e93ac6c24a4475d280ee3fa2a55a6069cfb61e0221eff788"
     },
     "static/free-tools/manrope-latin.woff2": {
       "bytes": 24836,
@@ -50,13 +58,21 @@
       "bytes": 16298,
       "sha256": "29ddc2c896f24e7b5e8e0ce814c1d515349a9af94d89b6dc5c80bd8270b4e434"
     },
+    "static/free-tools/snippet-preview.css": {
+      "bytes": 1058,
+      "sha256": "61a81e5f29836d782505050f23fd1bc8366975d61d3f8334fb52d2afd2e14957"
+    },
+    "static/free-tools/snippet-preview.mjs": {
+      "bytes": 1783,
+      "sha256": "d0fc62a5f7b39636d37c9b637f0f30312568495aaf028756c6631a39643d4fd1"
+    },
     "static/free-tools/suite.css": {
       "bytes": 5891,
       "sha256": "cb5d7e3dade8fdc66d174be40fc233da53d81178454f8e94ea5e8949c1734c59"
     },
     "static/free-tools/tools.mjs": {
-      "bytes": 10289,
-      "sha256": "01858979cc43ee39329b4a27cef55f43aa80419c0555d9c1036e9ae11d9513a8"
+      "bytes": 10357,
+      "sha256": "af794ccaf8de5b16cabe029a1bba0e2383be462490dcccd94a8c51cfe427171b"
     },
     "static/free-tools/worker.mjs": {
       "bytes": 2141,
@@ -205,6 +221,22 @@
     "tools/seo-crawl-comparison/sample-before.csv": {
       "bytes": 291,
       "sha256": "e0833057cfe68dec0d130cb862809f1bcf6b144d6ff7552c486855b9c4f4a715"
+    },
+    "tools/serp-snippet-audit/README.md": {
+      "bytes": 3380,
+      "sha256": "4a55a7f7c48987705790b98d9758ba51b789f9b1ed9f08f6553cb504b14a5293"
+    },
+    "tools/serp-snippet-audit/index.html": {
+      "bytes": 11187,
+      "sha256": "eaa3b906bfcb7051866ce546506cccb9670f8b77ec6f4f10438dc3cecbcde3aa"
+    },
+    "tools/serp-snippet-audit/input-contract.json": {
+      "bytes": 2897,
+      "sha256": "6fb79f1896e5317f78251ea3817aa8683a2878170b33fa50ff6ba43c82b57f8f"
+    },
+    "tools/serp-snippet-audit/sample-pages.csv": {
+      "bytes": 379,
+      "sha256": "c47a488e5c7e06adf895d6ba44e6827ed52ace6b044d789151c95ca9a977d925"
     }
   },
   "frozen_parser_sha256": "29ddc2c896f24e7b5e8e0ce814c1d515349a9af94d89b6dc5c80bd8270b4e434",

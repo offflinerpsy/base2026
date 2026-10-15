@@ -1,0 +1,4 @@
+url,title,description,h1,og_title,og_description,og_image,twitter_card
+https://example.test/guide/,Migration guide,Plan a site move.,Migration guide,Migration guide,Plan a site move.,https://example.test/social.png,summary_large_image
+https://example.test/checklist/,Migration guide,Plan a site move.,Redirect checklist,,,,
+https://example.test/draft/,,A draft description.,,,,,

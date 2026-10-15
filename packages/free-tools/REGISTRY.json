@@ -576,6 +576,71 @@
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
       "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+    },
+    {
+      "id": "serp-snippet-audit",
+      "name": "Metadata CSV Auditor & Snippet Preview",
+      "route": "/tools/serp-snippet-audit/",
+      "title": "Free Metadata CSV Auditor & Snippet Preview | Base2026",
+      "h1": "Audit your metadata CSV and preview a supplied row",
+      "description": "Audit a metadata CSV for missing or duplicate titles and descriptions. Preview supplied text, review social fields and download the results. Free, local processing.",
+      "og": {
+        "type": "website",
+        "title": "Free Metadata CSV Auditor & Snippet Preview | Base2026",
+        "description": "Audit a metadata CSV for missing or duplicate titles and descriptions. Preview supplied text, review social fields and download the results. Free, local processing.",
+        "url": "https://base2026.dev/tools/serp-snippet-audit/"
+      },
+      "canonical": "https://base2026.dev/tools/serp-snippet-audit/",
+      "category": "Review page metadata",
+      "usecase": "Review the metadata in your export. Find missing or repeated titles and descriptions, then select a row to see an illustrative text preview.",
+      "inputs": [
+        {
+          "role": "pages",
+          "label": "Page metadata CSV",
+          "format": "csv",
+          "required": true,
+          "help": "Required: url,title,description. Optional: h1,og_title,og_description,og_image,twitter_card. Explicit crawler aliases are supported; duplicate or ambiguous headers are rejected."
+        }
+      ],
+      "outputs": [
+        "Results CSV",
+        "Findings CSV",
+        "Readable Markdown report",
+        "JSON input manifest",
+        "Rows checked CSV"
+      ],
+      "boundaries": [
+        "Blank CSV records are ignored. Counts and exports cover the rows checked. Result rows are numbered sequentially and are not line numbers in your input file. No skipped-record count is inferred.",
+        "Audits supplied CSV observations only. Missing columns are UNKNOWN; a supplied blank cell is MISSING. No live tags, URLs, image files, indexing or search results are verified.",
+        "Character counts use Unicode code points after NFC normalization, whitespace collapse and trimming. They are not grapheme counts, pixel measurements, length recommendations or Google truncation limits.",
+        "Duplicate titles/descriptions mean identical case-sensitive normalized text across distinct valid supplied URL strings. Repeated rows for one URL are reported separately; invalid URL rows stay visible but do not enter cross-URL duplicate groups.",
+        "Title/H1 equality or difference is informational. It does not predict a Google title rewrite, quality, rankings or CTR. Social states inventory supplied text only; SUPPLIED does not validate tag syntax, image availability, dimensions or a rendered card.",
+        "The selectable preview formats your supplied text illustratively. Google may choose different title or snippet text. It is not a live SERP or a device-specific simulation.",
+        "CSV exports quote cells and prefix common spreadsheet formula-leading values with an apostrophe. Review imported spreadsheet behavior; exported copies are files you choose to retain."
+      ],
+      "next": [
+        [
+          "Check supplied HTML",
+          "/tools/page-readiness/"
+        ],
+        [
+          "Compare crawl exports",
+          "/tools/seo-crawl-comparison/"
+        ],
+        [
+          "Read the crawl comparison guide",
+          "/guides/compare-seo-crawl-exports/"
+        ]
+      ],
+      "privacy": {
+        "target_fetch": false,
+        "upload": false,
+        "storage": false,
+        "telemetry": false
+      },
+      "assets_prefix": "/static/free-tools/",
+      "source_license": "Apache-2.0",
+      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
     }
   ]
 }

@@ -1,0 +1,67 @@
+{
+  "schema": "base2026.metadata-csv-contract/1",
+  "required_columns": [
+    "url",
+    "title",
+    "description"
+  ],
+  "optional_columns": [
+    "h1",
+    "og_title",
+    "og_description",
+    "og_image",
+    "twitter_card"
+  ],
+  "aliases": {
+    "url": [
+      "address",
+      "page_url"
+    ],
+    "title": [
+      "title 1",
+      "meta_title"
+    ],
+    "description": [
+      "meta description 1",
+      "meta_description"
+    ],
+    "h1": [
+      "h1-1",
+      "heading_1"
+    ],
+    "og_title": [
+      "og:title"
+    ],
+    "og_description": [
+      "og:description"
+    ],
+    "og_image": [
+      "og:image"
+    ],
+    "twitter_card": [
+      "twitter:card"
+    ]
+  },
+  "header_normalization": "Trim, lowercase and replace whitespace/hyphen runs with underscore. Reject duplicate normalized headers and several headers mapping to one supported field.",
+  "limits": {
+    "data_rows": 5000,
+    "file_bytes": 2097152,
+    "cell_characters": 16384,
+    "url_characters": 4096
+  },
+  "text_normalization": "NFC, collapse Unicode whitespace, trim; case-sensitive comparison. Raw supplied values are preserved in the rows-checked CSV.",
+  "character_counts": "Unicode code points of normalized text, not graphemes or pixels. No minimum, maximum or Google truncation recommendation.",
+  "url_identity": "Exact trimmed absolute HTTP(S) string, without credentials, whitespace or fragment markers. No fetching or cross-variant normalization.",
+  "duplicate_definition": "Same nonempty normalized title/description across at least two distinct syntactically valid URL strings; invalid URL observations are retained but excluded from those groups. Repeated same-URL rows remain separate observations.",
+  "optional_state": {
+    "missing_column": "UNKNOWN",
+    "blank_supplied_cell": "MISSING",
+    "nonblank_supplied_cell": "SUPPLIED"
+  },
+  "social_scope": "Text inventory only. Even an og_image value is not fetched or validated as an image or HTTP response.",
+  "h1_comparison": "UNKNOWN for absent H1 column, MISSING for blank H1 cell, UNKNOWN_TITLE_MISSING for absent title value, otherwise SAME or DIFFERENT_INFORMATIONAL. No rewrite prediction.",
+  "preview": "One selectable supplied row; text nodes only; no input value becomes a clickable link or image. Illustrative formatting, not a live or device-specific Google result.",
+  "exports": "Results CSV, findings CSV, report.md, input manifest and rows checked CSV (not a complete copy of the original input). Common formula-leading spreadsheet values are prefixed with an apostrophe in CSV copies.",
+  "blank_records": "Blank CSV records are ignored. Counts and exports cover the remaining rows; the skipped-record count is not available.",
+  "result_rows": "Result rows are numbered sequentially from 1. The header is not a result row. Result row numbers are not line numbers or original record positions in your input file."
+}

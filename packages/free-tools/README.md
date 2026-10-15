@@ -1,6 +1,6 @@
 # Base2026 local SEO tools
 
-Nine complete browser jobs: Robots.txt Tester, Redirect Map Checker, Hreflang Map Checker, Broken Link Task Builder, SEO Crawl Comparison, Indexing Signal Reconciler, Redirect Rule Compiler, Internal Link & Anchor Auditor and GSC Period Change Analyzer. Each accepts pasted data or local UTF-8 files, runs in a Web Worker, and exports results CSV, findings CSV, a Markdown report and a JSON scope/input manifest. These are supplied-data utilities; no target URL is fetched, no data is uploaded, and no storage, analytics or model calls are used.
+Ten complete browser jobs: Robots.txt Tester, Redirect Map Checker, Hreflang Map Checker, Broken Link Task Builder, SEO Crawl Comparison, Indexing Signal Reconciler, Redirect Rule Compiler, Internal Link & Anchor Auditor, GSC Period Change Analyzer, and Metadata CSV Auditor & Snippet Preview. Each accepts pasted data or local UTF-8 files, runs in a Web Worker, and exports results CSV, findings CSV, a Markdown report and a JSON scope/input manifest. These are supplied-data utilities; no target URL is fetched, no data is uploaded, and no storage, analytics or model calls are used.
 
 Repository source: [packages/free-tools](https://github.com/offflinerpsy/base2026/tree/main/packages/free-tools).
 
@@ -18,6 +18,7 @@ Rebuild the HTML, samples, public registry and asset manifest with `node build.m
 node tests.mjs
 node --test batch2.test.mjs
 node --test batch3.test.mjs
+node --test batch4.test.mjs
 python3 oracle.py
 python3 check-assets.py
 ```
@@ -40,3 +41,7 @@ Internal Link & Anchor Auditor requires an explicit HTTP(S) site origin and an i
 GSC Period Change Analyzer requires two CSVs and an explicit pages, queries or prepared-key mode. It rejects mixed key headers, keeps missing keys unknown, quarantines conflicting duplicate rows and never averages positions. Clicks and impressions are ungrouped nonnegative safe integers with clicks no greater than impressions. Provided CTR units are explicit percent or fraction; CTR for calculations is derived from valid counts, while raw supplied values remain in exports. Mismatches greater than 0.005 percentage points are flagged, allowing two decimal places of percent rounding or four decimal places of fraction rounding. Zero-impression CTR is unknown; a zero baseline has undefined percentage change. Optional symmetric click decomposition is descriptive and checks conservation; it is not an attribution model. Period length, property, search type and filters are not verified, and top-row/anonymized-query limitations remain visible.
 
 Batch3 implementation is in `batch3.mjs` and `batch3-tools.mjs`; both tools publish an `input-contract.json` beside the page. The contracts document CSV semantics, not a claim that JSON Schema validates CSV cell contents. `batch3.test.mjs` covers the new fixtures and the unchanged shared Worker path. Previous seven tool pages, samples and calculations are preserved; full historical suites need not be rerun for an additive registration-only change.
+
+Metadata CSV Auditor & Snippet Preview accepts one CSV with url,title,description and optional h1/OG/Twitter fields. It reports supplied missing values, case-sensitive normalized duplicates across distinct valid URL strings, Unicode code-point counts and informational title/H1 differences. Missing optional columns remain UNKNOWN; blank supplied cells are MISSING. Social values are text inventory, not image or tag validation. One selectable row is rendered with text nodes only; no supplied URL is linked or fetched. Google may choose other text. No pixel calibration, truncation/rewrite prediction or SEO score is implemented. Source: batch4.mjs, batch4-tools.mjs and snippet-preview.mjs; CSV semantics are in the tool input-contract.json.
+
+Metadata CSV Auditor ignores blank CSV records. Counts and exports cover rows checked, and Result row numbers run sequentially from 1 without the header. They are not line numbers or original record positions in the input file. The additional rows-checked CSV preserves supplied values for rows checked only; the skipped-record count is unavailable.
