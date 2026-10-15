@@ -36,7 +36,85 @@ const { searchClient } = instantMeiliSearch(searchHost, searchKey, {
 });
 
 function sourceLabel(type) {
-  return type === "tiktok_video" ? "TikTok" : type === "local_file" ? "Local file" : type || "Source";
+  return type === "tiktok_video" || type === "tiktok" ? "TikTok"
+    : type === "youtube_video" || type === "youtube" ? "YouTube"
+      : type === "local_file" ? "Local file" : type || "Source";
+}
+
+function safePublicHref(value) {
+  if (typeof value !== "string" || !value || value.startsWith("//")) return "";
+  try {
+    const url = new URL(value, window.location.href);
+    return url.protocol === "https:" && !url.username && !url.password ? url.href : "";
+  } catch { return ""; }
+}
+
+function creatorDisplayName(doc) {
+  return doc.creator_display_name || doc.handle || doc.creator_handle || doc.author || "Unknown creator";
+}
+
+function publicDate(doc) {
+  const value = doc.published_date;
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)?$/.test(value)) return "";
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value.slice(0, 10) ? value.slice(0, 10) : "";
+}
+
+function workspaceSourceHeading(doc, candidate = "") {
+  const title = compactText(candidate);
+  const creatorName = compactText(creatorDisplayName(doc));
+  const creator = creatorName && creatorName.length <= 48 ? creatorName : "original creator";
+  const rawTopic = (Array.isArray(doc.topic_labels) ? doc.topic_labels.find((value) => typeof value === "string" && value.trim()) : "")
+    || (Array.isArray(doc.cards) ? doc.cards[0]?.topic_label : "") || "";
+  const topicText = compactText(rawTopic);
+  const topic = topicText.length <= 48 ? topicText : "";
+  const usableTitle = title && title.length <= 110 && doc.title_status !== "truncated"
+    && !/(?:\.\.\.|…)\s*$/u.test(title) && !isExtractiveSourceClaim(title);
+  return { text: usableTitle ? title : topic ? `${topic} · ${creator}` : `Source from ${creator}`,
+    label: usableTitle ? "Source title" : "Source context", fullTitle: usableTitle ? "" : title || compactText(doc.title || ""),
+    fullTitleLabel: doc.title_source === "public_projection" ? "Stored record heading" : "Stored source title or caption" };
+}
+
+function workspaceSourceCaption(heading) {
+  return heading.fullTitle ? `<details class="source-detail-evidence source-detail-caption"><summary>${escapeHtml(heading.fullTitleLabel)}</summary><div>${paragraphizePlainText(heading.fullTitle)}</div></details>` : "";
+}
+
+function originalSourceTitle(doc, searchHit = false) {
+  if (doc.title_source !== "source_metadata") return "";
+  const title = searchHit ? doc.source_title : doc.source_title ?? doc.title;
+  return typeof title === "string" && title.trim() ? title : "";
+}
+
+function untimedSourceExcerpt(value) {
+  return compactText(String(value || "").replace(/\[\d+(?:\.\d+)?s-\d+(?:\.\d+)?s\]\s*/gu, " "));
+}
+
+function isExtractiveSourceClaim(value) {
+  return typeof value === "string" && value.startsWith('The source states: "') && value.endsWith('"');
+}
+
+function quotedSourceStatement(value) {
+  return isExtractiveSourceClaim(value) ? value.slice('The source states: "'.length, -1) : value;
+}
+
+function youtubeChannelId(value) {
+  const id = stripHandle(value);
+  return /^UC[A-Za-z0-9_-]{22}$/.test(id) ? id : "";
+}
+
+function readableSentences(value) {
+  const text = String(value ?? "");
+  if (typeof Intl.Segmenter === "function") {
+    const spans = [];
+    for (const { segment } of new Intl.Segmenter(undefined, { granularity: "sentence" }).segment(text)) {
+      // The browser may segment a leading ellipsis separately without any
+      // whitespace. Merge that boundary so paragraph grouping cannot add text.
+      if (spans.length && !/\s$/.test(spans.at(-1)) && !/^\s/.test(segment)) spans[spans.length - 1] += segment;
+      else spans.push(segment);
+    }
+    return spans;
+  }
+  return text.split(/(?<=[.!?…])(?=\s)/u);
 }
 
 function creatorInitial(value) {
@@ -92,15 +170,16 @@ function publicPolicyLabel(value) {
 }
 
 function sourceIdentityMarkup(doc) {
-  const handle = doc.handle || doc.author || "Unknown creator";
-  const date = doc.published_date || "No date";
+  const handle = creatorDisplayName(doc);
+  const date = publicDate(doc);
+  const href = safePublicHref(doc.creator_url);
   return `
     <div class="source-identity source-identity--modal">
       ${creatorAvatar(handle, doc.avatar_url || doc.creator_avatar_url)}
       <div class="source-identity__body">
         <div class="source-identity__line">
-          <a class="source-identity__handle" href="${escapeHtml(doc.creator_url || "#")}" target="_blank" rel="noreferrer">${escapeHtml(handle)}</a>
-          <span class="source-identity__date">${escapeHtml(date)}</span>
+          ${href ? `<a class="source-identity__handle" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(handle)}</a>` : `<span class="source-identity__handle">${escapeHtml(handle)}</span>`}
+          ${date ? `<span class="source-identity__date">${escapeHtml(date)}</span>` : ""}
         </div>
       </div>
     </div>
@@ -157,7 +236,7 @@ function escapeHtml(value) {
 }
 
 const safeHtmlTags = [
-  "a", "article", "button", "details", "div", "g", "h1", "h2", "h3", "h4", "img", "label", "li", "mark", "p", "path", "section", "span", "strong", "summary", "svg", "ul",
+  "a", "article", "blockquote", "button", "details", "div", "g", "h1", "h2", "h3", "h4", "img", "label", "li", "mark", "ol", "p", "path", "section", "span", "strong", "summary", "svg", "ul",
 ];
 const safeHtmlAttributes = [
   "alt", "class", "d", "focusable", "href", "loading", "referrerpolicy", "rel", "src", "tabindex", "target", "title", "type", "value", "viewbox",
@@ -277,7 +356,7 @@ function splitReadableText(value, options = {}) {
   sourceBlocks.forEach((sourceBlock) => {
     const block = compactText(sourceBlock);
     if (!block) return;
-    const sentences = block.match(/[^.!?…]+[.!?…]+(?=\s|$)|[^.!?…]+$/g) || [block];
+    const sentences = readableSentences(block);
     if (sentences.length <= 1 && block.length > maxChars) {
       pushWordChunks(block);
       return;
@@ -338,29 +417,21 @@ function workspaceRouteHref(patch = {}) {
     }
   });
   const query = params.toString();
-  return `./${query ? `?${query}` : ""}`;
+  return `${window.location.pathname}${query ? `#search?${query}` : ""}`;
 }
 
 function routeSearchParams() {
-  return new URLSearchParams(window.location.search);
-}
-
-function migrateLegacyHashSearchRoute() {
-  const legacySearchPrefix = "#search?";
+  const params = new URLSearchParams(window.location.search);
   const hash = window.location.hash || "";
-  if (!hash.startsWith(legacySearchPrefix)) return false;
-  const params = routeSearchParams();
-  const legacyParams = new URLSearchParams(hash.slice(legacySearchPrefix.length));
-  legacyParams.forEach((value, key) => {
-    if (!params.has(key)) params.append(key, value);
-  });
-  const query = params.toString();
-  const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
-  window.history.replaceState({}, "", nextUrl);
-  return true;
+  if (hash.startsWith("#search?")) {
+    const hashParams = new URLSearchParams(hash.slice("#search?".length));
+    hashParams.forEach((value, key) => {
+      if (!params.has(key)) params.set(key, value);
+    });
+  }
+  return params;
 }
 
-migrateLegacyHashSearchRoute();
 
 function getKnowledgeRouteState() {
   const params = routeSearchParams();
@@ -368,6 +439,7 @@ function getKnowledgeRouteState() {
     q: params.get("q") || params.get(`${searchIndex}[query]`) || "",
     source: params.get("source") || "",
     creator: params.get("creator") || "",
+    creator_view: params.get("creator_view") || "",
     topic: params.get("topic") || "",
     compare: params.get("compare") || "",
     year: params.get("year") || "",
@@ -387,9 +459,8 @@ function setKnowledgeRouteState(patch = {}, options = {}) {
     }
   });
   const query = params.toString();
-  const retainedHash = window.location.hash || "";
-  const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}${retainedHash}`;
-  if (nextUrl === `${window.location.pathname}${window.location.search}${window.location.hash}`) return;
+  const nextUrl = `${window.location.pathname}${query ? `#search?${query}` : ""}`;
+  if (nextUrl === `${window.location.pathname}${window.location.hash}`) return;
   window.history[options.replace ? "replaceState" : "pushState"]({}, "", nextUrl);
 }
 
@@ -1054,13 +1125,239 @@ async function loadPublicInsights(doc) {
   return rows;
 }
 
+function publicSourceIdentity(itemId) {
+  const match = /^(tiktok|youtube)-video-([A-Za-z0-9_-]+)$/.exec(String(itemId || ""));
+  if (!match) return null;
+  const [, platform, videoId] = match;
+  if (!(platform === "youtube" ? /^[A-Za-z0-9_-]{11}$/ : /^\d{10,30}$/).test(videoId)) return null;
+  return { platform, videoId };
+}
+
+// Whitelist only the public source/cards contract, never merge an API payload
+// into a legacy transcript record or silently substitute static insight data.
+// R2 optional explanation: exact shared public schema parser, compiled locally.
+var publicSourceExplanationContract = (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+  var public_explanation_parser_exports = {};
+  __export(public_explanation_parser_exports, {
+    SOURCE_EXPLANATION_SCHEMA: () => SOURCE_EXPLANATION_SCHEMA,
+    SourceExplanationError: () => SourceExplanationError,
+    parseSourceExplanation: () => parseSourceExplanation,
+    readSourceExplanationJson: () => readSourceExplanationJson
+  });
+  const SOURCE_EXPLANATION_SCHEMA = "base2026.source-explanation.v1";
+  class SourceExplanationError extends Error {
+    code = "source_explanation_invalid";
+    constructor() {
+      super("source_explanation_invalid");
+      this.name = "SourceExplanationError";
+    }
+  }
+  function fail() {
+    throw new SourceExplanationError();
+  }
+  function record(value, keys) {
+    if (typeof value !== "object" || value === null || Array.isArray(value) || Object.keys(value).sort().join("|") !== [...keys].sort().join("|")) fail();
+    return value;
+  }
+  function text(value, min, max) {
+    if (typeof value !== "string" || value.trim() !== value || value.length < min || value.length > max || /[\u0000-\u001f\u007f-\u009f]/u.test(value) || /\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|co|dev|ai|app|ly|me|tv)(?:\/|\b)|\b(?:\+?\d[\d\s().-]{7,}\d)\b|\b(?:\d[ -]*?){13,19}\b|-----BEGIN [^-]*PRIVATE KEY-----|\b(?:api|access|auth|client|app|webhook)[_ -]*(?:key|token|secret|password|credential)\s+(?:is\s+)\S+|\b(?:private[_ -]*(?:only|notes?|context|source|text)|not[_ -]*for[_ -]*public[_ -]*export|(?:raw|full)[_ -]*(?:transcripts?|captions?|asr))\b/iu.test(value) || /https?:\/\/|\bwww\.|[\w.+-]+@[\w.-]+\.[a-z]{2,}|\b(?:bearer|basic)\s+\S+|\b(?:api[_ -]?key|token|secret|password|authorization)\s*[:=]|(?:^|\s)(?:\/Users\/|\/home\/|file:\/\/)|<\/?(?:script|iframe|object)\b/iu.test(value)) fail();
+    return value;
+  }
+  function integer(value) {
+    if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0 || value > 1999) fail();
+    return value;
+  }
+  function seconds(value) {
+    if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 86400) fail();
+    return value;
+  }
+  function array(value, max, parse) {
+    if (!Array.isArray(value) || value.length > max) fail();
+    return value.map(parse);
+  }
+  function ref(value) {
+    const v = record(value, ["segment_start_index", "segment_end_index", "start_seconds", "end_seconds"]);
+    const start = integer(v.segment_start_index), end = integer(v.segment_end_index);
+    const startSeconds = seconds(v.start_seconds), endSeconds = seconds(v.end_seconds);
+    if (end < start || endSeconds < startSeconds) fail();
+    return { segment_start_index: start, segment_end_index: end, start_seconds: startSeconds, end_seconds: endSeconds };
+  }
+  function block(value, allowObservation = false) {
+    const v = record(value, ["text", "origin", "evidence_refs"]);
+    if (v.origin !== "source_reported" && !(allowObservation && v.origin === "base2026_observation")) fail();
+    const refs = array(v.evidence_refs, 2, ref);
+    if (refs.length === 0 || new Set(refs.map((r) => `${r.segment_start_index}:${r.segment_end_index}`)).size !== refs.length) fail();
+    return { text: text(v.text, 10, 480), origin: v.origin, evidence_refs: refs };
+  }
+  function contents(v) {
+    if (v.schema_version !== SOURCE_EXPLANATION_SCHEMA || v.coverage !== "whole_transcript") fail();
+    const result = {
+      schema_version: SOURCE_EXPLANATION_SCHEMA,
+      coverage: "whole_transcript",
+      summary: block(v.summary),
+      steps: array(v.steps, 5, (b) => block(b)),
+      conditions: array(v.conditions, 4, (b) => block(b)),
+      limitations: array(v.limitations, 4, (b) => block(b, true)),
+      faq: array(v.faq, 3, (raw) => {
+        const q = record(raw, ["question", "answer"]);
+        return { question: text(q.question, 10, 180), answer: block(q.answer, true) };
+      })
+    };
+    const blocks = [result.summary, ...result.steps, ...result.conditions, ...result.limitations, ...result.faq.map((q) => q.answer)];
+    if (blocks.length > 14 || blocks.reduce((sum, b) => sum + b.text.length, 0) > 4e3) fail();
+    return result;
+  }
+  const CONTENT_KEYS = ["schema_version", "coverage", "summary", "steps", "conditions", "limitations", "faq"];
+  function parseSourceExplanation(value, expectedSourceId, expectedProjectionId) {
+    const keys = [...CONTENT_KEYS, "source_id", "revision", ...expectedProjectionId ? ["projection_id"] : []];
+    const v = record(value, keys);
+    if (v.source_id !== expectedSourceId || typeof v.revision !== "string" || !/^[a-f0-9]{64}$/u.test(v.revision) || expectedProjectionId && v.projection_id !== expectedProjectionId) fail();
+    const result = { ...contents(v), source_id: expectedSourceId, revision: v.revision };
+    return expectedProjectionId ? { ...result, projection_id: expectedProjectionId } : result;
+  }
+  function readSourceExplanationJson(value, sourceId, projectionId) {
+    if (value === null || value === void 0) return void 0;
+    if (typeof value !== "string" || value.length > 2e4) fail();
+    try {
+      return parseSourceExplanation(JSON.parse(value), sourceId, projectionId);
+    } catch {
+      return fail();
+    }
+  }
+  return __toCommonJS(public_explanation_parser_exports);
+})();
+
+function renderPublicSourceExplanation(explanation) {
+  const item = (block) => {
+    const origin = block.origin === "source_reported" ? "Source-reported advice" : "Base2026 observation; unresolved from the available source";
+    // Preserve API numeric timestamps without rounding or deriving new ranges.
+    const times = block.evidence_refs.map((ref) => `${ref.start_seconds}s–${ref.end_seconds}s`).join(", ");
+    return `<p>${escapeHtml(block.text)}</p><p class="meta">${escapeHtml(origin)} · Evidence: ${escapeHtml(times)}</p>`;
+  };
+  const list = (title, blocks, ordered = false) => blocks.length
+    ? `<section class="source-detail-section"><h3>${title}</h3><${ordered ? "ol" : "ul"} class="source-detail-stack">${blocks.map((block) => `<li class="source-detail-insight">${item(block)}</li>`).join("")}</${ordered ? "ol" : "ul"}></section>` : "";
+  return `<section class="source-detail-section" data-full-source-explanation tabindex="-1" aria-label="Source explanation"><h2>What this source explains</h2>
+    <div class="source-detail-insight">${item(explanation.summary)}</div>
+    ${list("Steps described by the source", explanation.steps, true)}
+    ${list("Conditions", explanation.conditions)}
+    ${list("Limitations and unknowns", explanation.limitations)}
+    ${explanation.faq.length ? `<section class="source-detail-section"><h3>Questions and source context</h3>${explanation.faq.map((entry) => `<details class="source-detail-evidence"><summary>${escapeHtml(entry.question)}</summary><div>${item(entry.answer)}</div></details>`).join("")}</section>` : ""}
+    <p class="meta">Attributed to the original creator. Base2026 organizes the source; these statements have not been independently fact-checked.</p></section>`;
+}
+
+function publicSourceDocument(payload, identity) {
+  const source = payload?.source;
+  const unavailable = () => { throw new Error("Public source detail is unavailable: invalid public source response."); };
+  if (payload?.schema_version !== "base2026.public-source-summary.v1") return unavailable();
+  if (!source || source.platform !== identity.platform || source.video_id !== identity.videoId) return unavailable();
+  const parts = typeof source.source_id === "string" ? source.source_id.split(":") : [];
+  const handle = typeof source.creator_handle === "string" ? stripHandle(source.creator_handle) : "";
+  const creatorValid = identity.platform === "youtube" ? /^UC[A-Za-z0-9_-]{22}$/.test(handle) : /^[A-Za-z0-9._-]{2,256}$/.test(handle);
+  if (!creatorValid || parts.length !== 3 || parts[0] !== identity.platform || parts[1] !== handle || parts[2] !== identity.videoId) return unavailable();
+  const creatorUrl = identity.platform === "youtube" ? `https://www.youtube.com/channel/${handle}` : `https://www.tiktok.com/@${handle}`;
+  const sourceUrl = identity.platform === "youtube" ? `https://www.youtube.com/watch?v=${identity.videoId}` : `${creatorUrl}/video/${identity.videoId}`;
+  if ((source.creator_url && source.creator_url !== creatorUrl) || source.source_url !== sourceUrl) return unavailable();
+  if (!Array.isArray(payload.cards) || !payload.cards.length || payload.cards.length > 100) return unavailable();
+  const doc = { item_id: `${identity.platform}-video-${identity.videoId}`, source_type: `${identity.platform}_video`, public_policy: "excerpt_only", _publicSource: true };
+  for (const field of ["platform", "video_id", "source_id", "title", "title_source", "creator_display_name", "creator_handle", "creator_url", "avatar_url", "source_url", "published_date"]) {
+    if (source[field] != null && typeof source[field] !== "string") return unavailable();
+    doc[field] = source[field] ?? "";
+  }
+  const ordinals = new Set();
+  doc.cards = payload.cards.map((card) => {
+    if (!card || !Number.isSafeInteger(card.ordinal) || card.ordinal < 0 || ordinals.has(card.ordinal)
+      || !Number.isFinite(card.evidence_start_seconds) || card.evidence_start_seconds < 0
+      || !Number.isFinite(card.evidence_end_seconds) || card.evidence_end_seconds < card.evidence_start_seconds) return unavailable();
+    ordinals.add(card.ordinal);
+    const result = { ordinal: card.ordinal, evidence_start_seconds: card.evidence_start_seconds, evidence_end_seconds: card.evidence_end_seconds };
+    for (const field of ["claim_text", "suggested_action", "topic_label", "evidence_excerpt"]) {
+      if (typeof card[field] !== "string" || !card[field].trim()) return unavailable();
+      result[field] = card[field];
+    }
+    return result;
+  }).sort((a, b) => a.ordinal - b.ordinal);
+  if (payload.source_explanation != null) {
+    const explanation = payload.source_explanation;
+    if (!explanation || typeof explanation !== "object" || typeof explanation.projection_id !== "string"
+      || !/^[a-f0-9]{40}$/.test(explanation.projection_id)) return unavailable();
+    try {
+      doc.source_explanation = publicSourceExplanationContract.parseSourceExplanation(explanation, doc.source_id, explanation.projection_id);
+    } catch { return unavailable(); }
+  }
+  return doc;
+}
+
+async function loadPublicSource(identity) {
+  try {
+    const response = await fetch(`/api/public-source/v1/${identity.platform}/${identity.videoId}`, {
+      method: "GET", credentials: "omit", redirect: "error", headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!response.ok) throw new Error("UNAVAILABLE");
+    return publicSourceDocument(await response.json(), identity);
+  } catch {
+    // Do not reflect server error bodies or fall back to a stale 'no cards'.
+    throw new Error("Public cards temporarily unavailable. The public source service could not provide this record. Please try again later.");
+  }
+}
+
+function renderPublicSourceDetail(doc) {
+  const explanation = doc.source_explanation;
+  const terms = getHighlightTerms(search.helper?.state?.query || "");
+  const title = originalSourceTitle(doc);
+  const extractiveFlags = doc.cards.map((card) => doc.platform === "youtube" && isExtractiveSourceClaim(card.claim_text));
+  const extractiveOnly = doc.platform === "youtube" && extractiveFlags.every(Boolean);
+  const mixedExtractive = doc.platform === "youtube" && extractiveFlags.some(Boolean) && !extractiveOnly;
+  const untitledMixed = mixedExtractive && !title;
+  const heading = workspaceSourceHeading(doc, title);
+  const cards = doc.cards.map((card, index) => {
+    const cardExtractive = extractiveFlags[index];
+    return `<article class="source-detail-insight">
+    <p class="meta">${escapeHtml(card.topic_label)} · ${explanation ? "Source excerpt " + (index + 1) : "Card " + card.ordinal}</p>
+    ${explanation ? `<h3>Quoted source fragment</h3><p class="meta">This fragment depends on the source context. Read it with the full explanation; it is not a complete recommendation.</p><button type="button" class="button-link" data-source-explanation-context>Read full source explanation</button>` : cardExtractive ? `<h3>Attributed source statement</h3><blockquote>${escapeHtml(quotedSourceStatement(card.claim_text))}</blockquote>` : `<h3>${escapeHtml(card.claim_text)}</h3>`}
+    ${explanation ? "" : `<h4>${cardExtractive ? "Verification note" : "Suggested action"}</h4><p>${escapeHtml(card.suggested_action)}</p>`}
+    <details class="source-detail-evidence" open><summary>Public evidence excerpt</summary>
+      ${explanation ? `<blockquote>${paragraphizePlainText(untimedSourceExcerpt(card.evidence_excerpt), terms)}</blockquote>` : `<div>${paragraphizePlainText(cardExtractive ? untimedSourceExcerpt(card.evidence_excerpt) : card.evidence_excerpt, terms)}</div>`}
+      <p class="meta">${card.evidence_start_seconds}s–${card.evidence_end_seconds}s</p>
+    </details></article>`;
+  }).join("");
+  return `<div class="source-detail-head">
+    <div class="source-detail-nav-row"><button type="button" class="button-link source-detail-back" data-source-detail-back>Back to ${getKnowledgeRouteState().creator_view === "youtube" ? "creator" : "results"}</button><p class="source-kicker">Public source</p></div>
+    <div class="source-detail-toolbar">${sourceIdentityMarkup(doc)}<div class="source-hero-meta source-detail-meta">${platformValue(doc.source_type, doc.platform)}<span class="source-meta-chip">Permitted excerpts only</span></div></div>
+    <p class="eyebrow">${escapeHtml(heading.label)}</p><h1 class="workspace-source-title">${escapeHtml(heading.text)}</h1>
+    ${title ? "" : '<p class="meta">Original video title unavailable</p>'}
+    <div class="source-detail-actions"><a class="button-link button-link--accent" href="${escapeHtml(doc.source_url)}" target="_blank" rel="noopener noreferrer">Open original ${sourceLabel(doc.source_type)}</a><a class="button-link" href="${escapeHtml(creatorRouteHref(doc))}" data-workspace-route${doc.platform === "youtube" ? ' data-creator-view="youtube"' : ""} data-route-creator="${escapeHtml(stripHandle(doc.creator_handle))}">Creator</a>${doc.platform === "youtube" && doc.creator_url ? `<a class="button-link" href="${escapeHtml(doc.creator_url)}" target="_blank" rel="noopener noreferrer">Open YouTube channel</a>` : ""}</div>
+    </div><div class="source-detail-body">${explanation ? renderPublicSourceExplanation(explanation) : ""}${workspaceSourceCaption(heading)}<section class="source-detail-section">
+    ${detailSectionTitle(explanation ? "Source evidence" : extractiveOnly ? "Source evidence" : untitledMixed ? "Source evidence and interpretation" : "Source Intelligence", explanation ? "Selected attributed excerpts supporting the explanation above." : extractiveOnly ? "Attributed quotations and verification notes. No independent conclusion is claimed." : untitledMixed ? "Attributed source excerpts and separate card interpretations. No card claim is used as the source title." : "Published claims, suggested actions and permitted evidence excerpts from this public source.")}
+    <p class="meta">Only permitted evidence excerpts are shown. No full transcript is exposed.</p>
+    <div class="source-detail-card-grid">${cards}</div></section></div>`;
+}
+
 function renderSourceDetailShell(doc, matchedHit, relatedPassages = [], insights = [], loading = false) {
   const activeTerms = getHighlightTerms(search.helper?.state?.query || "");
   const publicText = sourcePublicText(doc);
   const evidenceText = sourceEvidenceText(doc, insights, relatedPassages);
   const summaryShort = compactText(doc.source_summary_short || sourceDetailLead(doc));
   const summaryLong = compactText(doc.source_summary_long || sourceIntelligenceLead(doc, insights, loading));
-  const detailTitle = sourceIntelligenceHeading(doc, insights);
+  const presentation = workspaceSourceHeading(doc, originalSourceTitle(doc) || (doc.title_source === "public_projection" ? "" : doc.title || ""));
+  const detailTitle = presentation.text;
   const displayLead = shouldShowDetailCopy(summaryShort, detailTitle, publicText) ? summaryShort : "";
   const displaySummary = shouldShowSummaryLong(summaryLong, summaryShort, publicText) && shouldShowDetailCopy(summaryLong, detailTitle, publicText, displayLead)
     ? summaryLong
@@ -1133,7 +1430,7 @@ function renderSourceDetailShell(doc, matchedHit, relatedPassages = [], insights
           </div>
         </div>
       </div>
-      <h1>${escapeHtml(detailTitle)}</h1>
+      <p class="eyebrow">${escapeHtml(presentation.label)}</p><h1 class="workspace-source-title">${escapeHtml(detailTitle)}</h1>
       ${displayLead ? `<p class="source-detail-lead">${escapeHtml(displayLead)}</p>` : ""}
       ${displaySummary ? `<p class="source-detail-summary">${escapeHtml(displaySummary)}</p>` : ""}
       <div class="source-detail-actions">
@@ -1143,6 +1440,7 @@ function renderSourceDetailShell(doc, matchedHit, relatedPassages = [], insights
       ${renderRecordTopics(doc)}
     </div>
     <div class="source-detail-body">
+      ${workspaceSourceCaption(presentation)}
       <section class="source-detail-section">
         ${detailSectionTitle("Source Text", "Reviewed polished transcript/source text normalized for reading and search. Raw captions and private QA stay local.")}
         <div class="source-excerpt-text source-full-text">${paragraphizePlainText(publicText || evidenceText || "No public source text is available for this source yet.", activeTerms)}</div>
@@ -1158,7 +1456,8 @@ async function showSourceDetail(itemId, options = {}) {
   if (!sourceDetailPanel || !itemId) return;
   const { pushRoute = true, matchedHit = null, scroll = true } = options;
   selectedSourceId = itemId;
-  const activeHit = matchedHit || currentHitCache.get(itemId) || {};
+  const candidateHit = matchedHit || currentHitCache.get(itemId);
+  const activeHit = candidateHit?.item_id === itemId ? candidateHit : {};
   sourceDetailPanel.classList.add("is-active");
   document.body.classList.add("source-detail-open");
   if (pushRoute && !applyingRouteState) setKnowledgeRouteState({ source: itemId });
@@ -1172,8 +1471,20 @@ async function showSourceDetail(itemId, options = {}) {
   `);
   if (scroll) sourceDetailPanel.scrollIntoView({ block: "start", behavior: "smooth" });
   try {
-    const doc = (await loadDocumentById(itemId)) || activeHit;
-    if (!doc?.item_id) throw new Error("Source record not found.");
+    const identity = publicSourceIdentity(itemId);
+    const cloudHit = identity && (identity.platform === "youtube" || activeHit.title_source === "public_projection");
+    // Legacy static IDs retain their existing JSONL path. Known cloud hits never
+    // request it; a deep-linked TikTok not in that export resolves via the API.
+    let doc = cloudHit ? await loadPublicSource(identity) : await loadDocumentById(itemId).catch(() => null);
+    if (!doc && identity) doc = await loadPublicSource(identity);
+    if (!doc?.item_id) throw new Error("Source record is unavailable in this public export.");
+    if (selectedSourceId !== itemId) return;
+    if (doc._publicSource) {
+      const route = getKnowledgeRouteState();
+      if (route.creator_view === "youtube" && (doc.platform !== "youtube" || stripHandle(doc.creator_handle) !== youtubeChannelId(route.creator))) throw new Error("Public source does not match this creator.");
+      replaceSafeHtml(sourceDetailPanel, renderPublicSourceDetail(doc));
+      return;
+    }
     replaceSafeHtml(sourceDetailPanel, renderSourceDetailShell(doc, activeHit, [], [], true));
     const [relatedPassages, insights] = await Promise.all([
       loadRelatedPassages(doc).catch(() => []),
@@ -1183,11 +1494,12 @@ async function showSourceDetail(itemId, options = {}) {
       replaceSafeHtml(sourceDetailPanel, renderSourceDetailShell(doc, activeHit, relatedPassages, insights, false));
     }
   } catch (error) {
+    if (selectedSourceId !== itemId) return;
     replaceSafeHtml(sourceDetailPanel, `
       <div class="source-detail-empty">
         <button type="button" class="button-link source-detail-back" data-source-detail-back>Back to results</button>
         <p class="eyebrow">Source detail</p>
-        <h2>Source not found in this public export</h2>
+        <h2>Public source detail is unavailable</h2>
         <p>${escapeHtml(error.message || "The source may have been removed, unpublished, or not included in this release.")}</p>
       </div>
     `);
@@ -1269,6 +1581,10 @@ function hitTemplate(hit) {
   const handle = hit._formatted?.handle || hit._highlightResult?.handle?.value || hit.handle || hit.author || "Base2026";
   const date = hit.published_date || "No date";
   const creatorProfileHref = creatorPageHref(hit);
+  const sourceTitle = originalSourceTitle(hit, true);
+  const heading = sourceTitle || (typeof hit.title === "string" ? hit.title : "");
+  const presentation = workspaceSourceHeading(hit, sourceTitle || (hit.title_source === "public_projection" ? "" : heading));
+  const headingMarkup = `<p class="meta">${escapeHtml(presentation.label)}</p><h3>${escapeHtml(presentation.text)}</h3>`;
   return `
     <article class="result">
       <div class="result-top">
@@ -1282,6 +1598,7 @@ function hitTemplate(hit) {
           ${renderTopicLinks(hit)}
         </div>
       </div>
+      ${headingMarkup}
       <div class="snippet">${paragraphizePlainText(bodySnippet, activeTerms)}</div>
       ${renderResultAnalytics(hit)}
       <div class="result-actions">
@@ -1527,6 +1844,13 @@ selectedTerms?.addEventListener("click", (event) => {
 });
 
 document.addEventListener("click", (event) => {
+  if (event.target.closest("[data-source-explanation-context]")) {
+    event.preventDefault();
+    const explanation = sourceDetailPanel?.querySelector("[data-full-source-explanation]");
+    explanation?.scrollIntoView({ block: "start", behavior: "auto" });
+    explanation?.focus({ preventScroll: true });
+    return;
+  }
   const backButton = event.target.closest("[data-source-detail-back]");
   if (backButton) {
     closeSourceDetail();
