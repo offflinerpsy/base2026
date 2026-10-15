@@ -18,6 +18,7 @@ Rebuild the HTML, samples, public registry and asset manifest with `node build.m
 
 ```sh
 node tests.mjs
+node --test redirect-example.test.mjs
 node --test batch2.test.mjs
 node --test batch3.test.mjs
 node --test batch4.test.mjs
@@ -26,7 +27,11 @@ python3 oracle.py
 python3 check-assets.py
 ```
 
+`sample-fixtures.mjs` supplies the same sample/default options as **Try an example** to the test and export harnesses. All eleven samples are checked; original five-tool golden assertions are retained, with explicit row/export expectations for later tools.
+
 The new suite was checked with Node.js 26.3.1 and Python 3.9.6. The tests include the five calculated examples, independent expected decisions, CSV/parser/Unicode/formula boundaries, ambiguous hreflang slots, the maximum redirect chain, and the exact shared Worker metadata/UTF-8/hash/export path. The Python standard-library oracle independently reads exported CSV and JSON. The asset check validates HTML contracts, metadata, local script/style references and source privacy boundaries. The commands write local technical evidence files; these are fixtures, not users, traffic or demand.
+
+Redirect Map Checker uses `redirect-worked-example.mjs` to generate its explanation and corrected CSV. `redirect-example.test.mjs` checks both downloadable inputs against the unchanged checker and the generated page.
 
 Limits: 5,000 data records per input (2,000 for Redirect Rule Compiler), 2 MiB per file and 4 MiB combined; robots.txt is limited to 64 KiB and large rule×URL workloads must be split. Inputs are treated as inert text. CSV column aliases are explicit; malformed quoting, duplicate/ambiguous headers, inconsistent widths and oversized cells fail clearly. Exact URL identity is preserved after surrounding whitespace trimming for the analysis tools. The redirect compiler rejects whitespace and never trims an emitted path. The analysis tools accept absolute HTTP(S) URLs without credentials or fragments; the compiler also accepts strict root-relative paths. Coverage, time and API limitations stay with the result.
 
