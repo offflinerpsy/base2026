@@ -179,16 +179,20 @@
       "sha256": "4a8cb2eb8749f595e9332429c72980fe2beb243bd1461bd45b215f1b5803b270"
     },
     "tools/json-ld-schema-auditor/README.md": {
-      "bytes": 4295,
-      "sha256": "164880f2feaa2bded9cb11a790569078682206e9f9ac2efc55eda747a3dbc035"
+      "bytes": 8023,
+      "sha256": "27fec762cd7a55e5bf00543bfdfefd06213692afe8f58b78590779174c702d98"
     },
     "tools/json-ld-schema-auditor/index.html": {
-      "bytes": 11383,
-      "sha256": "a9144bd499c737d4fc87023ec516a827c1652a9d1fe6b3cb90a1b784665ebcec"
+      "bytes": 18047,
+      "sha256": "f0b7511a77740444990836f32166df90e0306865358c2b1e76743cf5a7c2f04f"
     },
     "tools/json-ld-schema-auditor/input-contract.json": {
       "bytes": 4696,
       "sha256": "03e994c03a0ff4f48010f31c1f45ad065aad922f1f5984b54bfdd1532e284c7c"
+    },
+    "tools/json-ld-schema-auditor/sample-schema_input-corrected.json": {
+      "bytes": 600,
+      "sha256": "4a97d88e95aad3fb757779199470b898e491ffaab239e32cbd14318840800e1d"
     },
     "tools/json-ld-schema-auditor/sample-schema_input.json": {
       "bytes": 494,

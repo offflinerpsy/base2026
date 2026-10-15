@@ -12,6 +12,48 @@ Machine-readable inspection contract: [input-contract.json](./input-contract.jso
 
 A complete results CSV, findings CSV, readable Markdown report and JSON input manifest are created locally. The manifest includes input SHA-256 hashes, scope, counts and unknowns. No data is uploaded.
 
+## Worked example: add a missing publisher
+
+This is a synthetic Article, Person and Organization, not a client result.
+
+1. Select **Try an example**, then **Inspect the graph**, or load [the original JSON-LD](./sample-schema_input.json). The publisher reference is unmatched locally; the external license definition is UNKNOWN.
+2. Compare [the corrected JSON-LD](./sample-schema_input-corrected.json). It adds only {"@id":"#publisher","@type":"Organization","name":"Example Publishing"} to @graph. Use real entity details for your own content.
+3. Choose the corrected file in the local JSON file input and run again. Choosing a file replaces pasted text. Editing the text clears the selected file and previous results; **Clear data & results** empties both. Exact @id strings must match; no base resolution is performed.
+
+| Observation | Original | Corrected |
+| --- | --- | --- |
+| Parsing | Parsed JSON | Parsed JSON |
+| Entity inventory | Inventoried | Inventoried |
+| Reference coverage | Local gaps; external unknown | External definitions unknown |
+| Typed entity objects | 2 | 3 |
+| Entity rows | 5 | 6 |
+| ID-only references | 3 | 3 |
+| References matched in input | 1 | 2 |
+| Local references not matched | 1 | 0 |
+| External definitions unknown | 1 | 1 |
+
+The first six observations are summary cards. Reference counts are recorded in the JSON manifest scope, with individual states in the entity rows and findings. The #publisher reference changes from LOCAL_REFERENCE_NOT_MATCHED to MATCHED_ONE_DEFINITION_IN_INPUT. The external license stays EXTERNAL_DEFINITION_UNKNOWN. The corrected summary still says “External definitions unknown”.
+
+This demonstrates improved reference coverage only. It does not establish JSON-LD semantic validity, Schema.org conformance, Google rich-result eligibility or visible-page agreement. Review the real publisher and article content, then use checks appropriate to the intended structured-data feature. The page, license and remote context are not fetched.
+
+## Questions about JSON-LD inspection
+
+### Can I paste a page’s HTML?
+
+Supply the raw JSON inside an application/ld+json script, without the script tags or surrounding HTML. Paste one JSON object or array. This inspector does not extract HTML or request a page URL. If a page has separate scripts, inspect each separately or prepare a combined array yourself; unmatched references describe only the input you supplied.
+
+### Why is #publisher unmatched while the license is UNKNOWN?
+
+The original input contains an @id-only #publisher reference without a definition using that exact string. Adding the synthetic Organization covers that local reference. The license uses an absolute @id with a URI scheme, but no definition with that exact string is supplied. No request is made, so its external definition stays UNKNOWN. Neither finding proves that the published graph is broken.
+
+### Does Parsed JSON mean valid Schema.org or Google rich results?
+
+Parsed JSON means JSON.parse accepted the syntax. The inspector then inventories literal objects, types and exact @id strings. It does not expand contexts, validate Schema.org vocabulary, compare visible page content or determine Google rich-result eligibility. Review the real content and applicable structured-data requirements separately.
+
+### Are multiple definitions for one @id invalid?
+
+Several objects may describe the same entity with the same @id. The inspector retains them and reports multiple definitions for review. It does not merge them or decide whether their properties conflict. Repeated member names inside a single object are different: native JSON.parse keeps the last value, and the inspector does not separately diagnose those duplicate names.
+
 ## Scope
 
 - Inspect raw JSON-LD only. HTML extraction, URL requests, remote contexts, JSON-LD expansion and Schema.org vocabulary validation are not performed.
