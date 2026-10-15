@@ -138,7 +138,7 @@ test('new module and preview source contain no network storage or active DOM API
   const code=readFileSync(new URL('./assets/static/free-tools/'+file,import.meta.url),'utf8');
   for(const pattern of [/\bfetch\s*\(/,/XMLHttpRequest|localStorage|sessionStorage|indexedDB|WebSocket/,/innerHTML|outerHTML|insertAdjacentHTML/,/\beval\s*\(/])assert.ok(!pattern.test(code),file+': '+pattern);
  }
- assert.equal(Object.keys(ANALYZERS).length,10);assert.equal(Object.keys(TOOLS).length,10);
+ assert.equal(Object.keys(ANALYZERS).length,11);assert.equal(Object.keys(TOOLS).length,11);
 });
 test('blank CSV records and multiline cells yield sequential result rows rather than input line numbers',()=>{
  const r=run('url,title,description\n,,\n" "," "," "\nhttps://example.test/a,"Title\nwith newline",D\n,T,D\n');

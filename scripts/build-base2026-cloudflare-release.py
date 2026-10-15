@@ -205,6 +205,9 @@ FREE_TOOLS_ASSET_PATHS = (
     "static/free-tools/batch3.mjs",
     "static/free-tools/batch4-tools.mjs",
     "static/free-tools/batch4.mjs",
+    "static/free-tools/batch5-tools.mjs",
+    "static/free-tools/batch5.mjs",
+    "static/free-tools/jsonld-inspector.css",
     "static/free-tools/engine.mjs",
     "static/free-tools/manrope-latin.woff2",
     "static/free-tools/sitemap-core.mjs",
@@ -253,6 +256,10 @@ FREE_TOOLS_ASSET_PATHS = (
     "tools/serp-snippet-audit/index.html",
     "tools/serp-snippet-audit/input-contract.json",
     "tools/serp-snippet-audit/sample-pages.csv",
+    "tools/json-ld-schema-auditor/README.md",
+    "tools/json-ld-schema-auditor/index.html",
+    "tools/json-ld-schema-auditor/input-contract.json",
+    "tools/json-ld-schema-auditor/sample-schema_input.json",
 )
 SITEMAP_TOOL_ASSET_NAMES = (
     "LICENSE",
@@ -1485,6 +1492,7 @@ HUB_SITEMAP_ROUTES = (
     "/tools/internal-link-anchor-auditor/",
     "/tools/gsc-period-diff-analyzer/",
     "/tools/serp-snippet-audit/",
+    "/tools/json-ld-schema-auditor/",
     "/guides/csv-to-cloudflare-redirects/",
 )
 
@@ -2163,6 +2171,35 @@ def _with_metadata_audit_link(relative_name: str, payload: bytes) -> bytes:
     return text.replace(needle, needle + fragment, 1).encode("utf-8")
 
 
+def _with_jsonld_inspector_link(relative_name: str, payload: bytes) -> bytes:
+    """Add the graph inspector to existing relevant hubs without rebuilding them."""
+    route = "/tools/json-ld-schema-auditor/"
+    if relative_name not in {"solutions/index.html", "site-structure.html"}:
+        return payload
+    marker = 'data-b26-jsonld-inspector="' + relative_name + '"'
+    text = payload.decode("utf-8")
+    if marker in text:
+        if text.count(marker) != 1 or text.count(route) != (2 if relative_name == "solutions/index.html" else 1):
+            raise ReleaseBuildError("JSON-LD inspector link is duplicated or changed")
+        return payload
+    if route in text:
+        raise ReleaseBuildError("JSON-LD inspector has an unrecognized contextual link")
+    if relative_name == "solutions/index.html":
+        needle = '<div class="solution-hub-grid">'
+        if needle not in text:
+            return payload
+        fragment = ('<article class="solution-hub-card" ' + marker + '><div class="solution-hub-card__meta"><span>Local JSON-LD tool</span></div>'
+            '<h2><a href="' + route + '">Inspect JSON-LD entities and references</a></h2>'
+            '<p>Check JSON syntax, inventory supplied entities and review exact @id references before editing structured data.</p>'
+            '<a href="' + route + '">Inspect a JSON-LD graph</a></article>')
+    else:
+        needle = '<li data-b26-metadata-audit="site-structure.html"><a href="/tools/serp-snippet-audit/">Metadata CSV Auditor &amp; Snippet Preview</a></li>'
+        fragment = '<li ' + marker + '><a href="' + route + '">JSON-LD Graph Inspector</a></li>'
+    if text.count(needle) != 1:
+        raise ReleaseBuildError("JSON-LD inspector insertion point is ambiguous")
+    return text.replace(needle, needle + fragment, 1).encode("utf-8")
+
+
 def _reviewed_local_tool_assets() -> dict[str, bytes]:
     """Admit only exact public package paths, validating the package manifest."""
     manifest = json.loads((FREE_TOOLS_PACKAGE / "ASSET-MANIFEST.json").read_text(encoding="utf-8"))
@@ -2195,7 +2232,7 @@ def _local_tools_headers() -> str:
         if route in blocks:
             raise ReleaseBuildError("duplicate local-tool CSP route")
         blocks[route] = block
-    order = ["/tools/robots-txt-tester/*", "/tools/redirect-map-checker/*", "/tools/hreflang-checker/*", "/tools/broken-link-task-builder/*", "/tools/seo-crawl-comparison/*", "/static/free-tools/*", "/tools/indexing-signal-reconciler/*", "/tools/redirect-rule-compiler/*", "/tools/internal-link-anchor-auditor/*", "/tools/gsc-period-diff-analyzer/*", "/tools/serp-snippet-audit/*"]
+    order = ["/tools/robots-txt-tester/*", "/tools/redirect-map-checker/*", "/tools/hreflang-checker/*", "/tools/broken-link-task-builder/*", "/tools/seo-crawl-comparison/*", "/static/free-tools/*", "/tools/indexing-signal-reconciler/*", "/tools/redirect-rule-compiler/*", "/tools/internal-link-anchor-auditor/*", "/tools/gsc-period-diff-analyzer/*", "/tools/serp-snippet-audit/*", "/tools/json-ld-schema-auditor/*"]
     if set(blocks) != set(order):
         raise ReleaseBuildError("local-tool CSP routes differ from the reviewed allowlist")
     csp = "default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; worker-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
@@ -3642,6 +3679,7 @@ def build_release(
                 if target.is_file():
                     before = target.read_bytes()
                     after = _with_metadata_audit_link(relative_name, before)
+                    after = _with_jsonld_inspector_link(relative_name, after)
                     if after != before:
                         write_generated_public_file(relative_name, after, normalize_urls=False)
 

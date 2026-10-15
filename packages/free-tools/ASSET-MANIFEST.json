@@ -46,9 +46,21 @@
       "bytes": 6676,
       "sha256": "94bdeecdb3df5ecba696b7c9269106ea895a30b574a825a7498dabb535be9920"
     },
+    "static/free-tools/batch5-tools.mjs": {
+      "bytes": 4610,
+      "sha256": "a68bcbc35a38c13ab3ff87296039da57a06f3346858d7cb88d461c9297c40616"
+    },
+    "static/free-tools/batch5.mjs": {
+      "bytes": 11258,
+      "sha256": "07a672e74033ee281ddbc807e9816b3b56671aac3fbd557ab2e8b5a67d9b780c"
+    },
     "static/free-tools/engine.mjs": {
-      "bytes": 25983,
-      "sha256": "dad84b37c5e5a0e1e93ac6c24a4475d280ee3fa2a55a6069cfb61e0221eff788"
+      "bytes": 26066,
+      "sha256": "9ab7e83224b88e91f87490da01fb3513526189619c713fe5aae44af087f996ef"
+    },
+    "static/free-tools/jsonld-inspector.css": {
+      "bytes": 269,
+      "sha256": "112cfb04f4dceb23ff77c342e514893da2c4718b459a8d65469ac1f639c6e338"
     },
     "static/free-tools/manrope-latin.woff2": {
       "bytes": 24836,
@@ -71,8 +83,8 @@
       "sha256": "cb5d7e3dade8fdc66d174be40fc233da53d81178454f8e94ea5e8949c1734c59"
     },
     "static/free-tools/tools.mjs": {
-      "bytes": 10357,
-      "sha256": "af794ccaf8de5b16cabe029a1bba0e2383be462490dcccd94a8c51cfe427171b"
+      "bytes": 10425,
+      "sha256": "8c0c51b9dc32318d34bd5ad88b31c7ce1eaae3af00b1ba9a3e3f7d30baf2fc2a"
     },
     "static/free-tools/worker.mjs": {
       "bytes": 2141,
@@ -165,6 +177,22 @@
     "tools/internal-link-anchor-auditor/sample-inventory.csv": {
       "bytes": 135,
       "sha256": "4a8cb2eb8749f595e9332429c72980fe2beb243bd1461bd45b215f1b5803b270"
+    },
+    "tools/json-ld-schema-auditor/README.md": {
+      "bytes": 4295,
+      "sha256": "164880f2feaa2bded9cb11a790569078682206e9f9ac2efc55eda747a3dbc035"
+    },
+    "tools/json-ld-schema-auditor/index.html": {
+      "bytes": 11383,
+      "sha256": "a9144bd499c737d4fc87023ec516a827c1652a9d1fe6b3cb90a1b784665ebcec"
+    },
+    "tools/json-ld-schema-auditor/input-contract.json": {
+      "bytes": 4696,
+      "sha256": "03e994c03a0ff4f48010f31c1f45ad065aad922f1f5984b54bfdd1532e284c7c"
+    },
+    "tools/json-ld-schema-auditor/sample-schema_input.json": {
+      "bytes": 494,
+      "sha256": "8fb6610ab8b92689947ce247f3e0b45ebd84b491147a624e59d83a5585410afa"
     },
     "tools/redirect-map-checker/README.md": {
       "bytes": 1727,
