@@ -58,6 +58,34 @@
     return compact.slice(0, cutoff).trimEnd() + "…";
   }
 
+  // Only the public search body supplies a passage. A caption/title is never evidence.
+  function publicPassage(hit, query) {
+    const body = typeof hit.body === "string" ? hit.body.replace(/\[\d+(?:\.\d+)?s-\d+(?:\.\d+)?s\]\s*/gu, " ").replace(/\s+/g, " ").trim() : "";
+    if (!body) return { text: "No public passage is available for this record. Open the source record or original video for context.", matched: false, available: false };
+    const lower = body.toLocaleLowerCase();
+    const phrase = cleanText(query, 200).toLocaleLowerCase();
+    const tokens = phrase.match(/[\p{L}\p{N}_@-]+/gu) || [];
+    let matchAt = phrase ? lower.indexOf(phrase) : -1;
+    if (matchAt < 0) {
+      // The API can also match a title, creator or topic. Do not label an unrelated body as matched.
+      const positions = tokens.filter(function (token) { return token.length >= 3; }).map(function (token) { return lower.indexOf(token); }).filter(function (position) { return position >= 0; });
+      if (positions.length) matchAt = Math.min.apply(Math, positions);
+    }
+    let start = matchAt > 100 ? matchAt - 100 : 0;
+    if (start) {
+      const space = body.indexOf(" ", start);
+      if (space >= 0 && space < matchAt) start = space + 1;
+    }
+    const text = boundedExcerpt(body.slice(start));
+    return { text: (start ? "…" : "") + text, matched: matchAt >= 0, available: true };
+  }
+
+  function sourceRecordHref(record, query) {
+    const parameters = new URLSearchParams();
+    parameters.set("q", cleanText(query, 200));
+    return record.url + "#research?" + parameters.toString();
+  }
+
   function element(tagName, className, textValue) {
     const node = document.createElement(tagName);
     if (className) node.className = className;
@@ -205,7 +233,7 @@
         q: query,
         limit: RESULT_LIMIT,
         attributesToRetrieve: [
-          "id", "item_id", "source_id", "video_id", "title",
+          "id", "item_id", "source_id", "video_id", "title", "title_source", "body",
           "creator_display_name", "creator_handle", "handle", "source_url", "published_date",
           "source_type", "platform", "topics", "topic_labels"
         ],
@@ -253,20 +281,24 @@
     card.appendChild(element("p", "", value));
   }
 
-  function renderResult(recordRow, position) {
+  function renderResult(recordRow, position, query) {
     const hit = recordRow.hit;
     const record = recordRow.record;
     const creator = cleanText(hit.creator_handle || hit.handle || hit.creator_display_name, 100) || "Creator attribution unavailable in this record";
-    const excerpt = boundedExcerpt(hit.title) || "No bounded public source summary is available in this record.";
+    const passage = publicPassage(hit, query);
+    const title = boundedExcerpt(hit.title) || "Source record " + record.id;
     const originalUrl = safeOriginalUrl(hit.source_url);
     const type = sourceType(hit);
     const date = sourceDate(hit);
     const card = element("article", "b26-evidence-search__result-card");
 
     card.appendChild(element("p", "b26-evidence-search__result-index", "Result " + position));
-    card.appendChild(element("p", "b26-evidence-search__result-index", "Creator"));
-    card.appendChild(element("h3", "", creator));
-    addLabeledText(card, "What the source says", excerpt);
+    card.appendChild(element("p", "b26-evidence-search__result-index", hit.title_source === "public_projection" ? "Base2026 finding" : "Source title"));
+    card.appendChild(element("h3", "", title));
+    const attribution = element("p", "b26-evidence-search__attribution", "Creator: " + creator);
+    card.appendChild(attribution);
+    card.appendChild(element("h4", "", passage.available ? (passage.matched ? "Matched public passage" : "Public passage") : "Public passage unavailable"));
+    card.appendChild(element(passage.available ? "blockquote" : "p", "b26-evidence-search__passage", passage.text));
 
     const metaHeading = element("h4", "", "Source details");
     const meta = element("div", "b26-evidence-search__result-meta");
@@ -293,7 +325,7 @@
 
     const actions = element("div", "b26-evidence-search__actions");
     const baseLink = element("a", "", "Open Base2026 record");
-    baseLink.href = record.url;
+    baseLink.href = sourceRecordHref(record, query);
     baseLink.addEventListener("click", function () {
       recordInspection("evidence_source_record_opened", "base2026_record_opened", position);
     });
@@ -347,7 +379,7 @@
 
   function renderMatches(normalized, query, wallTime) {
     const nodes = normalized.rows.map(function (row, index) {
-      return renderResult(row, index + 1);
+      return renderResult(row, index + 1, query);
     });
     results.replaceChildren.apply(results, nodes);
     renderedCount = nodes.length;

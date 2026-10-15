@@ -87,6 +87,41 @@
     }
   }
 
+
+  // Keep the source → search path in the same public research interface. The
+  // originating query travels only in a URL fragment; no storage or new request.
+  if (/^\/sources\/tiktok-video-\d{10,30}\/?$/.test(window.location.pathname)) {
+    var researchHash = window.location.hash.replace(/^#/, "");
+    var returnQuery = researchHash.indexOf("research?") === 0 ? new URLSearchParams(researchHash.slice(9)).get("q") : "";
+    var searchHref = function (query) {
+      var params = new URLSearchParams();
+      params.set("q", String(query || "").replace(/\s+/g, " ").trim().slice(0, 200));
+      return "/tools/evidence-search/#search?" + params.toString();
+    };
+    var sourceActions = document.querySelector(".b26-source-actions");
+    if (sourceActions) {
+      all("a[href]", sourceActions).forEach(function (link) {
+        var target = new URL(link.getAttribute("href"), window.location.href);
+        if (target.origin === window.location.origin && /^\/workspace\/?$/.test(target.pathname) && target.searchParams.get("q")) {
+          link.href = searchHref(target.searchParams.get("q"));
+        }
+      });
+    }
+    // Legacy source records have .hero-actions; the return path needs only main.
+    var sourceMain = document.querySelector("main");
+    if (sourceMain && returnQuery && returnQuery.trim()) {
+      var back = document.createElement("a");
+      back.className = "b26-button--secondary";
+      back.href = searchHref(returnQuery);
+      back.textContent = "Back to search results";
+      var returnNav = document.createElement("nav");
+      returnNav.className = "b26-source-actions";
+      returnNav.setAttribute("aria-label", "Return to evidence search");
+      returnNav.appendChild(back);
+      sourceMain.prepend(returnNav);
+    }
+  }
+
   var example = document.querySelector("[data-worked-example]");
   if (!example) return;
   var panels = all("[data-example-panel]", example);

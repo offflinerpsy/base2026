@@ -463,3 +463,9 @@
   .b26-evidence-search__result-card { padding: 20px 16px; }
   .b26-evidence-search__example-records article { border-left: 0; }
 }
+
+/* R3: keep attribution and the retrieved passage visually distinct from the title. */
+.b26-evidence-search__result-card h3 { font-size: clamp(19px, 2.2vw, 24px); line-height: 1.35; }
+.b26-evidence-search__result-card .b26-evidence-search__attribution { margin-top: 10px; font-size: 14px; color: var(--b26-ink); }
+.b26-evidence-search__result-card .b26-evidence-search__passage { margin: 0; padding: 12px 16px; border-left: 3px solid var(--b26-accent); background: var(--b26-paper, #f7f4ee); color: var(--b26-ink); font-size: 16px; line-height: 1.65; overflow-wrap: anywhere; }
+.b26-evidence-search__result-card p.b26-evidence-search__passage { border-left-color: var(--b26-line); font-size: 14px; }
