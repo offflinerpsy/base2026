@@ -19,6 +19,7 @@ node tests.mjs
 node --test batch2.test.mjs
 node --test batch3.test.mjs
 node --test batch4.test.mjs
+node --test batch5.test.mjs
 python3 oracle.py
 python3 check-assets.py
 ```
@@ -45,3 +46,5 @@ Batch3 implementation is in `batch3.mjs` and `batch3-tools.mjs`; both tools publ
 Metadata CSV Auditor & Snippet Preview accepts one CSV with url,title,description and optional h1/OG/Twitter fields. It reports supplied missing values, case-sensitive normalized duplicates across distinct valid URL strings, Unicode code-point counts and informational title/H1 differences. Missing optional columns remain UNKNOWN; blank supplied cells are MISSING. Social values are text inventory, not image or tag validation. One selectable row is rendered with text nodes only; no supplied URL is linked or fetched. Google may choose other text. No pixel calibration, truncation/rewrite prediction or SEO score is implemented. Source: batch4.mjs, batch4-tools.mjs and snippet-preview.mjs; CSV semantics are in the tool input-contract.json.
 
 Metadata CSV Auditor ignores blank CSV records. Counts and exports cover rows checked, and Result row numbers run sequentially from 1 without the header. They are not line numbers or original record positions in the input file. The additional rows-checked CSV preserves supplied values for rows checked only; the skipped-record count is unavailable.
+
+JSON-LD Graph Inspector accepts raw JSON-LD, not HTML. It reports JSON parsing, entity inventory and exact-string @id-reference coverage separately. Literal types on root/array/@graph/nested objects are inventoried; contexts and aliases are not expanded, and no URLs are requested. Unmatched absolute reference definitions remain UNKNOWN; unmatched non-absolute references describe only local input coverage. Multiple definition objects with one @id are review observations, not an invalidity verdict; no merge is performed. Native JSON.parse keeps the last duplicate member name inside one object. Empty objects/arrays do not become a valid graph claim. No Schema.org, Google rich-result, visible-page or ranking validation is performed. The input contract lists depth/object/value/string/pointer limits and exclusions. Source: batch5.mjs and batch5-tools.mjs; results CSV is the entity inventory. The existing shared Worker, UI, pagination, clear lifecycle and CSV serializer are reused.

@@ -1,0 +1,65 @@
+{
+  "schema": "base2026.jsonld-graph-inspector-contract/1",
+  "input": "One raw UTF-8 JSON object or array. No HTML/script extraction, URL fetching or remote contexts.",
+  "limits": {
+    "file_bytes": 2097152,
+    "objects_including_contexts": 5000,
+    "total_values_including_root": 20000,
+    "nested_object_array_levels": 64,
+    "string_or_member_name_utf16_units": 16384,
+    "json_pointer_utf16_units": 4096
+  },
+  "limit_behavior": "Byte/container-depth caps are checked before parsing or traversal; object/value/string/pointer caps use iterative traversal. Exceeding a limit stops the run without a partial exported inventory.",
+  "syntax": "Native JSON.parse. Syntax errors produce JSON_SYNTAX_ERROR, no entity rows and reference coverage NOT_INSPECTED. A portable numeric parser location is included when available; native input snippets are not copied to Markdown.",
+  "root_shapes": {
+    "object": "Inspect its nested objects. Empty objects yield NO_ENTITY_OBJECTS.",
+    "array": "Inspect objects in order, including nested arrays. Primitive values are visited for limits but are not entity objects. Empty arrays yield NO_ENTITY_OBJECTS.",
+    "primitive": "JSON_PARSED with entity inventory NOT_INSPECTED_UNSUPPORTED_ROOT and reference coverage NOT_INSPECTED. Never a graph-valid result."
+  },
+  "entity_rows": "Objects outside @context, except empty objects, pure @graph/@context containers and @value/@list/@set wrappers. Nested objects of those wrappers are still inspected, except context contents. Untyped node objects remain visible.",
+  "order": "Depth-first supplied array/member order. Entity row is sequential 1..N and is not an input line number. JSON pointers use RFC6901 escaping; root pointer is the empty string.",
+  "types": "Only literal @type string/string-array values are inventoried as supplied labels. No term/IRI/vocabulary or keyword-alias expansion; absent or unusual type values are observations, not full validity decisions.",
+  "contexts": "Record supplied context kind per object; do not fetch, expand, apply or inherit contexts. Context contents count toward limits but do not become entity rows or ID definitions.",
+  "id_only_reference": "Exactly one member, @id, whose value is a string, including the empty string. A non-string @id is retained as a shape observation and not indexed.",
+  "id_definition": "Object with a string @id and another member besides @id/@context. Separate definition objects with an identical string remain separate; no merge or conflict inference.",
+  "matching": "Exact supplied @id strings. No trim, case folding, percent/trailing-slash/Unicode normalization, base resolution, URL request or reference traversal. @id strings with cycles do not cause linked-graph recursion.",
+  "reference_states": [
+    "NOT_AN_ID_ONLY_REFERENCE",
+    "ID_VALUE_NOT_STRING",
+    "MATCHED_ONE_DEFINITION_IN_INPUT",
+    "MATCHED_MULTIPLE_DEFINITIONS_IN_INPUT",
+    "LOCAL_REFERENCE_NOT_MATCHED",
+    "EXTERNAL_DEFINITION_UNKNOWN"
+  ],
+  "unmatched_reference": "A string beginning with an RFC3986-style scheme prefix (letter then letters/digits/+/./- then colon) has external-definition UNKNOWN. All other unmatched strings are local coverage gaps, including fragments, relative paths, blank-node labels and empty strings. This lexical classification is not IRI validation or proof of a published broken link.",
+  "duplicate_member_names": "Native JSON.parse retains the last supplied value of repeated member names in a single object. Duplicate member names are not separately diagnosed. This differs from multiple separate definition objects sharing @id, which are retained for review.",
+  "state_dimensions": {
+    "parsing": [
+      "JSON_PARSED",
+      "JSON_SYNTAX_ERROR"
+    ],
+    "entity_inventory": [
+      "NOT_INSPECTED",
+      "NOT_INSPECTED_UNSUPPORTED_ROOT",
+      "NO_ENTITY_OBJECTS",
+      "INVENTORIED"
+    ],
+    "reference_coverage": [
+      "NOT_INSPECTED",
+      "NO_ID_ONLY_REFERENCES",
+      "ALL_MATCHED_IN_INPUT",
+      "LOCAL_GAPS",
+      "EXTERNAL_DEFINITIONS_UNKNOWN",
+      "LOCAL_GAPS_AND_EXTERNAL_UNKNOWN"
+    ]
+  },
+  "exports": "Results CSV is the entity inventory; findings CSV uses controlled row labels; readable Markdown report; JSON input manifest with Worker SHA-256, separate state dimensions and limits. The unchanged shared CSV serializer quotes cells and prefixes common spreadsheet formula-leading values.",
+  "not_performed": [
+    "Full JSON-LD processing/expansion/validation",
+    "Schema.org vocabulary checks",
+    "Google required/recommended property or rich-result eligibility checks",
+    "Visible-page parity",
+    "URL/context fetching",
+    "Ranking or traffic inference"
+  ]
+}

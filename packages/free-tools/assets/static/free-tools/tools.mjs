@@ -1,3 +1,4 @@
+import {BATCH5_TOOLS} from './batch5-tools.mjs';
 import {BATCH4_TOOLS} from './batch4-tools.mjs';
 import {BATCH3_TOOLS} from './batch3-tools.mjs';
 import {BATCH2_TOOLS} from './batch2-tools.mjs';
@@ -64,6 +65,7 @@ export const TOOLS = {
   },
   ...BATCH2_TOOLS,
   ...BATCH3_TOOLS,
-  ...BATCH4_TOOLS
+  ...BATCH4_TOOLS,
+  ...BATCH5_TOOLS
 };
 export const LIMITS = Object.freeze({fileBytes:2097152,totalBytes:4194304,records:5000,robotsBytes:65536,urlLength:4096,cellLength:16384});
