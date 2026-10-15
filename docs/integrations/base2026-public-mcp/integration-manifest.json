@@ -1,7 +1,7 @@
 {
   "name": "base2026-public-mcp",
   "version": "2026-09-01",
-  "status": "candidate_not_deployed",
+  "status": "released",
   "endpoint": "https://base2026.dev/api/mcp",
   "human_docs": "https://base2026.dev/mcp",
   "transport": "streamable_http_json",

@@ -1,8 +1,10 @@
 # Base2026 local SEO tools
 
-Ten complete browser jobs: Robots.txt Tester, Redirect Map Checker, Hreflang Map Checker, Broken Link Task Builder, SEO Crawl Comparison, Indexing Signal Reconciler, Redirect Rule Compiler, Internal Link & Anchor Auditor, GSC Period Change Analyzer, and Metadata CSV Auditor & Snippet Preview. Each accepts pasted data or local UTF-8 files, runs in a Web Worker, and exports results CSV, findings CSV, a Markdown report and a JSON scope/input manifest. These are supplied-data utilities; no target URL is fetched, no data is uploaded, and no storage, analytics or model calls are used.
+Eleven complete browser jobs: Robots.txt Tester, Redirect Map Checker, Hreflang Map Checker, Broken Link Task Builder, SEO Crawl Comparison, Indexing Signal Reconciler, Redirect Rule Compiler, Internal Link & Anchor Auditor, GSC Period Change Analyzer, Metadata CSV Auditor & Snippet Preview, and JSON-LD Graph Inspector. Each accepts pasted data or local UTF-8 files, runs in a Web Worker, and exports results CSV, findings CSV, a Markdown report and a JSON scope/input manifest. These are supplied-data utilities; no target URL is fetched, no data is uploaded, and no storage, analytics or model calls are used.
 
 Repository source: [packages/free-tools](https://github.com/offflinerpsy/base2026/tree/main/packages/free-tools).
+
+`REGISTRY.json` describes the implementations included in this source package. `IMPLEMENTED` records source availability; a local build does not establish production deployment.
 
 The tool pages are under `assets/tools/`; shared source is under `assets/static/free-tools/`. Serve the **assets** directory over HTTP and open one of the tool routes. The frozen sitemap/CSV module is reused byte-for-byte; P1's original source is not edited.
 
