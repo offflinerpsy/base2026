@@ -62,7 +62,7 @@
       },
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
-      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+      "status": "IMPLEMENTED"
     },
     {
       "id": "redirect-map-checker",
@@ -118,7 +118,7 @@
       },
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
-      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+      "status": "IMPLEMENTED"
     },
     {
       "id": "hreflang-checker",
@@ -174,7 +174,7 @@
       },
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
-      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+      "status": "IMPLEMENTED"
     },
     {
       "id": "broken-link-task-builder",
@@ -237,7 +237,7 @@
       },
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
-      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+      "status": "IMPLEMENTED"
     },
     {
       "id": "seo-crawl-comparison",
@@ -300,7 +300,7 @@
       },
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
-      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+      "status": "IMPLEMENTED"
     },
     {
       "id": "indexing-signal-reconciler",
@@ -376,7 +376,7 @@
       },
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
-      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+      "status": "IMPLEMENTED"
     },
     {
       "id": "redirect-rule-compiler",
@@ -443,7 +443,7 @@
       },
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
-      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+      "status": "IMPLEMENTED"
     },
     {
       "id": "internal-link-anchor-auditor",
@@ -509,7 +509,7 @@
       },
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
-      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+      "status": "IMPLEMENTED"
     },
     {
       "id": "gsc-period-diff-analyzer",
@@ -575,7 +575,7 @@
       },
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
-      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+      "status": "IMPLEMENTED"
     },
     {
       "id": "serp-snippet-audit",
@@ -640,7 +640,7 @@
       },
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
-      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+      "status": "IMPLEMENTED"
     },
     {
       "id": "json-ld-schema-auditor",
@@ -712,7 +712,7 @@
       },
       "assets_prefix": "/static/free-tools/",
       "source_license": "Apache-2.0",
-      "status": "LOCAL_WORKING_CANDIDATE_NOT_DEPLOYED"
+      "status": "IMPLEMENTED"
     }
   ]
 }
