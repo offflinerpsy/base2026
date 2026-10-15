@@ -24,8 +24,11 @@ node worker-probe.mjs
 node r3-regressions.mjs
 python3 r3-oracle.py
 node r3-worker-probe.mjs
+node --test demo-state.test.mjs
 ```
 
 The scripts use the unchanged `source/core.mjs` and `source/worker.mjs`. They create synthetic fixtures, maximum-size examples and local `*-EVIDENCE.json` reports in this package directory. Test inputs are made-up URLs; they are not users or demand observations. Existing reports are not required: the command order regenerates what the subsequent checks need. No operational receipts, real user inputs or deployment configuration are included.
 
 For the interface, serve `source/` over HTTP and test import, explicit host selection, build, reset and all four downloads in a real browser. A successful parser test does not establish browser behavior, deployment, indexing or user value.
+
+`demo-state.test.mjs` checks sample byte parity and the app lifecycle with a small DOM/message adapter running the unchanged Worker logic. It is an offline integration check, not native browser acceptance.

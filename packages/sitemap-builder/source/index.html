@@ -14,7 +14,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","@id":"https://base2026.dev/tools/sitemap-builder/#app","name":"Base2026 Sitemap Builder","url":"https://base2026.dev/tools/sitemap-builder/","description":"Free sitemap builder for a supplied URL list. Create XML, compare an existing sitemap and export added or missing URLs. Local processing; no signup or crawl.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","isAccessibleForFree":true,"browserRequirements":"JavaScript and Web Workers","license":"https://www.apache.org/licenses/LICENSE-2.0","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Base2026","item":"https://base2026.dev/"},{"@type":"ListItem","position":2,"name":"Free tools","item":"https://base2026.dev/tools/"},{"@type":"ListItem","position":3,"name":"Sitemap Builder","item":"https://base2026.dev/tools/sitemap-builder/"}]}</script>
   <link rel="icon" href="./b26-seal.webp"><link rel="stylesheet" href="./base2026-core.css"><link rel="stylesheet" href="./app.css"><link rel="stylesheet" href="./public.css">
-  <script type="module" src="./app.mjs"></script>
+  <script type="module" src="./app.mjs?v=d11645cf343f4b14b5ef5b7487b2f9303f645bcaa0d2e76f8d4139bc33869117"></script>
 <meta property="og:site_name" content="Base2026">
 <meta property="og:image" content="https://base2026.dev/static/assets/tools-studio/tools-studio-social.png">
 <meta property="og:image:width" content="1200">
@@ -32,7 +32,9 @@
     <section class="panel" id="form" aria-labelledby="import-title" aria-busy="false">
       <h2 id="import-title">Import your files</h2>
       <p class="help">UTF-8 files · up to 5,000 URL records per input · 2 MiB per file · 4 MiB combined. One host per sitemap.</p>
-      <p class="sample-links">Want to try it first? Download the <a href="./sample-urls.txt" download>sample URL list</a> and <a href="./sample-sitemap.xml" download>sample sitemap</a>, then import both files and choose <code>example.test</code>. These are made-up URLs.</p>
+      <div class="actions"><button id="try-example" type="button" class="b26-button--secondary">Try example</button></div>
+      <p class="sample-links">Calculate a demo from the bundled, synthetic <code>example.test</code> inputs in one click. No download or file selection is needed. You can also inspect the <a href="./sample-urls.txt" download>sample URL list</a> and <a href="./sample-sitemap.xml" download>sample sitemap</a>. Your own files still require an explicit host choice.</p>
+      <p id="example-note" class="help" hidden><strong>Synthetic example.test demo.</strong> The bundled inputs are processed locally by the same parser and Worker as your files. Only the demo host is selected automatically. Choosing a file or Clear removes the demo and its results.</p>
       <div class="files">
         <div><label for="expected">Expected URLs <span aria-hidden="true">*</span></label><input id="expected" type="file" accept=".txt,.csv" aria-describedby="expected-help"><span class="help" id="expected-help">TXT: one absolute HTTP(S) URL per line. CSV: one column, or a url/loc header. Only exact duplicates are removed.</span></div>
         <div><label for="existing">Existing sitemap <span class="help-inline">(optional)</span></label><input id="existing" type="file" accept=".xml" aria-describedby="existing-help"><span class="help" id="existing-help">One XML urlset. Sitemap indexes and XML extensions are unsupported. URLs in the file are never visited.</span></div>
@@ -41,7 +43,7 @@
       <label for="host">Include URLs from one host</label><select id="host" disabled><option value="">Import files, then choose a host</option></select>
       <span class="help">Host matching includes a non-default port. Path, query, case and trailing slash stay exactly as supplied. Credentials and fragments are excluded.</span>
       <button id="build" type="button" class="b26-button--primary" disabled>Build &amp; compare</button>
-      <div id="status" class="notice" role="status" aria-live="polite" tabindex="-1">Choose your expected URL file to begin.</div>
+      <div id="status" class="notice" role="status" aria-live="polite" tabindex="-1">Try the synthetic example or choose your expected URL file to begin.</div>
     </section>
     <section id="results" class="panel" hidden tabindex="-1" aria-labelledby="result-title">
       <h2 id="result-title">Review your sitemap</h2><p id="comparison" class="help"></p><div id="counts"></div>
@@ -56,7 +58,7 @@
     <p class="help">Inputs and results remain in tab memory until cleared or closed. Downloads are files you choose to keep. No uploads, URL requests, analytics or AI calls are used.</p>
     <section class="panel tool-explanation" id="how-it-works" aria-labelledby="how-title">
       <h2 id="how-title">From your URL list to a file you can review.</h2>
-      <ol><li><strong>Import the URLs you intend to include.</strong> Use a UTF-8 TXT or CSV file. Add one existing XML urlset if you want a comparison.</li><li><strong>Choose one host and review the result.</strong> Check the added, missing, excluded and duplicate records. URL paths, queries, letter case and trailing slashes are preserved.</li><li><strong>Download the files you need.</strong> Get the sitemap XML, changes CSV, input manifest or readable report. Review the sitemap before adding it to your own site.</li></ol>
+      <ol><li><strong>Import the URLs you intend to include.</strong> Use a UTF-8 TXT or CSV file. Add one existing XML urlset if you want a comparison.</li><li><strong>Choose one host and review the result.</strong> Check the added, missing, excluded and duplicate records. URL paths, queries, letter case and trailing slashes are preserved.</li><li><strong>Download the files you need.</strong> Get the sitemap XML, changes CSV, input manifest or readable report. Review the sitemap before adding it to your own site. Upload the reviewed XML to a public location on the selected host, commonly <code>/sitemap.xml</code>, then use its URL in your site’s sitemap configuration or search-engine submission tool. This app does not publish or submit it.</li></ol>
       <details><summary>Will this crawl my website or check Google indexing?</summary><p>No. It processes the files you choose in your browser. It does not visit the URLs, validate HTTP status, choose canonical URLs or submit anything to a search engine. A valid sitemap does not guarantee indexing.</p></details>
       <details><summary>Which sitemap files can I compare?</summary><p>One XML <code>urlset</code>, with up to 5,000 URL records and 2 MiB per file. Sitemap indexes, XML extensions, DOCTYPE and entity declarations are unsupported. A lastmod value is copied only from a matching supplied URL with valid date syntax; it is never guessed.</p></details>
       <details><summary>Where do my files go?</summary><p>The app processes them in this tab. Inputs and results remain in tab memory until you clear them or close the tab. Downloads are files you choose to keep. The app makes no uploads, target URL requests, analytics calls or AI calls.</p></details>
