@@ -1,5 +1,13 @@
 # Prompt Log
 
+## 2026-10-15 — Correct generated workspace links
+
+Live source navigation opened the marketing homepage instead of the selected
+record. Corrected the shared generator destination to the actual `/workspace/`
+route and updated its regression assertions, preserving parameter encoding.
+Existing source content, metadata and evidence-search return links are unchanged.
+Production assets are released and verified separately from this public source.
+
 ## 2026-09-06 — Product story, investor roadmap, 3D Factory and visual correction
 
 The owner requested four independent web ChatGPT 6 Pro investigations and

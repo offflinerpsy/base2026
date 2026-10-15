@@ -53,12 +53,20 @@ class SourceIndexabilityTests(unittest.TestCase):
         self.assertIn('name="robots" content="noindex,follow"', html)
         self.assertNotIn("Open in Search Workspace", html)
 
-    def test_workspace_links_use_canonical_query_string_route(self) -> None:
+    def test_workspace_links_target_the_search_application(self) -> None:
         self.assertEqual(
             pages.workspace_href(topic="internal-linking", q="Internal Linking"),
-            "../?topic=internal-linking&q=Internal+Linking",
+            "/workspace/#search?topic=internal-linking&q=Internal+Linking",
         )
-        self.assertNotIn("#search?", pages.workspace_href(source="tiktok-video-123"))
+        self.assertEqual(
+            pages.workspace_href(source="tiktok-video-123"),
+            "/workspace/#search?source=tiktok-video-123",
+        )
+        self.assertEqual(
+            pages.workspace_href(base="../../", creator="@creator", q="Google & AI"),
+            "/workspace/#search?creator=creator&q=Google+%26+AI",
+        )
+        self.assertEqual(pages.workspace_href(), "/workspace/")
 
     def test_source_titles_are_unique_and_fit_search_result_limits(self) -> None:
         first = {**self.source, "item_id": "tiktok-video-7657638702864223510"}

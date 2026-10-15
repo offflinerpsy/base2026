@@ -1,5 +1,19 @@
 # Next Action
 
+## Source navigation maintenance — 2026-10-15
+
+The public page generator now targets `/workspace/#search?...` for source,
+creator and topic links. The old relative root links opened the marketing
+homepage after the search app moved. Source/creator navigation and URL encoding
+are covered by the generator regression suite.
+
+Deploy the matching reviewed static href correction through the existing scoped
+asset release, then verify source and creator clicks on desktop/mobile. This
+source commit alone is not a deployment or new TikTok-publication receipt.
+Other runtime/source parity and the broader product-quality programme remain open.
+
+## Earlier project checkpoint
+
 Checkpoint: 2026-09-06 — the product experience release is live and verified.
 Continue from the [release handoff](HANDOFF_2026-09-06_PRODUCT_EXPERIENCE.md).
 The active product phase remains Phase 29.
