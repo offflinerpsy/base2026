@@ -1264,8 +1264,9 @@ def topic_href(topic_id: str, prefix: str = "../topics") -> str:
 
 
 def workspace_href(base: str = "../", **params: str) -> str:
+    # Keep base for existing callers; the search application now lives at /workspace/.
     query = urlencode({str(key): str(value).lstrip("@") for key, value in params.items() if value})
-    return f"{base.rstrip('/')}/?{query}" if query else f"{base.rstrip('/')}/"
+    return f"/workspace/#search?{query}" if query else "/workspace/"
 
 
 def topic_chips(topic_rows: list[tuple[str, str, int]], prefix: str = "../topics") -> str:
