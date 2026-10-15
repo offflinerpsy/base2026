@@ -6,13 +6,18 @@ Build a sitemap from a supplied URL list and compare it with one supplied XML ur
 
 Choose a UTF-8 TXT file with one absolute HTTP(S) URL per line, or CSV with one column or a `url`/`loc` header. Optionally choose one existing XML urlset. Select one host, build, review exclusions and download XML, CSV, JSON manifest or the readable report. Limits: 5,000 records per input, 2 MiB per file, 4 MiB combined.
 
-The included [sample URL list](./sample-urls.txt) and [sample sitemap](./sample-sitemap.xml) use made-up `example.test` URLs. With both imported, choose `example.test`: 3 included, 2 added, 1 missing and 1 duplicate. Added is expected-only; missing is existing-only.
+Select **Try example** to calculate the synthetic `example.test` demo immediately, with no sample download or re-upload. The bundled inputs are byte-identical to the [sample URL list](./sample-urls.txt) and [sample sitemap](./sample-sitemap.xml). They pass through the same Worker import, hashing, parser and build functions as ordinary files. Only the demo host is selected automatically; your own file import still requires an explicit host selection.
+
+The result reports the counts it calculates. Added means expected-only; missing means existing-only. Neither describes Google indexing. Choosing a file or **Clear files & results** invalidates the demo and previous results. Late replies from a replaced Worker are ignored.
+
+After reviewing your own output, upload the XML to a public location on the selected host, commonly `/sitemap.xml`, and use its URL in your site’s sitemap configuration or search-engine submission tool. The app does not publish, submit or promise indexing.
 
 ## Source
 
 - [core.mjs](./core.mjs): bounded parsing, exact URL classification, XML and report exports.
 - [worker.mjs](./worker.mjs): in-memory file processing and SHA-256 input manifest.
 - [app.mjs](./app.mjs): accessible preview, state reset and Blob downloads.
+- [sample.mjs](./sample.mjs): immutable synthetic inputs used by **Try example**, without URL requests.
 - [index.html](./index.html), [app.css](./app.css), [public.css](./public.css), [base2026-core.css](./base2026-core.css): interface and styling.
 
 To run locally, keep these files together with `manrope-latin.woff2` and `b26-seal.webp`, then serve the folder over HTTP, for example `python3 -m http.server 8000 --bind 127.0.0.1`. Open the loopback server address printed by the development server. JavaScript, Web Workers and a secure browser context are required. Production hosting should retain a Content Security Policy with `connect-src 'none'`, same-origin scripts/workers/styles/fonts and no third-party analytics script on the tool page.

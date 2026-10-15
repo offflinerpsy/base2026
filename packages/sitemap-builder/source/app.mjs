@@ -1,16 +1,18 @@
 import {checkSizes} from './core.mjs';
+import {DEMO_HOST, sampleFiles} from './sample.mjs';
 const $ = id => document.getElementById(id);
-let worker, result, category = 'included', page = 0, busy = false;
+let worker, result, category = 'included', page = 0, busy = false, demoMode = false;
 const PAGE = 25;
 function status(message, error = false) { $('status').textContent = message; $('status').className = error ? 'notice error' : 'notice'; }
 function invalidate() {
   worker?.terminate(); worker = undefined; result = undefined; busy = false;
+  demoMode = false; $('example-note').hidden = true; $('try-example').disabled = false;
   $('host').replaceChildren(new Option('Import files, then choose a host', ''));
   $('host').disabled = true; $('build').disabled = true; $('import').disabled = false;
   $('results').hidden = true; $('form').setAttribute('aria-busy','false');
   for (const id of ['rows','counts','comparison','warnings','xml-preview','page-label']) $(id).replaceChildren();
 }
-function setBusy(value) { busy = value; $('import').disabled = value; $('build').disabled = value || !$('host').value; $('host').disabled = value; $('form').setAttribute('aria-busy',String(value)); }
+function setBusy(value) { busy = value; $('try-example').disabled = value; $('import').disabled = value; $('build').disabled = value || !$('host').value; $('host').disabled = value; $('form').setAttribute('aria-busy',String(value)); }
 for (const id of ['expected','existing']) $(id).addEventListener('change',()=> { invalidate(); status('Files changed. Import them to choose a host.'); });
 $('clear').addEventListener('click',()=> { invalidate(); $('expected').value = ''; $('existing').value = ''; status('Files and results cleared from this tab.'); $('expected').focus(); });
 $('import').addEventListener('click',()=> {
@@ -22,27 +24,46 @@ $('import').addEventListener('click',()=> {
     if (!format) throw new Error('Expected file must have a .txt or .csv extension.');
     if (existing && !existing.name.toLowerCase().endsWith('.xml')) throw new Error('Existing sitemap must have a .xml extension.');
     const files = [{file:expected,size:expected.size,role:'expected',format},...(existing?[{file:existing,size:existing.size,role:'existing',format:'xml'}]:[])];
-    checkSizes(files); // before cloning files to Worker; checked again there
-    worker = new Worker('./worker.mjs',{type:'module'});
-    worker.onmessage = ({data}) => {
-      setBusy(false);
-      if (data.type === 'error') { invalidate(); status(data.message,true); $('status').focus(); }
-      else if (data.type === 'imported') {
-        $('host').replaceChildren(new Option('Choose one host explicitly', ''),...data.hosts.map(h=>new Option(h,h)));
-        $('host').disabled = false;
-        status(`Imported ${data.records.map(r=>`${r.records} ${r.role} records`).join(' and ')}. Choose one host to build.`);
-        $('host').focus();
-      } else if (data.type === 'built') {
-        result = data.result; category = 'included'; page = 0; render();
-        status(`Ready. ${result.manifest.counts.included} URLs included. Review exclusions and download your files.`);
-        $('results').hidden = false; $('results').focus();
-      }
-    };
-    worker.onerror = () => { invalidate(); status('Worker could not start. Reload the local preview and import again.',true); };
-    setBusy(true); status('Reading and parsing in this tab…');
-    worker.postMessage({type:'import',files,observedAt:new Date().toISOString()});
+    startImport(files);
   } catch (e) { invalidate(); status(e.message,true); $('status').focus(); }
 });
+$('try-example').addEventListener('click',()=> {
+  invalidate(); $('expected').value = ''; $('existing').value = '';
+  try { startImport(sampleFiles(), true); }
+  catch (e) { invalidate(); status(e.message,true); $('status').focus(); }
+});
+function startImport(files, example = false) {
+  checkSizes(files); // before cloning inputs to Worker; checked again there
+  demoMode = example; $('example-note').hidden = !example;
+  const currentWorker = new Worker('./worker.mjs',{type:'module'});
+  worker = currentWorker;
+  currentWorker.onmessage = ({data}) => {
+    // Termination alone cannot retract a reply already queued on the main thread.
+    if (worker !== currentWorker) return;
+    setBusy(false);
+    if (data.type === 'error') { invalidate(); status(data.message,true); $('status').focus(); }
+    else if (data.type === 'imported') {
+      $('host').replaceChildren(new Option('Choose one host explicitly', ''),...data.hosts.map(h=>new Option(h,h)));
+      $('host').disabled = false;
+      if (example) {
+        if (!data.hosts.includes(DEMO_HOST)) { invalidate(); status('The bundled example host is unavailable.',true); return; }
+        $('host').value = DEMO_HOST;
+        setBusy(true); status('Building the synthetic example.test demo…');
+        currentWorker.postMessage({type:'build',host:DEMO_HOST});
+      } else {
+        status(`Imported ${data.records.map(r=>`${r.records} ${r.role} records`).join(' and ')}. Choose one host to build.`);
+        $('host').focus();
+      }
+    } else if (data.type === 'built') {
+      result = data.result; category = 'included'; page = 0; render();
+      status(`${example ? 'Synthetic example.test demo ready.' : 'Ready.'} ${result.manifest.counts.included} URLs included. Review exclusions and download your files.`);
+      $('results').hidden = false; $('results').focus();
+    }
+  };
+  currentWorker.onerror = () => { if (worker !== currentWorker) return; invalidate(); status('Worker could not start. Reload the local preview and import again.',true); };
+  setBusy(true); status(example ? 'Reading the bundled synthetic example.test inputs…' : 'Reading and parsing in this tab…');
+  currentWorker.postMessage({type:'import',files,observedAt:new Date().toISOString()});
+}
 $('host').addEventListener('change',()=> { result = undefined; $('results').hidden = true; $('build').disabled = !$('host').value || busy; });
 $('build').addEventListener('click',()=> { setBusy(true); $('results').hidden = true; status('Building sitemap and comparing exact URL strings…'); worker.postMessage({type:'build',host:$('host').value}); });
 function td(text, label) { const el = document.createElement('td'); el.textContent = String(text ?? ''); el.dataset.label = label; return el; }
@@ -52,7 +73,7 @@ function render() {
     const box = document.createElement('div'), strong = document.createElement('strong'), label = document.createElement('span');
     strong.textContent = c[k]; label.textContent = k; box.append(strong,label); return box;
   }));
-  $('comparison').textContent = result.manifest.scope.comparison ? `Host: ${result.manifest.scope.host}. Added = expected-only; missing = existing-only. Excluded and duplicate counts cover both inputs.` : `Host: ${result.manifest.scope.host}. No comparison XML supplied; added and missing counts are zero.`;
+  $('comparison').textContent = (demoMode ? 'Synthetic example.test demo. ' : '') + (result.manifest.scope.comparison ? `Host: ${result.manifest.scope.host}. Added = expected-only; missing = existing-only. Excluded and duplicate counts cover both inputs.` : `Host: ${result.manifest.scope.host}. No comparison XML supplied; added and missing counts are zero.`);
   $('warnings').textContent = result.manifest.warnings.length ? result.manifest.warnings.map(w=>`${w.source || 'input'}${w.row?` record ${w.row}`:''}: ${w.reason}`).join('\n') : 'No parsing or duplicate warnings.';
   for (const b of document.querySelectorAll('[data-category]')) b.setAttribute('aria-pressed',String(b.dataset.category === category));
   const records = result[category]; const start = page * PAGE;
@@ -70,6 +91,6 @@ for (const button of document.querySelectorAll('[data-download]')) button.addEve
   const [filename,type,value] = downloads[button.dataset.download];
   const url = URL.createObjectURL(new Blob([value()],{type}));
   const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),1000); status(`Downloaded ${filename}. Your imported files remain in tab memory until cleared or closed.`);
+  setTimeout(()=>URL.revokeObjectURL(url),1000); status(`Prepared ${filename} for download. Your browser controls saving. ${demoMode ? 'Synthetic example inputs' : 'Your imported files'} remain in tab memory until cleared or closed.`);
 });
-window.addEventListener('pagehide',()=> { worker?.terminate(); result = undefined; });
+window.addEventListener('pagehide',()=> { worker?.terminate(); worker = undefined; result = undefined; });
