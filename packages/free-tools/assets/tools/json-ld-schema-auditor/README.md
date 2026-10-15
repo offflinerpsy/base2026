@@ -12,6 +12,8 @@ Machine-readable inspection contract: [input-contract.json](./input-contract.jso
 
 A complete results CSV, findings CSV, readable Markdown report and JSON input manifest are created locally. The manifest includes input SHA-256 hashes, scope, counts and unknowns. No data is uploaded.
 
+The compact browser preview uses Entity, Type, Reference and Details columns. Expand Raw fields for every original inventory field and Machine rule and source for finding codes. The results CSV retains all 12 columns and all calculated rows; the preview shows 30 rows at a time.
+
 ## Worked example: add a missing publisher
 
 This is a synthetic Article, Person and Organization, not a client result.
@@ -70,6 +72,6 @@ Several objects may describe the same entity with the same @id. The inspector re
 
 ## Source
 
-Shared JavaScript: [engine.mjs](../../static/free-tools/engine.mjs), [worker.mjs](../../static/free-tools/worker.mjs), [app.mjs](../../static/free-tools/app.mjs), [tools.mjs](../../static/free-tools/tools.mjs). Additional source: [batch5.mjs](../../static/free-tools/batch5.mjs), [batch5-tools.mjs](../../static/free-tools/batch5-tools.mjs). Raw input uses native JSON.parse with bounded iterative inspection. CSV exports reuse the unchanged shared serializer in [sitemap-core.mjs](../../static/free-tools/sitemap-core.mjs). Browser interface: [index.html](./index.html). Keep the shared static directory and tool route directories together when serving locally over HTTP. See the [source package README for test reproduction](https://github.com/offflinerpsy/base2026/blob/main/packages/free-tools/README.md).
+Shared JavaScript: [engine.mjs](../../static/free-tools/engine.mjs), [worker.mjs](../../static/free-tools/worker.mjs), [app.mjs](../../static/free-tools/app.mjs), [tools.mjs](../../static/free-tools/tools.mjs). Additional source: [batch5.mjs](../../static/free-tools/batch5.mjs), [batch5-tools.mjs](../../static/free-tools/batch5-tools.mjs), [jsonld-results.mjs](../../static/free-tools/jsonld-results.mjs). Raw input uses native JSON.parse with bounded iterative inspection. CSV exports reuse the unchanged shared serializer in [sitemap-core.mjs](../../static/free-tools/sitemap-core.mjs). Browser interface: [index.html](./index.html). Keep the shared static directory and tool route directories together when serving locally over HTTP. See the [source package README for test reproduction](https://github.com/offflinerpsy/base2026/blob/main/packages/free-tools/README.md).
 
 Code/interface: [Apache-2.0](../../static/free-tools/LICENSE). Manrope font: [SIL Open Font License](../../static/free-tools/OFL.txt). Repository: https://github.com/offflinerpsy/base2026.

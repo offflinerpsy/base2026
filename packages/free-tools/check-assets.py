@@ -1,6 +1,7 @@
 """Bounded generated-page/source contract checks; no browser or deployment claim."""
 from pathlib import Path
 from html.parser import HTMLParser
+from urllib.parse import urlsplit
 import hashlib
 import json
 import re
@@ -60,11 +61,16 @@ for tool in registry:
         if (tag == 'script' and attrs.get('src')) or (tag == 'link' and attrs.get('rel') in ['stylesheet', 'icon']):
             url = attrs.get('src', attrs.get('href', ''))
             assert url.startswith('/static/free-tools/'), url
-            assert (ASSETS / url.lstrip('/')).is_file(), url
+            assert (ASSETS / urlsplit(url).path.lstrip('/')).is_file(), url
     data = [json.loads(content) for attrs, content in page.scripts if attrs.get('type') == 'application/ld+json']
     assert len(data) == 2 and data[0]['@type'] == 'WebApplication' and data[1]['@type'] == 'BreadcrumbList'
     executable = [(attrs, content) for attrs, content in page.scripts if attrs.get('type') != 'application/ld+json']
-    assert len(executable) == 1 and executable[0][0] == {'type': 'module', 'src': '/static/free-tools/app.mjs'} and not executable[0][1]
+    app_url = '/static/free-tools/app.mjs'
+    if tool['id'] == 'json-ld-schema-auditor':
+        app_url += '?v=' + hashlib.sha256((ASSETS / 'static/free-tools/app.mjs').read_bytes()).hexdigest()
+        css_url = '/static/free-tools/jsonld-inspector.css?v=' + hashlib.sha256((ASSETS / 'static/free-tools/jsonld-inspector.css').read_bytes()).hexdigest()
+        assert len([a for tag, a in page.tags if tag == 'link' and a.get('rel') == 'stylesheet' and a.get('href') == css_url]) == 1
+    assert len(executable) == 1 and executable[0][0] == {'type': 'module', 'src': app_url} and not executable[0][1]
     checks.append({'name': tool['id'] + ': IDs, metadata, JSON-LD and same-origin executable assets', 'pass': True})
 
 source = '\n'.join(f.read_text() for f in (ASSETS / 'static/free-tools').glob('*.mjs'))

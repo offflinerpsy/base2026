@@ -20,6 +20,7 @@ Rebuild the HTML, samples, public registry and asset manifest with `node build.m
 node tests.mjs
 node --test redirect-example.test.mjs
 node --test jsonld-example.test.mjs
+node --test jsonld-results.test.mjs
 node --test batch2.test.mjs
 node --test batch3.test.mjs
 node --test batch4.test.mjs
@@ -58,3 +59,5 @@ Metadata CSV Auditor ignores blank CSV records. Counts and exports cover rows ch
 JSON-LD Graph Inspector accepts raw JSON-LD, not HTML. It reports JSON parsing, entity inventory and exact-string @id-reference coverage separately. Literal types on root/array/@graph/nested objects are inventoried; contexts and aliases are not expanded, and no URLs are requested. Unmatched absolute reference definitions remain UNKNOWN; unmatched non-absolute references describe only local input coverage. Multiple definition objects with one @id are review observations, not an invalidity verdict; no merge is performed. Native JSON.parse keeps the last duplicate member name inside one object. Empty objects/arrays do not become a valid graph claim. No Schema.org, Google rich-result, visible-page or ranking validation is performed. The input contract lists depth/object/value/string/pointer limits and exclusions. Source: batch5.mjs and batch5-tools.mjs; results CSV is the entity inventory. The existing shared Worker, UI, pagination, clear lifecycle and CSV serializer are reused.
 
 JSON-LD Graph Inspector uses `jsonld-worked-example.mjs` to generate its synthetic before/after comparison and corrected JSON file. `jsonld-example.test.mjs` checks both downloads with the unchanged inspector: adding the publisher improves local reference coverage while the external license definition remains UNKNOWN.
+
+JSON-LD Graph Inspector presents Entity, Type, Reference and Details columns in the browser. Native details disclosures retain every original inventory column and finding rule/source. `jsonld-results.mjs` formats observations with text nodes only; it does not change the 12-column results CSV, findings, calculations or other exports. `jsonld-results.test.mjs` covers readable states, raw-field preservation, inert hostile text and the shared UI pagination/Clear/export lifecycle.

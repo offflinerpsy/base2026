@@ -1,3 +1,16 @@
-/* JSON-LD summary text must wrap within its own card. */
+/* JSON-LD compact inventory and keyboard-native raw details. */
 [data-free-tool="json-ld-schema-auditor"] .tool-summary>div{min-width:0;overflow-wrap:anywhere}
 [data-free-tool="json-ld-schema-auditor"] .tool-summary>div:nth-child(-n+3) strong{font-size:18px;line-height:1.4}
+[data-free-tool="json-ld-schema-auditor"] .tool-table{font-size:13px}
+[data-free-tool="json-ld-schema-auditor"] .tool-table th:nth-child(1){width:30%}
+[data-free-tool="json-ld-schema-auditor"] .tool-table th:nth-child(2){width:22%}
+[data-free-tool="json-ld-schema-auditor"] .tool-table th:nth-child(3){width:29%}
+[data-free-tool="json-ld-schema-auditor"] .tool-table th:nth-child(4){width:19%}
+[data-free-tool="json-ld-schema-auditor"] .tool-table p{margin:0 0 8px;line-height:1.6}
+[data-free-tool="json-ld-schema-auditor"] .jsonld-meta{font-size:12px;color:#525252;white-space:pre-wrap}
+[data-free-tool="json-ld-schema-auditor"] .jsonld-raw{font-size:12px;line-height:1.6;min-width:0}
+[data-free-tool="json-ld-schema-auditor"] .jsonld-raw summary{cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:4px 0}
+[data-free-tool="json-ld-schema-auditor"] .jsonld-raw summary:focus-visible{outline:2px solid #262626;outline-offset:3px}
+[data-free-tool="json-ld-schema-auditor"] .jsonld-raw dl{margin:12px 0}
+[data-free-tool="json-ld-schema-auditor"] .jsonld-raw dt{font-weight:800;margin-top:10px}
+[data-free-tool="json-ld-schema-auditor"] .jsonld-raw dd{margin:2px 0 0;overflow-wrap:anywhere;white-space:pre-wrap}

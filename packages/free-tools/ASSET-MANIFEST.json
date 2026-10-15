@@ -11,8 +11,8 @@
       "sha256": "58172e0c0fac2cda8a37b348164bb55e44b0e69051e557e92b1d3f6910141f7b"
     },
     "static/free-tools/app.mjs": {
-      "bytes": 7674,
-      "sha256": "a1a01a8edfc6d5cf7f0e0b5b8fbdcc31062641039461ea39053946caca652398"
+      "bytes": 8017,
+      "sha256": "7441561c506695805c802939a731fe750ba6ea6abcb8922a9387aebe068be258"
     },
     "static/free-tools/b26-seal.webp": {
       "bytes": 15140,
@@ -59,8 +59,12 @@
       "sha256": "9ab7e83224b88e91f87490da01fb3513526189619c713fe5aae44af087f996ef"
     },
     "static/free-tools/jsonld-inspector.css": {
-      "bytes": 269,
-      "sha256": "112cfb04f4dceb23ff77c342e514893da2c4718b459a8d65469ac1f639c6e338"
+      "bytes": 1507,
+      "sha256": "e55cdf2bd376d7aedf869e1c074ffb60c7c370403751db6cd60a0e43e7543338"
+    },
+    "static/free-tools/jsonld-results.mjs": {
+      "bytes": 5682,
+      "sha256": "da5cf9409a37526e035c262c4ddf3a61a50a09e0b5e8d44515c3d6ff5e5ba791"
     },
     "static/free-tools/manrope-latin.woff2": {
       "bytes": 24836,
@@ -179,12 +183,12 @@
       "sha256": "4a8cb2eb8749f595e9332429c72980fe2beb243bd1461bd45b215f1b5803b270"
     },
     "tools/json-ld-schema-auditor/README.md": {
-      "bytes": 8023,
-      "sha256": "27fec762cd7a55e5bf00543bfdfefd06213692afe8f58b78590779174c702d98"
+      "bytes": 8369,
+      "sha256": "397118b06a1f4207819138082d8acea9dd8a1d9ba01e21674718bebec3ef3d30"
     },
     "tools/json-ld-schema-auditor/index.html": {
-      "bytes": 18047,
-      "sha256": "f0b7511a77740444990836f32166df90e0306865358c2b1e76743cf5a7c2f04f"
+      "bytes": 18347,
+      "sha256": "68ea910703817e9fc96fabd0fe1601a7c0d041f09cb9e3cee5ed050e47f77ae8"
     },
     "tools/json-ld-schema-auditor/input-contract.json": {
       "bytes": 4696,
