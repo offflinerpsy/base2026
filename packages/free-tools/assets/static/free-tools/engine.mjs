@@ -1,3 +1,4 @@
+import {auditMetadata} from './batch4.mjs';
 import {auditInternalLinks,compareGscPeriods} from './batch3.mjs';
 import {reconcileIndexing,compileRedirects} from './batch2.mjs';
 import {csvRows, csvCell} from './sitemap-core.mjs';
@@ -226,7 +227,7 @@ export function compareCrawls(inputs,options={}) {
     columns:['URL','Field','Before observation','After observation','Finding','Review note'],rows,scope:{fields_compared:fields,coverage:options.complete?'USER_DECLARED_COMPLETE_SAME_SCOPE':'UNKNOWN',url_identity:'exact trimmed string',live_status:'UNKNOWN',ranking_or_traffic_cause:'NOT_INFERRED'},notes:TOOLS['seo-crawl-comparison'].boundaries};
 }
 
-export const ANALYZERS={'internal-link-anchor-auditor':(i,o)=>auditInternalLinks(i,o,{readCsv,urlValue}),'gsc-period-diff-analyzer':(i,o)=>compareGscPeriods(i,o,{readCsv}),'robots-txt-tester':testRobots,'redirect-map-checker':checkRedirectMap,'hreflang-checker':checkHreflang,'broken-link-task-builder':buildBrokenLinkTasks,'seo-crawl-comparison':compareCrawls,'indexing-signal-reconciler':(i,o)=>reconcileIndexing(i,o,{readCsv,urlValue}),'redirect-rule-compiler':(i,o)=>compileRedirects(i,o,{readCsv,urlValue})};
+export const ANALYZERS={'serp-snippet-audit':(i,o)=>auditMetadata(i,o,{readCsv,urlValue,tableCsv}),'internal-link-anchor-auditor':(i,o)=>auditInternalLinks(i,o,{readCsv,urlValue}),'gsc-period-diff-analyzer':(i,o)=>compareGscPeriods(i,o,{readCsv}),'robots-txt-tester':testRobots,'redirect-map-checker':checkRedirectMap,'hreflang-checker':checkHreflang,'broken-link-task-builder':buildBrokenLinkTasks,'seo-crawl-comparison':compareCrawls,'indexing-signal-reconciler':(i,o)=>reconcileIndexing(i,o,{readCsv,urlValue}),'redirect-rule-compiler':(i,o)=>compileRedirects(i,o,{readCsv,urlValue})};
 export function tableCsv(columns,rows) {return [columns,...rows].map(row=>row.map(v=>csvCell(String(v??''))).join(',')).join('\r\n')+'\r\n';}
 export function runTool(id,inputs,options={},metadata=[],observedAt=new Date().toISOString()) {
   const def=TOOLS[id];if(!def||!ANALYZERS[id])fail('Unknown tool.');let total=0;
@@ -238,7 +239,7 @@ export function runTool(id,inputs,options={},metadata=[],observedAt=new Date().t
   const findingsRows=result.findings.map(f=>[f.severity,f.rule,f.subject,f.detail,f.source]);
   const report=[`# ${def.name}`,'',`Processed at: ${observedAt}`,'',...result.summary.map(([k,v])=>`- ${k}: ${v}`),'','## Scope','',...result.notes.map(s=>`- ${s}`),'','## Findings','',...(result.findings.length?result.findings.map(f=>`- [${f.severity}] ${oneLine(f.rule)} — ${oneLine(f.subject)}: ${oneLine(f.detail)}${f.source?' ('+oneLine(f.source)+')':''}`):['No findings in the supplied data. This does not establish live correctness.']),'','Full observed rows are in the results CSV; input hashes and scope are in the manifest.'].join('\n')+'\n';
   const exports=[{name:`${id}-results.csv`,label:'Results CSV',mime:'text/csv;charset=utf-8',text:tableCsv(result.columns,result.rows)},
-    {name:`${id}-findings.csv`,label:'Findings CSV',mime:'text/csv;charset=utf-8',text:tableCsv(['Severity','Rule','Subject','Detail','Source record'],findingsRows)},
+    {name:`${id}-findings.csv`,label:'Findings CSV',mime:'text/csv;charset=utf-8',text:tableCsv(['Severity','Rule','Subject','Detail',def.findingSourceLabel||'Source record'],findingsRows)},
     {name:`${id}-report.md`,label:'Readable report',mime:'text/markdown;charset=utf-8',text:report},
     {name:`${id}-manifest.json`,label:'Input manifest',mime:'application/json;charset=utf-8',text:JSON.stringify(manifest,null,2)+'\n'}];
   return {...result,manifest,exports:[...exports,...(result.extraExports||[])]};

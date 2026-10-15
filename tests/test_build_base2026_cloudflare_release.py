@@ -1386,7 +1386,7 @@ def test_changed_editorial_media_cannot_reach_a_release(tmp_path: Path, monkeypa
 
 def test_local_tool_packages_use_exact_public_paths_and_hashes() -> None:
     assets = builder._reviewed_local_tool_assets()
-    assert len(assets) == 65  # 51 portfolio assets plus 14 unchanged sitemap assets.
+    assert len(assets) == 73  # 59 portfolio assets plus 14 unchanged sitemap assets.
     manifest = json.loads((ROOT / "packages/free-tools/ASSET-MANIFEST.json").read_text())
     assert set(manifest["files"]) <= set(assets)
     for relative, metadata in manifest["files"].items():
@@ -1456,26 +1456,44 @@ def test_csv_redirect_guide_context_links_are_scoped_and_idempotent() -> None:
     assert builder._with_csv_redirect_guide_link("solutions/index.html", b"<p>Unrelated legacy shape</p>") == b"<p>Unrelated legacy shape</p>"
 
 
-def test_catalog_batch3_cards_schema_and_local_policy_are_consistent() -> None:
+def test_metadata_audit_context_links_are_scoped_and_idempotent() -> None:
+    fixtures = {
+        "solutions/index.html": '<div class="solution-hub-grid"><article>Retained card</article></div>',
+        "site-structure.html": '<li><a href="/tools/gsc-period-diff-analyzer/">GSC Period Change Analyzer</a></li>',
+        "guides/compare-seo-crawl-exports/index.html": '<p>Retained paragraph</p><h2 id="work-through-a-small-before-and-after-example">Example</h2>',
+    }
+    for relative, text in fixtures.items():
+        patched = builder._with_metadata_audit_link(relative, text.encode())
+        assert patched.count(b"/tools/serp-snippet-audit/") == (2 if relative == "solutions/index.html" else 1)
+        assert builder._with_metadata_audit_link(relative, patched) == patched
+        assert text.split("<h2")[0].encode() in patched or b"Retained card" in patched
+        marker = ('data-b26-metadata-audit="' + relative + '"').encode()
+        with pytest.raises(builder.ReleaseBuildError, match="duplicated or changed"):
+            builder._with_metadata_audit_link(relative, patched + marker)
+    assert builder._with_metadata_audit_link("guides/csv-to-cloudflare-redirects/index.html", b"unchanged") == b"unchanged"
+    assert builder._with_metadata_audit_link("solutions/index.html", b"legacy shell") == b"legacy shell"
+
+
+def test_catalog_batch4_cards_schema_and_local_policy_are_consistent() -> None:
     import re
     text = builder.DEFAULT_TOOLS_STUDIO_TEMPLATE.read_text()
     cards = re.findall(r'<article\b[^>]*data-tool-card[^>]*>.*?</article>', text, re.S)
-    assert len(cards) == 14
-    assert text.count("14 free browser tools.") == 1
-    assert text.count("Choose from fourteen tools.") == 4
+    assert len(cards) == 15
+    assert text.count("15 free browser tools.") == 1
+    assert text.count("Choose from fifteen tools.") == 4
     schemas = [json.loads(match) for match in re.findall(r'<script type="application/ld\+json">(.*?)</script>', text, re.S)]
     collection = next(schema for schema in schemas if schema.get("@type") == "CollectionPage")
     items = collection["mainEntity"]["itemListElement"]
-    assert collection["mainEntity"]["numberOfItems"] == len(items) == 14
+    assert collection["mainEntity"]["numberOfItems"] == len(items) == 15
     routes = [item["item"]["url"].removeprefix("https://base2026.dev") for item in items]
-    assert len(set(routes)) == 14
+    assert len(set(routes)) == 15
     for route in routes:
         assert sum(f'href="{route}"' in card for card in cards) == 1
     for slug in ["sitemap-builder", "robots-txt-tester"]:
         card = next(card for card in cards if f'href="/tools/{slug}/"' in card)
         assert "ux-card-guide" not in card
     headers = builder.HEADERS_PAYLOAD + builder._local_tools_headers()
-    for slug in ["indexing-signal-reconciler", "redirect-rule-compiler", "internal-link-anchor-auditor", "gsc-period-diff-analyzer"]:
+    for slug in ["indexing-signal-reconciler", "redirect-rule-compiler", "internal-link-anchor-auditor", "gsc-period-diff-analyzer", "serp-snippet-audit"]:
         assert headers.count(f"/tools/{slug}/*\n") == 1
         assert builder._hub_sitemap_payload().count(f"https://base2026.dev/tools/{slug}/".encode()) == 1
 

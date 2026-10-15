@@ -1,0 +1,12 @@
+/* Illustrative metadata preview; no measured search-engine dimensions. */
+.metadata-preview{border:1px solid #e5e5e5;border-radius:8px;padding:20px;margin:24px 0;min-width:0}
+.metadata-preview select{display:block;width:100%;max-width:100%;min-height:44px;font:inherit;color:#262626;background:#fff;border:1px solid #d4d4d4;border-radius:8px;padding:10px}
+.metadata-preview label{display:block;font-weight:700;margin:12px 0 8px}
+.metadata-snippet{padding:18px 0;overflow-wrap:anywhere;min-width:0}
+.metadata-snippet__url{font-size:13px;color:#525252}
+.metadata-snippet__title{font-size:22px;font-weight:700;line-height:1.4;margin:8px 0}
+.metadata-snippet__description{font-size:15px;line-height:1.65}
+.metadata-preview dl{display:grid;grid-template-columns:minmax(90px,1fr) minmax(0,3fr);gap:10px;font-size:13px;overflow-wrap:anywhere}
+.metadata-preview dt{font-weight:700}.metadata-preview dd{margin:0;white-space:pre-wrap}
+@media(max-width:650px){.metadata-preview{padding:14px}.metadata-preview dl{display:block}.metadata-preview dd{margin:4px 0 14px}}
+

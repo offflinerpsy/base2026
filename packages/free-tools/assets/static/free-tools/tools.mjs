@@ -1,3 +1,4 @@
+import {BATCH4_TOOLS} from './batch4-tools.mjs';
 import {BATCH3_TOOLS} from './batch3-tools.mjs';
 import {BATCH2_TOOLS} from './batch2-tools.mjs';
 export const TOOLS = {
@@ -62,6 +63,7 @@ export const TOOLS = {
     next:[['Check a redirect plan','/tools/redirect-map-checker/'],['Build the intended sitemap','/tools/sitemap-builder/']]
   },
   ...BATCH2_TOOLS,
-  ...BATCH3_TOOLS
+  ...BATCH3_TOOLS,
+  ...BATCH4_TOOLS
 };
 export const LIMITS = Object.freeze({fileBytes:2097152,totalBytes:4194304,records:5000,robotsBytes:65536,urlLength:4096,cellLength:16384});

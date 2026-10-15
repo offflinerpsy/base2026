@@ -1,12 +1,14 @@
+import {createSnippetPreview} from './snippet-preview.mjs';
 import {TOOLS,LIMITS} from './tools.mjs';
 const $=id=>document.getElementById(id),root=document.querySelector('[data-free-tool]');
 const id=root?.dataset.freeTool,def=TOOLS[id];
 if(def) {
+  const snippet=def.snippetPreview?createSnippetPreview(document):null;
   let worker,result,tablePage=0,findingsPage=0;const PAGE=30;
   const status=(message,error=false)=>{$('tool-status').textContent=message;$('tool-status').className='tool-status'+(error?' tool-error':'');};
   const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);if(cls)n.className=cls;return n;};
   const counted=(count,noun)=>`${count} ${noun}${count===1?'':'s'}`;
-  function resetResult(){worker?.terminate();worker=undefined;result=undefined;tablePage=0;findingsPage=0;$('tool-results').hidden=true;if($('config-preview'))$('config-preview').value='';$('run-tool').disabled=false;$('tool-form').setAttribute('aria-busy','false');for(const name of ['summary','downloads','result-head','result-body','finding-body','report-notes'])$(name).replaceChildren();}
+  function resetResult(){snippet?.clear();worker?.terminate();worker=undefined;result=undefined;tablePage=0;findingsPage=0;$('tool-results').hidden=true;if($('config-preview'))$('config-preview').value='';$('run-tool').disabled=false;$('tool-form').setAttribute('aria-busy','false');for(const name of ['summary','downloads','result-head','result-body','finding-body','report-notes'])$(name).replaceChildren();}
   function clearAll(){resetResult();for(const field of def.inputs){$('input-'+field.role).value='';$('file-'+field.role).value='';}for(const opt of def.options)if(opt.clearOnReset)$('option-'+opt.name).value=opt.value;status('Paste your data, choose local files or try the example.');}
   function inputsReady(){resetResult();status('Inputs changed. Run the check to get fresh results.');}
   function renderRows(){
@@ -23,6 +25,7 @@ if(def) {
     const tr=node('tr');for(const text of data.columns) {const th=node('th',text);th.scope='col';tr.append(th);}$('result-head').replaceChildren(tr);
     $('report-notes').replaceChildren(...data.notes.map(text=>node('li',text)));
     if($('config-preview'))$('config-preview').value=data.exports.find(f=>f.name==='_redirects')?.text||'';
+    snippet?.render(data.snippets);
     $('tool-results').hidden=false;renderRows();status(`Complete: ${counted(data.rows.length,'result row')} and ${counted(data.findings.length,'finding')}. Review scope before using the exports.`);$('tool-results').focus();
   }
   $('copy-config')?.addEventListener('click',async()=>{if(!result)return;const el=$('config-preview');try{await navigator.clipboard.writeText(el.value);status('Draft copied. Test the configuration in staging before use.');}catch{el.focus();el.select();status('Draft selected. Use your browser copy command, then test it in staging.');}});
