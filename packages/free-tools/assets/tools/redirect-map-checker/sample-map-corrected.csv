@@ -1,0 +1,6 @@
+from,to,status
+https://example.test/old,https://example.test/new,301
+https://example.test/middle,https://example.test/new,301
+https://example.test/a,https://example.test/new,302
+https://example.test/b,https://example.test/new,302
+https://example.test/conflict,https://example.test/one,301

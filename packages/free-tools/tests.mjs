@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {TOOLS} from './assets/static/free-tools/tools.mjs';
+import {originalSampleIds,sampleOptions,laterSampleExpectations} from './sample-fixtures.mjs';
 import {runTool,readCsv,tableCsv} from './assets/static/free-tools/engine.mjs';
 import {decode,csvRows} from './assets/static/free-tools/sitemap-core.mjs';
 const checks=[];
@@ -10,7 +11,11 @@ const result=(id,inputs,opts={})=>runTool(id,inputs,opts);
 const count=(r,label)=>r.summary.find(([k])=>k===label)?.[1];
 const has=(r,rule)=>r.findings.some(f=>f.rule===rule);
 
-for(const [id,def] of Object.entries(TOOLS).filter(([id])=>!['indexing-signal-reconciler','redirect-rule-compiler'].includes(id)))test(`${id}: new sample calculates complete four real exports`,()=>{const r=result(id,def.sample);assert.equal(r.exports.length,4);assert.ok(r.rows.length);for(const f of r.exports)assert.ok(f.text.length);assert.equal(r.manifest.privacy.target_fetch,false);assert.equal(r.manifest.privacy.storage,false);const rows=csvRows(r.exports[0].text,50000);assert.equal(rows.length,r.rows.length+1);assert.deepEqual(rows[0],r.columns);JSON.parse(r.exports[3].text);});
+for(const [id,def] of Object.entries(TOOLS).filter(([id])=>originalSampleIds.includes(id)))test(`${id}: new sample calculates complete four real exports`,()=>{const r=result(id,def.sample,sampleOptions(def));assert.equal(r.exports.length,4);assert.ok(r.rows.length);for(const f of r.exports)assert.ok(f.text.length);assert.equal(r.manifest.privacy.target_fetch,false);assert.equal(r.manifest.privacy.storage,false);const rows=csvRows(r.exports[0].text,50000);assert.equal(rows.length,r.rows.length+1);assert.deepEqual(rows[0],r.columns);JSON.parse(r.exports[3].text);});
+
+for(const [id,expected] of Object.entries(laterSampleExpectations))test(`${id}: sample calculates its complete exports with the UI example options`,()=>{const def=TOOLS[id],r=result(id,def.sample,sampleOptions(def));assert.equal(r.rows.length,expected.rows);assert.equal(r.exports.length,expected.exports);for(const f of r.exports)assert.ok(f.text.length);assert.equal(r.manifest.privacy.target_fetch,false);assert.equal(r.manifest.privacy.storage,false);const rows=csvRows(r.exports[0].text,50000);assert.equal(rows.length,r.rows.length+1);assert.deepEqual(rows[0],r.columns);JSON.parse(r.exports[3].text);});
+
+test('sample harness covers every registered tool and uses its actual example options',()=>{assert.deepEqual([...originalSampleIds,...Object.keys(laterSampleExpectations)].sort(),Object.keys(TOOLS).sort());assert.deepEqual(sampleOptions(TOOLS['internal-link-anchor-auditor']),{site_origin:'https://example.test'});assert.deepEqual(sampleOptions(TOOLS['gsc-period-diff-analyzer']),{key_type:'pages',ctr_format:'percent',decompose:true});assert.deepEqual(sampleOptions(TOOLS['robots-txt-tester']),{agent:'Googlebot'});assert.deepEqual(sampleOptions(TOOLS['redirect-rule-compiler']),{default_status:'301',flatten_chains:false});});
 
 test('robots: specific Googlebot group does not inherit wildcard group',()=>{const r=result('robots-txt-tester',TOOLS['robots-txt-tester'].sample);assert.equal(count(r,'Allowed'),3);assert.equal(count(r,'Blocked'),1);assert.equal(r.rows.find(x=>x[0].includes('/private/'))[1],'Allowed by supplied rules');});
 test('robots: longest match, Allow tie, same-agent groups merged',()=>{const r=result('robots-txt-tester',{robots:'User-agent: Googlebot\nDisallow: /\nAllow: /a\nUser-agent: Googlebot\nDisallow: /a\nAllow: /a/b$\n',urls:'https://example.test/a\nhttps://example.test/a/b\nhttps://example.test/z'});assert.equal(count(r,'Allowed'),2);assert.equal(count(r,'Blocked'),1);});

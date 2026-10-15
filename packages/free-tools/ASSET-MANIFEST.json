@@ -195,12 +195,16 @@
       "sha256": "8fb6610ab8b92689947ce247f3e0b45ebd84b491147a624e59d83a5585410afa"
     },
     "tools/redirect-map-checker/README.md": {
-      "bytes": 1727,
-      "sha256": "fa1659c0432e94c2ffd2f7668221a5f2194059e8724d0ad01da9b07351f06843"
+      "bytes": 3534,
+      "sha256": "3d75fb634bef0e903e7a69256643c939e6a1295254a5f01c24cdd6dff0d2798b"
     },
     "tools/redirect-map-checker/index.html": {
-      "bytes": 9073,
-      "sha256": "954a168ed4fd2b0880a72ffc927df3db513cbaad92dad25415f59a4d30a5275f"
+      "bytes": 12376,
+      "sha256": "3cf6aef42dcffc8739b2eabcc27415e429ba636923a04d1a88b8ab4625c59acb"
+    },
+    "tools/redirect-map-checker/sample-map-corrected.csv": {
+      "bytes": 289,
+      "sha256": "12360b5fd5e7ffa6b9db9b0189e84091a32661b9ce5e1d2a398dc28af3d94c35"
     },
     "tools/redirect-map-checker/sample-map.csv": {
       "bytes": 347,
