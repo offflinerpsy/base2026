@@ -405,59 +405,98 @@ function sourcePageHref(hit) {
   return `./sources/${pageSlug(hit.item_id || hit.source_id)}.html`;
 }
 
+function normalizedFacetRouteValues(attribute, values = []) {
+  const list = Array.isArray(values) ? values : [values];
+  return [...new Set(list.filter((value) => value !== null && value !== undefined && value !== "")
+    .map((value) => attribute === "handle" ? `@${stripHandle(value)}` : String(value)))].sort();
+}
+
+function currentFacetRouteValues(attribute) {
+  const state = search?.helper?.state;
+  return normalizedFacetRouteValues(attribute, [
+    ...(state?.disjunctiveFacetsRefinements?.[attribute] || []),
+    ...(state?.facetsRefinements?.[attribute] || []),
+  ]);
+}
+
+function knowledgeFacetRoutePatch() {
+  return {
+    creator: currentFacetRouteValues("handle").map(stripHandle),
+    year: currentFacetRouteValues("year"),
+    source_type: currentFacetRouteValues("source_type"),
+  };
+}
+
+function patchKnowledgeRouteParams(params, patch) {
+  const routePatch = { ...patch };
+  [["creator", "creators"], ["year", "years"], ["source_type", "source_types"]].forEach(([key, listKey]) => {
+    if (Object.prototype.hasOwnProperty.call(routePatch, listKey)) {
+      routePatch[key] = routePatch[listKey];
+      delete routePatch[listKey];
+    }
+  });
+  Object.entries(routePatch).forEach(([key, value]) => {
+    const list = Array.isArray(value) ? value : [value];
+    const values = list.filter((entry) => entry !== null && entry !== undefined && entry !== "").map(String);
+    const current = params.getAll(key);
+    if (current.length === values.length && current.every((entry, index) => entry === values[index])) return;
+    params.delete(key);
+    values.forEach((entry) => params.append(key, entry));
+  });
+}
+
 function workspaceRouteHref(patch = {}) {
   const params = routeSearchParams();
   const currentQuery = compactText(search?.helper?.state?.query || params.get("q") || "");
   if (currentQuery && !Object.prototype.hasOwnProperty.call(patch, "q")) params.set("q", currentQuery);
-  Object.entries(patch).forEach(([key, value]) => {
-    if (value === null || value === undefined || value === "") {
-      params.delete(key);
-    } else {
-      params.set(key, String(value));
-    }
-  });
+  patchKnowledgeRouteParams(params, patch);
   const query = params.toString();
   return `${window.location.pathname}${query ? `#search?${query}` : ""}`;
 }
 
 function routeSearchParams() {
   const params = new URLSearchParams(window.location.search);
+  const queryKeys = new Set(params.keys());
   const hash = window.location.hash || "";
   if (hash.startsWith("#search?")) {
     const hashParams = new URLSearchParams(hash.slice("#search?".length));
     hashParams.forEach((value, key) => {
-      if (!params.has(key)) params.set(key, value);
+      if (!queryKeys.has(key)) params.append(key, value);
     });
   }
   return params;
 }
 
-
 function getKnowledgeRouteState() {
   const params = routeSearchParams();
+  const creators = params.getAll("creator").filter(Boolean);
+  const years = params.getAll("year").filter(Boolean);
+  const sourceTypes = params.getAll("source_type").filter(Boolean);
   return {
     q: params.get("q") || params.get(`${searchIndex}[query]`) || "",
     source: params.get("source") || "",
-    creator: params.get("creator") || "",
+    creator: creators[0] || "",
+    creators,
     creator_view: params.get("creator_view") || "",
     topic: params.get("topic") || "",
     compare: params.get("compare") || "",
-    year: params.get("year") || "",
-    source_type: params.get("source_type") || "",
+    year: years[0] || "",
+    years,
+    source_type: sourceTypes[0] || "",
+    source_types: sourceTypes,
   };
 }
 
 function setKnowledgeRouteState(patch = {}, options = {}) {
+  if (!options.replace && patch.source && !applyingRouteState) {
+    // Preserve the selection in the history entry that Back will restore,
+    // including a widget change made before its asynchronous result render.
+    setKnowledgeRouteState({ q: search?.helper?.state?.query || "", ...knowledgeFacetRoutePatch() }, { replace: true });
+  }
   const params = routeSearchParams();
   const currentQuery = compactText(search?.helper?.state?.query || "");
   if (currentQuery && !Object.prototype.hasOwnProperty.call(patch, "q")) params.set("q", currentQuery);
-  Object.entries(patch).forEach(([key, value]) => {
-    if (value === null || value === undefined || value === "") {
-      params.delete(key);
-    } else {
-      params.set(key, String(value));
-    }
-  });
+  patchKnowledgeRouteParams(params, patch);
   const query = params.toString();
   const nextUrl = `${window.location.pathname}${query ? `#search?${query}` : ""}`;
   if (nextUrl === `${window.location.pathname}${window.location.hash}`) return;
@@ -1689,9 +1728,12 @@ function initialUiStateFromKnowledgeRoute(route = {}) {
   const query = compactText(route.q || (!route.q && route.topic ? routeTopicLabel(route.topic) : ""));
   if (query) indexState.query = query;
   const refinementList = {};
-  if (route.creator) refinementList.handle = [`@${stripHandle(route.creator)}`];
-  if (route.year) refinementList.year = [route.year];
-  if (route.source_type) refinementList.source_type = [route.source_type];
+  const creators = normalizedFacetRouteValues("handle", route.creators ?? route.creator);
+  const years = normalizedFacetRouteValues("year", route.years ?? route.year);
+  const sourceTypes = normalizedFacetRouteValues("source_type", route.source_types ?? route.source_type);
+  if (creators.length) refinementList.handle = creators;
+  if (years.length) refinementList.year = years;
+  if (sourceTypes.length) refinementList.source_type = sourceTypes;
   if (Object.keys(refinementList).length) indexState.refinementList = refinementList;
   return { [searchIndex]: indexState };
 }
@@ -1770,30 +1812,29 @@ search.addWidgets([
   }),
 ]);
 
-function applyFacetRoute(attribute, value) {
-  if (!search.helper || !value) return false;
-  const normalized = attribute === "handle" ? `@${stripHandle(value)}` : value;
-  const disjunctive = search.helper.state.disjunctiveFacetsRefinements?.[attribute] || [];
-  const conjunctive = search.helper.state.facetsRefinements?.[attribute] || [];
-  const current = [...disjunctive, ...conjunctive];
-  if (current.length === 1 && current[0] === normalized) return false;
+function applyFacetRoute(attribute, values) {
+  if (!search.helper) return false;
+  const normalized = normalizedFacetRouteValues(attribute, values);
+  const current = currentFacetRouteValues(attribute);
+  if (current.length === normalized.length && current.every((value, index) => value === normalized[index])) return false;
   search.helper.clearRefinements(attribute);
-  search.helper.toggleFacetRefinement(attribute, normalized);
+  normalized.forEach((value) => search.helper.toggleFacetRefinement(attribute, value));
   return true;
 }
 
 function applyKnowledgeRouteState(route = {}, options = {}) {
+  // Parsed URL state is complete; partial updates are merged before this call.
   if (!search.helper) return;
   applyingRouteState = true;
   let needsSearch = false;
   const nextQuery = compactText(route.q || (!route.q && route.topic ? routeTopicLabel(route.topic) : ""));
-  if (nextQuery && search.helper.state.query !== nextQuery) {
+  if ((search.helper.state.query || "") !== nextQuery) {
     search.helper.setQuery(nextQuery);
     needsSearch = true;
   }
-  if (route.creator && applyFacetRoute("handle", route.creator)) needsSearch = true;
-  if (route.year && applyFacetRoute("year", route.year)) needsSearch = true;
-  if (route.source_type && applyFacetRoute("source_type", route.source_type)) needsSearch = true;
+  if (applyFacetRoute("handle", route.creators ?? route.creator)) needsSearch = true;
+  if (applyFacetRoute("year", route.years ?? route.year)) needsSearch = true;
+  if (applyFacetRoute("source_type", route.source_types ?? route.source_type)) needsSearch = true;
   document.body.classList.toggle("has-route-creator", Boolean(route.creator));
   document.body.classList.toggle("has-route-topic", Boolean(route.topic));
   if (needsSearch) search.helper.search();
@@ -1831,7 +1872,7 @@ search.on("render", () => {
   syncPresetButtons(query);
   renderSelectedTerms(query);
   updateMobileFilterCount();
-  if (!applyingRouteState) setKnowledgeRouteState({ q: query || "" }, { replace: true });
+  if (!applyingRouteState) setKnowledgeRouteState({ q: query || "", ...knowledgeFacetRoutePatch() }, { replace: true });
   syncWorkspaceActiveState(getKnowledgeRouteState());
 });
 

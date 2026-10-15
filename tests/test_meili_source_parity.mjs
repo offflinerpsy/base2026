@@ -186,11 +186,18 @@ for(const variant of ['public']){
     await test('public: current hash route merges query/facets and stays under either nested pathname',()=>{
       for(const pathname of ['/workspace/','/tools/evidence-search/']){
         const {ctx,history}=context(code,`https://example.invalid${pathname}?year=2026#search?q=saved&creator=fixture_creator&topic=keyword-research`);
+        // InstantSearch seeds its helper from this production initialUiState.
+        const initial=ctx.initialUiStateFromKnowledgeRoute(ctx.getKnowledgeRouteState())[ctx.searchIndex];
+        Object.assign(ctx.search.helper.state,{query:initial.query||'',disjunctiveFacetsRefinements:clone(initial.refinementList||{})});
         ctx.search.helper.state.query='active terms';
         const href=ctx.workspaceRouteHref({source:'tiktok-video-'+video});
         assert(href.startsWith(pathname+'#search?'));const parsed=new URL(href,'https://example.invalid/');
         const params=new URLSearchParams(parsed.hash.slice('#search?'.length));
         assert.equal(params.get('q'),'active terms');assert.equal(params.get('creator'),'fixture_creator');assert.equal(params.get('year'),'2026');assert.equal(params.get('source'),'tiktok-video-'+video);
+        // Settle the query render before observing the two source navigations.
+        // replaceState is a render write, not an additional browser history entry.
+        ctx.setKnowledgeRouteState({q:ctx.search.helper.state.query,...ctx.knowledgeFacetRoutePatch()},{replace:true});
+        history.length=0;
         ctx.setKnowledgeRouteState({source:'tiktok-video-'+video});assert.equal(ctx.window.location.pathname,pathname);
         assert.equal(ctx.getKnowledgeRouteState().q,'active terms');assert.equal(ctx.getKnowledgeRouteState().source,'tiktok-video-'+video);
         ctx.setKnowledgeRouteState({source:''});assert.equal(ctx.getKnowledgeRouteState().source,'');assert.equal(ctx.getKnowledgeRouteState().creator,'fixture_creator');
