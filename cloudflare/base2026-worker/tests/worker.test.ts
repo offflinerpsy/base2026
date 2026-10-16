@@ -425,10 +425,49 @@ describe("Base2026 search Worker", () => {
     expect(browserTitle).toContain("2864223510");
     const description = html.match(/<meta name="description" content="([^"]+)"/u)?.[1] ?? "";
     expect(description.length).toBeLessThanOrEqual(160);
-    expect(description).toContain("Source 2864223510.");
-    expect(html).toContain("Useful &lt;AI&gt; source evidence — source 2864223510");
+    expect(description).toContain("A complete explanation is not available in this record.");
+    expect(html).toContain("TikTok video · @test_creator — source 2864223510");
     expect(html).not.toContain('#ff5a36');
     expect(html).not.toContain("Useful <AI> source evidence");
+  });
+
+  it("presents a synthetic transcript fallback once without raw headings or generic advice", async () => {
+    const videoId = "1234567890";
+    const db = {
+      prepare: () => ({ bind: () => ({ all: async () => ({ results: [{
+        video_id: videoId, source_id: "synthetic-source", creator_handle: "@synthetic_creator",
+        creator_url: "https://www.tiktok.com/@synthetic_creator",
+        source_url: `https://www.tiktok.com/@synthetic_creator/video/${videoId}`,
+        published_date: "", ordinal: 0, topic_label: "Unverified topic label",
+        claim_text: 'The source states: "A synthetic spoken example continues here."',
+        evidence_excerpt: "[0.000s-2.500s] A synthetic spoken example [2.500s-5.000s] continues here.",
+        suggested_action: "Compare this source statement with independent evidence before acting.",
+        evidence_start_seconds: 0, evidence_end_seconds: 5,
+      }] }) }) }),
+    };
+    const response = await worker.fetch(
+      new Request(`https://base2026.dev/sources/tiktok-video-${videoId}`),
+      env(db as unknown as FakeDatabase),
+      {} as ExecutionContext,
+    );
+    const html = await response.text();
+    expect(response.status).toBe(200);
+    expect(html).toContain("<h2>Excerpt 1</h2>");
+    expect(html).toContain("Transcript excerpt 0:00–0:05");
+    expect(html.match(/<blockquote>/gu)).toHaveLength(1);
+    expect(html).not.toContain("The source states:");
+    expect(html).not.toContain("Suggested action");
+    expect(html).not.toContain("Unverified topic label</h2>");
+    expect(html).not.toContain("[0.000s-2.500s]");
+    expect(html).toContain("not a complete explanation");
+    expect(html).toContain("These automatically transcribed excerpts may contain errors or end mid-sentence.");
+    expect(html.indexOf("Watch the original TikTok video")).toBeLessThan(html.indexOf("<h2>Excerpt 1</h2>"));
+    const description = html.match(/<meta name="description" content="([^"]+)"/u)?.[1] ?? "";
+    expect(description).toContain("@synthetic_creator");
+    expect(description).not.toContain("synthetic spoken example");
+    expect(description.length).toBeLessThanOrEqual(160);
+    expect(html).toContain('<meta name="robots" content="index,follow">');
+    expect(html).toContain(`<link rel="canonical" href="https://base2026.dev/sources/tiktok-video-${videoId}">`);
   });
 
   it("uses the canonical header and footer from the fixed source shell asset", async () => {
