@@ -56,11 +56,30 @@ One sample per writer is not a general model benchmark. Neither unedited output
 was accepted for production. No ASR winner is established: the comparison lacks
 a matching current Whisper result and an independently heard reference.
 
+## Private audiovisual contract
+
+A separately corrected English explanation and private evidence contract passed
+independent review. The contract binds eight material units to 28 machine-speech
+segments and five selected native-frame references. It preserves exact formula
+punctuation, audio/frame hashes and original video timestamps. The accepted
+artifact contains the exact reviewed English text; raw model outputs remain
+unchanged and rejected.
+
+The first review found an unsupported visual citation and a path through which
+nested metadata could enter a model request. Both were corrected in the second
+revision. All 34 focused checks passed; the independent reviewer verified the
+exact revised files and artifact. This establishes bounded local fidelity, not
+continuous video review or an independently heard reference transcript.
+
 ## Remaining boundary
 
-A separate editorial correction can be reviewed against the retained native
-frames and machine speech without rewriting the raw model outputs. That local
-review does not establish the production worker's complete audiovisual path.
-The new cloud source's last verified state is awaiting transcription under the
-preserved source scopes. Publication, owner holds and the development heartbeat
-remain unchanged. No public page or autonomous publication is accepted here.
+An offline check of the deployed worker's exact parser accepts the existing
+transcript-only format and rejects the new private audiovisual format. The
+private artifact was not uploaded under an incompatible schema. Live visual
+extraction, private audiovisual ingress and downstream processing still require
+implementation and verification; no full cloud-pipeline acceptance is claimed.
+
+The new cloud source remains awaiting transcription under preserved source
+scopes. Publication, owner holds and the development heartbeat remain unchanged.
+The earlier uncertain key-read outcome is unresolved; the comparison needed no
+key transfer. No public page or autonomous publication is accepted here.
