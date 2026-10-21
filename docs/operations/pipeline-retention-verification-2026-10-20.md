@@ -101,20 +101,58 @@ observed database change was one authentication nonce; no provider call,
 business-state transition, media retrieval, queue dispatch or publication was
 observed.
 
+## Durable private external review — 21 October
+
+The private review-store route now retains a typed audiovisual review envelope
+through the existing metadata artifact and object-storage layer. It preserves
+the validated context, writer result and exact accepted private explanation in
+its original schema. The envelope records external-review origin and declared
+decoded-audio provenance; native extraction and pipeline readiness remain false.
+
+The exact code and release adapter passed independent review. Nine worker-entry
+HMAC tests used the actual SQLite migrations and transactions, with object
+storage, platform, queues and providers mocked. Strict TypeScript and seven
+release-adapter guards passed. Production build verification compared all 67
+actual inputs: 64 accepted inputs were unchanged. The adapter also preserves a
+failed fence-query response before raising, so rejected preflight evidence is
+retained. These checks do not establish atomicity across database and object
+storage.
+
+Source status and version checks guard database writes and object-storage
+boundaries. A concurrent hold prevents acceptance. An uncertain object PUT
+retains the pending or quarantined receipt and bytes for reconciliation; the
+request neither deletes them nor retries. The internal storage path creates no
+job, outbox entry or source-state transition.
+
+Staging and activation each ran once, with the exact deployed bundle, all 66
+bindings, existing container and unchanged scopes verified. The canonical
+store caller received independent review and six isolated transport guards.
+A fresh readback admitted one call against the unchanged held source. The
+response was retained before validation; a separate 22-query observation and
+one GET of only the new JSON object independently verified the result.
+
+The stored envelope was exactly **59,823 bytes** and matched the prepared
+SHA-256 and nested private explanation. The database showed one new metadata
+artifact, one artifact audit, one managed creation-sequence increment and one
+authentication nonce. The original three capture objects, source, jobs, outbox,
+model history, imports and public state were unchanged. No original media was
+retrieved again and no provider request was made.
+
 ## Remaining boundary
 
-The inspection explicitly reports that extraction was supplied through an
-external review, native extraction is unverified, no durable artifact was stored
-and the pipeline is not ready. The decoded-audio binding is also declared by the
-review packet rather than independently established by a cloud extractor.
+Durable external review is accepted. It does not establish authenticated native
+cloud visual extraction or independent decoded-audio provenance. The current
+native task/model allowlist contains transcription and semantic analysis, with
+no configured Azure credential binding or native visual task. The completed
+local bearer experiment does not authenticate a worker-side extractor; the old
+uncertain key-read outcome remains unresolved.
 
-The existing transcript-only upload and public formats remain unchanged; the
-private audiovisual artifact was not relabeled to fit them. Durable private
-ingress, authenticated cloud visual extraction and downstream processing still
-require implementation and verification. A successful inspection does not close
-those gates or establish ordinary automatic generation.
+The existing transcript-only upload and public formats remain unchanged. The
+private audiovisual artifact stays under its own schema inside the metadata
+envelope. Native extraction, downstream processing, ordinary useful generation,
+ordinary discovery, acoustic fidelity and continuous visual coverage remain
+open. A successful storage receipt cannot close those gates.
 
-The new cloud source remains awaiting transcription under preserved source
-scopes. Publication, owner holds and the development heartbeat remain unchanged.
-The earlier uncertain key-read outcome is unresolved; the comparison needed no
-key transfer. No public page or autonomous publication is accepted here.
+The new source remains awaiting transcription under preserved source scopes.
+Publication, owner holds and the development heartbeat remain unchanged. No
+public page, autonomous publication or full recovery is accepted here.
