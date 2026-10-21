@@ -1,4 +1,4 @@
-# Retention recovery and private evidence checks — 20 October 2026
+# Retention recovery and private evidence checks — 21 October 2026
 
 The private capture worker now retains the original video, normalized audio and
 manifest for future eligible captures within its existing size and duration
@@ -71,13 +71,48 @@ revision. All 34 focused checks passed; the independent reviewer verified the
 exact revised files and artifact. This establishes bounded local fidelity, not
 continuous video review or an independently heard reference transcript.
 
+## Native private inspection — 21 October
+
+An authenticated private inspection handler is now deployed and verified. It
+validates a supplied audiovisual review packet against the retained capture,
+including database provenance and the three objects' checksums, sizes, content
+types, privacy metadata and capture roles. It returns the same independently
+accepted private explanation, with its text, revision and evidence unchanged.
+
+Independent review found and corrected two boundary defects before release:
+visual references could extend into an audio-only tail, and malformed scalar
+fields could produce an internal error. Visual references now use the retained
+video's exact time base and half-open timestamp range. Twelve worker-entry tests
+passed with platform, database and object-storage mocks, along with strict
+TypeScript checks. The release adapter passed six focused guards. The earlier
+34 fidelity checks were reused because their accepted inputs did not change.
+
+Staging and activation each ran once. Separate readbacks verified the exact
+deployed bundle, all 66 preserved bindings, the same container and unchanged
+source, model and publication scopes. One incompatible legacy transport attempt
+stopped before application authentication; its exact nonce remained absent and
+the source history was unchanged. That failed attempt was preserved. The
+existing native client then sent the inspection once, after independent review
+and five isolated transport guards. No access or edge configuration changed.
+
+The returned artifact matched the accepted private revision exactly. All 17
+source and history queries remained unchanged after the inspection. The only
+observed database change was one authentication nonce; no provider call,
+business-state transition, media retrieval, queue dispatch or publication was
+observed.
+
 ## Remaining boundary
 
-An offline check of the deployed worker's exact parser accepts the existing
-transcript-only format and rejects the new private audiovisual format. The
-private artifact was not uploaded under an incompatible schema. Live visual
-extraction, private audiovisual ingress and downstream processing still require
-implementation and verification; no full cloud-pipeline acceptance is claimed.
+The inspection explicitly reports that extraction was supplied through an
+external review, native extraction is unverified, no durable artifact was stored
+and the pipeline is not ready. The decoded-audio binding is also declared by the
+review packet rather than independently established by a cloud extractor.
+
+The existing transcript-only upload and public formats remain unchanged; the
+private audiovisual artifact was not relabeled to fit them. Durable private
+ingress, authenticated cloud visual extraction and downstream processing still
+require implementation and verification. A successful inspection does not close
+those gates or establish ordinary automatic generation.
 
 The new cloud source remains awaiting transcription under preserved source
 scopes. Publication, owner holds and the development heartbeat remain unchanged.
