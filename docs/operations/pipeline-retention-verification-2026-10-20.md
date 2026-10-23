@@ -1,12 +1,12 @@
-# Private pipeline recovery and meaning verification — 22 October 2026
+# Private pipeline recovery and meaning verification — 23 October 2026
 
-Eligible new sources run through the existing private capture and native meaning
-path. The earlier verified enablement removed the one-source restriction while
-preserving the accepted cutoff, capture container, budgets, historical holds and
-disabled publication controls. Controlled archive measurements then identified
-material meaning defects. A bounded writer correction and a genuinely fresh
-independently accepted pilot now support small guarded batches; archive-wide
-quality and publication remain separate acceptance items.
+Eligible new sources run through the existing private capture, transcription and
+native meaning path. The initial accepted examples establish that path for those
+exact cases. Subsequent controlled archive measurements still found material
+meaning errors, so wider backlog admission remains gated by per-output review.
+The latest release reinforces the existing writer instructions; its activation
+is verified, while fresh post-release semantic measurements remain pending.
+Archive-wide quality and publication are not accepted.
 
 This completes the bounded private-processing stage of
 [AGR-107](https://linear.app/agregator/issue/AGR-107/base2026-restore-tiktok-pipeline-through-verified-quality-publication).
@@ -165,3 +165,45 @@ a matching current comparison and an independently heard reference.
 
 Private implementation, source media, raw captions, provider responses, account
 identifiers and operational receipts remain excluded from this document.
+
+## First batch outcomes and evidence-qualification repair
+
+Both outputs in the first two-source batch completed capture, transcription and
+native generation with complete retained media. Both passed structural checks
+and failed independent meaning review. One incorrectly denied support for a
+visibly demonstrated example. The other converted a comparison with material
+qualifications into categorical exclusivity. The original outputs and their
+closed requests remain preserved; neither source was regenerated.
+
+Across the first eight terminal archive attempts, outcomes are **one accepted
+private meaning, five meaning rejections and two capture holds**. Two separate
+manual English corrections for the first-batch failures were independently
+accepted against their exact new revisions, complete saved speech and relevant
+saved frames. Those corrections add no native-generation or public acceptance.
+
+Worker186 reinforces three existing instruction passages: treat unreadable or
+unsampled visuals as unknown rather than proof of absent source evidence;
+preserve attributed spoken examples and identify material input uncertainty;
+and retain comparison qualifications from the full discussion despite a
+categorical opening hook. No source-specific answer is embedded.
+
+Exact implementation and release-adapter reviews passed. Strict TypeScript,
+**40 actual native/runtime and closed-source cases**, **seven complete saved
+input-conservation checks** and the exact-context/one-byte-over check passed.
+The unchanged five capture regressions and five release guards were reused,
+with their input pins verified. Structural checks do not prove semantic gain.
+
+Staging and activation each ran once. Exact code and live-runtime readbacks
+verified Worker186 at 100%, preserving all **67 bindings**, Container22, audio,
+model/request controls, cutoff, budgets and publication holds. All **65 prior
+terminal AI receipts** and the original **three UNKNOWN operations** remained
+unchanged, with zero active work during release verification. No release replay
+is due.
+
+A reviewed runner now limits the next measurement to two genuinely fresh exact
+identities. It checks complete registry identity and prior-effect lanes, runtime,
+source/creator UNKNOWN ownership and budgets before each exclusive intake claim.
+It preserves **6,000 Neurons per source plus 6,000 for new arrivals**. An absent
+current-day budget row requires zero current-day invocations and active work;
+no persisted ledger is invented and no cap is raised. Fresh measurements remain
+pending at this checkpoint. All publication controls remain disabled.
