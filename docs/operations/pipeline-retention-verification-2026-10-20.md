@@ -1,5 +1,52 @@
 # Private pipeline recovery and meaning verification — 23 October 2026
 
+## Archive disposition and native-review checkpoint — 26 October 2026
+
+The agreed archive snapshot contains 5,355 identities. Each now has one scoped
+whole-record disposition: three previously accepted private native explanations,
+six native outputs requiring repair, 2,226 policy holds and 3,120 records with
+insufficient evidence. All 2,217 original held records and their reasons remain;
+nine later source-specific holds are also retained. Insufficient evidence does
+not become successful processing or an invented policy hold.
+
+The retained-text review is a separate, narrower measure. Of 685 candidates,
+206 have bounded review receipts: 193 supported transformations and 13 cases
+with insufficient exact-source evidence. The remaining 479 are unreviewed.
+Prepared review packets receive no review credit. These text checks do not
+establish original-speech, complete-visual or public acceptance. Reused private
+native acceptances retain their exact revision and source/selected-frame scope;
+this update adds no new media or quotation-accuracy certification.
+
+Independent current readback preserved all 2,296 original invocation receipts
+and 2,075 jobs without missing or changed rows. Three uncertain operations remain
+explicitly frozen. A separate dated check found no backlog in either work queue
+or either dead-letter queue. Empty queues and successful Worker invocations do
+not establish semantic quality.
+
+A separate new fixed-five trial reached a completed native transcription and
+unchanged draft for its first source. The first independent native reviewer
+call ended in a technical provider error with no result. No trial publication
+occurred; the other four inputs remain unstarted under holds. The unchanged
+draft also omitted material counts and broadened a quantifier. That meaning
+concern is distinct from the technical reviewer failure.
+
+The trial stopped. Its consumed tuples are not retried, failed sources are not
+replaced inside the fixed set, and manual corrections receive no native credit.
+The provider cause remains unknown after bounded request/schema/context and
+existing-log checks. Narrow compatibility, safe error-retention and prompt
+clarification candidates are being prepared privately; they are not verified
+cloud remedies. Any later measurement must freeze a separate eligible cohort
+and configuration before inference and keep outcomes from different versions
+separate. Full recovery, three quality publications inside one fixed new five,
+unattended acceptance and fresh public-page QA remain open.
+
+This is anonymized evidence documentation. Source identities, media, raw model
+outputs, operational endpoints/identifiers and private receipts remain private.
+The pull request remains a draft; no application source or public content is
+released by this documentation change.
+
+## Historical checkpoints — dated evidence, not current execution authority
+
 Eligible new sources run through the existing private capture, transcription and
 native meaning path. The initial accepted examples establish that path for those
 exact cases. Subsequent controlled archive measurements still found material
